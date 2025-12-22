@@ -58,7 +58,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @author Philipp Borkovic
      */
-    public function find(int|string $id): ?Model
+    public function find(string $id): ?Model
     {
         try {
             return $this->model->find($id);
@@ -78,7 +78,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @author Philipp Borkovic
      */
-    public function findOrFail(int|string $id): Model
+    public function findOrFail(string $id): Model
     {
         try {
             return $this->model->findOrFail($id);
@@ -144,7 +144,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @author Philipp Borkovic
      */
-    public function update(int|string $id, array $data): Model
+    public function update(string $id, array $data): Model
     {
         try {
             $model = $this->findOrFail($id);
@@ -168,7 +168,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @author Philipp Borkovic
      */
-    public function delete(int|string $id): ?bool
+    public function delete(string $id): ?bool
     {
         try {
             $model = $this->findOrFail($id);
