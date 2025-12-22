@@ -18,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  *
  * @package App\Repositories\Contracts
  */
-interface BaseRepositoryInterface
+interface BaseRepositoryContract
 {
 
     /**
