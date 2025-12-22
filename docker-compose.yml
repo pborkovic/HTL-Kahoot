@@ -7,7 +7,7 @@ services:
             context: .
             dockerfile: Dockerfile
         networks:
-            - dialogstudio-network
+            - htl-kahoot-network
         image: cloudsigma.com/php
         restart: unless-stopped
         links:
@@ -21,7 +21,7 @@ services:
             DB_CONNECTION: pgsql
             DB_HOST: db
             DB_PORT: 5432
-            DB_DATABASE: laravel_web
+            DB_DATABASE: htl-kahoot
             DB_USERNAME: postgres
             DB_PASSWORD: password
             REDIS_HOST: redis
@@ -36,7 +36,7 @@ services:
         image: nginx:alpine
         restart: unless-stopped
         networks:
-            - dialogstudio-network
+            - htl-kahoot-network
         links:
             - app
         ports:
@@ -49,14 +49,14 @@ services:
     # PostgreSQL Service
     db:
         image: postgres:17
-        container_name: dialogstudio_db
+        container_name: htl-kahoot_db
         restart: unless-stopped
         networks:
-            - dialogstudio-network
+            - htl-kahoot-network
         ports:
             - "5432:5432"
         environment:
-            POSTGRES_DB: laravel_web
+            POSTGRES_DB: htl-kahoot
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: password
         volumes:
@@ -69,7 +69,7 @@ services:
         image: axllent/mailpit
         restart: unless-stopped
         networks:
-            - dialogstudio-network
+            - htl-kahoot-network
         ports:
             - "8025:8025"
             - "1025:1025"
@@ -95,7 +95,7 @@ services:
         image: redis:alpine
         restart: unless-stopped
         networks:
-            - dialogstudio-network
+            - htl-kahoot-network
         ports:
             - "6379:6379"
         volumes:
@@ -106,7 +106,7 @@ services:
         image: minio/minio:latest
         restart: unless-stopped
         networks:
-            - dialogstudio-network
+            - htl-kahoot-network
         ports:
             - "9000:9000"
             - "9001:9001"
@@ -134,4 +134,4 @@ volumes:
     minio_data:
 
 networks:
-    dialogstudio-network:
+    htl-kahoot-network:
