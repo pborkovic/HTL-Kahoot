@@ -1,137 +1,111 @@
-version: '1.1'
-
 services:
-    # PHP Service
-    app:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        networks:
-            - htl-kahoot-network
-        image: cloudsigma.com/php
-        restart: unless-stopped
-        links:
-            - db
-        dns:
-          - 8.8.8.8
-          - 8.8.4.4
-        environment:
-            SERVICE_NAME: app
-            SERVICE_TAGS: dev
-            DB_CONNECTION: pgsql
-            DB_HOST: db
-            DB_PORT: 5432
-            DB_DATABASE: htl-kahoot
-            DB_USERNAME: postgres
-            DB_PASSWORD: password
-            REDIS_HOST: redis
-            REDIS_PORT: 6379
-        working_dir: /var/www/html/
-        volumes:
-            - ./:/var/www/html/
-            - ./php/laravel.ini:/usr/local/etc/php/conf.d/laravel.ini
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: htl-kahoot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-htl_kahoot}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./backend/postgres/initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - htl-kahoot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-    # Nginx Service
-    webserver:
-        image: nginx:alpine
-        restart: unless-stopped
-        networks:
-            - htl-kahoot-network
-        links:
-            - app
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./:/var/www/html/
-            - ./nginx/conf.d/:/etc/nginx/conf.d/
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: htl-kahoot-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - htl-kahoot-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-    # PostgreSQL Service
-    db:
-        image: postgres:17
-        container_name: htl-kahoot_db
-        restart: unless-stopped
-        networks:
-            - htl-kahoot-network
-        ports:
-            - "5432:5432"
-        environment:
-            POSTGRES_DB: htl-kahoot
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: password
-        volumes:
-            - dbdata:/var/lib/postgresql/data/
-            - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
-        command: postgres
+  # Laravel Backend (PHP-FPM)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: htl-kahoot-backend
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+      - APP_DEBUG=${APP_DEBUG:-true}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-htl_kahoot}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    volumes:
+      - ./backend:/var/www/backend
+      - backend_vendor:/var/www/backend/vendor
+      - backend_storage:/var/www/backend/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - htl-kahoot-network
 
-    # Mailpit Service
-    mailpit:
-        image: axllent/mailpit
-        restart: unless-stopped
-        networks:
-            - htl-kahoot-network
-        ports:
-            - "8025:8025"
-            - "1025:1025"
-        volumes:
-            - mailpitData:/data
-        environment:
-            MP_MAX_MESSAGES: 5000
-            MP_DATABASE: /data/mailpit.db
-            MP_SMTP_AUTH_ACCEPT_ANY: 1
-            MP_SMTP_AUTH_ALLOW_INSECURE: 1
-
-    # Selenium Service (Chrome) -> used for dusk testing
-    selenium:
-        image: selenium/standalone-chrome
-        platform: linux/amd64
-        ports:
-            - "4444:4444"
-        networks:
-            - default
-
-    # Redis Service
-    redis:
-        image: redis:alpine
-        restart: unless-stopped
-        networks:
-            - htl-kahoot-network
-        ports:
-            - "6379:6379"
-        volumes:
-            - redisdata:/data
-
-    # MinIO Service
-    minio:
-        image: minio/minio:latest
-        restart: unless-stopped
-        networks:
-            - htl-kahoot-network
-        ports:
-            - "9000:9000"
-            - "9001:9001"
-        environment:
-            MINIO_ROOT_USER: minioadmin
-            MINIO_ROOT_PASSWORD: minioadmin
-        volumes:
-            - minio_data:/data
-        command: server /data --console-address ":9001"
-
-    # SonarQube service
-
-# Volumes
-volumes:
-    dbdata:
-        driver: local
-    mailpitData:
-        driver: local
-    redisdata:
-        driver: local
-    sonarqube_data:
-    sonarqube_logs:
-    sonarqube_extensions:
-    postgres_data:
-    minio_data:
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: htl-kahoot-nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+      - "${APP_SSL_PORT:-443}:443"
+    volumes:
+      - ./backend/public:/var/www/backend/public:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - backend
+    networks:
+      - htl-kahoot-network
 
 networks:
-    htl-kahoot-network:
+  htl-kahoot-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_vendor:
+    driver: local
+  backend_storage:
+    driver: local
+  nginx_logs:
+    driver: local
