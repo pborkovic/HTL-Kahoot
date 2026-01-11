@@ -76,6 +76,21 @@ services:
     networks:
       - htl-kahoot-network
 
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: htl-kahoot-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost/api}
+    depends_on:
+      - backend
+    networks:
+      - htl-kahoot-network
+
   # Nginx Web Server
   nginx:
     image: nginx:alpine
@@ -91,6 +106,7 @@ services:
       - nginx_logs:/var/log/nginx
     depends_on:
       - backend
+      - frontend
     networks:
       - htl-kahoot-network
 
