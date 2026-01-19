@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('avatar_url')->nullable();
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('email');
         });
