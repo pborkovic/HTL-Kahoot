@@ -10,11 +10,23 @@ Route::get('/', function () {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::get('redirect', [AuthController::class, 'redirect']);
-    Route::get('callback', [AuthController::class, 'callback']);
+    Route::get(
+        uri: 'redirect',
+        action: [AuthController::class, 'redirect']
+    );
+    Route::post(
+        uri: 'callback',
+        action: [AuthController::class, 'callback']
+    );
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('user', [AuthController::class, 'user']);
-        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get(
+            uri: 'user',
+            action: [AuthController::class, 'user']
+        );
+        Route::post(
+            uri: 'logout',
+            action: [AuthController::class, 'logout']
+        );
     });
 });
