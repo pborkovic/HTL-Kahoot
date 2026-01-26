@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
+use App\DTOs\EntraUserDto;
 use App\Models\User;
 
 /**
@@ -26,30 +27,19 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Update an existing user with data from Microsoft Entra ID.
      *
-     * @param User                $user      The user instance to update
-     * @param array<string,mixed> $entraData The data from Microsoft Entra ID containing:
-     *                                       - email: string
-     *                                       - display_name: string
-     *                                       - first_name: string|null
-     *                                       - last_name: string|null
-     *                                       - avatar_url: string|null
+     * @param User         $user     The user instance to update
+     * @param EntraUserDto $entraDto The DTO containing Microsoft Entra ID user data
      *
      * @return User The updated user instance with fresh data
      */
-    public function updateFromEntra(User $user, array $entraData): User;
+    public function updateFromEntra(User $user, EntraUserDto $entraDto): User;
 
     /**
      * Create a new user from Microsoft Entra ID data.
      *
-     * @param array<string,mixed> $entraData The data from Microsoft Entra ID containing:
-     *                                       - entra_id: string
-     *                                       - email: string
-     *                                       - display_name: string
-     *                                       - first_name: string|null
-     *                                       - last_name: string|null
-     *                                       - avatar_url: string|null
+     * @param EntraUserDto $entraDto The DTO containing Microsoft Entra ID user data
      *
      * @return User The newly created user instance
      */
-    public function createFromEntra(array $entraData): User;
+    public function createFromEntra(EntraUserDto $entraDto): User;
 }
