@@ -9,7 +9,9 @@
     --color-primary: #22c55e;
     --color-primary-hover: #16a34a;
     --color-secondary: #255239;
+    --color-secondary-muted: #1a3624;
     --color-accent: #6366f1;
+    --color-accent-hover: #514ac4;
 }
 
 @layer base {
@@ -23,6 +25,7 @@
         --primary-hover: #16a34a;
         --secondary: #255239;
         --accent: #6366f1;
+        --accent-hover: #514ac4;
         --foreground: var(--text);
     }
 
