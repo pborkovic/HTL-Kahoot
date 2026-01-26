@@ -1,33 +1,42 @@
 /* frontend/src/app/globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
+@theme {
     --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-geist-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
 
-    --text: #0f172a;
-    --background: #ffffff;
-    --primary: #22c55e;
-    --primary-hover: #16a34a;
-    --secondary: #255239;
-    --accent: #6366f1;
-
-    --foreground: var(--text);
+    --color-text: #0f172a;
+    --color-background: #ffffff;
+    --color-primary: #22c55e;
+    --color-primary-hover: #16a34a;
+    --color-secondary: #255239;
+    --color-accent: #6366f1;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
     :root {
-        --background: #0a0a0a;
-        --text: #ededed;
+        --font-geist-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+
+        --text: #0f172a;
+        --background: #ffffff;
+        --primary: #22c55e;
+        --primary-hover: #16a34a;
+        --secondary: #255239;
+        --accent: #6366f1;
         --foreground: var(--text);
     }
-}
 
-body {
-    background: var(--background);
-    color: var(--text);
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --background: #0a0a0a;
+            --text: #ededed;
+            --foreground: var(--text);
+        }
+    }
+
+    body {
+        background: var(--background);
+        color: var(--text);
+        font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    }
 }
