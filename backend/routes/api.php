@@ -14,7 +14,11 @@ Route::prefix('auth')->group(function () {
         uri: 'redirect',
         action: [AuthController::class, 'redirect']
     );
-    Route::post(
+    Route::match(
+        methods: [
+            'get',
+            'post'
+        ],
         uri: 'callback',
         action: [AuthController::class, 'callback']
     );
