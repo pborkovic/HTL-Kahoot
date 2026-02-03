@@ -2,8 +2,8 @@ import { User } from "lucide-react";
 
 export default function TeacherNav() {
     return (
-        <nav className="w-full bg-secondary px-6 py-6">
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <nav className="w-full bg-secondary py-10">
+            <div className="mx-8 flex items-center justify-between">
                 {/* Logo/Icon + Titel - links */}
                 <div className="flex items-center gap-12">
                     <div className="bg-primary p-2 rounded-lg">
