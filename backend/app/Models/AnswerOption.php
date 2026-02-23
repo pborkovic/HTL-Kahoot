@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Feedback extends Model
+class AnswerOption extends Model
 {
     use HasUuids;
 
@@ -14,13 +14,15 @@ class Feedback extends Model
 
     protected $guarded = [];
 
-    public function question(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(Question::class);
+        return [
+            'is_correct' => 'boolean',
+        ];
     }
 
-    public function user(): BelongsTo
+    public function questionVersion(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(QuestionVersion::class);
     }
 }

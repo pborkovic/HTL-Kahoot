@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Permission extends Model
+class Tag extends Model
 {
     use HasUuids;
 
@@ -14,8 +14,8 @@ class Permission extends Model
 
     protected $guarded = [];
 
-    public function roles(): BelongsToMany
+    public function questions(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'role_permissions');
+        return $this->belongsToMany(Question::class, 'question_tags');
     }
 }

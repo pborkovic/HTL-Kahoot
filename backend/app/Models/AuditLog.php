@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Feedback extends Model
+class AuditLog extends Model
 {
     use HasUuids;
 
@@ -14,9 +14,12 @@ class Feedback extends Model
 
     protected $guarded = [];
 
-    public function question(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(Question::class);
+        return [
+            'metadata'   => 'array',
+            'created_at' => 'datetime',
+        ];
     }
 
     public function user(): BelongsTo

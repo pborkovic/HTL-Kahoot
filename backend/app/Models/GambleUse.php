@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Conveyance extends Model
+class GambleUse extends Model
 {
     use HasUuids;
 
@@ -17,14 +17,17 @@ class Conveyance extends Model
     protected function casts(): array
     {
         return [
-            'result'       => 'array',
-            'created_at'   => 'datetime',
-            'completed_at' => 'datetime',
+            'used_at' => 'datetime',
         ];
     }
 
-    public function user(): BelongsTo
+    public function participant(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(SessionParticipant::class, 'participant_id');
+    }
+
+    public function sessionQuestion(): BelongsTo
+    {
+        return $this->belongsTo(SessionQuestion::class);
     }
 }
