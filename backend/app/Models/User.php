@@ -2,36 +2,63 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasApiTokens, HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = [
-        'entra_id',
-        'email',
-        'display_name',
-        'first_name',
-        'last_name',
-        'avatar_url',
-        'last_login_at',
-    ];
+    protected $guarded = [];
 
     protected function casts(): array
     {
         return [
+            'totp_enabled'  => 'boolean',
+            'is_active'     => 'boolean',
             'last_login_at' => 'datetime',
+            'totp_secret'   => 'encrypted',
         ];
+    }
+
+    public function getAuthPassword(): string
+    {
+        return $this->password_hash ?? '';
     }
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(
-            related: Role::class
-        )->withTimestamps();
+        return $this->belongsToMany(Role::class, 'user_roles')
+            ->withPivot('assigned_at', 'assigned_by');
+    }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class, 'created_by');
+    }
+
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class, 'created_by');
+    }
+
+    public function hostedSessions(): HasMany
+    {
+        return $this->hasMany(Session::class, 'host_id');
+    }
+
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
     }
 }

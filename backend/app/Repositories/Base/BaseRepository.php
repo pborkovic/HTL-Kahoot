@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Base;
 
-use App\Repositories\Contracts\BaseRepositoryInterface;
+use App\Repositories\Contracts\BaseRepositoryContract;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
  * This class provides the implementation for the BaseRepositoryInterface
  * and serves as the base class for all concrete repositories.
  */
-abstract class BaseRepository implements BaseRepositoryInterface
+abstract class BaseRepository implements BaseRepositoryContract
 {
     /**
      * The model instance.
