@@ -40,7 +40,10 @@ RUN chown -R www-data:www-data /var/www/backend \
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-CMD ["php-fpm"]
+ENTRYPOINT ["docker-entrypoint.sh"]
