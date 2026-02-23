@@ -5,44 +5,18 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'L5 Swagger UI',
+                'title' => 'GamQuiz API',
             ],
 
             'routes' => [
-                /*
-                 * Route for accessing api documentation interface
-                 */
-                'api' => 'api/documentation',
+                'api' => 'api/docs',
             ],
             'paths' => [
-                /*
-                 * Edit to include full URL in ui for assets
-                 */
                 'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
-
-                /*
-                * Edit to set path where swagger ui assets should be stored
-                */
                 'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
-
-                /*
-                 * File name of the generated json documentation file
-                 */
                 'docs_json' => 'api-docs.json',
-
-                /*
-                 * File name of the generated YAML documentation file
-                 */
-                'docs_yaml' => 'api-docs.yaml',
-
-                /*
-                 * Set this to `json` or `yaml` to determine which documentation file to use in UI
-                 */
-                'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
-
-                /*
-                 * Absolute paths to directory containing the swagger annotations are stored.
-                 */
+                'docs_yaml' => 'openapi.yaml',
+                'format_to_use_for_docs' => 'yaml',
                 'annotations' => [
                     base_path('app'),
                 ],
@@ -81,7 +55,7 @@ return [
             /*
              * Absolute path to location where parsed annotations will be stored
              */
-            'docs' => storage_path('api-docs'),
+            'docs' => base_path('docs'),
 
             /*
              * Absolute path to directory where to export views
@@ -281,7 +255,7 @@ return [
                  * 'full' (expands the tags and operations),
                  * 'none' (expands nothing).
                  */
-                'doc_expansion' => env('L5_SWAGGER_UI_DOC_EXPANSION', 'none'),
+                'doc_expansion' => env('L5_SWAGGER_UI_DOC_EXPANSION', 'list'),
 
                 /**
                  * If set, enables filtering. The top bar will show an edit box that

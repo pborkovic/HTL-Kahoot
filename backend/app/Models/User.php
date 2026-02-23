@@ -61,4 +61,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(AuditLog::class);
     }
+
+    public function hasRole(string $role): bool
+    {
+        if ($this->relationLoaded('roles')) {
+            return $this->roles->contains('name', $role);
+        }
+
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        if ($this->relationLoaded('roles')) {
+            return $this->roles->whereIn('name', $roles)->isNotEmpty();
+        }
+
+        return $this->roles()->whereIn('name', $roles)->exists();
+    }
 }
