@@ -9,7 +9,9 @@
     --color-primary: var(--primary);
     --color-primary-hover: var(--primary-hover);
     --color-secondary: var(--secondary);
+    --color-secondary-muted: var(--secondary-muted);
     --color-accent: var(--accent);
+    --color-accent-hover: var(--accent-hover);
 }
 
 @layer base {
@@ -22,28 +24,45 @@
         --primary: #22c55e;
         --primary-hover: #16a34a;
         --secondary: #255239;
+        --secondary-muted: #1a3d2a;
         --accent: #6366f1;
-        --foreground: var(--text);
+        --accent-hover: #4f46e5;
     }
 
     html[data-theme="dark"] {
-        --background: #0a0a0a;
-        --text: #ededed;
+        /* Hintergrund: tiefes, leicht grünlich getöntes Dunkelgrau statt reinem Schwarz */
+        --background: #0d1a14;
+        --text: #e8f5ee;
+
         --primary: #22c55e;
-        --secondary: #3d7a5a;
+        --primary-hover: #16a34a;
+
+        /* Secondary: ähnlich wie Light Mode, aber etwas heller für bessere Lesbarkeit */
+        --secondary: #2d6647;
+        --secondary-muted: #224d36;
+
         --accent: #818cf8;
+        --accent-hover: #6366f1;
     }
 
     html[data-theme="light"] {
         --background: #ffffff;
         --text: #0f172a;
+        --primary: #22c55e;
+        --primary-hover: #16a34a;
+        --secondary: #255239;
+        --secondary-muted: #1a3d2a;
+        --accent: #6366f1;
+        --accent-hover: #4f46e5;
     }
 
     @media (prefers-color-scheme: dark) {
         html:not([data-theme]) {
-            --background: #0a0a0a;
-            --text: #ededed;
+            --background: #0d1a14;
+            --text: #e8f5ee;
             --foreground: var(--text);
+            --secondary: #2d6647;
+            --secondary-muted: #224d36;
         }
     }
 
