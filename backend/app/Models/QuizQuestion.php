@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class QuizQuestion extends Model
+{
+    use HasUuids;
+
+    public $timestamps = false;
+
+    protected $guarded = [];
+
+    public function quiz(): BelongsTo
+    {
+        return $this->belongsTo(Quiz::class);
+    }
+
+    public function questionVersion(): BelongsTo
+    {
+        return $this->belongsTo(QuestionVersion::class);
+    }
+
+    public function sessionQuestions(): HasMany
+    {
+        return $this->hasMany(SessionQuestion::class);
+    }
+}
