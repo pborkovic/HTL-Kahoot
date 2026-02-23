@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use OpenApi\Attributes as OA;
+use OpenApi\Attributes\Info;
+use OpenApi\Attributes\SecurityScheme;
 
-#[OA\Info(
+#[Info(
     version: '1.0.0',
     title: 'HTL Kahoot API',
     description: 'API documentation for the HTL Kahoot application',
 )]
-#[OA\SecurityScheme(
+#[SecurityScheme(
     securityScheme: 'sanctum',
     type: 'http',
     scheme: 'bearer',
