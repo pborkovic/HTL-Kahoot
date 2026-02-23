@@ -6,7 +6,15 @@ use App\Services\Contracts\AuthServiceContract;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
+use OpenApi\Attributes\Get;
+use OpenApi\Attributes\Items;
+use OpenApi\Attributes\JsonContent;
+use OpenApi\Attributes\Parameter;
+use OpenApi\Attributes\Post;
+use OpenApi\Attributes\Property;
+use OpenApi\Attributes\RequestBody;
+use OpenApi\Attributes\Response;
+use OpenApi\Attributes\Schema;
 
 class AuthController extends Controller
 {
@@ -14,18 +22,18 @@ class AuthController extends Controller
         private readonly AuthServiceContract $authService
     ) {}
 
-    #[OA\Get(
+    #[Get(
         path: '/api/auth/redirect',
         description: 'Returns the Azure AD OAuth2 authorization URL that the client should redirect to for authentication.',
         summary: 'Get Azure OAuth2 redirect URL',
         tags: ['Auth'],
         responses: [
-            new OA\Response(
+            new Response(
                 response: 200,
                 description: 'Redirect URL retrieved successfully',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(
+                        new Property(
                             property: 'url',
                             type: 'string',
                             example: 'https://login.microsoftonline.com/...',
@@ -44,44 +52,44 @@ class AuthController extends Controller
         );
     }
 
-    #[OA\Get(
+    #[Get(
         path: '/api/auth/callback',
         description: 'Handles the OAuth2 callback from Azure AD. Exchanges the authorization code for a user and returns a Sanctum token.',
         summary: 'Handle OAuth2 callback',
         tags: ['Auth'],
         parameters: [
-            new OA\Parameter(
+            new Parameter(
                 name: 'code',
                 description: 'The authorization code received from Azure AD',
                 in: 'query',
                 required: true,
-                schema: new OA\Schema(type: 'string'),
+                schema: new Schema(type: 'string'),
             ),
         ],
         responses: [
-            new OA\Response(
+            new Response(
                 response: 200,
                 description: 'Authentication successful',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(
+                        new Property(
                             property: 'user',
                             properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
-                                new OA\Property(property: 'entra_id', type: 'string', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
-                                new OA\Property(property: 'email', type: 'string', example: 'user@example.com'),
-                                new OA\Property(property: 'display_name', type: 'string', example: 'John Doe'),
-                                new OA\Property(property: 'first_name', type: 'string', example: 'John'),
-                                new OA\Property(property: 'last_name', type: 'string', example: 'Doe'),
-                                new OA\Property(property: 'avatar_url', type: 'string', example: null, nullable: true),
-                                new OA\Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
-                                new OA\Property(
+                                new Property(property: 'id', type: 'integer', example: 1),
+                                new Property(property: 'entra_id', type: 'string', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
+                                new Property(property: 'email', type: 'string', example: 'user@example.com'),
+                                new Property(property: 'display_name', type: 'string', example: 'John Doe'),
+                                new Property(property: 'first_name', type: 'string', example: 'John'),
+                                new Property(property: 'last_name', type: 'string', example: 'Doe'),
+                                new Property(property: 'avatar_url', type: 'string', example: null, nullable: true),
+                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(
                                     property: 'roles',
                                     type: 'array',
-                                    items: new OA\Items(
+                                    items: new Items(
                                         properties: [
-                                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                                            new OA\Property(property: 'name', type: 'string', example: 'student'),
+                                            new Property(property: 'id', type: 'integer', example: 1),
+                                            new Property(property: 'name', type: 'string', example: 'student'),
                                         ],
                                         type: 'object',
                                     ),
@@ -89,33 +97,33 @@ class AuthController extends Controller
                             ],
                             type: 'object',
                         ),
-                        new OA\Property(property: 'token', type: 'string', example: '1|abc123tokenvalue'),
+                        new Property(property: 'token', type: 'string', example: '1|abc123tokenvalue'),
                     ],
                 ),
             ),
-            new OA\Response(
+            new Response(
                 response: 401,
                 description: 'Authentication failed',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(property: 'error', type: 'string', example: 'Authentication failed'),
-                        new OA\Property(property: 'message', type: 'string', example: 'Invalid authorization code'),
+                        new Property(property: 'error', type: 'string', example: 'Authentication failed'),
+                        new Property(property: 'message', type: 'string', example: 'Invalid authorization code'),
                     ],
                 ),
             ),
-            new OA\Response(
+            new Response(
                 response: 422,
                 description: 'Validation error',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'The code field is required.'),
-                        new OA\Property(
+                        new Property(property: 'message', type: 'string', example: 'The code field is required.'),
+                        new Property(
                             property: 'errors',
                             properties: [
-                                new OA\Property(
+                                new Property(
                                     property: 'code',
                                     type: 'array',
-                                    items: new OA\Items(type: 'string', example: 'The code field is required.'),
+                                    items: new Items(type: 'string', example: 'The code field is required.'),
                                 ),
                             ],
                             type: 'object',
@@ -125,16 +133,16 @@ class AuthController extends Controller
             ),
         ],
     )]
-    #[OA\Post(
+    #[Post(
         path: '/api/auth/callback',
         description: 'Handles the OAuth2 callback from Azure AD via POST. Exchanges the authorization code for a user and returns a Sanctum token.',
         summary: 'Handle OAuth2 callback (POST)',
-        requestBody: new OA\RequestBody(
+        requestBody: new RequestBody(
             required: true,
-            content: new OA\JsonContent(
+            content: new JsonContent(
                 required: ['code'],
                 properties: [
-                    new OA\Property(
+                    new Property(
                         property: 'code',
                         description: 'The authorization code received from Azure AD',
                         type: 'string',
@@ -144,18 +152,18 @@ class AuthController extends Controller
         ),
         tags: ['Auth'],
         responses: [
-            new OA\Response(
+            new Response(
                 response: 200,
                 description: 'Authentication successful',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(property: 'user', type: 'object'),
-                        new OA\Property(property: 'token', type: 'string', example: '1|abc123tokenvalue'),
+                        new Property(property: 'user', type: 'object'),
+                        new Property(property: 'token', type: 'string', example: '1|abc123tokenvalue'),
                     ],
                 ),
             ),
-            new OA\Response(response: 401, description: 'Authentication failed'),
-            new OA\Response(response: 422, description: 'Validation error'),
+            new Response(response: 401, description: 'Authentication failed'),
+            new Response(response: 422, description: 'Validation error'),
         ],
     )]
     public function callback(Request $request): JsonResponse
@@ -196,36 +204,36 @@ class AuthController extends Controller
         }
     }
 
-    #[OA\Get(
+    #[Get(
         path: '/api/auth/user',
         description: 'Returns the currently authenticated user with their roles.',
         summary: 'Get authenticated user',
         security: [['sanctum' => []]],
         tags: ['Auth'],
         responses: [
-            new OA\Response(
+            new Response(
                 response: 200,
                 description: 'Authenticated user retrieved successfully',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(
+                        new Property(
                             property: 'user',
                             properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
-                                new OA\Property(property: 'entra_id', type: 'string', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
-                                new OA\Property(property: 'email', type: 'string', example: 'user@example.com'),
-                                new OA\Property(property: 'display_name', type: 'string', example: 'John Doe'),
-                                new OA\Property(property: 'first_name', type: 'string', example: 'John'),
-                                new OA\Property(property: 'last_name', type: 'string', example: 'Doe'),
-                                new OA\Property(property: 'avatar_url', type: 'string', example: null, nullable: true),
-                                new OA\Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
-                                new OA\Property(
+                                new Property(property: 'id', type: 'integer', example: 1),
+                                new Property(property: 'entra_id', type: 'string', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
+                                new Property(property: 'email', type: 'string', example: 'user@example.com'),
+                                new Property(property: 'display_name', type: 'string', example: 'John Doe'),
+                                new Property(property: 'first_name', type: 'string', example: 'John'),
+                                new Property(property: 'last_name', type: 'string', example: 'Doe'),
+                                new Property(property: 'avatar_url', type: 'string', example: null, nullable: true),
+                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(
                                     property: 'roles',
                                     type: 'array',
-                                    items: new OA\Items(
+                                    items: new Items(
                                         properties: [
-                                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                                            new OA\Property(property: 'name', type: 'string', example: 'student'),
+                                            new Property(property: 'id', type: 'integer', example: 1),
+                                            new Property(property: 'name', type: 'string', example: 'student'),
                                         ],
                                         type: 'object',
                                     ),
@@ -236,12 +244,12 @@ class AuthController extends Controller
                     ],
                 ),
             ),
-            new OA\Response(
+            new Response(
                 response: 401,
                 description: 'Unauthenticated',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.'),
+                        new Property(property: 'message', type: 'string', example: 'Unauthenticated.'),
                     ],
                 ),
             ),
@@ -256,28 +264,28 @@ class AuthController extends Controller
         );
     }
 
-    #[OA\Post(
+    #[Post(
         path: '/api/auth/logout',
         description: 'Revokes the current user\'s authentication token.',
         summary: 'Logout user',
         security: [['sanctum' => []]],
         tags: ['Auth'],
         responses: [
-            new OA\Response(
+            new Response(
                 response: 200,
                 description: 'Logged out successfully',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Logged out successfully'),
+                        new Property(property: 'message', type: 'string', example: 'Logged out successfully'),
                     ],
                 ),
             ),
-            new OA\Response(
+            new Response(
                 response: 401,
                 description: 'Unauthenticated',
-                content: new OA\JsonContent(
+                content: new JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.'),
+                        new Property(property: 'message', type: 'string', example: 'Unauthenticated.'),
                     ],
                 ),
             ),
