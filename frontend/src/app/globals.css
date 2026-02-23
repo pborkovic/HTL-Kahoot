@@ -4,12 +4,12 @@
 @theme {
     --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-    --color-text: #0f172a;
-    --color-background: #ffffff;
-    --color-primary: #22c55e;
-    --color-primary-hover: #16a34a;
-    --color-secondary: #255239;
-    --color-accent: #6366f1;
+    --color-text: var(--text);
+    --color-background: var(--background);
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-secondary: var(--secondary);
+    --color-accent: var(--accent);
 }
 
 @layer base {
@@ -26,8 +26,21 @@
         --foreground: var(--text);
     }
 
+    html[data-theme="dark"] {
+        --background: #0a0a0a;
+        --text: #ededed;
+        --primary: #22c55e;
+        --secondary: #3d7a5a;
+        --accent: #818cf8;
+    }
+
+    html[data-theme="light"] {
+        --background: #ffffff;
+        --text: #0f172a;
+    }
+
     @media (prefers-color-scheme: dark) {
-        :root {
+        html:not([data-theme]) {
             --background: #0a0a0a;
             --text: #ededed;
             --foreground: var(--text);
