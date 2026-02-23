@@ -7,11 +7,6 @@ use App\Models\User;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\Contracts\UserRepositoryContract;
 
-/**
- * User Repository Implementation
- *
- * @package App\Repositories
- */
 class UserRepository extends BaseRepository implements UserRepositoryContract
 {
     public function __construct(User $model)
@@ -19,32 +14,23 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         parent::__construct(model: $model);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function findByEntraId(string $entraId): ?User
+    public function findByExternalId(string $externalId): ?User
     {
         return $this->model
             ->where(
-                column: 'entra_id',
+                column: 'external_id',
                 operator: '=',
-                value: $entraId
+                value: $externalId
             )
             ->first();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function updateFromEntra(User $user, EntraUserDto $entraDto): User
     {
         $user->update(
             attributes: [
                 'email' => $entraDto->email,
-                'display_name' => $entraDto->displayName,
-                'first_name' => $entraDto->firstName,
-                'last_name' => $entraDto->lastName,
-                'avatar_url' => $entraDto->avatarUrl,
+                'username' => $entraDto->displayName,
                 'last_login_at' => now(),
             ]
         );
@@ -52,19 +38,14 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         return $user->fresh();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function createFromEntra(EntraUserDto $entraDto): User
     {
         return $this->model->create(
             attributes: [
-                'entra_id' => $entraDto->entraId,
+                'external_id' => $entraDto->externalId,
                 'email' => $entraDto->email,
-                'display_name' => $entraDto->displayName,
-                'first_name' => $entraDto->firstName,
-                'last_name' => $entraDto->lastName,
-                'avatar_url' => $entraDto->avatarUrl,
+                'username' => $entraDto->displayName,
+                'auth_provider' => 'azure',
                 'last_login_at' => now(),
             ]
         );
