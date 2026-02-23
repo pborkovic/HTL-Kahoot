@@ -3,7 +3,7 @@
 export default function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-background">
-            <div className="w-full max-w-md p-15 space-y-8 rounded-lg border border-primary">
+            <div className="w-full max-w-md p-15 space-y-8 rounded-lg border-2 border-primary">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-text">Willkommen bei GamQuiz</h1>
                     <p className="mt-2 text-text/60">Melde dich mit deinem Microsoft-Konto an</p>
