@@ -12,6 +12,9 @@
     --color-secondary-muted: #1a3624;
     --color-accent: #6366f1;
     --color-accent-hover: #514ac4;
+
+    /* Custom breakpoint for extra small screens */
+    --breakpoint-xs: 480px;
 }
 
 @layer base {

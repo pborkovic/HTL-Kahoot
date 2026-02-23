@@ -1,5 +1,5 @@
 "use client"
-import {Search, X, Filter, ArrowUpDown, HelpCircle, Building2, Tag, CheckCircle, ChevronUp, ChevronDown, ClipboardList, UserCheck, GraduationCap, FileText, School, PlayCircle} from "lucide-react";
+import {Search, X, Filter, ArrowUpDown, HelpCircle, Building2, Tag, CheckCircle, ChevronUp, ChevronDown, ClipboardList, UserCheck, GraduationCap, FileText, School, PlayCircle, Settings, Clock, Weight} from "lucide-react";
 import {useState, useRef, useEffect} from "react";
 import {useRouter} from "next/navigation";
 import React from "react";
@@ -75,6 +75,10 @@ export default function Dashboard () {
     const [showClassQuickSelect, setShowClassQuickSelect] = useState(false);
     const [activeDepartmentFilters, setActiveDepartmentFilters] = useState<Set<string>>(new Set());
     const [studentSearchTerm, setStudentSearchTerm] = useState("");
+
+    // Quiz-Einstellungen
+    const [questionWeight, setQuestionWeight] = useState<number>(5);
+    const [maxTimePerQuestion, setMaxTimePerQuestion] = useState<number>(30);
 
     const filterRef = useRef<HTMLDivElement>(null);
     const sortRef = useRef<HTMLDivElement>(null);
@@ -284,32 +288,43 @@ export default function Dashboard () {
         }
 
         setSelectedStudentIds(newSelected);
-        setShowClassQuickSelect(false);
     }
 
     function openFilterMenu() {
         setShowSortMenu(false);
+        setShowStudentFilterMenu(false);
+        setShowStudentSortMenu(false);
+        setShowClassQuickSelect(false);
         setShowFilterMenu(!showFilterMenu);
     }
 
     function openSortMenu() {
         setShowFilterMenu(false);
+        setShowStudentFilterMenu(false);
+        setShowStudentSortMenu(false);
+        setShowClassQuickSelect(false);
         setShowSortMenu(!showSortMenu);
     }
 
     function openStudentFilterMenu() {
+        setShowFilterMenu(false);
+        setShowSortMenu(false);
         setShowStudentSortMenu(false);
         setShowClassQuickSelect(false);
         setShowStudentFilterMenu(!showStudentFilterMenu);
     }
 
     function openStudentSortMenu() {
+        setShowFilterMenu(false);
+        setShowSortMenu(false);
         setShowStudentFilterMenu(false);
         setShowClassQuickSelect(false);
         setShowStudentSortMenu(!showStudentSortMenu);
     }
 
     function openClassQuickSelect() {
+        setShowFilterMenu(false);
+        setShowSortMenu(false);
         setShowStudentFilterMenu(false);
         setShowStudentSortMenu(false);
         setShowClassQuickSelect(!showClassQuickSelect);
@@ -336,37 +351,37 @@ export default function Dashboard () {
     const canCreateLobby = selectedQuestionIds.size > 0 && selectedStudentIds.size > 0;
 
     return (
-        <div className="flex flex-col p-8 max-w-450 mx-auto min-h-screen bg-background">
-            <div className="mb-8">
-                <h1 className="text-4xl font-bold text-text mb-2 flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-primary to-primary-hover flex items-center justify-center shadow-lg">
-                        <FileText className="w-7 h-7 text-white" strokeWidth={2.5} />
+        <div className="flex flex-col p-4 sm:p-6 lg:p-8 max-w-450 mx-auto min-h-screen bg-background">
+            <div className="mb-6 lg:mb-8">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text mb-2 flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-linear-to-br from-primary to-primary-hover flex items-center justify-center shadow-lg shrink-0">
+                        <FileText className="w-5 h-5 sm:w-7 sm:h-7 text-white" strokeWidth={2.5} />
                     </div>
                     Quiz Editor
                 </h1>
-                <p className="text-text/60 text-lg ml-15">Erstelle und verwalte deine Quiz-Fragen und wähle Teilnehmer aus</p>
+                <p className="text-text/60 text-sm sm:text-base lg:text-lg ml-12 sm:ml-15">Erstelle und verwalte deine Quiz-Fragen und wähle Teilnehmer aus</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-                <div className="bg-linear-to-br from-secondary to-secondary-muted p-6 rounded-2xl shadow-2xl border border-primary/10 hover:shadow-primary/10 transition-all duration-300">
-                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-background/10">
-                        <div className="w-11 h-11 rounded-xl bg-primary/20 flex items-center justify-center ring-2 ring-primary/30">
-                            <HelpCircle className="w-6 h-6 text-primary" strokeWidth={2} />
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-linear-to-br from-secondary to-secondary-muted p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-2xl border border-primary/10 hover:shadow-primary/10 transition-all duration-300">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-background/10">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-primary/20 flex items-center justify-center ring-2 ring-primary/30">
+                            <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={2} />
                         </div>
-                        <h2 className="text-2xl font-bold text-background">Fragen</h2>
+                        <h2 className="text-xl sm:text-2xl font-bold text-background">Fragen</h2>
                     </div>
-                    <div className="flex flex-row w-full gap-3">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                         <div className="relative" ref={filterRef}>
                             <button
                                 onClick={openFilterMenu}
-                                className={`py-2.5 px-4 text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-28.75 justify-center ${
+                                className={`py-2 sm:py-2.5 px-3 sm:px-4 text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1.5 sm:gap-2 justify-center ${
                                     activeFilters.size > 0
                                         ? 'bg-primary hover:bg-primary-hover text-white ring-2 ring-primary/40'
                                         : 'bg-white/95 hover:bg-white text-secondary border border-white/30'
                                 }`}
                             >
-                                <Filter className="w-4 h-4 shrink-0" strokeWidth={2} />
-                                <span className="shrink-0">Filtern</span>
+                                <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2} />
+                                <span className="shrink-0 hidden xs:inline">Filtern</span>
                                 {activeFilters.size > 0 && <span className="bg-white/20 px-1.5 py-0.5 rounded-md text-xs absolute -top-2 -right-2">{activeFilters.size}</span>}
                             </button>
                             {showFilterMenu && (
@@ -398,10 +413,10 @@ export default function Dashboard () {
                         <div className="relative" ref={sortRef}>
                             <button
                                 onClick={openSortMenu}
-                                className="py-2.5 px-4 text-sm font-semibold bg-accent hover:bg-accent-hover text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-32.5 justify-center"
+                                className="py-2 sm:py-2.5 px-3 sm:px-4 text-xs sm:text-sm font-semibold bg-accent hover:bg-accent-hover text-white rounded-lg sm:rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1.5 sm:gap-2 justify-center"
                             >
-                                <ArrowUpDown className="w-4 h-4 shrink-0" strokeWidth={2} />
-                                <span className="shrink-0">Sortieren</span>
+                                <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2} />
+                                <span className="shrink-0 hidden xs:inline">Sortieren</span>
                             </button>
                             {showSortMenu && (
                                 <div className="absolute top-full mt-2 bg-white rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
@@ -437,36 +452,36 @@ export default function Dashboard () {
                             )}
                         </div>
 
-                        <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/95 border border-white/30 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/30">
-                            <Search className="w-4 h-4 text-text/40" />
+                        <div className="flex-1 min-w-0 sm:min-w-48 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/95 border border-white/30 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/30">
+                            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-text/40 shrink-0" />
                             <input
                                 type="text"
                                 value={searchTerm}
                                 onChange={handleChange}
                                 name="search-question"
-                                placeholder="Fragen durchsuchen..."
-                                className="flex-1 bg-transparent text-text text-sm outline-none placeholder:text-text/40"
+                                placeholder="Suchen..."
+                                className="flex-1 bg-transparent text-text text-xs sm:text-sm outline-none placeholder:text-text/40 min-w-0"
                             />
                         </div>
                     </div>
 
-                    <div className="mt-5 bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 shadow-inner">
-                        <div className="overflow-x-auto max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent">
-                            <table className="w-full text-left text-background">
+                    <div className="mt-4 sm:mt-5 bg-white/5 backdrop-blur-sm rounded-lg sm:rounded-xl overflow-hidden border border-white/10 shadow-inner">
+                        <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent">
+                            <table className="w-full text-left text-background text-xs sm:text-sm table-fixed">
                                 <thead className="sticky top-0 bg-secondary-muted/95 backdrop-blur-sm z-10 border-b border-white/10">
                                 <tr>
-                                    <th className="p-3">
+                                    <th className="p-2 sm:p-3 w-10 sm:w-12">
                                         <input
                                             type="checkbox"
                                             checked={allQuestionsSelected}
                                             onChange={toggleSelectAllQuestions}
-                                            className="w-4.5 h-4.5 accent-primary cursor-pointer rounded"
+                                            className="w-4 h-4 sm:w-4.5 sm:h-4.5 accent-primary cursor-pointer rounded"
                                         />
                                     </th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">ID</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Thema</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Frage</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Antwort</th>
+                                    <th className="p-2 sm:p-3 w-10 sm:w-14 text-xs sm:text-sm font-semibold text-background/80">ID</th>
+                                    <th className="p-2 sm:p-3 w-20 sm:w-28 text-xs sm:text-sm font-semibold text-background/80">Thema</th>
+                                    <th className="p-2 sm:p-3 text-xs sm:text-sm font-semibold text-background/80">Frage</th>
+                                    <th className="p-2 sm:p-3 w-24 sm:w-36 text-xs sm:text-sm font-semibold text-background/80">Antwort</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -475,22 +490,22 @@ export default function Dashboard () {
                                         key={q.id}
                                         className="border-b border-white/5 hover:bg-white/10 transition-colors duration-150 cursor-pointer group"
                                     >
-                                        <td className="p-3" onClick={(e) => e.stopPropagation()}>
+                                        <td className="p-2 sm:p-3" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
                                                 checked={selectedQuestionIds.has(q.id)}
                                                 onChange={() => toggleSelectQuestion(q.id)}
-                                                className="w-4.5 h-4.5 accent-primary cursor-pointer rounded"
+                                                className="w-4 h-4 sm:w-4.5 sm:h-4.5 accent-primary cursor-pointer rounded"
                                             />
                                         </td>
-                                        <td className="p-3 text-sm text-background/60 group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.id}</td>
-                                        <td className="p-3 text-sm font-medium text-background group-hover:text-primary transition-colors" onClick={() => setDetailQuestion(q)}>
-                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/20 text-primary rounded-lg text-xs font-semibold">
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/60 group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.id}</td>
+                                        <td className="p-2 sm:p-3" onClick={() => setDetailQuestion(q)}>
+                                            <span className="inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 bg-primary/20 text-primary rounded-md sm:rounded-lg text-xs font-semibold truncate max-w-full">
                                                 {q.thema}
                                             </span>
                                         </td>
-                                        <td className="p-3 text-sm text-background group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.frage}</td>
-                                        <td className="p-3 text-sm text-background/80 group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.antwort}</td>
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background group-hover:text-background transition-colors truncate" onClick={() => setDetailQuestion(q)}>{q.frage}</td>
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/80 group-hover:text-background transition-colors truncate" onClick={() => setDetailQuestion(q)}>{q.antwort}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -498,30 +513,30 @@ export default function Dashboard () {
                         </div>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between px-2">
-                        <p className="text-background/70 text-sm font-medium flex items-center gap-2">
-                            <ClipboardList className="w-4 h-4 text-primary" strokeWidth={2} />
+                    <div className="mt-3 sm:mt-4 flex items-center justify-between px-1 sm:px-2">
+                        <p className="text-background/70 text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+                            <ClipboardList className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" strokeWidth={2} />
                             <span>{selectedQuestionIds.size} von {displayQuestions.length} ausgewählt</span>
-                            {displayQuestions.length !== questions.length && <span className="text-background/50">({questions.length} gesamt)</span>}
+                            {displayQuestions.length !== questions.length && <span className="text-background/50 hidden sm:inline">({questions.length} gesamt)</span>}
                         </p>
                     </div>
                 </div>
 
-                <div className="bg-linear-to-br from-secondary to-secondary-muted p-6 rounded-2xl shadow-2xl border border-primary/10 hover:shadow-primary/10 transition-all duration-300">
-                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-background/10">
-                        <div className="w-11 h-11 rounded-xl bg-accent/20 flex items-center justify-center ring-2 ring-accent/30">
-                            <GraduationCap className="w-6 h-6 text-accent" strokeWidth={2} />
+                <div className="bg-linear-to-br from-secondary to-secondary-muted p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-2xl border border-primary/10 hover:shadow-primary/10 transition-all duration-300">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-background/10">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-accent/20 flex items-center justify-center ring-2 ring-accent/30">
+                            <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-accent" strokeWidth={2} />
                         </div>
-                        <h2 className="text-2xl font-bold text-background">Schüler</h2>
+                        <h2 className="text-xl sm:text-2xl font-bold text-background">Schüler</h2>
                     </div>
-                    <div className="flex flex-row gap-3 max-w-full">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                         <div className="relative" ref={classQuickSelectRef}>
                             <button
                                 onClick={openClassQuickSelect}
-                                className="py-2.5 px-4 text-sm font-semibold bg-linear-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-37.5 justify-center"
+                                className="py-2 sm:py-2.5 px-3 sm:px-4 text-xs sm:text-sm font-semibold bg-linear-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white rounded-lg sm:rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1.5 sm:gap-2 justify-center"
                             >
-                                <School className="w-4 h-4 shrink-0" strokeWidth={2} />
-                                <span className="shrink-0">Klasse wählen</span>
+                                <School className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2} />
+                                <span className="shrink-0 hidden xs:inline">Klasse wählen</span>
                             </button>
                             {showClassQuickSelect && (
                                 <div className="absolute top-full mt-2 bg-white rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
@@ -554,14 +569,14 @@ export default function Dashboard () {
                         <div className="relative" ref={studentFilterRef}>
                             <button
                                 onClick={openStudentFilterMenu}
-                                className={`py-2.5 px-4 text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-33.75 justify-center ${
+                                className={`py-2 sm:py-2.5 px-3 sm:px-4 text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1.5 sm:gap-2 justify-center ${
                                     activeDepartmentFilters.size > 0
                                         ? 'bg-primary hover:bg-primary-hover text-white ring-2 ring-primary/40'
                                         : 'bg-white/95 hover:bg-white text-secondary border border-white/30'
                                 }`}
                             >
-                                <Building2 className="w-4 h-4 shrink-0" strokeWidth={2} />
-                                <span className="shrink-0">Abteilung</span>
+                                <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2} />
+                                <span className="shrink-0 hidden xs:inline">Abteilung</span>
                                 {activeDepartmentFilters.size > 0 && <span className="bg-white/20 px-1.5 py-0.5 rounded-md text-xs absolute -top-2 -right-2">{activeDepartmentFilters.size}</span>}
                             </button>
                             {showStudentFilterMenu && (
@@ -593,10 +608,10 @@ export default function Dashboard () {
                         <div className="relative" ref={studentSortRef}>
                             <button
                                 onClick={openStudentSortMenu}
-                                className="py-2.5 px-4 text-sm font-semibold bg-accent hover:bg-accent-hover text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-32.5 justify-center"
+                                className="py-2 sm:py-2.5 px-3 sm:px-4 text-xs sm:text-sm font-semibold bg-accent hover:bg-accent-hover text-white rounded-lg sm:rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1.5 sm:gap-2 justify-center"
                             >
-                                <ArrowUpDown className="w-4 h-4 shrink-0" strokeWidth={2} />
-                                <span className="shrink-0">Sortieren</span>
+                                <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2} />
+                                <span className="shrink-0 hidden xs:inline">Sortieren</span>
                             </button>
                             {showStudentSortMenu && (
                                 <div className="absolute top-full mt-2 bg-white rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
@@ -646,36 +661,36 @@ export default function Dashboard () {
                             )}
                         </div>
 
-                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/95 border border-white/30 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-accent/30 flex-1 min-w-0">
-                            <Search className="w-4 h-4 text-text/40 shrink-0" />
+                        <div className="flex-1 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/95 border border-white/30 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-accent/30">
+                            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-text/40 shrink-0" />
                             <input
                                 type="text"
                                 value={studentSearchTerm}
                                 onChange={handleStudentSearchChange}
                                 name="search-student"
-                                placeholder="Schüler durchsuchen..."
-                                className="flex-1 bg-transparent text-text text-sm outline-none placeholder:text-text/40 min-w-0"
+                                placeholder="Schüler suchen..."
+                                className="w-full bg-transparent text-text text-xs sm:text-sm outline-none placeholder:text-text/40"
                             />
                         </div>
                     </div>
 
-                    <div className="mt-5 bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 shadow-inner">
+                    <div className="mt-4 sm:mt-5 bg-white/5 backdrop-blur-sm rounded-lg sm:rounded-xl overflow-hidden border border-white/10 shadow-inner">
                         <div className="overflow-x-auto max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-accent/30 scrollbar-track-transparent">
-                            <table className="w-full text-left text-background">
+                            <table className="w-full text-left text-background text-xs sm:text-sm">
                                 <thead className="sticky top-0 bg-secondary-muted/95 backdrop-blur-sm z-10 border-b border-white/10">
                                 <tr>
-                                    <th className="p-3">
+                                    <th className="p-2 sm:p-3">
                                         <input
                                             type="checkbox"
                                             checked={allStudentsSelected}
                                             onChange={toggleSelectAllStudents}
-                                            className="w-4.5 h-4.5 accent-accent cursor-pointer rounded"
+                                            className="w-4 h-4 sm:w-4.5 sm:h-4.5 accent-accent cursor-pointer rounded"
                                         />
                                     </th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">ID</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Name</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Klasse</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Abteilung</th>
+                                    <th className="p-2 sm:p-3 text-xs sm:text-sm font-semibold text-background/80">ID</th>
+                                    <th className="p-2 sm:p-3 text-xs sm:text-sm font-semibold text-background/80">Name</th>
+                                    <th className="p-2 sm:p-3 text-xs sm:text-sm font-semibold text-background/80 hidden sm:table-cell">Klasse</th>
+                                    <th className="p-2 sm:p-3 text-xs sm:text-sm font-semibold text-background/80 hidden md:table-cell">Abteilung</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -684,22 +699,22 @@ export default function Dashboard () {
                                         key={s.id}
                                         className="border-b border-white/5 hover:bg-white/10 transition-colors duration-150 group"
                                     >
-                                        <td className="p-3" onClick={(e) => e.stopPropagation()}>
+                                        <td className="p-2 sm:p-3" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
                                                 checked={selectedStudentIds.has(s.id)}
                                                 onChange={() => toggleSelectStudent(s.id)}
-                                                className="w-4.5 h-4.5 accent-accent cursor-pointer rounded"
+                                                className="w-4 h-4 sm:w-4.5 sm:h-4.5 accent-accent cursor-pointer rounded"
                                             />
                                         </td>
-                                        <td className="p-3 text-sm text-background/60 group-hover:text-background transition-colors">{s.id}</td>
-                                        <td className="p-3 text-sm font-medium text-background transition-colors">{s.name}</td>
-                                        <td className="p-3 text-sm text-background group-hover:text-background transition-colors">
-                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/20 text-primary rounded-lg text-xs font-semibold">
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/60 group-hover:text-background transition-colors">{s.id}</td>
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm font-medium text-background transition-colors">{s.name}</td>
+                                        <td className="p-2 sm:p-3 hidden sm:table-cell">
+                                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-primary/20 text-primary rounded-lg text-xs font-semibold">
                                                 {s.klasse}
                                             </span>
                                         </td>
-                                        <td className="p-3 text-sm text-background/80 group-hover:text-background transition-colors">{s.abteilung}</td>
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/80 group-hover:text-background transition-colors hidden md:table-cell">{s.abteilung}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -707,94 +722,192 @@ export default function Dashboard () {
                         </div>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between px-2">
-                        <p className="text-background/70 text-sm font-medium flex items-center gap-2">
-                            <UserCheck className="w-4 h-4 text-accent" strokeWidth={2} />
+                    <div className="mt-3 sm:mt-4 flex items-center justify-between px-1 sm:px-2">
+                        <p className="text-background/70 text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+                            <UserCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent" strokeWidth={2} />
                             <span>{selectedStudentIds.size} von {displayStudents.length} ausgewählt</span>
-                            {displayStudents.length !== students.length && <span className="text-background/50">({students.length} gesamt)</span>}
+                            {displayStudents.length !== students.length && <span className="text-background/50 hidden sm:inline">({students.length} gesamt)</span>}
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Lobby eröffnen Button */}
-            <div className="mt-8 flex justify-center">
-                <button
-                    onClick={createLobby}
-                    disabled={!canCreateLobby}
-                    className={`py-4 px-8 text-lg font-bold rounded-2xl transition-all duration-300 shadow-2xl flex items-center gap-3 ${
-                        canCreateLobby
-                            ? 'bg-linear-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white hover:shadow-primary/50 hover:scale-105 cursor-pointer'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-                    }`}
-                >
-                    <PlayCircle className="w-7 h-7" strokeWidth={2.5} />
-                    <span>Lobby eröffnen</span>
-                    {canCreateLobby && (
-                        <span className="bg-white/20 px-3 py-1 rounded-lg text-sm font-medium">
+            {/* Quiz-Einstellungen */}
+            <div className="mt-4 sm:mt-6 bg-linear-to-br from-secondary to-secondary-muted p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-2xl border border-primary/10">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-background/10">
+                    <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-primary/20 flex items-center justify-center ring-2 ring-primary/30">
+                        <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={2} />
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-background">Quiz-Einstellungen</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    {/* Gewichtung der Fragen */}
+                    <div className="bg-white/5 backdrop-blur-sm rounded-lg sm:rounded-xl p-4 sm:p-5 border border-white/10">
+                        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                            <Weight className="w-4 h-4 sm:w-5 sm:h-5 text-primary" strokeWidth={2} />
+                            <label className="text-sm sm:text-base font-semibold text-background">
+                                Gewichtung der Fragen
+                            </label>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3 sm:gap-4">
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="10"
+                                    value={questionWeight}
+                                    onChange={(e) => setQuestionWeight(Number(e.target.value))}
+                                    className="flex-1 h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-primary"
+                                />
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="10"
+                                        value={questionWeight}
+                                        onChange={(e) => {
+                                            const val = Math.min(10, Math.max(1, Number(e.target.value)));
+                                            setQuestionWeight(val);
+                                        }}
+                                        className="w-14 sm:w-16 px-2 sm:px-3 py-1.5 sm:py-2 text-center text-sm sm:text-base font-semibold bg-white/95 text-secondary rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex justify-between text-xs text-background/50">
+                                <span>Niedrig (1)</span>
+                                <span>Hoch (10)</span>
+                            </div>
+                            <p className="text-xs sm:text-sm text-background/60">
+                                Bestimmt, wie stark die Punkte für richtige Antworten gewichtet werden.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Maximale Zeit pro Frage */}
+                    <div className="bg-white/5 backdrop-blur-sm rounded-lg sm:rounded-xl p-4 sm:p-5 border border-white/10">
+                        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-accent" strokeWidth={2} />
+                            <label className="text-sm sm:text-base font-semibold text-background">
+                                Maximale Zeit pro Frage
+                            </label>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3 sm:gap-4">
+                                <input
+                                    type="range"
+                                    min="5"
+                                    max="120"
+                                    step="5"
+                                    value={maxTimePerQuestion}
+                                    onChange={(e) => setMaxTimePerQuestion(Number(e.target.value))}
+                                    className="flex-1 h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-accent"
+                                />
+                                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+                                    <input
+                                        type="number"
+                                        min="5"
+                                        max="120"
+                                        step="5"
+                                        value={maxTimePerQuestion}
+                                        onChange={(e) => {
+                                            const val = Math.min(120, Math.max(5, Number(e.target.value)));
+                                            setMaxTimePerQuestion(val);
+                                        }}
+                                        className="w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 text-center text-sm sm:text-base font-semibold bg-white/95 text-secondary rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-accent/50"
+                                    />
+                                    <span className="text-xs sm:text-sm text-background/70 font-medium">Sek.</span>
+                                </div>
+                            </div>
+                            <div className="flex justify-between text-xs text-background/50">
+                                <span>5 Sekunden</span>
+                                <span>2 Minuten</span>
+                            </div>
+                            <p className="text-xs sm:text-sm text-background/60">
+                                Die Zeit, die Schüler haben, um jede Frage zu beantworten.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {/* Lobby eröffnen Button */}
+                <div className="mt-6 sm:mt-8 flex justify-center px-2">
+                    <button
+                        onClick={createLobby}
+                        disabled={!canCreateLobby}
+                        className={`py-3 sm:py-4 px-5 sm:px-8 text-base sm:text-lg font-bold rounded-xl sm:rounded-2xl transition-all duration-300 shadow-2xl flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto max-w-md ${
+                            canCreateLobby
+                                ? 'bg-linear-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white hover:shadow-primary/50 hover:scale-105 cursor-pointer'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                        }`}
+                    >
+                        <PlayCircle className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={2.5} />
+                        <span>Lobby eröffnen</span>
+                        {canCreateLobby && (
+                            <span className="bg-white/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm font-medium">
                             {selectedQuestionIds.size} Fragen • {selectedStudentIds.size} Schüler
                         </span>
-                    )}
-                </button>
+                        )}
+                    </button>
+                </div>
             </div>
 
             {detailQuestion && (
                 <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in duration-200"
                     onClick={() => setDetailQuestion(null)}
                 >
                     <div
-                        className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 shadow-2xl border border-primary/10 animate-in zoom-in-95 duration-300"
+                        className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 max-w-2xl w-full mx-2 sm:mx-4 shadow-2xl border border-primary/10 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                                    <HelpCircle className="w-6 h-6 text-primary" strokeWidth={2} />
+                        <div className="flex justify-between items-start mb-4 sm:mb-6">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                    <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-text">Frage #{detailQuestion.id}</h2>
-                                    <p className="text-text/50 text-sm">Detailansicht</p>
+                                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-text">Frage #{detailQuestion.id}</h2>
+                                    <p className="text-text/50 text-xs sm:text-sm">Detailansicht</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setDetailQuestion(null)}
-                                className="p-2 hover:bg-text/5 rounded-xl transition-all duration-200 group"
+                                className="p-1.5 sm:p-2 hover:bg-text/5 rounded-lg sm:rounded-xl transition-all duration-200 group"
                             >
-                                <X className="w-6 h-6 text-text/40 group-hover:text-text transition-colors" />
+                                <X className="w-5 h-5 sm:w-6 sm:h-6 text-text/40 group-hover:text-text transition-colors" />
                             </button>
                         </div>
 
-                        <div className="space-y-5">
-                            <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
-                                <p className="text-xs font-semibold text-primary/60 mb-2 uppercase tracking-wider flex items-center gap-2">
-                                    <Tag className="w-3.5 h-3.5" strokeWidth={2} />
+                        <div className="space-y-3 sm:space-y-5">
+                            <div className="p-3 sm:p-4 bg-primary/5 rounded-lg sm:rounded-xl border border-primary/10">
+                                <p className="text-xs font-semibold text-primary/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                    <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
                                     Thema
                                 </p>
-                                <p className="font-semibold text-text text-lg">{detailQuestion.thema}</p>
+                                <p className="font-semibold text-text text-base sm:text-lg">{detailQuestion.thema}</p>
                             </div>
-                            <div className="p-4 bg-accent/5 rounded-xl border border-accent/10">
-                                <p className="text-xs font-semibold text-accent/60 mb-2 uppercase tracking-wider flex items-center gap-2">
-                                    <HelpCircle className="w-3.5 h-3.5" strokeWidth={2} />
+                            <div className="p-3 sm:p-4 bg-accent/5 rounded-lg sm:rounded-xl border border-accent/10">
+                                <p className="text-xs font-semibold text-accent/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                    <HelpCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
                                     Frage
                                 </p>
-                                <p className="font-semibold text-text text-lg">{detailQuestion.frage}</p>
+                                <p className="font-semibold text-text text-base sm:text-lg">{detailQuestion.frage}</p>
                             </div>
-                            <div className="p-4 bg-secondary/5 rounded-xl border border-secondary/10">
-                                <p className="text-xs font-semibold text-secondary/60 mb-2 uppercase tracking-wider flex items-center gap-2">
-                                    <CheckCircle className="w-3.5 h-3.5" strokeWidth={2} />
+                            <div className="p-3 sm:p-4 bg-secondary/5 rounded-lg sm:rounded-xl border border-secondary/10">
+                                <p className="text-xs font-semibold text-secondary/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                    <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
                                     Antwort
                                 </p>
-                                <p className="font-semibold text-text text-lg">{detailQuestion.antwort}</p>
+                                <p className="font-semibold text-text text-base sm:text-lg">{detailQuestion.antwort}</p>
                             </div>
                         </div>
 
-                        <div className="mt-8 flex gap-3">
+                        <div className="mt-5 sm:mt-8 flex gap-2 sm:gap-3">
                             <button
                                 onClick={() => setDetailQuestion(null)}
-                                className="flex-1 py-3 bg-linear-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                                className="flex-1 py-2.5 sm:py-3 bg-linear-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white rounded-lg sm:rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm sm:text-base"
                             >
-                                <CheckCircle className="w-5 h-5" strokeWidth={2} />
+                                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2} />
                                 Schließen
                             </button>
                         </div>
