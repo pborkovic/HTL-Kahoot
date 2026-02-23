@@ -41,8 +41,8 @@ class AuthService implements AuthServiceContract
             socialiteUser: $socialiteUser
         );
 
-        $user = $this->userRepository->findByEntraId(
-            entraId: $entraDto->entraId
+        $user = $this->userRepository->findByExternalId(
+            externalId: $entraDto->externalId
         );
 
         if ($user) {
