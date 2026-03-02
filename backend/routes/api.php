@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\QuestionController;
 use App\Http\Controllers\Api\V1\QuestionPoolController;
 use App\Http\Controllers\Api\V1\QuizController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,19 @@ Route::middleware('auth:sanctum')->group(function () {
     );
 
     Route::prefix('v1')->group(function () {
+        Route::prefix('users')->group(function () {
+            Route::get('classes', [UserController::class, 'classes']);
+            Route::get('stats', [UserController::class, 'stats']);
+            Route::post('bulk', [UserController::class, 'bulk']);
+            Route::get('/', [UserController::class, 'index']);
+            Route::post('/', [UserController::class, 'store']);
+            Route::post('{user}/restore', [UserController::class, 'restore'])->withTrashed();
+            Route::get('{user}', [UserController::class, 'show']);
+            Route::put('{user}', [UserController::class, 'update']);
+            Route::delete('{user}', [UserController::class, 'destroy']);
+            Route::patch('{user}/password', [UserController::class, 'changePassword']);
+        });
+
         Route::prefix('questions')->group(function () {
             Route::get('/', [QuestionController::class, 'index']);
             Route::post('/', [QuestionController::class, 'store']);

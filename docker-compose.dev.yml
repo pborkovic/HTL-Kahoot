@@ -1,55 +1,75 @@
 services:
+  traefik:
+    command:
+      - "--log.level=DEBUG"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=gamquiz"
+    ports:
+      - "80:80"
+      - "8080:8080"
+
+  postgres:
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_LOG_STATEMENT: all
+
+  redis:
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+      --loglevel verbose
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://${APP_DOMAIN:-gamquiz.localhost}
+      LOG_LEVEL: debug
+      LOG_CHANNEL: stderr
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_CONFIG: client_host=host.docker.internal
     volumes:
       - ./backend:/var/www/backend
       - backend_vendor:/var/www/backend/vendor
-    environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - XDEBUG_MODE=debug
-      - XDEBUG_CONFIG=client_host=host.docker.internal
     command: >
       sh -c "composer install --no-interaction &&
              php artisan config:cache &&
              php-fpm"
 
-  postgres:
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_LOG_STATEMENT=all
-
-  redis:
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes --loglevel debug
-
-  # Frontend with hot reload
   frontend:
-    image: oven/bun:1-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: deps
     working_dir: /app
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules
       - frontend_next:/app/.next
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost/api}
-      - HOSTNAME=0.0.0.0
-    command: >
-      sh -c "bun install &&
-             bun run dev --hostname 0.0.0.0"
-    ports:
-      - "3000:3000"
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://${APP_DOMAIN:-gamquiz.localhost}/api
+    command: sh -c "bun install && bun run dev --hostname 0.0.0.0 --port 3001"
 
   nginx:
     volumes:
       - ./backend/public:/var/www/backend/public
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - backend_storage:/var/www/backend/storage
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`${APP_DOMAIN:-gamquiz.localhost}`)"
+      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.services.app.loadbalancer.server.port=80"
 
 volumes:
   backend_vendor:
