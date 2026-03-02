@@ -11,12 +11,9 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SessionService extends BaseService implements SessionServiceContract
 {
-    protected SessionRepositoryContract $repository;
-
-    public function __construct(SessionRepositoryContract $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(
+        private readonly SessionRepositoryContract $repository
+    ) {}
 
     /**
      * {@inheritDoc}
