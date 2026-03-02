@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\CreateSessionDto;
 use App\Models\Session;
 use App\Models\User;
 use App\Repositories\Contracts\SessionRepositoryContract;
@@ -18,14 +19,14 @@ class SessionService extends BaseService implements SessionServiceContract
         $this->repository = $repository;
     }
 
-    public function createGame(string $quizId, User $host): Session
+    public function createGame(CreateSessionDto $dto, User $host): Session
     {
         $gamePin = $this->repository->generateUniqueGamePin();
 
         $qrCodeDataUri = $this->generateQrCodeDataUri(gamePin: $gamePin);
 
         $session = $this->repository->create(data: [
-            'quiz_id' => $quizId,
+            'quiz_id' => $dto->quizId,
             'host_id' => $host->id,
             'game_pin' => $gamePin,
             'qr_code_url' => $qrCodeDataUri,
