@@ -61,8 +61,6 @@ class SessionController extends Controller
                             ],
                             type: 'object',
                         ),
-                        new Property(property: 'game_pin', type: 'string', example: '48291037'),
-                        new Property(property: 'qr_code', type: 'string', example: 'data:image/svg+xml;base64,...'),
                     ],
                 ),
             ),
@@ -124,8 +122,6 @@ class SessionController extends Controller
             return response()->json(
                 data: [
                     'session' => $session,
-                    'game_pin' => $session->game_pin,
-                    'qr_code' => $session->qr_code_url,
                 ],
                 status: 201
             );
