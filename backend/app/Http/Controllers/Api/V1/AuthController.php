@@ -58,8 +58,8 @@ class AuthController extends Controller
 
     #[Get(
         path: '/api/auth/callback',
-        description: 'Handles the OAuth2 callback from Azure AD. Exchanges the authorization code for a user and returns a Sanctum token.',
-        summary: 'Handle OAuth2 callback',
+        description: 'Handles the OAuth2 callback from Azure AD via GET. Exchanges the authorization code for a user and returns a Sanctum token.',
+        summary: 'Handle OAuth2 callback (GET)',
         tags: ['Auth'],
         parameters: [
             new Parameter(
@@ -79,24 +79,22 @@ class AuthController extends Controller
                         new Property(
                             property: 'user',
                             properties: [
-                                new Property(property: 'id', type: 'integer', example: 1),
-                                new Property(property: 'entra_id', type: 'string', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
+                                new Property(property: 'id', type: 'string', format: 'uuid', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
                                 new Property(property: 'email', type: 'string', example: 'user@example.com'),
-                                new Property(property: 'display_name', type: 'string', example: 'John Doe'),
-                                new Property(property: 'first_name', type: 'string', example: 'John'),
-                                new Property(property: 'last_name', type: 'string', example: 'Doe'),
-                                new Property(property: 'avatar_url', type: 'string', example: null, nullable: true),
-                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'username', type: 'string', example: 'John Doe', nullable: true),
+                                new Property(property: 'display_name', type: 'string', example: 'John Doe', nullable: true),
+                                new Property(property: 'class_name', type: 'string', example: '3AHITN', nullable: true),
+                                new Property(property: 'auth_provider', type: 'string', example: 'azure'),
+                                new Property(property: 'is_active', type: 'boolean', example: true),
+                                new Property(property: 'totp_enabled', type: 'boolean', example: false),
+                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z', nullable: true),
+                                new Property(property: 'created_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'updated_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'deleted_at', type: 'string', format: 'date-time', example: null, nullable: true),
                                 new Property(
                                     property: 'roles',
                                     type: 'array',
-                                    items: new Items(
-                                        properties: [
-                                            new Property(property: 'id', type: 'integer', example: 1),
-                                            new Property(property: 'name', type: 'string', example: 'student'),
-                                        ],
-                                        type: 'object',
-                                    ),
+                                    items: new Items(type: 'string', example: 'student'),
                                 ),
                             ],
                             type: 'object',
@@ -161,13 +159,63 @@ class AuthController extends Controller
                 description: 'Authentication successful',
                 content: new JsonContent(
                     properties: [
-                        new Property(property: 'user', type: 'object'),
+                        new Property(
+                            property: 'user',
+                            properties: [
+                                new Property(property: 'id', type: 'string', format: 'uuid', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
+                                new Property(property: 'email', type: 'string', example: 'user@example.com'),
+                                new Property(property: 'username', type: 'string', example: 'John Doe', nullable: true),
+                                new Property(property: 'display_name', type: 'string', example: 'John Doe', nullable: true),
+                                new Property(property: 'class_name', type: 'string', example: '3AHITN', nullable: true),
+                                new Property(property: 'auth_provider', type: 'string', example: 'azure'),
+                                new Property(property: 'is_active', type: 'boolean', example: true),
+                                new Property(property: 'totp_enabled', type: 'boolean', example: false),
+                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z', nullable: true),
+                                new Property(property: 'created_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'updated_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'deleted_at', type: 'string', format: 'date-time', example: null, nullable: true),
+                                new Property(
+                                    property: 'roles',
+                                    type: 'array',
+                                    items: new Items(type: 'string', example: 'student'),
+                                ),
+                            ],
+                            type: 'object',
+                        ),
                         new Property(property: 'token', type: 'string', example: '1|abc123tokenvalue'),
                     ],
                 ),
             ),
-            new Response(response: 401, description: 'Authentication failed'),
-            new Response(response: 422, description: 'Validation error'),
+            new Response(
+                response: 401,
+                description: 'Authentication failed',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'error', type: 'string', example: 'Authentication failed'),
+                        new Property(property: 'message', type: 'string', example: 'Invalid authorization code'),
+                    ],
+                ),
+            ),
+            new Response(
+                response: 422,
+                description: 'Validation error',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'message', type: 'string', example: 'The code field is required.'),
+                        new Property(
+                            property: 'errors',
+                            properties: [
+                                new Property(
+                                    property: 'code',
+                                    type: 'array',
+                                    items: new Items(type: 'string', example: 'The code field is required.'),
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
         ],
     )]
     public function callback(AuthCallbackRequest $request): JsonResponse
@@ -221,24 +269,22 @@ class AuthController extends Controller
                         new Property(
                             property: 'user',
                             properties: [
-                                new Property(property: 'id', type: 'integer', example: 1),
-                                new Property(property: 'entra_id', type: 'string', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
+                                new Property(property: 'id', type: 'string', format: 'uuid', example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
                                 new Property(property: 'email', type: 'string', example: 'user@example.com'),
-                                new Property(property: 'display_name', type: 'string', example: 'John Doe'),
-                                new Property(property: 'first_name', type: 'string', example: 'John'),
-                                new Property(property: 'last_name', type: 'string', example: 'Doe'),
-                                new Property(property: 'avatar_url', type: 'string', example: null, nullable: true),
-                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'username', type: 'string', example: 'John Doe', nullable: true),
+                                new Property(property: 'display_name', type: 'string', example: 'John Doe', nullable: true),
+                                new Property(property: 'class_name', type: 'string', example: '3AHITN', nullable: true),
+                                new Property(property: 'auth_provider', type: 'string', example: 'azure'),
+                                new Property(property: 'is_active', type: 'boolean', example: true),
+                                new Property(property: 'totp_enabled', type: 'boolean', example: false),
+                                new Property(property: 'last_login_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z', nullable: true),
+                                new Property(property: 'created_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'updated_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
+                                new Property(property: 'deleted_at', type: 'string', format: 'date-time', example: null, nullable: true),
                                 new Property(
                                     property: 'roles',
                                     type: 'array',
-                                    items: new Items(
-                                        properties: [
-                                            new Property(property: 'id', type: 'integer', example: 1),
-                                            new Property(property: 'name', type: 'string', example: 'student'),
-                                        ],
-                                        type: 'object',
-                                    ),
+                                    items: new Items(type: 'string', example: 'student'),
                                 ),
                             ],
                             type: 'object',
