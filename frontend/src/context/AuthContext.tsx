@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   createContext,
   useCallback,
@@ -15,6 +16,14 @@ import {
   setStoredToken,
 } from "@/lib/api";
 import type { AuthResponse, User } from "@/types/auth";
+
+interface UserResponse {
+  user: User;
+}
+
+interface RedirectResponse {
+  url: string;
+}
 
 interface AuthState {
   user: User | null;
@@ -32,45 +41,45 @@ type AuthContextValue = AuthState & AuthActions;
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const isAuthenticated = user !== null;
+  const isAuthenticated: boolean = user !== null;
 
-  useEffect(() => {
-    const token = getStoredToken();
+  useEffect((): (() => void) | undefined => {
+    const token: string | null = getStoredToken();
     if (!token) {
       setIsLoading(false);
 
-      return;
+      return undefined;
     }
 
-    let cancelled = false;
+    let cancelled: boolean = false;
 
-    apiFetch<{ user: User }>("/auth/user")
-      .then((data) => {
+    apiFetch<UserResponse>("/auth/user")
+      .then((data: UserResponse): void => {
         if (!cancelled) setUser(data.user);
       })
-      .catch(() => {
+      .catch((): void => {
         if (!cancelled) removeStoredToken();
       })
-      .finally(() => {
+      .finally((): void => {
         if (!cancelled) setIsLoading(false);
       });
 
-    return () => {
+    return (): void => {
       cancelled = true;
     };
   }, []);
 
-  const login = useCallback(async () => {
-    const data = await apiFetch<{ url: string }>("/auth/redirect");
+  const login = useCallback(async (): Promise<void> => {
+    const data: RedirectResponse = await apiFetch<RedirectResponse>("/auth/redirect");
     window.location.href = data.url;
   }, []);
 
   const handleCallback = useCallback(async (code: string): Promise<User> => {
-    const data = await apiFetch<AuthResponse>("/auth/callback", {
+    const data: AuthResponse = await apiFetch<AuthResponse>("/auth/callback", {
       method: "POST",
       body: JSON.stringify({ code }),
     });
@@ -81,9 +90,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return data.user;
   }, []);
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (): Promise<void> => {
     try {
-      await apiFetch("/auth/logout", { method: "POST" });
+      await apiFetch<unknown>("/auth/logout", { method: "POST" });
     } finally {
       removeStoredToken();
       setUser(null);
