@@ -30,6 +30,8 @@ class AuthService implements AuthServiceContract
 
     public function handleCallback(string $code): SocialiteUser
     {
+        request()->merge(['code' => $code]);
+
         return Socialite::driver('azure')
             ->stateless()
             ->user();
@@ -41,8 +43,8 @@ class AuthService implements AuthServiceContract
             socialiteUser: $socialiteUser
         );
 
-        $user = $this->userRepository->findByEntraId(
-            entraId: $entraDto->entraId
+        $user = $this->userRepository->findByExternalId(
+            externalId: $entraDto->externalId
         );
 
         if ($user) {

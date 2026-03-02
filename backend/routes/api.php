@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,4 +34,11 @@ Route::prefix('auth')->group(function () {
             action: [AuthController::class, 'logout']
         );
     });
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post(
+        uri: 'sessions',
+        action: [SessionController::class, 'store']
+    );
 });
