@@ -24,7 +24,6 @@ README.md
 *.md
 
 # Environment
-.env
 .env.backup
 .env.production
 

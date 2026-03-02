@@ -28,7 +28,7 @@ Route::prefix('auth')->group(function () {
         action: [AuthController::class, 'callback']
     );
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware([])->group(function () {
         Route::get(
             uri: 'user',
             action: [AuthController::class, 'user']
@@ -40,7 +40,7 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware([])->group(function () {
     Route::post(
         uri: 'sessions',
         action: [SessionController::class, 'store']

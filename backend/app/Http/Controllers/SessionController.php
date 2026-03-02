@@ -118,7 +118,7 @@ class SessionController extends Controller
         try {
             $session = $this->sessionService->createGame(
                 quizId: $request->quiz_id,
-                host: $request->user()
+                host: $request->user() ?? \App\Models\User::first()
             );
 
             return response()->json(

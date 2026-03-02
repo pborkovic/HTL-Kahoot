@@ -28,7 +28,7 @@ export async function apiFetch<T>(
 
   const headers: HeadersInit = {
     Accept: "application/json",
-    "Content-Type": "application/json",
+    ...(options.body ? { "Content-Type": "application/json" } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   };

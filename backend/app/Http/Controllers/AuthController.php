@@ -257,9 +257,14 @@ class AuthController extends Controller
     )]
     public function user(Request $request): JsonResponse
     {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         return response()->json(
             data: [
-                'user' => $request->user()->load(relations: 'roles')
+                'user' => $user->load(relations: 'roles')
             ]
         );
     }
@@ -293,9 +298,10 @@ class AuthController extends Controller
     )]
     public function logout(Request $request): JsonResponse
     {
-        $this->authService->logout(
-            user: $request->user()
-        );
+        $user = $request->user();
+        if ($user) {
+            $this->authService->logout(user: $user);
+        }
 
         return response()->json(
             data: ['message' => 'Logged out successfully']

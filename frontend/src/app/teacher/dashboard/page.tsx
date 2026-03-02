@@ -1,15 +1,10 @@
 "use client"
-import {Search, X, Filter, ArrowUpDown, HelpCircle, Building2, Tag, CheckCircle, ChevronUp, ChevronDown, ClipboardList, UserCheck, GraduationCap, FileText, School, PlayCircle, Settings, Clock, Weight} from "lucide-react";
-import {useState, useRef, useEffect} from "react";
+import {Search, X, Filter, ArrowUpDown, HelpCircle, Building2, Tag, CheckCircle, ChevronUp, ChevronDown, ClipboardList, UserCheck, GraduationCap, FileText, School, PlayCircle, Settings, Clock, Weight, Loader2} from "lucide-react";
+import {useState, useRef, useEffect, useCallback} from "react";
 import {useRouter} from "next/navigation";
 import React from "react";
-
-type Question = {
-    id: number;
-    thema: string;
-    frage: string;
-    antwort: string;
-};
+import {apiFetch} from "@/lib/api";
+import type {Question, QuestionsResponse, PaginationMeta} from "@/types/question";
 
 type Student = {
     id: number;
@@ -18,20 +13,6 @@ type Student = {
     abteilung: string;
 };
 
-const mockQuestions: Question[] = [
-    { id: 1, thema: "Mathematik", frage: "Was ist 2+2?", antwort: "4" },
-    { id: 2, thema: "Geschichte", frage: "Wann fiel die Berliner Mauer?", antwort: "1989" },
-    { id: 3, thema: "Biologie", frage: "Was ist die Zellmembran?", antwort: "Schutzhülle der Zelle" },
-    { id: 4, thema: "Physik", frage: "Was ist die Lichtgeschwindigkeit?", antwort: "299.792.458 m/s" },
-    { id: 5, thema: "Chemie", frage: "Was ist H2O?", antwort: "Wasser" },
-    { id: 6, thema: "Geographie", frage: "Hauptstadt von Deutschland?", antwort: "Berlin" },
-    { id: 7, thema: "Informatik", frage: "Was ist HTML?", antwort: "HyperText Markup Language" },
-    { id: 8, thema: "Kunst", frage: "Wer malte die Mona Lisa?", antwort: "Leonardo da Vinci" },
-    { id: 9, thema: "Musik", frage: "Wie viele Tasten hat ein Klavier?", antwort: "88" },
-    { id: 10, thema: "Sport", frage: "Wie viele Spieler hat eine Fußballmannschaft?", antwort: "11" },
-    { id: 11, thema: "Englisch", frage: "Was bedeutet 'Hello'?", antwort: "Hallo" },
-    { id: 12, thema: "Mathematik", frage: "Was ist 10x10?", antwort: "100" },
-];
 
 const mockStudents: Student[] = [
     { id: 1, name: "Max Mustermann", klasse: "5A", abteilung: "Informatik" },
@@ -58,14 +39,19 @@ const mockStudents: Student[] = [
 
 export default function Dashboard () {
     const router = useRouter();
-    const [questions] = useState<Question[]>(mockQuestions);
-    const [displayQuestions, setDisplayQuestions] = useState<Question[]>(mockQuestions);
-    const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<number>>(new Set());
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [displayQuestions, setDisplayQuestions] = useState<Question[]>([]);
+    const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(new Set());
     const [detailQuestion, setDetailQuestion] = useState<Question | null>(null);
     const [showFilterMenu, setShowFilterMenu] = useState(false);
     const [showSortMenu, setShowSortMenu] = useState(false);
     const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
     const [searchTerm, setSearchTerm] = useState("");
+    const [questionsLoading, setQuestionsLoading] = useState(true);
+    const [questionsError, setQuestionsError] = useState<string | null>(null);
+    const [questionsMeta, setQuestionsMeta] = useState<PaginationMeta | null>(null);
+    const [sortField, setSortField] = useState<string>("created_at");
+    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
     const [students] = useState<Student[]>(mockStudents);
     const [displayStudents, setDisplayStudents] = useState<Student[]>(mockStudents);
@@ -85,6 +71,36 @@ export default function Dashboard () {
     const studentFilterRef = useRef<HTMLDivElement>(null);
     const studentSortRef = useRef<HTMLDivElement>(null);
     const classQuickSelectRef = useRef<HTMLDivElement>(null);
+
+    // Fragen von der API laden
+    const fetchQuestions = useCallback(async () => {
+        setQuestionsLoading(true);
+        setQuestionsError(null);
+        try {
+            const params = new URLSearchParams();
+            params.set("per_page", "100");
+            params.set("sort", sortField);
+            params.set("direction", sortDirection);
+            if (searchTerm) params.set("search", searchTerm);
+            if (activeFilters.size > 0) {
+                const filterType = Array.from(activeFilters)[0];
+                if (filterType) params.set("type", filterType);
+            }
+
+            const response = await apiFetch<QuestionsResponse>(`/v1/questions?${params.toString()}`);
+            setQuestions(response.data);
+            setDisplayQuestions(response.data);
+            setQuestionsMeta(response.meta);
+        } catch (err) {
+            setQuestionsError(err instanceof Error ? err.message : "Fehler beim Laden der Fragen");
+        } finally {
+            setQuestionsLoading(false);
+        }
+    }, [searchTerm, sortField, sortDirection, activeFilters]);
+
+    useEffect(() => {
+        void fetchQuestions();
+    }, [fetchQuestions]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -109,32 +125,11 @@ export default function Dashboard () {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    useEffect(() => {
-        applyFiltersAndSearch();
-    }, [activeFilters, searchTerm]);
 
     useEffect(() => {
         applyStudentFiltersAndSearch();
     }, [activeDepartmentFilters, studentSearchTerm]);
 
-    function applyFiltersAndSearch() {
-        let filtered = questions;
-
-        if (activeFilters.size > 0) {
-            filtered = filtered.filter(q => activeFilters.has(q.thema));
-        }
-
-        if (searchTerm) {
-            const lowerSearch = searchTerm.toLowerCase();
-            filtered = filtered.filter(q =>
-                q.thema.toLowerCase().includes(lowerSearch) ||
-                q.frage.toLowerCase().includes(lowerSearch) ||
-                q.antwort.toLowerCase().includes(lowerSearch)
-            );
-        }
-
-        setDisplayQuestions(filtered);
-    }
 
     function applyStudentFiltersAndSearch() {
         let filtered = students;
@@ -163,12 +158,12 @@ export default function Dashboard () {
         setStudentSearchTerm(event.target.value);
     }
 
-    function toggleFilter(thema: string) {
+    function toggleFilter(type: string) {
         const newFilters = new Set(activeFilters);
-        if (newFilters.has(thema)) {
-            newFilters.delete(thema);
+        if (newFilters.has(type)) {
+            newFilters.delete(type);
         } else {
-            newFilters.add(thema);
+            newFilters.add(type);
         }
         setActiveFilters(newFilters);
     }
@@ -183,25 +178,9 @@ export default function Dashboard () {
         setActiveDepartmentFilters(newFilters);
     }
 
-    function sortQuestions(type: 'id-asc' | 'id-desc' | 'thema-asc' | 'thema-desc') {
-        const sorted = [...displayQuestions];
-
-        switch (type) {
-            case 'id-asc':
-                sorted.sort((a, b) => a.id - b.id);
-                break;
-            case 'id-desc':
-                sorted.sort((a, b) => b.id - a.id);
-                break;
-            case 'thema-asc':
-                sorted.sort((a, b) => a.thema.localeCompare(b.thema));
-                break;
-            case 'thema-desc':
-                sorted.sort((a, b) => b.thema.localeCompare(a.thema));
-                break;
-        }
-
-        setDisplayQuestions(sorted);
+    function sortQuestions(field: string, direction: "asc" | "desc") {
+        setSortField(field);
+        setSortDirection(direction);
         setShowSortMenu(false);
     }
 
@@ -255,7 +234,7 @@ export default function Dashboard () {
         }
     }
 
-    function toggleSelectQuestion(id: number) {
+    function toggleSelectQuestion(id: string) {
         const newSelected = new Set(selectedQuestionIds);
         if (newSelected.has(id)) {
             newSelected.delete(id);
@@ -344,11 +323,12 @@ export default function Dashboard () {
 
     const allQuestionsSelected = displayQuestions.length > 0 && selectedQuestionIds.size === displayQuestions.length;
     const allStudentsSelected = displayStudents.length > 0 && selectedStudentIds.size === displayStudents.length;
-    const uniqueThemen = Array.from(new Set(questions.map(q => q.thema)));
+    const uniqueTypes = Array.from(new Set(questions.map(q => q.type)));
     const uniqueClasses = Array.from(new Set(students.map(s => s.klasse))).sort();
     const uniqueDepartments = Array.from(new Set(students.map(s => s.abteilung))).sort();
 
     const canCreateLobby = selectedQuestionIds.size > 0 && selectedStudentIds.size > 0;
+
 
     return (
         <div className="flex flex-col p-4 sm:p-6 lg:p-8 max-w-450 mx-auto min-h-screen bg-background">
@@ -388,21 +368,21 @@ export default function Dashboard () {
                                 <div className="absolute top-full mt-2 bg-white rounded-xl shadow-2xl p-4 min-w-60 z-50 border border-text/5">
                                     <p className="text-sm font-semibold text-text mb-3 flex items-center gap-2">
                                         <Tag className="w-4 h-4 text-primary" strokeWidth={2} />
-                                        Filter nach Thema
+                                        Filter nach Typ
                                     </p>
                                     <div className="space-y-1 max-h-70 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                                        {uniqueThemen.map(thema => (
+                                        {uniqueTypes.map(type => (
                                             <label
-                                                key={thema}
+                                                key={type}
                                                 className="flex items-center gap-3 cursor-pointer hover:bg-primary/5 p-2.5 rounded-lg transition-all duration-150 group"
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    checked={activeFilters.has(thema)}
-                                                    onChange={() => toggleFilter(thema)}
+                                                    checked={activeFilters.has(type)}
+                                                    onChange={() => toggleFilter(type)}
                                                     className="w-4.5 h-4.5 accent-primary cursor-pointer rounded"
                                                 />
-                                                <span className="text-sm text-text group-hover:text-primary font-medium transition-colors">{thema}</span>
+                                                <span className="text-sm text-text group-hover:text-primary font-medium transition-colors">{type}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -421,32 +401,32 @@ export default function Dashboard () {
                             {showSortMenu && (
                                 <div className="absolute top-full mt-2 bg-white rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
                                     <button
-                                        onClick={() => sortQuestions('id-asc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
-                                    >
-                                        <ChevronUp className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
-                                        ID aufsteigend
-                                    </button>
-                                    <button
-                                        onClick={() => sortQuestions('id-desc')}
+                                        onClick={() => sortQuestions('created_at', 'desc')}
                                         className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronDown className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
-                                        ID absteigend
+                                        Neueste zuerst
                                     </button>
                                     <button
-                                        onClick={() => sortQuestions('thema-asc')}
+                                        onClick={() => sortQuestions('created_at', 'asc')}
                                         className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronUp className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
-                                        Thema A-Z
+                                        Älteste zuerst
                                     </button>
                                     <button
-                                        onClick={() => sortQuestions('thema-desc')}
+                                        onClick={() => sortQuestions('type', 'asc')}
+                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                    >
+                                        <ChevronUp className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
+                                        Typ A-Z
+                                    </button>
+                                    <button
+                                        onClick={() => sortQuestions('type', 'desc')}
                                         className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronDown className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
-                                        Thema Z-A
+                                        Typ Z-A
                                     </button>
                                 </div>
                             )}
@@ -478,14 +458,35 @@ export default function Dashboard () {
                                             className="w-4 h-4 sm:w-4.5 sm:h-4.5 accent-primary cursor-pointer rounded"
                                         />
                                     </th>
-                                    <th className="p-2 sm:p-3 w-10 sm:w-14 text-xs sm:text-sm font-semibold text-background/80">ID</th>
-                                    <th className="p-2 sm:p-3 w-20 sm:w-28 text-xs sm:text-sm font-semibold text-background/80">Thema</th>
+                                    <th className="p-2 sm:p-3 w-20 sm:w-28 text-xs sm:text-sm font-semibold text-background/80">Typ</th>
                                     <th className="p-2 sm:p-3 text-xs sm:text-sm font-semibold text-background/80">Frage</th>
-                                    <th className="p-2 sm:p-3 w-24 sm:w-36 text-xs sm:text-sm font-semibold text-background/80">Antwort</th>
+                                    <th className="p-2 sm:p-3 w-16 sm:w-20 text-xs sm:text-sm font-semibold text-background/80">Diff.</th>
+                                    <th className="p-2 sm:p-3 w-16 sm:w-20 text-xs sm:text-sm font-semibold text-background/80">Status</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {displayQuestions.map((q) => (
+                                {questionsLoading ? (
+                                    <tr>
+                                        <td colSpan={5} className="p-8 text-center">
+                                            <div className="flex items-center justify-center gap-2 text-background/60">
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                <span>Fragen werden geladen...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : questionsError ? (
+                                    <tr>
+                                        <td colSpan={5} className="p-8 text-center text-red-400">
+                                            {questionsError}
+                                        </td>
+                                    </tr>
+                                ) : displayQuestions.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="p-8 text-center text-background/50">
+                                            Keine Fragen gefunden
+                                        </td>
+                                    </tr>
+                                ) : displayQuestions.map((q) => (
                                     <tr
                                         key={q.id}
                                         className="border-b border-white/5 hover:bg-white/10 transition-colors duration-150 cursor-pointer group"
@@ -498,14 +499,32 @@ export default function Dashboard () {
                                                 className="w-4 h-4 sm:w-4.5 sm:h-4.5 accent-primary cursor-pointer rounded"
                                             />
                                         </td>
-                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/60 group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.id}</td>
                                         <td className="p-2 sm:p-3" onClick={() => setDetailQuestion(q)}>
                                             <span className="inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 bg-primary/20 text-primary rounded-md sm:rounded-lg text-xs font-semibold truncate max-w-full">
-                                                {q.thema}
+                                                {q.type}
                                             </span>
                                         </td>
-                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background group-hover:text-background transition-colors truncate" onClick={() => setDetailQuestion(q)}>{q.frage}</td>
-                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/80 group-hover:text-background transition-colors truncate" onClick={() => setDetailQuestion(q)}>{q.antwort}</td>
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background group-hover:text-background transition-colors truncate" onClick={() => setDetailQuestion(q)}>
+                                            {q.current_version?.title ?? "—"}
+                                        </td>
+                                        <td className="p-2 sm:p-3 text-xs sm:text-sm text-background/80 text-center" onClick={() => setDetailQuestion(q)}>
+                                            {q.current_version?.difficulty != null ? (
+                                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-xs font-bold ${
+                                                    q.current_version.difficulty <= 2 ? 'bg-green-500/20 text-green-300' :
+                                                    q.current_version.difficulty <= 3 ? 'bg-yellow-500/20 text-yellow-300' :
+                                                    'bg-red-500/20 text-red-300'
+                                                }`}>
+                                                    {q.current_version.difficulty}/5
+                                                </span>
+                                            ) : "—"}
+                                        </td>
+                                        <td className="p-2 sm:p-3 text-center" onClick={() => setDetailQuestion(q)}>
+                                            {q.is_published ? (
+                                                <span className="inline-flex items-center px-1.5 py-0.5 bg-green-500/20 text-green-300 rounded-md text-xs font-semibold">✓</span>
+                                            ) : (
+                                                <span className="inline-flex items-center px-1.5 py-0.5 bg-yellow-500/20 text-yellow-300 rounded-md text-xs font-semibold">Entwurf</span>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -517,7 +536,7 @@ export default function Dashboard () {
                         <p className="text-background/70 text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
                             <ClipboardList className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" strokeWidth={2} />
                             <span>{selectedQuestionIds.size} von {displayQuestions.length} ausgewählt</span>
-                            {displayQuestions.length !== questions.length && <span className="text-background/50 hidden sm:inline">({questions.length} gesamt)</span>}
+                            {questionsMeta && questionsMeta.total !== displayQuestions.length && <span className="text-background/50 hidden sm:inline">({questionsMeta.total} gesamt)</span>}
                         </p>
                     </div>
                 </div>
@@ -866,8 +885,8 @@ export default function Dashboard () {
                                     <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-text">Frage #{detailQuestion.id}</h2>
-                                    <p className="text-text/50 text-xs sm:text-sm">Detailansicht</p>
+                                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-text">{detailQuestion.current_version?.title ?? "Frage"}</h2>
+                                    <p className="text-text/50 text-xs sm:text-sm">{detailQuestion.type} • Version {detailQuestion.current_version?.version ?? "?"}</p>
                                 </div>
                             </div>
                             <button
@@ -882,23 +901,75 @@ export default function Dashboard () {
                             <div className="p-3 sm:p-4 bg-primary/5 rounded-lg sm:rounded-xl border border-primary/10">
                                 <p className="text-xs font-semibold text-primary/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
                                     <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
-                                    Thema
+                                    Typ & Schwierigkeit
                                 </p>
-                                <p className="font-semibold text-text text-base sm:text-lg">{detailQuestion.thema}</p>
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex items-center px-2 py-1 bg-primary/20 text-primary rounded-lg text-sm font-semibold">{detailQuestion.type}</span>
+                                    {detailQuestion.current_version?.difficulty != null && (
+                                        <span className={`inline-flex items-center px-2 py-1 rounded-lg text-sm font-semibold ${
+                                            detailQuestion.current_version.difficulty <= 2 ? 'bg-green-100 text-green-700' :
+                                            detailQuestion.current_version.difficulty <= 3 ? 'bg-yellow-100 text-yellow-700' :
+                                            'bg-red-100 text-red-700'
+                                        }`}>
+                                            Schwierigkeit: {detailQuestion.current_version.difficulty}/5
+                                        </span>
+                                    )}
+                                    <span className={`inline-flex items-center px-2 py-1 rounded-lg text-sm font-semibold ${detailQuestion.is_published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                        {detailQuestion.is_published ? "Veröffentlicht" : "Entwurf"}
+                                    </span>
+                                </div>
                             </div>
-                            <div className="p-3 sm:p-4 bg-accent/5 rounded-lg sm:rounded-xl border border-accent/10">
-                                <p className="text-xs font-semibold text-accent/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
-                                    <HelpCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
-                                    Frage
-                                </p>
-                                <p className="font-semibold text-text text-base sm:text-lg">{detailQuestion.frage}</p>
-                            </div>
-                            <div className="p-3 sm:p-4 bg-secondary/5 rounded-lg sm:rounded-xl border border-secondary/10">
-                                <p className="text-xs font-semibold text-secondary/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
-                                    <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
-                                    Antwort
-                                </p>
-                                <p className="font-semibold text-text text-base sm:text-lg">{detailQuestion.antwort}</p>
+
+                            {detailQuestion.current_version?.explanation && (
+                                <div className="p-3 sm:p-4 bg-accent/5 rounded-lg sm:rounded-xl border border-accent/10">
+                                    <p className="text-xs font-semibold text-accent/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                        <HelpCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
+                                        Erklärung
+                                    </p>
+                                    <p className="font-medium text-text text-sm sm:text-base">{detailQuestion.current_version.explanation}</p>
+                                </div>
+                            )}
+
+                            {detailQuestion.current_version?.answer_options && detailQuestion.current_version.answer_options.length > 0 && (
+                                <div className="p-3 sm:p-4 bg-secondary/5 rounded-lg sm:rounded-xl border border-secondary/10">
+                                    <p className="text-xs font-semibold text-secondary/60 mb-1.5 sm:mb-2 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                        <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
+                                        Antwortoptionen
+                                    </p>
+                                    <div className="space-y-2">
+                                        {detailQuestion.current_version.answer_options
+                                            .sort((a, b) => a.sort_order - b.sort_order)
+                                            .map((option) => (
+                                                <div
+                                                    key={option.id}
+                                                    className={`flex items-center gap-3 p-2.5 rounded-lg border ${
+                                                        option.is_correct
+                                                            ? 'bg-green-50 border-green-200'
+                                                            : 'bg-gray-50 border-gray-200'
+                                                    }`}
+                                                >
+                                                    {option.is_correct ? (
+                                                        <CheckCircle className="w-4 h-4 text-green-600 shrink-0" strokeWidth={2} />
+                                                    ) : (
+                                                        <X className="w-4 h-4 text-gray-400 shrink-0" strokeWidth={2} />
+                                                    )}
+                                                    <span className={`text-sm font-medium ${option.is_correct ? 'text-green-800' : 'text-gray-700'}`}>
+                                                        {option.text}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex gap-4 text-xs text-text/50">
+                                {detailQuestion.current_version?.default_points != null && (
+                                    <span>Punkte: {detailQuestion.current_version.default_points}</span>
+                                )}
+                                {detailQuestion.current_version?.default_time_limit != null && (
+                                    <span>Zeitlimit: {detailQuestion.current_version.default_time_limit}s</span>
+                                )}
+                                <span>Versionen: {detailQuestion.versions?.length ?? 1}</span>
                             </div>
                         </div>
 
