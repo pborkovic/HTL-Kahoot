@@ -16,7 +16,7 @@ return [
                 'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
                 'docs_json' => 'api-docs.json',
                 'docs_yaml' => 'openapi.yaml',
-                'format_to_use_for_docs' => 'yaml',
+                'format_to_use_for_docs' => 'json',
                 'annotations' => [
                     base_path('app'),
                 ],

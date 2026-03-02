@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Models\Question;
 use App\Models\QuestionPool;
 use App\Models\Quiz;
+use App\Models\User;
 use App\Policies\QuestionPolicy;
 use App\Policies\QuestionPoolPolicy;
 use App\Policies\QuizPolicy;
+use App\Policies\UserPolicy;
 use App\Repositories\Contracts\PermissionRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
 use App\Repositories\Contracts\SessionRepositoryContract;
@@ -84,6 +86,7 @@ class AppServiceProvider extends ServiceProvider
             AzureExtendSocialite::class . '@handle'
         );
 
+        Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Question::class, QuestionPolicy::class);
         Gate::policy(Quiz::class, QuizPolicy::class);
         Gate::policy(QuestionPool::class, QuestionPoolPolicy::class);
