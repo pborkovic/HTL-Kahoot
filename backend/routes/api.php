@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\QuestionController;
 use App\Http\Controllers\Api\V1\QuestionPoolController;
 use App\Http\Controllers\Api\V1\QuizController;
+use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,12 +41,11 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post(
-        uri: 'sessions',
-        action: [SessionController::class, 'store']
-    );
-
     Route::prefix('v1')->group(function () {
+        Route::prefix('sessions')->group(function () {
+            Route::post('/', [SessionController::class, 'store']);
+        });
+
         Route::prefix('users')->group(function () {
             Route::get('classes', [UserController::class, 'classes']);
             Route::get('stats', [UserController::class, 'stats']);
