@@ -1,6 +1,13 @@
+"use client";
+
 import { User } from "lucide-react";
 
-export default function TeacherNav() {
+interface TeacherNavProps {
+    userName?: string;
+}
+
+export default function TeacherNav({ userName = "Mensch" }: TeacherNavProps) {
+
     return (
         <nav className="w-full bg-secondary py-10">
             <div className="mx-8 flex items-center justify-between">
@@ -17,7 +24,7 @@ export default function TeacherNav() {
                 {/* Begrüßung - rechts */}
                 <div className="flex items-center gap-2">
                     <span className="text-background font-normal text-lg">Hallo,</span>
-                    <span className="text-background font-bold text-lg">Benjamin!</span>
+                    <span className="text-background font-bold text-lg">{userName}!</span>
                 </div>
             </div>
         </nav>
