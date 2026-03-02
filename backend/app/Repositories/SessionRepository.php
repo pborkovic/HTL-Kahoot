@@ -16,6 +16,11 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
         parent::__construct(model: $model);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
     public function findByGamePin(string $gamePin): ?Session
     {
         try {
@@ -33,6 +38,11 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
     public function generateUniqueGamePin(): string
     {
         do {
@@ -42,7 +52,8 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
                 pad_string: '0',
                 pad_type: STR_PAD_LEFT
             );
-        } while ($this->exists(field: 'game_pin', value: $pin));
+        }
+        while ($this->exists(field: 'game_pin', value: $pin));
 
         return $pin;
     }
