@@ -4,17 +4,21 @@ namespace App\Providers;
 
 use App\Repositories\Contracts\PermissionRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
+use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Repositories\PermissionRepository;
 use App\Repositories\RoleRepository;
+use App\Repositories\SessionRepository;
 use App\Repositories\UserRepository;
 use App\Services\AuthService;
 use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
+use App\Services\Contracts\SessionServiceContract;
 use App\Services\Contracts\UserServiceContract;
 use App\Services\PermissionService;
 use App\Services\RoleService;
+use App\Services\SessionService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -38,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
             abstract: PermissionRepositoryContract::class,
             concrete: PermissionRepository::class
         );
+        $this->app->bind(
+            abstract: SessionRepositoryContract::class,
+            concrete: SessionRepository::class
+        );
 
         // Services
         $this->app->bind(
@@ -55,6 +63,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: PermissionServiceContract::class,
             concrete: PermissionService::class
+        );
+        $this->app->bind(
+            abstract: SessionServiceContract::class,
+            concrete: SessionService::class
         );
     }
 
