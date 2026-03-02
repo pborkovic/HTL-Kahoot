@@ -19,6 +19,11 @@ class SessionService extends BaseService implements SessionServiceContract
         $this->repository = $repository;
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function createGame(CreateSessionDto $dto, User $host): Session
     {
         $gamePin = $this->repository->generateUniqueGamePin();
@@ -36,6 +41,11 @@ class SessionService extends BaseService implements SessionServiceContract
         return $session->load(relations: ['quiz', 'host']);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function generateQrCodeDataUri(string $gamePin): string
     {
         $joinUrl = config('app.frontend_url', config('app.url')) . '/join/' . $gamePin;
