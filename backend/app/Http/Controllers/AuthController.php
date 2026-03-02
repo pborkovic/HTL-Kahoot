@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\AuthCallbackDto;
+use App\Http\Requests\Api\V1\AuthCallbackRequest;
+use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Contracts\AuthServiceContract;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -166,17 +169,13 @@ class AuthController extends Controller
             new Response(response: 422, description: 'Validation error'),
         ],
     )]
-    public function callback(Request $request): JsonResponse
+    public function callback(AuthCallbackRequest $request): JsonResponse
     {
-        $request->validate(
-            rules: [
-                'code' => 'required|string'
-            ]
-        );
+        $dto = AuthCallbackDto::fromRequest($request);
 
         try {
             $socialiteUser = $this->authService->handleCallback(
-                code: $request->code
+                code: $dto->code
             );
 
             $user = $this->authService->findOrCreateUser(
@@ -187,9 +186,11 @@ class AuthController extends Controller
                 user: $user
             );
 
+            $user->load(relations: 'roles');
+
             return response()->json(
                 data: [
-                    'user' => $user->load(relations: 'roles'),
+                    'user' => new UserResource($user),
                     'token' => $token,
                 ]
             );
@@ -257,9 +258,11 @@ class AuthController extends Controller
     )]
     public function user(Request $request): JsonResponse
     {
+        $request->user()->load(relations: 'roles');
+
         return response()->json(
             data: [
-                'user' => $request->user()->load(relations: 'roles')
+                'user' => new UserResource($request->user()),
             ]
         );
     }
