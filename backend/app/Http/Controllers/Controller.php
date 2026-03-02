@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use OpenApi\Attributes\Info;
 use OpenApi\Attributes\SecurityScheme;
 
@@ -19,5 +20,5 @@ use OpenApi\Attributes\SecurityScheme;
 )]
 abstract class Controller
 {
-    //
+    use AuthorizesRequests;
 }
