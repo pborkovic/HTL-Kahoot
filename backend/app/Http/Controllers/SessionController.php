@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\CreateSessionDto;
+use App\Http\Requests\Api\V1\CreateSessionRequest;
+use App\Http\Resources\Api\V1\SessionResource;
+use App\Models\Session;
 use App\Services\Contracts\SessionServiceContract;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Post;
 use OpenApi\Attributes\Property;
@@ -105,23 +108,21 @@ class SessionController extends Controller
             ),
         ],
     )]
-    public function store(Request $request): JsonResponse
+    public function store(CreateSessionRequest $request): JsonResponse
     {
-        $request->validate(
-            rules: [
-                'quiz_id' => 'required|uuid|exists:quizzes,id',
-            ]
-        );
+        $this->authorize('create', Session::class);
+
+        $dto = CreateSessionDto::fromRequest($request);
 
         try {
             $session = $this->sessionService->createGame(
-                quizId: $request->quiz_id,
+                dto: $dto,
                 host: $request->user()
             );
 
             return response()->json(
                 data: [
-                    'session' => $session,
+                    'session' => new SessionResource($session),
                 ],
                 status: 201
             );
