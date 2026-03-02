@@ -11,10 +11,10 @@ use App\Services\Contracts\SessionServiceContract;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes\JsonContent;
+use OpenApi\Attributes\Items;
 use OpenApi\Attributes\Post;
 use OpenApi\Attributes\Property;
 use OpenApi\Attributes\RequestBody;
-use OpenApi\Attributes\Items;
 use OpenApi\Attributes\Response;
 
 class SessionController extends Controller
@@ -25,7 +25,7 @@ class SessionController extends Controller
 
     #[Post(
         path: '/api/v1/sessions',
-        description: 'Creates a new game session for a quiz. Generates a unique 8-digit game pin and a QR code for players to join. The authenticated user becomes the host.',
+        description: 'Creates a new game session for a quiz. Generates a unique 8-digit game pin and a QR code for players to join. The authenticated user becomes the host. Requires teacher, admin, or superadmin role.',
         summary: 'Create a new game session',
         security: [['sanctum' => []]],
         requestBody: new RequestBody(
@@ -59,9 +59,17 @@ class SessionController extends Controller
                                 new Property(property: 'game_pin', type: 'string', example: '48291037'),
                                 new Property(property: 'qr_code_url', type: 'string', example: 'data:image/svg+xml;base64,...'),
                                 new Property(property: 'status', type: 'string', example: 'lobby'),
+                                new Property(property: 'current_question_idx', type: 'integer', example: null, nullable: true),
+                                new Property(property: 'started_at', type: 'string', format: 'date-time', example: null, nullable: true),
+                                new Property(property: 'finished_at', type: 'string', format: 'date-time', example: null, nullable: true),
                                 new Property(property: 'created_at', type: 'string', format: 'date-time', example: '2026-02-23T12:00:00.000000Z'),
                                 new Property(property: 'quiz', type: 'object'),
                                 new Property(property: 'host', type: 'object'),
+                                new Property(
+                                    property: 'participants',
+                                    type: 'array',
+                                    items: new Items(type: 'object'),
+                                ),
                             ],
                             type: 'object',
                         ),
@@ -74,6 +82,15 @@ class SessionController extends Controller
                 content: new JsonContent(
                     properties: [
                         new Property(property: 'message', type: 'string', example: 'Unauthenticated.'),
+                    ],
+                ),
+            ),
+            new Response(
+                response: 403,
+                description: 'Unauthorized',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'message', type: 'string', example: 'You must be a teacher or admin to create a game session.'),
                     ],
                 ),
             ),
