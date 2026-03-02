@@ -30,6 +30,8 @@ class AuthService implements AuthServiceContract
 
     public function handleCallback(string $code): SocialiteUser
     {
+        request()->merge(['code' => $code]);
+
         return Socialite::driver('azure')
             ->stateless()
             ->user();
