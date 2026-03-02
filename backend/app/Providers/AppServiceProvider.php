@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Models\Question;
 use App\Models\QuestionPool;
 use App\Models\Quiz;
+use App\Models\Session;
 use App\Models\User;
 use App\Policies\QuestionPolicy;
 use App\Policies\QuestionPoolPolicy;
 use App\Policies\QuizPolicy;
+use App\Policies\SessionPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\Contracts\PermissionRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
@@ -82,13 +84,29 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(
-            SocialiteWasCalled::class,
-            AzureExtendSocialite::class . '@handle'
+            events: SocialiteWasCalled::class,
+            listener: AzureExtendSocialite::class . '@handle'
         );
 
-        Gate::policy(User::class, UserPolicy::class);
-        Gate::policy(Question::class, QuestionPolicy::class);
-        Gate::policy(Quiz::class, QuizPolicy::class);
-        Gate::policy(QuestionPool::class, QuestionPoolPolicy::class);
+        Gate::policy(
+            class: User::class,
+            policy: UserPolicy::class
+        );
+        Gate::policy(
+            class: Question::class,
+            policy: QuestionPolicy::class
+        );
+        Gate::policy(
+            class: Quiz::class,
+            policy: QuizPolicy::class
+        );
+        Gate::policy(
+            class: QuestionPool::class,
+            policy: QuestionPoolPolicy::class
+        );
+        Gate::policy(
+            class: Session::class,
+            policy: SessionPolicy::class
+        );
     }
 }
