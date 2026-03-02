@@ -1,22 +1,23 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-export default function LoginPage() {
+export default function LoginPage(): ReactNode {
   const { login, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useEffect((): void => {
     if (!isLoading && isAuthenticated) {
       router.replace("/home");
     }
   }, [isLoading, isAuthenticated, router]);
 
-  const handleLogin = useCallback(async () => {
+  const handleLogin = useCallback(async (): Promise<void> => {
     setIsRedirecting(true);
     setError(null);
     try {
