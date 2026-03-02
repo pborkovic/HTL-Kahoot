@@ -338,13 +338,13 @@ export default function Dashboard () {
     return (
         <div className="flex flex-col p-8 max-w-450 mx-auto min-h-screen bg-background">
             <div className="mb-8">
-                <h1 className="text-4xl font-bold text-text mb-2 flex items-center gap-3">
+                <h1 className="text-4xl font-bold text-text-primary mb-2 flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-primary to-primary-hover flex items-center justify-center shadow-lg">
                         <FileText className="w-7 h-7 text-white" strokeWidth={2.5} />
                     </div>
                     Quiz Editor
                 </h1>
-                <p className="text-text/60 text-lg ml-15">Erstelle und verwalte deine Quiz-Fragen und wähle Teilnehmer aus</p>
+                <p className="text-text-primary/80 text-lg ml-15">Erstelle und verwalte deine Quiz-Fragen und wähle Teilnehmer aus</p>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -353,7 +353,7 @@ export default function Dashboard () {
                         <div className="w-11 h-11 rounded-xl bg-primary/20 flex items-center justify-center ring-2 ring-primary/30">
                             <HelpCircle className="w-6 h-6 text-primary" strokeWidth={2} />
                         </div>
-                        <h2 className="text-2xl font-bold text-background">Fragen</h2>
+                        <h2 className="text-2xl font-bold text-text-inverse">Fragen</h2>
                     </div>
                     <div className="flex flex-row w-full gap-3">
                         <div className="relative" ref={filterRef}>
@@ -361,8 +361,8 @@ export default function Dashboard () {
                                 onClick={openFilterMenu}
                                 className={`py-2.5 px-4 text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-28.75 justify-center ${
                                     activeFilters.size > 0
-                                        ? 'bg-primary hover:bg-primary-hover text-white ring-2 ring-primary/40'
-                                        : 'bg-background hover:bg-text/5 text-text border border-text/10'
+                                        ? 'bg-primary hover:bg-primary-hover text-text-primary ring-2 ring-primary/40'
+                                        : 'bg-background hover:bg-text-primary/5 hover:text-text-inverse text-text-primary border border-text-primary/10'
                                 }`}
                             >
                                 <Filter className="w-4 h-4 shrink-0" strokeWidth={2} />
@@ -371,8 +371,8 @@ export default function Dashboard () {
                             </button>
                             {showFilterMenu && (
                                 <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-4 min-w-60 z-50 border border-text/5">
-                                    <p className="text-sm font-semibold text-text mb-3 flex items-center gap-2">
-                                        <Tag className="w-4 h-4 text-primary" strokeWidth={2} />
+                                    <p className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+                                        <Tag className="w-4 h-4 text-text-primary " strokeWidth={2} />
                                         Filter nach Thema
                                     </p>
                                     <div className="space-y-1 max-h-70 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
@@ -387,7 +387,7 @@ export default function Dashboard () {
                                                     onChange={() => toggleFilter(thema)}
                                                     className="w-4.5 h-4.5 accent-primary cursor-pointer rounded"
                                                 />
-                                                <span className="text-sm text-text group-hover:text-primary font-medium transition-colors">{thema}</span>
+                                                <span className="text-sm text-text-primary group-hover:text-primary font-medium transition-colors">{thema}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -398,7 +398,7 @@ export default function Dashboard () {
                         <div className="relative" ref={sortRef}>
                             <button
                                 onClick={openSortMenu}
-                                className="py-2.5 px-4 text-sm font-semibold bg-accent hover:bg-accent-hover text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-32.5 justify-center"
+                                className="py-2.5 px-4 text-sm font-semibold bg-accent hover:bg-accent-hover text-text-inverse rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-32.5 justify-center"
                             >
                                 <ArrowUpDown className="w-4 h-4 shrink-0" strokeWidth={2} />
                                 <span className="shrink-0">Sortieren</span>
@@ -407,30 +407,30 @@ export default function Dashboard () {
                                 <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
                                     <button
                                         onClick={() => sortQuestions('id-asc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
-                                        <ChevronUp className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
+                                        <ChevronUp className="w-4 h-4 text-text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         ID aufsteigend
                                     </button>
                                     <button
                                         onClick={() => sortQuestions('id-desc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
-                                        <ChevronDown className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
+                                        <ChevronDown className="w-4 h-4 text-text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         ID absteigend
                                     </button>
                                     <button
                                         onClick={() => sortQuestions('thema-asc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
-                                        <ChevronUp className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
+                                        <ChevronUp className="w-4 h-4 text-text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Thema A-Z
                                     </button>
                                     <button
                                         onClick={() => sortQuestions('thema-desc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
-                                        <ChevronDown className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
+                                        <ChevronDown className="w-4 h-4 text-text-primary opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Thema Z-A
                                     </button>
                                 </div>
@@ -438,21 +438,21 @@ export default function Dashboard () {
                         </div>
 
                         <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-background border border-text/10 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/30">
-                            <Search className="w-4 h-4 text-text/40" />
+                            <Search className="w-4 h-4 text-text-primary" />
                             <input
                                 type="text"
                                 value={searchTerm}
                                 onChange={handleChange}
                                 name="search-question"
                                 placeholder="Fragen durchsuchen..."
-                                className="flex-1 bg-transparent text-text text-sm outline-none placeholder:text-text/40"
+                                className="flex-1 bg-transparent text-text-primary text-sm outline-none placeholder:text-text-primary/80"
                             />
                         </div>
                     </div>
 
                     <div className="mt-5 bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 shadow-inner">
                         <div className="overflow-x-auto max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent">
-                            <table className="w-full text-left text-background">
+                            <table className="w-full text-left ">
                                 <thead className="sticky top-0 bg-secondary-muted/95 backdrop-blur-sm z-10 border-b border-white/10">
                                 <tr>
                                     <th className="p-3">
@@ -463,10 +463,10 @@ export default function Dashboard () {
                                             className="w-4.5 h-4.5 accent-primary cursor-pointer rounded"
                                         />
                                     </th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">ID</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Thema</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Frage</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Antwort</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">ID</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">Thema</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">Frage</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">Antwort</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -483,14 +483,14 @@ export default function Dashboard () {
                                                 className="w-4.5 h-4.5 accent-primary cursor-pointer rounded"
                                             />
                                         </td>
-                                        <td className="p-3 text-sm text-background/60 group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.id}</td>
-                                        <td className="p-3 text-sm font-medium text-background group-hover:text-primary transition-colors" onClick={() => setDetailQuestion(q)}>
+                                        <td className="p-3 text-sm text-text-inverse group-hover:text-text-inverse/70 transition-colors" onClick={() => setDetailQuestion(q)}>{q.id}</td>
+                                        <td className="p-3 text-sm font-medium text-text-inverse group-hover:text-primary transition-colors" onClick={() => setDetailQuestion(q)}>
                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/20 text-primary rounded-lg text-xs font-semibold">
                                                 {q.thema}
                                             </span>
                                         </td>
-                                        <td className="p-3 text-sm text-background group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.frage}</td>
-                                        <td className="p-3 text-sm text-background/80 group-hover:text-background transition-colors" onClick={() => setDetailQuestion(q)}>{q.antwort}</td>
+                                        <td className="p-3 text-sm text-text-inverse group-hover:text-text-inverse transition-colors" onClick={() => setDetailQuestion(q)}>{q.frage}</td>
+                                        <td className="p-3 text-sm text-text-inverse group-hover:text-text-inverse transition-colors" onClick={() => setDetailQuestion(q)}>{q.antwort}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -499,10 +499,10 @@ export default function Dashboard () {
                     </div>
 
                     <div className="mt-4 flex items-center justify-between px-2">
-                        <p className="text-background/70 text-sm font-medium flex items-center gap-2">
+                        <p className="text-text-inverse/70 text-sm font-medium flex items-center gap-2">
                             <ClipboardList className="w-4 h-4 text-primary" strokeWidth={2} />
                             <span>{selectedQuestionIds.size} von {displayQuestions.length} ausgewählt</span>
-                            {displayQuestions.length !== questions.length && <span className="text-background/50">({questions.length} gesamt)</span>}
+                            {displayQuestions.length !== questions.length && <span className="text-text-inverse/50">({questions.length} gesamt)</span>}
                         </p>
                     </div>
                 </div>
@@ -512,7 +512,7 @@ export default function Dashboard () {
                         <div className="w-11 h-11 rounded-xl bg-accent/20 flex items-center justify-center ring-2 ring-accent/30">
                             <GraduationCap className="w-6 h-6 text-accent" strokeWidth={2} />
                         </div>
-                        <h2 className="text-2xl font-bold text-background">Schüler</h2>
+                        <h2 className="text-2xl font-bold text-text-inverse">Schüler</h2>
                     </div>
                     <div className="flex flex-row gap-3 max-w-full">
                         <div className="relative" ref={classQuickSelectRef}>
@@ -524,7 +524,7 @@ export default function Dashboard () {
                                 <span className="shrink-0">Klasse wählen</span>
                             </button>
                             {showClassQuickSelect && (
-                                <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
+                                <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text-primary/5">
                                     {uniqueClasses.map(klasse => {
                                         const classStudents = students.filter(s => s.klasse === klasse);
                                         const allSelected = classStudents.every(s => selectedStudentIds.has(s.id));
@@ -533,7 +533,7 @@ export default function Dashboard () {
                                             <button
                                                 key={klasse}
                                                 onClick={() => selectWholeClass(klasse)}
-                                                className={`w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex justify-between items-center group ${
+                                                className={`w-full text-left px-3 py-2.5 hover:bg-primary/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex justify-between items-center group ${
                                                     allSelected ? 'bg-primary/10 text-primary' : ''
                                                 }`}
                                             >
@@ -543,7 +543,7 @@ export default function Dashboard () {
                                                     )}
                                                     {klasse}
                                                 </span>
-                                                <span className="text-xs text-text/40 bg-text/5 px-2 py-0.5 rounded-md">{classStudents.length}</span>
+                                                <span className="text-xs text-text-primary/40 bg-text-primary/5 px-2 py-0.5 rounded-md">{classStudents.length}</span>
                                             </button>
                                         );
                                     })}
@@ -557,7 +557,7 @@ export default function Dashboard () {
                                 className={`py-2.5 px-4 text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 w-33.75 justify-center ${
                                     activeDepartmentFilters.size > 0
                                         ? 'bg-primary hover:bg-primary-hover text-white ring-2 ring-primary/40'
-                                        : 'bg-background hover:bg-text/5 text-text border border-text/10'
+                                        : 'bg-background hover:bg-text-primary/5 hover:text-text-inverse text-text-primary border border-text-primary/10'
                                 }`}
                             >
                                 <Building2 className="w-4 h-4 shrink-0" strokeWidth={2} />
@@ -565,8 +565,8 @@ export default function Dashboard () {
                                 {activeDepartmentFilters.size > 0 && <span className="bg-white/20 px-1.5 py-0.5 rounded-md text-xs absolute -top-2 -right-2">{activeDepartmentFilters.size}</span>}
                             </button>
                             {showStudentFilterMenu && (
-                                <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-4 min-w-60 z-50 border border-text/5">
-                                    <p className="text-sm font-semibold text-text mb-3 flex items-center gap-2">
+                                <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-4 min-w-60 z-50 border border-text-primary/5">
+                                    <p className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
                                         <Building2 className="w-4 h-4 text-accent" strokeWidth={2} />
                                         Filter nach Abteilung
                                     </p>
@@ -582,7 +582,7 @@ export default function Dashboard () {
                                                     onChange={() => toggleDepartmentFilter(abteilung)}
                                                     className="w-4.5 h-4.5 accent-accent cursor-pointer rounded"
                                                 />
-                                                <span className="text-sm text-text group-hover:text-accent font-medium transition-colors">{abteilung}</span>
+                                                <span className="text-sm text-text-primary group-hover:text-accent font-medium transition-colors">{abteilung}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -599,45 +599,45 @@ export default function Dashboard () {
                                 <span className="shrink-0">Sortieren</span>
                             </button>
                             {showStudentSortMenu && (
-                                <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text/5">
+                                <div className="absolute top-full mt-2 bg-background rounded-xl shadow-2xl p-2 min-w-50 max-h-70 overflow-y-auto z-50 border border-text-primary/5">
                                     <button
                                         onClick={() => sortStudents('name-asc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronUp className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Name A-Z
                                     </button>
                                     <button
                                         onClick={() => sortStudents('name-desc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronDown className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Name Z-A
                                     </button>
                                     <button
                                         onClick={() => sortStudents('klasse-asc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronUp className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Klasse A-Z
                                     </button>
                                     <button
                                         onClick={() => sortStudents('klasse-desc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronDown className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Klasse Z-A
                                     </button>
                                     <button
                                         onClick={() => sortStudents('abteilung-asc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronUp className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Abteilung A-Z
                                     </button>
                                     <button
                                         onClick={() => sortStudents('abteilung-desc')}
-                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
+                                        className="w-full text-left px-3 py-2.5 hover:bg-accent/10 rounded-lg text-text-primary text-sm font-medium transition-all duration-150 flex items-center gap-2 group"
                                     >
                                         <ChevronDown className="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                                         Abteilung Z-A
@@ -646,22 +646,22 @@ export default function Dashboard () {
                             )}
                         </div>
 
-                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-background border border-text/10 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-accent/30 flex-1 min-w-0">
-                            <Search className="w-4 h-4 text-text/40 shrink-0" />
+                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-background border border-text-primary/10 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-accent/30 flex-1 min-w-0">
+                            <Search className="w-4 h-4 text-text-primary shrink-0" />
                             <input
                                 type="text"
                                 value={studentSearchTerm}
                                 onChange={handleStudentSearchChange}
                                 name="search-student"
                                 placeholder="Schüler durchsuchen..."
-                                className="flex-1 bg-transparent text-text text-sm outline-none placeholder:text-text/40 min-w-0"
+                                className="flex-1 bg-transparent text-text-primary text-sm outline-none placeholder:text-text-primary/80 min-w-0"
                             />
                         </div>
                     </div>
 
                     <div className="mt-5 bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 shadow-inner">
                         <div className="overflow-x-auto max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-accent/30 scrollbar-track-transparent">
-                            <table className="w-full text-left text-background">
+                            <table className="w-full text-left text-text-inverse">
                                 <thead className="sticky top-0 bg-secondary-muted/95 backdrop-blur-sm z-10 border-b border-white/10">
                                 <tr>
                                     <th className="p-3">
@@ -672,10 +672,10 @@ export default function Dashboard () {
                                             className="w-4.5 h-4.5 accent-accent cursor-pointer rounded"
                                         />
                                     </th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">ID</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Name</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Klasse</th>
-                                    <th className="p-3 text-sm font-semibold text-background/80">Abteilung</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">ID</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">Name</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">Klasse</th>
+                                    <th className="p-3 text-sm font-semibold text-text-inverse">Abteilung</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -692,14 +692,14 @@ export default function Dashboard () {
                                                 className="w-4.5 h-4.5 accent-accent cursor-pointer rounded"
                                             />
                                         </td>
-                                        <td className="p-3 text-sm text-background/60 group-hover:text-background transition-colors">{s.id}</td>
-                                        <td className="p-3 text-sm font-medium text-background transition-colors">{s.name}</td>
-                                        <td className="p-3 text-sm text-background group-hover:text-background transition-colors">
+                                        <td className="p-3 text-sm text-text-inverse group-hover:text-text-inverse transition-colors">{s.id}</td>
+                                        <td className="p-3 text-sm font-medium text-text-inverse transition-colors">{s.name}</td>
+                                        <td className="p-3 text-sm text-text-inverse group-hover:text-text-inverse transition-colors">
                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/20 text-primary rounded-lg text-xs font-semibold">
                                                 {s.klasse}
                                             </span>
                                         </td>
-                                        <td className="p-3 text-sm text-background/80 group-hover:text-background transition-colors">{s.abteilung}</td>
+                                        <td className="p-3 text-sm text-text-inverse group-hover:text-text-inverse transition-colors">{s.abteilung}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -708,10 +708,10 @@ export default function Dashboard () {
                     </div>
 
                     <div className="mt-4 flex items-center justify-between px-2">
-                        <p className="text-background/70 text-sm font-medium flex items-center gap-2">
+                        <p className="text-text-inverse/70 text-sm font-medium flex items-center gap-2">
                             <UserCheck className="w-4 h-4 text-accent" strokeWidth={2} />
                             <span>{selectedStudentIds.size} von {displayStudents.length} ausgewählt</span>
-                            {displayStudents.length !== students.length && <span className="text-background/50">({students.length} gesamt)</span>}
+                            {displayStudents.length !== students.length && <span className="text-text-inverse/50">({students.length} gesamt)</span>}
                         </p>
                     </div>
                 </div>
@@ -753,15 +753,15 @@ export default function Dashboard () {
                                     <HelpCircle className="w-6 h-6 text-primary" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-text">Frage #{detailQuestion.id}</h2>
-                                    <p className="text-text/50 text-sm">Detailansicht</p>
+                                    <h2 className="text-2xl font-bold text-text-primary">Frage #{detailQuestion.id}</h2>
+                                    <p className="text-text-primary/50 text-sm">Detailansicht</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setDetailQuestion(null)}
-                                className="p-2 hover:bg-text/5 rounded-xl transition-all duration-200 group"
+                                className="p-2 hover:bg-text-primary/5 rounded-xl transition-all duration-200 group"
                             >
-                                <X className="w-6 h-6 text-text/40 group-hover:text-text transition-colors" />
+                                <X className="w-6 h-6 text-text-primary/40 group-hover:text-text-primary transition-colors" />
                             </button>
                         </div>
 
@@ -771,21 +771,21 @@ export default function Dashboard () {
                                     <Tag className="w-3.5 h-3.5" strokeWidth={2} />
                                     Thema
                                 </p>
-                                <p className="font-semibold text-text text-lg">{detailQuestion.thema}</p>
+                                <p className="font-semibold text-text-primary text-lg">{detailQuestion.thema}</p>
                             </div>
                             <div className="p-4 bg-accent/5 rounded-xl border border-accent/10">
                                 <p className="text-xs font-semibold text-accent/60 mb-2 uppercase tracking-wider flex items-center gap-2">
                                     <HelpCircle className="w-3.5 h-3.5" strokeWidth={2} />
                                     Frage
                                 </p>
-                                <p className="font-semibold text-text text-lg">{detailQuestion.frage}</p>
+                                <p className="font-semibold text-text-primary text-lg">{detailQuestion.frage}</p>
                             </div>
                             <div className="p-4 bg-secondary/5 rounded-xl border border-secondary/10">
                                 <p className="text-xs font-semibold text-secondary/60 mb-2 uppercase tracking-wider flex items-center gap-2">
                                     <CheckCircle className="w-3.5 h-3.5" strokeWidth={2} />
                                     Antwort
                                 </p>
-                                <p className="font-semibold text-text text-lg">{detailQuestion.antwort}</p>
+                                <p className="font-semibold text-text-primary text-lg">{detailQuestion.antwort}</p>
                             </div>
                         </div>
 

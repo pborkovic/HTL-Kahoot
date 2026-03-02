@@ -4,7 +4,8 @@
 @theme {
     --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-    --color-text: var(--text);
+    --color-text-primary: var(--text-primary);
+    --color-text-inverse: var(--text-inverse);
     --color-background: var(--background);
     --color-primary: var(--primary);
     --color-primary-hover: var(--primary-hover);
@@ -15,60 +16,72 @@
 }
 
 @layer base {
+    /* ========================================
+       DEFAULT (LIGHT)
+    ======================================== */
     :root {
         --font-geist-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
 
-        --text: #0f172a;
-        --background: #ffffff;
-        --primary: #22c55e;
-        --primary-hover: #16a34a;
+        --text-primary: #0f172a;
+        --text-inverse: #f8fafc;
+        --background: #f8fafc;
+
+        --primary: #16a34a;
+        --primary-hover: #15803d;
+
         --secondary: #255239;
         --secondary-muted: #1a3d2a;
+
         --accent: #6366f1;
         --accent-hover: #4f46e5;
     }
 
+    /* ========================================
+       DARK MODE (MANUAL)
+    ======================================== */
     html[data-theme="dark"] {
-        /* Hintergrund: tiefes, leicht grünlich getöntes Dunkelgrau statt reinem Schwarz */
-        --background: #0d1a14;
-        --text: #e8f5ee;
+        --background: #0f1c17;
+        --text-primary: #f8fafc;
+        --text-inverse: #f8fafc;
 
         --primary: #22c55e;
         --primary-hover: #16a34a;
 
-        /* Secondary: ähnlich wie Light Mode, aber etwas heller für bessere Lesbarkeit */
-        --secondary: #2d6647;
-        --secondary-muted: #224d36;
+        --secondary: #2f6b4a;
+        --secondary-muted: #24533a;
 
         --accent: #818cf8;
         --accent-hover: #6366f1;
     }
 
-    html[data-theme="light"] {
-        --background: #ffffff;
-        --text: #0f172a;
-        --primary: #22c55e;
-        --primary-hover: #16a34a;
-        --secondary: #255239;
-        --secondary-muted: #1a3d2a;
-        --accent: #6366f1;
-        --accent-hover: #4f46e5;
-    }
-
+    /* ========================================
+       SYSTEM DARK (AUTO, NO OVERRIDE)
+    ======================================== */
     @media (prefers-color-scheme: dark) {
         html:not([data-theme]) {
-            --background: #0d1a14;
-            --text: #e8f5ee;
-            --foreground: var(--text);
-            --secondary: #2d6647;
-            --secondary-muted: #224d36;
+            --background: #0f1c17;
+            --text-primary: #f8fafc;
+            --text-inverse: #f8fafc;
+
+            --primary: #22c55e;
+            --primary-hover: #16a34a;
+
+            --secondary: #2f6b4a;
+            --secondary-muted: #24533a;
+
+            --accent: #818cf8;
+            --accent-hover: #6366f1;
         }
     }
 
+    /* ========================================
+       BASE ELEMENTS
+    ======================================== */
     body {
         background: var(--background);
-        color: var(--text);
+        color: var(--text-primary);
         font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+        transition: background 0.2s ease, color 0.2s ease;
     }
 }

@@ -9,8 +9,8 @@ export default function Login() {
             </div>
             <div className="w-full max-w-md p-15 space-y-8 rounded-lg border-2 border-primary">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-text">Willkommen bei GamQuiz</h1>
-                    <p className="mt-2 text-text/60">Melde dich mit deinem Microsoft-Konto an</p>
+                    <h1 className="text-3xl font-bold text-text-primary">Willkommen bei GamQuiz</h1>
+                    <p className="mt-2 text-text-primary/60">Melde dich mit deinem Microsoft-Konto an</p>
                 </div>
 
                 <div className="space-y-4">
@@ -36,7 +36,7 @@ export default function Login() {
                     </button>
                 </div>
 
-                <div className="text-center text-sm text-text/50">
+                <div className="text-center text-sm text-text-primary/50">
                     <p>
                         Mit der Anmeldung akzeptierst du unsere{" "}
                         <a href="/terms" className="text-accent hover:underline">
