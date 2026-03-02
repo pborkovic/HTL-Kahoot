@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,16 +37,9 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-    Route::get('users/classes', [UserController::class, 'classes']);
-    Route::get('users/stats', [UserController::class, 'stats']);
-    Route::post('users/bulk', [UserController::class, 'bulk']);
-
-    Route::get('users', [UserController::class, 'index']);
-    Route::post('users', [UserController::class, 'store']);
-    Route::get('users/{user}', [UserController::class, 'show']);
-    Route::put('users/{user}', [UserController::class, 'update']);
-    Route::delete('users/{user}', [UserController::class, 'destroy']);
-    Route::post('users/{user}/restore', [UserController::class, 'restore'])->withTrashed();
-    Route::patch('users/{user}/password', [UserController::class, 'changePassword']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post(
+        uri: 'sessions',
+        action: [SessionController::class, 'store']
+    );
 });
