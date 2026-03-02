@@ -1,6 +1,11 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "/api";
+const API_URL: string = process.env.NEXT_PUBLIC_API_URL ?? "/api";
 
-const TOKEN_KEY = "auth_token";
+const TOKEN_KEY: string = "auth_token";
+
+interface ApiErrorBody {
+  message?: string;
+  error?: string;
+}
 
 export function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -34,7 +39,7 @@ export async function apiFetch<T>(
   });
 
   if (!response.ok) {
-    const body = await response.json().catch(() => null);
+    const body: ApiErrorBody | null = await response.json().catch((): null => null);
     throw new ApiError(
       response.status,
       body?.message ?? body?.error ?? response.statusText,
