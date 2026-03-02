@@ -1,22 +1,23 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-function CallbackHandler() {
+function CallbackHandler(): ReactNode {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { handleCallback } = useAuth();
   const [error, setError] = useState<string | null>(null);
-  const calledRef = useRef(false);
+  const calledRef = useRef<boolean>(false);
 
-  useEffect(() => {
+  useEffect((): void => {
     if (calledRef.current){
         return;
     }
 
-    const code = searchParams.get("code");
+    const code: string | null = searchParams.get("code");
     if (!code) {
       setError("Kein Autorisierungscode erhalten.");
       return;
@@ -25,10 +26,10 @@ function CallbackHandler() {
     calledRef.current = true;
 
     handleCallback(code)
-      .then((user) => {
+      .then((): void => {
         router.replace("/home");
       })
-      .catch(() => {
+      .catch((): void => {
         setError("Anmeldung fehlgeschlagen. Bitte versuche es erneut.");
       });
   }, [searchParams, handleCallback, router]);
@@ -59,7 +60,7 @@ function CallbackHandler() {
   );
 }
 
-export default function AuthCallbackPage() {
+export default function AuthCallbackPage(): ReactNode {
   return (
     <Suspense
       fallback={
