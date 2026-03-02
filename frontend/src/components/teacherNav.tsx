@@ -8,9 +8,9 @@ export default function TeacherNav() {
                 {/* Logo/Icon + Titel - links */}
                 <div className="flex items-center gap-12">
                     <div className="bg-primary p-2 rounded-lg">
-                        <User className="w-7 h-7 text-background" />
+                        <User className="w-7 h-7 text-text-inverse" />
                     </div>
-                    <h1 className="text-xl text-background">
+                    <h1 className="text-xl text-text-inverse">
                         Lehrer-Ansicht
                     </h1>
                 </div>
@@ -18,8 +18,8 @@ export default function TeacherNav() {
                 {/* Begrüßung + Theme Switcher - rechts */}
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <span className="text-background font-normal text-lg">Hallo,</span>
-                        <span className="text-background font-bold text-lg">Benjamin!</span>
+                        <span className="text-text-inverse font-normal text-lg">Hallo,</span>
+                        <span className="text-text-inverse font-bold text-lg">Benjamin!</span>
                     </div>
                     <ThemeSelector />
                 </div>

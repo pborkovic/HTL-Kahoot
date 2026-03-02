@@ -41,7 +41,7 @@ export function ThemeSelector() {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-36 bg-background border border-text/10 rounded-xl shadow-xl overflow-hidden z-50">
+                <div className="absolute right-0 mt-2 w-36 bg-background border border-text-primary/10 rounded-xl shadow-xl overflow-hidden z-50">
                     {themes.map((t) => (
                         <button
                             key={t.value}
@@ -52,7 +52,7 @@ export function ThemeSelector() {
                             className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-colors flex items-center gap-2 ${
                                 theme === t.value
                                     ? "bg-primary text-white"
-                                    : "text-text hover:bg-text/5"
+                                    : "text-text-primary hover:bg-text-primary/5"
                             }`}
                         >
                             {t.value === "light" ? (
