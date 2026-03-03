@@ -1,19 +1,45 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type Dispatch, type SetStateAction } from "react";
 import { apiFetch } from "@/lib/api";
 import type { Question, QuestionsResponse, PaginationMeta } from "@/types/question";
 
-export function useQuestions() {
+type SortDirection = "asc" | "desc";
+
+type QuestionSortField = "created_at" | "updated_at" | "type";
+
+export interface UseQuestionsReturn {
+    questions: Question[];
+    displayQuestions: Question[];
+    selectedIds: Set<string>;
+    detailQuestion: Question | null;
+    setDetailQuestion: Dispatch<SetStateAction<Question | null>>;
+    searchTerm: string;
+    setSearchTerm: Dispatch<SetStateAction<string>>;
+    activeFilters: Set<string>;
+    toggleFilter: (type: string) => void;
+    sortField: QuestionSortField;
+    sortDirection: SortDirection;
+    sort: (field: QuestionSortField, direction: SortDirection) => void;
+    loading: boolean;
+    error: string | null;
+    meta: PaginationMeta | null;
+    uniqueTypes: string[];
+    toggleSelect: (id: string) => void;
+    toggleSelectAll: () => void;
+    allSelected: boolean;
+}
+
+export function useQuestions(): UseQuestionsReturn {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [displayQuestions, setDisplayQuestions] = useState<Question[]>([]);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [detailQuestion, setDetailQuestion] = useState<Question | null>(null);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState<string>("");
     const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
-    const [sortField, setSortField] = useState<string>("created_at");
-    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-    const [loading, setLoading] = useState(true);
+    const [sortField, setSortField] = useState<QuestionSortField>("created_at");
+    const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [meta, setMeta] = useState<PaginationMeta | null>(null);
 
@@ -54,7 +80,7 @@ export function useQuestions() {
 
     const uniqueTypes = Array.from(new Set(questions.map(q => q.type)));
 
-    function toggleFilter(type: string) {
+    function toggleFilter(type: string): void {
         const next = new Set(activeFilters);
         if (next.has(type)){
             next.delete(type);
@@ -65,12 +91,12 @@ export function useQuestions() {
         setActiveFilters(next);
     }
 
-    function sort(field: string, direction: "asc" | "desc") {
+    function sort(field: QuestionSortField, direction: SortDirection): void {
         setSortField(field);
         setSortDirection(direction);
     }
 
-    function toggleSelect(id: string) {
+    function toggleSelect(id: string): void {
         const next = new Set(selectedIds);
         if (next.has(id)){
             next.delete(id);
@@ -81,7 +107,7 @@ export function useQuestions() {
         setSelectedIds(next);
     }
 
-    function toggleSelectAll() {
+    function toggleSelectAll(): void {
         if (selectedIds.size === displayQuestions.length) {
             setSelectedIds(new Set());
         } else {
@@ -114,4 +140,3 @@ export function useQuestions() {
     };
 }
 
-export type UseQuestionsReturn = ReturnType<typeof useQuestions>;

@@ -1,21 +1,41 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type Dispatch, type SetStateAction } from "react";
 import { apiFetch } from "@/lib/api";
 import type { StudentUser, StudentsResponse, ClassesResponse } from "@/types/student";
 
-type StudentSortType =
-    | "display_name-asc" | "display_name-desc"
-    | "class_name-asc" | "class_name-desc"
-    | "email-asc" | "email-desc";
+type StudentSortField = "display_name" | "class_name" | "email";
 
-export function useStudents() {
+type SortDirection = "asc" | "desc";
+
+type StudentSortType =
+    | `${StudentSortField}-${SortDirection}`;
+
+export interface UseStudentsReturn {
+    students: StudentUser[];
+    displayStudents: StudentUser[];
+    selectedIds: Set<string>;
+    searchTerm: string;
+    setSearchTerm: Dispatch<SetStateAction<string>>;
+    activeClassFilters: Set<string>;
+    toggleClassFilter: (className: string) => void;
+    sort: (type: StudentSortType) => void;
+    toggleSelect: (id: string) => void;
+    toggleSelectAll: () => void;
+    selectWholeClass: (className: string) => void;
+    uniqueClasses: string[];
+    allSelected: boolean;
+    loading: boolean;
+    error: string | null;
+}
+
+export function useStudents(): UseStudentsReturn {
     const [students, setStudents] = useState<StudentUser[]>([]);
     const [displayStudents, setDisplayStudents] = useState<StudentUser[]>([]);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState<string>("");
     const [activeClassFilters, setActiveClassFilters] = useState<Set<string>>(new Set());
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [uniqueClasses, setUniqueClasses] = useState<string[]>([]);
 
@@ -59,7 +79,7 @@ export function useStudents() {
         void fetchStudents();
     }, [fetchStudents]);
 
-    function toggleClassFilter(className: string) {
+    function toggleClassFilter(className: string): void {
         const next = new Set(activeClassFilters);
         if (next.has(className)){
             next.delete(className);
@@ -70,9 +90,9 @@ export function useStudents() {
         setActiveClassFilters(next);
     }
 
-    function sort(type: string) {
+    function sort(type: StudentSortType): void {
         const sorted = [...displayStudents];
-        const [field, dir] = type.split("-") as [string, string];
+        const [field, dir] = type.split("-") as [StudentSortField, SortDirection];
 
         sorted.sort((a, b) => {
             let aVal = "";
@@ -92,7 +112,7 @@ export function useStudents() {
         setDisplayStudents(sorted);
     }
 
-    function toggleSelect(id: string) {
+    function toggleSelect(id: string): void {
         const next = new Set(selectedIds);
         if (next.has(id)){
             next.delete(id);
@@ -103,7 +123,7 @@ export function useStudents() {
         setSelectedIds(next);
     }
 
-    function toggleSelectAll() {
+    function toggleSelectAll(): void {
         if (selectedIds.size === displayStudents.length) {
             setSelectedIds(new Set());
         } else {
@@ -111,7 +131,7 @@ export function useStudents() {
         }
     }
 
-    function selectWholeClass(className: string) {
+    function selectWholeClass(className: string): void {
         const classStudents = students.filter(s => s.class_name === className);
         const next = new Set(selectedIds);
         const allSelected = classStudents.every(s => next.has(s.id));
@@ -146,4 +166,3 @@ export function useStudents() {
     };
 }
 
-export type UseStudentsReturn = ReturnType<typeof useStudents>;
