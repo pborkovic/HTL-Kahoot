@@ -17,7 +17,7 @@ interface QuestionFiltersProps {
     uniqueTypes: string[];
     activeFilters: Set<string>;
     onToggleFilter: (type: string) => void;
-    onSort: (field: string, direction: "asc" | "desc") => void;
+    onSort: (field: "created_at" | "updated_at" | "type", direction: "asc" | "desc") => void;
 }
 
 export function QuestionFilters({

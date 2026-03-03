@@ -16,7 +16,7 @@ interface StudentFiltersProps {
     uniqueClasses: string[];
     selectedStudentIds: Set<string>;
     students: StudentUser[];
-    onSort: (type: string) => void;
+    onSort: (type: `${"display_name" | "class_name" | "email"}-${"asc" | "desc"}`) => void;
     onSelectWholeClass: (className: string) => void;
 }
 
