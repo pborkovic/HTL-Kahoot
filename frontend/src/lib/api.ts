@@ -5,6 +5,7 @@ const TOKEN_KEY: string = "auth_token";
 interface ApiErrorBody {
   message?: string;
   error?: string;
+  errors?: Record<string, string[]>;
 }
 
 export function getStoredToken(): string | null {
@@ -40,10 +41,19 @@ export async function apiFetch<T>(
 
   if (!response.ok) {
     const body: ApiErrorBody | null = await response.json().catch((): null => null);
-    throw new ApiError(
-      response.status,
-      body?.message ?? body?.error ?? response.statusText,
-    );
+
+    let errorMessage: string;
+    if (body?.errors) {
+      errorMessage = Object.values(body.errors).flat().join(". ");
+    } else if (body?.message) {
+      errorMessage = body.message;
+    } else if (body?.error) {
+      errorMessage = body.error;
+    } else {
+      errorMessage = friendlyStatusMessage(response.status);
+    }
+
+    throw new ApiError(response.status, errorMessage);
   }
 
   return response.json() as Promise<T>;
@@ -56,5 +66,30 @@ export class ApiError extends Error {
   ) {
     super(message);
     this.name = "ApiError";
+  }
+}
+
+function friendlyStatusMessage(status: number): string {
+  switch (status) {
+    case 400:
+      return "Die Anfrage war ungültig. Bitte überprüfe deine Eingaben.";
+    case 401:
+      return "Du bist nicht angemeldet. Bitte melde dich erneut an.";
+    case 403:
+      return "Du hast keine Berechtigung für diese Aktion.";
+    case 404:
+      return "Die angeforderte Ressource wurde nicht gefunden.";
+    case 422:
+      return "Die eingegebenen Daten sind ungültig.";
+    case 429:
+      return "Zu viele Anfragen. Bitte warte einen Moment.";
+    case 500:
+      return "Ein Serverfehler ist aufgetreten. Bitte versuche es später erneut.";
+    case 502:
+      return "Der Server ist vorübergehend nicht erreichbar.";
+    case 503:
+      return "Der Service ist derzeit nicht verfügbar. Bitte versuche es später erneut.";
+    default:
+      return `Ein unerwarteter Fehler ist aufgetreten (${status}).`;
   }
 }
