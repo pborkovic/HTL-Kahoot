@@ -1,4 +1,4 @@
-import { Search, ArrowUpDown, ChevronDown, School, CheckCircle } from "lucide-react";
+import { Search, ArrowUpDown, ChevronDown, School, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,16 +31,15 @@ export function StudentFilters({
 }: StudentFiltersProps) {
     return (
         <div className="flex flex-wrap items-center gap-2">
-            {/* Class quick select */}
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button size="sm" className="gap-1.5 bg-primary hover:bg-primary-hover">
-                        <School className="size-3.5" />
+                    <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                        <School className="size-3" />
                         <span className="hidden sm:inline">Klasse</span>
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-52 p-2" align="start">
-                    <p className="text-sm font-semibold mb-2 px-2 text-foreground">Klasse auswählen</p>
+                <PopoverContent className="w-48 p-2" align="start">
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5 px-2">Klasse auswählen</p>
                     <div className="space-y-0.5 max-h-52 overflow-y-auto">
                         {uniqueClasses.map(className => {
                             const classStudents = students.filter(s => s.class_name === className);
@@ -50,15 +49,15 @@ export function StudentFilters({
                                     type="button"
                                     key={className}
                                     onClick={() => onSelectWholeClass(className)}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors flex justify-between items-center ${
-                                        allSelected ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                                    className={`w-full text-left px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors flex justify-between items-center ${
+                                        allSelected ? "bg-primary/8 text-primary" : "hover:bg-muted/60"
                                     }`}
                                 >
                                     <span className="flex items-center gap-1.5">
-                                        {allSelected && <CheckCircle className="size-3.5" />}
+                                        {allSelected && <Check className="size-3" />}
                                         {className}
                                     </span>
-                                    <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md">
+                                    <span className="text-[10px] text-muted-foreground tabular-nums">
                                         {classStudents.length}
                                     </span>
                                 </button>
@@ -71,13 +70,12 @@ export function StudentFilters({
                 </PopoverContent>
             </Popover>
 
-            {/* Sort */}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                        <ArrowUpDown className="size-3.5" />
+                    <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                        <ArrowUpDown className="size-3" />
                         <span className="hidden sm:inline">Sortieren</span>
-                        <ChevronDown className="size-3 opacity-50" />
+                        <ChevronDown className="size-3 opacity-40" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
@@ -90,16 +88,15 @@ export function StudentFilters({
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Search */}
             <div className="flex-1 min-w-[120px]">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground" />
                     <Input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder="Schüler suchen..."
-                        className="pl-9 h-8 text-sm"
+                        className="pl-8 h-8 text-xs"
                     />
                 </div>
             </div>

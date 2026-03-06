@@ -98,11 +98,11 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-muted/30">
-            <div className="flex flex-col gap-5 sm:gap-6 p-4 sm:p-6 lg:p-8 xl:px-12 2xl:px-16 mx-auto max-w-[1920px]">
+        <div className="min-h-screen bg-background">
+            <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 xl:px-12 2xl:px-16 mx-auto max-w-[1920px]">
                 <DashboardHeader />
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
                     <QuestionsPanel questions={questions} />
                     <StudentsPanel students={students} />
                 </div>

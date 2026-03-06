@@ -1,5 +1,4 @@
-import { GraduationCap, UserCheck } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { GraduationCap } from "lucide-react";
 import { StudentFilters } from "./student-filters";
 import { StudentTable } from "./student-table";
 import type { UseStudentsReturn } from "@/hooks/use-students";
@@ -10,26 +9,22 @@ interface StudentsPanelProps {
 
 export function StudentsPanel({ students: s }: StudentsPanelProps) {
     return (
-        <Card className="overflow-hidden border-0 shadow-md py-0 gap-0">                {/* Green header */}
-            {/* Green header */}
-            <div className="bg-gradient-to-r from-primary to-primary-hover px-4 sm:px-6 py-3.5 sm:py-4">
+        <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
+            <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                        <div className="size-8 rounded-lg bg-white/20 flex items-center justify-center">
-                            <GraduationCap className="size-4.5 text-white" />
+                        <div className="size-7 rounded-md bg-primary/10 flex items-center justify-center">
+                            <GraduationCap className="size-3.5 text-primary" />
                         </div>
-                        <h2 className="text-lg font-semibold text-white">Schüler</h2>
+                        <h2 className="text-sm font-semibold text-foreground">Schüler</h2>
                     </div>
-                    <div className="flex items-center gap-1.5 text-white/80 text-xs font-medium">
-                        <UserCheck className="size-3.5" />
-                        <span>
-                            {s.selectedIds.size}/{s.displayStudents.length} ausgewählt
-                        </span>
-                    </div>
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                        {s.selectedIds.size} von {s.displayStudents.length} ausgewählt
+                    </span>
                 </div>
             </div>
 
-            <CardContent className="p-4 sm:p-5 space-y-4">
+            <div className="px-4 sm:px-5 pb-4 sm:pb-5 space-y-3">
                 <StudentFilters
                     searchTerm={s.searchTerm}
                     onSearchChange={s.setSearchTerm}
@@ -53,7 +48,7 @@ export function StudentsPanel({ students: s }: StudentsPanelProps) {
                         {s.students.length} Schüler insgesamt
                     </p>
                 )}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }
