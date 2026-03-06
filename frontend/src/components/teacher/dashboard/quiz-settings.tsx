@@ -19,7 +19,7 @@ export function QuizSettings({
     onTimeChange,
 }: QuizSettingsProps) {
     return (
-        <Card className="overflow-hidden border-0 shadow-md">
+        <Card className="overflow-hidden border-0 shadow-md py-0 gap-0">                {/* Green header */}
             {/* Green header */}
             <div className="bg-gradient-to-r from-primary to-primary-hover px-4 sm:px-6 py-3.5 sm:py-4">
                 <div className="flex items-center gap-2.5">
