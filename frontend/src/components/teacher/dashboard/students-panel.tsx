@@ -1,4 +1,4 @@
-import { GraduationCap } from "lucide-react";
+import { UsersRound } from "lucide-react";
 import { StudentFilters } from "./student-filters";
 import { StudentTable } from "./student-table";
 import type { UseStudentsReturn } from "@/hooks/use-students";
@@ -13,8 +13,8 @@ export function StudentsPanel({ students: s }: StudentsPanelProps) {
             <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                        <div className="size-7 rounded-md bg-primary/10 flex items-center justify-center">
-                            <GraduationCap className="size-3.5 text-primary" />
+                        <div className="size-7 rounded-md bg-foreground flex items-center justify-center">
+                            <UsersRound className="size-3.5 text-primary-foreground" />
                         </div>
                         <h2 className="text-sm font-semibold text-foreground">Schüler</h2>
                     </div>
