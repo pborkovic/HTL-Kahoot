@@ -1,20 +1,19 @@
-import { FileText } from "lucide-react";
+import { Zap } from "lucide-react";
 
 export function DashboardHeader() {
     return (
-        <div>
-            <div className="flex items-center gap-3 sm:gap-4">
-                <div className="size-11 sm:size-13 rounded-2xl bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center shadow-lg shadow-primary/25 shrink-0">
-                    <FileText className="size-5 sm:size-6 text-white" strokeWidth={2.5} />
-                </div>
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                        Quiz Editor
-                    </h1>
-                    <p className="text-muted-foreground text-sm">
-                        Fragen auswählen, Teilnehmer zuweisen und Quiz starten
-                    </p>
-                </div>
+        <div className="flex items-center justify-between">
+            <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                    Quiz erstellen
+                </h1>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                    Fragen und Teilnehmer auswählen, Einstellungen anpassen, Quiz starten.
+                </p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground bg-card border border-border/60 rounded-lg px-3 py-2">
+                <Zap className="size-3.5 text-primary" />
+                <span>GamQuiz Editor</span>
             </div>
         </div>
     );

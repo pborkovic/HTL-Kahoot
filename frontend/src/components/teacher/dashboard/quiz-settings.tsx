@@ -1,6 +1,5 @@
-import { Settings, Clock, Weight } from "lucide-react";
+import { Clock, Weight } from "lucide-react";
 import type { ReactNode } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
@@ -19,28 +18,15 @@ export function QuizSettings({
     onTimeChange,
 }: QuizSettingsProps) {
     return (
-        <Card className="overflow-hidden border-0 shadow-md py-0 gap-0">                {/* Green header */}
-            {/* Green header */}
-            <div className="bg-gradient-to-r from-primary to-primary-hover px-4 sm:px-6 py-3.5 sm:py-4">
-                <div className="flex items-center gap-2.5">
-                    <div className="size-8 rounded-lg bg-white/20 flex items-center justify-center">
-                        <Settings className="size-4.5 text-white" />
-                    </div>
-                    <h2 className="text-lg font-semibold text-white">Quiz-Einstellungen</h2>
-                </div>
-            </div>
-
-            <CardContent className="p-4 sm:p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    {/* Question weight */}
-                    <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
-                        <div className="flex items-center gap-2.5">
-                            <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Weight className="size-4 text-primary" />
-                            </div>
-                            <label className="text-sm font-semibold">Gewichtung der Fragen</label>
+        <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
+            <div className="px-4 sm:px-5 py-4 sm:py-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                            <Weight className="size-3.5 text-muted-foreground" />
+                            <label className="text-xs font-medium text-foreground">Gewichtung</label>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <Slider
                                 min={1}
                                 max={10}
@@ -58,24 +44,21 @@ export function QuizSettings({
                                     const val = Math.min(10, Math.max(1, Number(e.target.value)));
                                     onWeightChange(val);
                                 }}
-                                className="w-16 text-center text-sm font-bold"
+                                className="w-14 text-center text-xs font-semibold h-8"
                             />
                         </div>
-                        <div className="flex justify-between text-xs text-muted-foreground px-0.5">
-                            <span>Niedrig (1)</span>
-                            <span>Hoch (10)</span>
+                        <div className="flex justify-between text-[10px] text-muted-foreground/70">
+                            <span>Niedrig</span>
+                            <span>Hoch</span>
                         </div>
                     </div>
 
-                    {/* Max time per question */}
-                    <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
-                        <div className="flex items-center gap-2.5">
-                            <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Clock className="size-4 text-primary" />
-                            </div>
-                            <label className="text-sm font-semibold">Maximale Zeit pro Frage</label>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                            <Clock className="size-3.5 text-muted-foreground" />
+                            <label className="text-xs font-medium text-foreground">Zeit pro Frage</label>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <Slider
                                 min={5}
                                 max={120}
@@ -84,7 +67,7 @@ export function QuizSettings({
                                 onValueChange={([v]) => onTimeChange(v)}
                                 className="flex-1"
                             />
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1">
                                 <Input
                                     type="number"
                                     min={5}
@@ -95,18 +78,18 @@ export function QuizSettings({
                                         const val = Math.min(120, Math.max(5, Number(e.target.value)));
                                         onTimeChange(val);
                                     }}
-                                    className="w-16 text-center text-sm font-bold"
+                                    className="w-14 text-center text-xs font-semibold h-8"
                                 />
-                                <span className="text-xs text-muted-foreground font-medium">Sek.</span>
+                                <span className="text-[10px] text-muted-foreground">s</span>
                             </div>
                         </div>
-                        <div className="flex justify-between text-xs text-muted-foreground px-0.5">
-                            <span>5 Sekunden</span>
-                            <span>2 Minuten</span>
+                        <div className="flex justify-between text-[10px] text-muted-foreground/70">
+                            <span>5s</span>
+                            <span>2min</span>
                         </div>
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

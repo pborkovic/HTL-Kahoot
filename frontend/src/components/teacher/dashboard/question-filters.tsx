@@ -33,32 +33,32 @@ export function QuestionFilters({
             <Popover>
                 <PopoverTrigger asChild>
                     <Button
-                        variant={activeFilters.size > 0 ? "default" : "outline"}
+                        variant="outline"
                         size="sm"
-                        className={`gap-1.5 ${activeFilters.size > 0 ? "bg-primary hover:bg-primary-hover" : ""}`}
+                        className={`gap-1.5 h-8 text-xs ${activeFilters.size > 0 ? "border-primary/40 bg-primary/5 text-primary" : ""}`}
                     >
-                        <Filter className="size-3.5" />
+                        <Filter className="size-3" />
                         <span className="hidden sm:inline">Filtern</span>
                         {activeFilters.size > 0 && (
-                            <Badge variant="secondary" className="ml-0.5 size-5 p-0 justify-center text-xs bg-white/20 text-white hover:bg-white/20">
+                            <Badge variant="secondary" className="ml-0.5 size-4 p-0 justify-center text-[10px] bg-primary/15 text-primary hover:bg-primary/15">
                                 {activeFilters.size}
                             </Badge>
                         )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-56 p-3" align="start">
-                    <p className="text-sm font-semibold mb-2.5 text-foreground">Filter nach Typ</p>
-                    <div className="space-y-1 max-h-52 overflow-y-auto">
+                <PopoverContent className="w-52 p-2.5" align="start">
+                    <p className="text-xs font-medium text-muted-foreground mb-2 px-1">Typ filtern</p>
+                    <div className="space-y-0.5 max-h-52 overflow-y-auto">
                         {uniqueTypes.map(type => (
                             <label
                                 key={type}
-                                className="flex items-center gap-2.5 cursor-pointer hover:bg-primary/5 p-2 rounded-lg transition-colors text-sm"
+                                className="flex items-center gap-2.5 cursor-pointer hover:bg-muted/60 p-2 rounded-lg transition-colors text-sm"
                             >
                                 <Checkbox
                                     checked={activeFilters.has(type)}
                                     onCheckedChange={() => onToggleFilter(type)}
                                 />
-                                <span className="font-medium">{type}</span>
+                                <span className="text-xs font-medium">{type}</span>
                             </label>
                         ))}
                         {uniqueTypes.length === 0 && (
@@ -70,10 +70,10 @@ export function QuestionFilters({
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                        <ArrowUpDown className="size-3.5" />
+                    <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                        <ArrowUpDown className="size-3" />
                         <span className="hidden sm:inline">Sortieren</span>
-                        <ChevronDown className="size-3 opacity-50" />
+                        <ChevronDown className="size-3 opacity-40" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
@@ -86,13 +86,13 @@ export function QuestionFilters({
 
             <div className="flex-1 min-w-[120px]">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground" />
                     <Input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder="Suchen..."
-                        className="pl-9 h-8 text-sm"
+                        className="pl-8 h-8 text-xs"
                     />
                 </div>
             </div>

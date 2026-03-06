@@ -1,5 +1,4 @@
-import { HelpCircle, ClipboardList } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { HelpCircle } from "lucide-react";
 import { QuestionFilters } from "./question-filters";
 import { QuestionTable } from "./question-table";
 import { QuestionDetailDialog } from "./question-detail-dialog";
@@ -12,25 +11,22 @@ interface QuestionsPanelProps {
 export function QuestionsPanel({ questions: q }: QuestionsPanelProps) {
     return (
         <>
-            <Card className="overflow-hidden border-0 shadow-md py-0 gap-0">                {/* Green header */}
-                <div className="bg-gradient-to-r from-primary to-primary-hover px-4 sm:px-6 py-3.5 sm:py-4">
+            <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
+                <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                            <div className="size-8 rounded-lg bg-white/20 flex items-center justify-center">
-                                <HelpCircle className="size-4.5 text-white" />
+                            <div className="size-7 rounded-md bg-primary/10 flex items-center justify-center">
+                                <HelpCircle className="size-3.5 text-primary" />
                             </div>
-                            <h2 className="text-lg font-semibold text-white">Fragen</h2>
+                            <h2 className="text-sm font-semibold text-foreground">Fragen</h2>
                         </div>
-                        <div className="flex items-center gap-1.5 text-white/80 text-xs font-medium">
-                            <ClipboardList className="size-3.5" />
-                            <span>
-                                {q.selectedIds.size}/{q.displayQuestions.length} ausgewählt
-                            </span>
-                        </div>
+                        <span className="text-xs tabular-nums text-muted-foreground">
+                            {q.selectedIds.size} von {q.displayQuestions.length} ausgewählt
+                        </span>
                     </div>
                 </div>
 
-                <CardContent className="p-4 sm:p-5 space-y-4">
+                <div className="px-4 sm:px-5 pb-4 sm:pb-5 space-y-3">
                     <QuestionFilters
                         searchTerm={q.searchTerm}
                         onSearchChange={q.setSearchTerm}
@@ -54,8 +50,8 @@ export function QuestionsPanel({ questions: q }: QuestionsPanelProps) {
                             {q.meta.total} Fragen insgesamt
                         </p>
                     )}
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             <QuestionDetailDialog
                 question={q.detailQuestion}
