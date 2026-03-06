@@ -1,4 +1,4 @@
-import { Clock, Weight } from "lucide-react";
+import { SlidersHorizontal, Clock, Weight } from "lucide-react";
 import type { ReactNode } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -19,11 +19,17 @@ export function QuizSettings({
 }: QuizSettingsProps) {
     return (
         <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
-            <div className="px-4 sm:px-5 py-4 sm:py-5">
+            <div className="px-4 sm:px-5 py-4 sm:py-5 space-y-4">
+                <div className="flex items-center gap-2.5">
+                    <div className="size-7 rounded-md bg-foreground flex items-center justify-center">
+                        <SlidersHorizontal className="size-3.5 text-primary-foreground" />
+                    </div>
+                    <h2 className="text-sm font-semibold text-foreground">Einstellungen</h2>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                            <Weight className="size-3.5 text-muted-foreground" />
+                            <Weight className="size-3.5 text-foreground" />
                             <label className="text-xs font-medium text-foreground">Gewichtung</label>
                         </div>
                         <div className="flex items-center gap-3">
@@ -55,7 +61,7 @@ export function QuizSettings({
 
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                            <Clock className="size-3.5 text-muted-foreground" />
+                            <Clock className="size-3.5 text-foreground" />
                             <label className="text-xs font-medium text-foreground">Zeit pro Frage</label>
                         </div>
                         <div className="flex items-center gap-3">
