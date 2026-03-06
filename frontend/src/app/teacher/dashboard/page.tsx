@@ -102,26 +102,31 @@ export default function Dashboard() {
             <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 xl:px-12 2xl:px-16 mx-auto max-w-[1920px]">
                 <DashboardHeader />
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px] gap-4 sm:gap-5 items-start">
+                    {/* Primary: Question selection */}
                     <QuestionsPanel questions={questions} />
-                    <StudentsPanel students={students} />
+
+                    {/* Sidebar: Session builder */}
+                    <div className="flex flex-col gap-4 sm:gap-5 lg:sticky lg:top-6">
+                        <StudentsPanel students={students} />
+
+                        <QuizSettings
+                            questionWeight={questionWeight}
+                            maxTimePerQuestion={maxTimePerQuestion}
+                            onWeightChange={setQuestionWeight}
+                            onTimeChange={setMaxTimePerQuestion}
+                        />
+
+                        <LobbyButton
+                            canCreate={canCreateLobby}
+                            isCreating={isCreating}
+                            selectedQuestionsCount={questions.selectedIds.size}
+                            selectedStudentsCount={students.selectedIds.size}
+                            onCreateLobby={createLobby}
+                            createError={createError}
+                        />
+                    </div>
                 </div>
-
-                <QuizSettings
-                    questionWeight={questionWeight}
-                    maxTimePerQuestion={maxTimePerQuestion}
-                    onWeightChange={setQuestionWeight}
-                    onTimeChange={setMaxTimePerQuestion}
-                />
-
-                <LobbyButton
-                    canCreate={canCreateLobby}
-                    isCreating={isCreating}
-                    selectedQuestionsCount={questions.selectedIds.size}
-                    selectedStudentsCount={students.selectedIds.size}
-                    onCreateLobby={createLobby}
-                    createError={createError}
-                />
             </div>
         </div>
     );
