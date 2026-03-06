@@ -81,7 +81,7 @@ export function QuestionTable({
 
     return (
         <div className="rounded-lg border border-border/60 overflow-hidden">
-            <div className="max-h-[400px] overflow-y-auto">
+            <div className="max-h-[520px] overflow-y-auto">
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-muted/40 hover:bg-muted/40 border-b border-border/60">
