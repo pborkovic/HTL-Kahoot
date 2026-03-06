@@ -24,7 +24,7 @@ export function LobbyButton({
                 size="lg"
                 onClick={onCreateLobby}
                 disabled={!canCreate || isCreating}
-                className="w-full h-11 text-sm font-semibold gap-2 bg-primary hover:bg-primary-hover transition-colors disabled:opacity-35 rounded-lg"
+                className="w-full h-11 text-sm font-semibold gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-35 rounded-lg"
             >
                 {isCreating ? (
                     <>
@@ -42,12 +42,12 @@ export function LobbyButton({
             {canCreate && !isCreating && (
                 <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
-                        <HelpCircle className="size-3 text-primary/60" />
+                        <HelpCircle className="size-3 text-foreground/50" />
                         {selectedQuestionsCount} Fragen
                     </span>
                     <span className="size-0.5 rounded-full bg-border" />
                     <span className="flex items-center gap-1">
-                        <Users className="size-3 text-primary/60" />
+                        <Users className="size-3 text-foreground/50" />
                         {selectedStudentsCount} Schüler
                     </span>
                 </div>
