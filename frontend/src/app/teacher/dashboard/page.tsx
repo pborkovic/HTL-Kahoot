@@ -102,7 +102,7 @@ export default function Dashboard() {
             <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 xl:px-12 2xl:px-16 mx-auto max-w-[1920px]">
                 <DashboardHeader />
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px] gap-4 sm:gap-5 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] xl:grid-cols-[1fr_480px] gap-4 sm:gap-5 items-start">
                     {/* Primary: Question selection */}
                     <QuestionsPanel questions={questions} />
 
