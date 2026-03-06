@@ -56,11 +56,10 @@ export function StudentTable({
     }
 
     return (
-        <div className="rounded-lg border border-border/60 overflow-hidden">
-            <div className="max-h-[400px] overflow-y-auto">
+        <div className="rounded-lg border border-border/60 max-h-[400px] overflow-auto">
                 <Table>
-                    <TableHeader>
-                        <TableRow className="bg-muted/40 hover:bg-muted/40 border-b border-border/60">
+                    <TableHeader className="sticky top-0 z-10">
+                        <TableRow className="bg-muted hover:bg-muted border-b border-border/60">
                             <TableHead className="w-10 pl-3">
                                 <Checkbox
                                     checked={allSelected}
@@ -106,7 +105,6 @@ export function StudentTable({
                         })}
                     </TableBody>
                 </Table>
-            </div>
         </div>
     );
 }
