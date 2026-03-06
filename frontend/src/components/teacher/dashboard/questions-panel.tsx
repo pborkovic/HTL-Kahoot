@@ -1,4 +1,4 @@
-import { HelpCircle } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { QuestionFilters } from "./question-filters";
 import { QuestionTable } from "./question-table";
 import { QuestionDetailDialog } from "./question-detail-dialog";
@@ -15,8 +15,8 @@ export function QuestionsPanel({ questions: q }: QuestionsPanelProps) {
                 <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                            <div className="size-7 rounded-md bg-primary/10 flex items-center justify-center">
-                                <HelpCircle className="size-3.5 text-primary" />
+                            <div className="size-7 rounded-md bg-foreground flex items-center justify-center">
+                                <ClipboardList className="size-3.5 text-primary-foreground" />
                             </div>
                             <h2 className="text-sm font-semibold text-foreground">Fragen</h2>
                         </div>
