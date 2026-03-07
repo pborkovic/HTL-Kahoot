@@ -8,6 +8,8 @@ import {
     Users,
     LogOut,
     ChevronsUpDown,
+    ChevronsLeft,
+    ChevronsRight,
     Shield,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -22,6 +24,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarRail,
+    useSidebar,
 } from "@/components/ui/sidebar";
 import {
     DropdownMenu,
@@ -32,7 +35,7 @@ import {
 
 const navItems = [
     {
-        title: "Dashboard",
+        title: "Lehrer Dashboard",
         href: "/teacher/dashboard",
         icon: LayoutDashboard,
     },
@@ -54,6 +57,7 @@ const adminItems = [
 export function AppSidebar() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
+    const { toggleSidebar, state } = useSidebar();
 
     const userRoles = user?.roles?.map(r => r.name) ?? [];
     const isAdmin = userRoles.some(r => r === "admin" || r === "superadmin");
@@ -77,7 +81,7 @@ export function AppSidebar() {
                                     <MonitorPlay className="size-4 text-primary-foreground" />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
-                                    <span className="font-semibold text-sm">GamQuiz</span>
+                                    <span className="font-semibold text-sm">gamquiz</span>
                                     <span className="text-[11px] text-muted-foreground">Lehrer</span>
                                 </div>
                             </Link>
@@ -129,6 +133,21 @@ export function AppSidebar() {
                     </SidebarGroup>
                 )}
             </SidebarContent>
+
+            <div className="px-2 py-1.5">
+                <button
+                    type="button"
+                    onClick={toggleSidebar}
+                    className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+                >
+                    {state === "expanded" ? (
+                        <ChevronsLeft className="size-4" />
+                    ) : (
+                        <ChevronsRight className="size-4" />
+                    )}
+                    {state === "expanded" && <span>Einklappen</span>}
+                </button>
+            </div>
 
             <SidebarFooter>
                 <SidebarMenu>
