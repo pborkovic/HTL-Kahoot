@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarLayout } from "@/components/sidebar-layout";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,15 +18,21 @@ export const metadata: Metadata = {
     description: "Kahoot Clone für den Unterricht",
 };
 
-export default function RootLayout({children}: Readonly<{
+export default async function RootLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
+    const cookieStore = await cookies();
+    const sidebarCookie = cookieStore.get("sidebar_state");
+    const sidebarOpen = sidebarCookie ? sidebarCookie.value === "true" : true;
+
     return (
         <html lang="de">
         <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
         <AuthProvider>
             <TooltipProvider>
-                {children}
+                <SidebarLayout defaultOpen={sidebarOpen}>
+                    {children}
+                </SidebarLayout>
             </TooltipProvider>
         </AuthProvider>
         </body>
