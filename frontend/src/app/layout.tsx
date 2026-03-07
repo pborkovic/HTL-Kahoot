@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const inter = Inter({
@@ -22,7 +23,9 @@ export default function RootLayout({children}: Readonly<{
         <html lang="de">
         <body className={`${inter.variable} antialiased`}>
         <AuthProvider>
-            {children}
+            <TooltipProvider>
+                {children}
+            </TooltipProvider>
         </AuthProvider>
         </body>
         </html>
