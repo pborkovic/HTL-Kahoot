@@ -21,7 +21,7 @@ export default function RootLayout({children}: Readonly<{
 }>) {
     return (
         <html lang="de">
-        <body className={`${inter.variable} antialiased`}>
+        <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
         <AuthProvider>
             <TooltipProvider>
                 {children}
