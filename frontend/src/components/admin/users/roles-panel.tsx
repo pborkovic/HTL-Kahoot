@@ -84,14 +84,14 @@ export function RolesPanel({
                 <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 gap-2 text-xs"
+                    className="h-8 gap-2 text-xs w-full sm:w-auto"
                 >
                     <Settings2 className="size-3.5" />
                     Rollen & Berechtigungen
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col gap-0 p-0 text-foreground">
-                <DialogHeader className="px-5 pt-5 pb-0">
+            <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col gap-0 p-0 text-popover-foreground">
+                <DialogHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
                     <DialogTitle className="flex items-center gap-2.5 text-base">
                         <div className="size-8 rounded-lg bg-foreground flex items-center justify-center">
                             <Settings2 className="size-4 text-primary-foreground" />
@@ -101,14 +101,14 @@ export function RolesPanel({
                 </DialogHeader>
 
                 {/* Tab bar */}
-                <div className="flex gap-1 px-5 pt-4 pb-1">
+                <div className="flex gap-1 px-4 sm:px-5 pt-4 pb-1">
                     <button
                         type="button"
                         onClick={() => setActiveTab("roles")}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                             activeTab === "roles"
                                 ? "bg-foreground text-background"
-                                : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                                : "text-muted-foreground hover:text-popover-foreground hover:bg-muted/60"
                         }`}
                     >
                         <Shield className="size-3" />
@@ -121,7 +121,7 @@ export function RolesPanel({
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                             activeTab === "permissions"
                                 ? "bg-foreground text-background"
-                                : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                                : "text-muted-foreground hover:text-popover-foreground hover:bg-muted/60"
                         }`}
                     >
                         <Lock className="size-3" />
@@ -130,10 +130,10 @@ export function RolesPanel({
                     </button>
                 </div>
 
-                <div className="border-t border-border/40 mx-5 mt-2" />
+                <div className="border-t border-border/40 mx-4 sm:mx-5 mt-2" />
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto px-5 py-4">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4">
                     {activeTab === "roles" ? (
                         <div className="space-y-3">
                             {/* Create role */}
@@ -182,7 +182,7 @@ export function RolesPanel({
                                             className="flex items-center gap-2 min-w-0 flex-1 text-left"
                                         >
                                             <Shield className="size-3 text-muted-foreground shrink-0" />
-                                            <span className="font-medium text-foreground truncate">{role.name}</span>
+                                            <span className="font-medium text-popover-foreground truncate">{role.name}</span>
                                             <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
                                                 {role.permissions?.length ?? 0} Rechte
                                             </span>
@@ -202,11 +202,11 @@ export function RolesPanel({
                             {/* Selected role permissions */}
                             {selectedRole && (
                                 <div className="border-t border-border/40 pt-3 space-y-2.5">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest truncate">
                                             Berechtigungen für {selectedRole.name}
                                         </p>
-                                        <Badge variant="outline" className="text-[10px] font-medium">
+                                        <Badge variant="outline" className="text-[10px] font-medium shrink-0">
                                             {selectedRole.permissions?.length ?? 0} zugewiesen
                                         </Badge>
                                     </div>
@@ -236,7 +236,7 @@ export function RolesPanel({
                                             <Badge
                                                 key={perm.id}
                                                 variant="secondary"
-                                                className="text-[10px] font-mono gap-1 pr-1"
+                                                className="text-[10px] gap-1 pr-1"
                                             >
                                                 {perm.name}
                                                 <button
@@ -292,7 +292,7 @@ export function RolesPanel({
                                     >
                                         <div className="flex items-center gap-2 min-w-0 flex-1">
                                             <Lock className="size-3 text-muted-foreground shrink-0" />
-                                            <span className="text-xs text-[#2D3436] dark:text-[#DFE6E9] truncate">{p.name}</span>
+                                            <span className="text-xs text-popover-foreground truncate">{p.name}</span>
                                         </div>
                                         <Button
                                             variant="ghost"
