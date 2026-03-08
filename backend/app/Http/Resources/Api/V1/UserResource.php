@@ -22,7 +22,10 @@ class UserResource extends JsonResource
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
             'deleted_at'    => $this->deleted_at,
-            'roles'         => $this->whenLoaded('roles', fn() => $this->roles->pluck('name')),
+            'roles'         => $this->whenLoaded('roles', fn() => $this->roles->map(fn($r) => [
+                'id'   => $r->id,
+                'name' => $r->name,
+            ])),
         ];
     }
 }

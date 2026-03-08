@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\V1\QuestionPoolController;
 use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -79,6 +81,23 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('{pool}/questions', [QuestionPoolController::class, 'addQuestions']);
             Route::delete('{pool}/questions/{question}', [QuestionPoolController::class, 'removeQuestion']);
         });
+
+        Route::prefix('roles')->group(function () {
+            Route::get('/', [RoleController::class, 'index']);
+            Route::post('/', [RoleController::class, 'store']);
+            Route::delete('{role}', [RoleController::class, 'destroy']);
+            Route::post('{role}/permissions', [RoleController::class, 'addPermission']);
+            Route::delete('{role}/permissions', [RoleController::class, 'removePermission']);
+        });
+
+        Route::prefix('permissions')->group(function () {
+            Route::get('/', [PermissionController::class, 'index']);
+            Route::post('/', [PermissionController::class, 'store']);
+            Route::delete('{permission}', [PermissionController::class, 'destroy']);
+        });
+
+        Route::post('users/{user}/roles', [RoleController::class, 'assignRole']);
+        Route::delete('users/{user}/roles', [RoleController::class, 'removeRole']);
 
         Route::prefix('quizzes')->group(function () {
             Route::get('/', [QuizController::class, 'index']);
