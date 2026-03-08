@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -47,12 +49,12 @@ class PermissionController extends Controller
     )]
     public function index(): JsonResponse
     {
-        $this->authorize('viewAny', Permission::class);
+        $this->authorize(ability: 'viewAny', arguments: Permission::class);
 
         $permissions = $this->permissionService->all();
 
-        return response()->json([
-            'data' => PermissionResource::collection($permissions),
+        return response()->json(data: [
+            'data' => PermissionResource::collection(resource: $permissions),
         ]);
     }
 
@@ -80,11 +82,13 @@ class PermissionController extends Controller
     )]
     public function store(CreatePermissionRequest $request): JsonResponse
     {
-        $this->authorize('create', Permission::class);
+        $this->authorize(ability: 'create', arguments: Permission::class);
 
-        $permission = $this->permissionService->create($request->validated());
+        $permission = $this->permissionService->create(data: $request->validated());
 
-        return (new PermissionResource($permission))->response()->setStatusCode(201);
+        return (
+            new PermissionResource(resource: $permission)
+        )->response()->setStatusCode(code: 201);
     }
 
     #[Delete(
@@ -105,11 +109,10 @@ class PermissionController extends Controller
     )]
     public function destroy(Permission $permission): JsonResponse
     {
-        $this->authorize('delete', $permission);
+        $this->authorize(ability: 'delete', arguments: $permission);
 
-        $permission->roles()->detach();
-        $this->permissionService->delete($permission->id);
+        $this->permissionService->deleteWithRelations(permission: $permission);
 
-        return response()->json(null, 204);
+        return response()->json(data: null, status: 204);
     }
 }
