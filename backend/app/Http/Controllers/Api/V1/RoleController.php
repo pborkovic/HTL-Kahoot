@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -51,12 +53,12 @@ class RoleController extends Controller
     )]
     public function index(): JsonResponse
     {
-        $this->authorize('viewAny', Role::class);
+        $this->authorize(ability: 'viewAny', arguments: Role::class);
 
-        $roles = Role::with('permissions')->get();
+        $roles = $this->roleService->getAllWithPermissions();
 
-        return response()->json([
-            'data' => RoleResource::collection($roles),
+        return response()->json(data: [
+            'data' => RoleResource::collection(resource: $roles),
         ]);
     }
 
@@ -84,12 +86,12 @@ class RoleController extends Controller
     )]
     public function store(CreateRoleRequest $request): JsonResponse
     {
-        $this->authorize('create', Role::class);
+        $this->authorize(ability: 'create', arguments: Role::class);
 
-        $role = $this->roleService->create($request->validated());
-        $role->load('permissions');
+        $role = $this->roleService->create(data: $request->validated());
+        $role->load(relations: 'permissions');
 
-        return (new RoleResource($role))->response()->setStatusCode(201);
+        return (new RoleResource(resource: $role))->response()->setStatusCode(code: 201);
     }
 
     #[Delete(
@@ -110,13 +112,11 @@ class RoleController extends Controller
     )]
     public function destroy(Role $role): JsonResponse
     {
-        $this->authorize('delete', $role);
+        $this->authorize(ability: 'delete', arguments: $role);
 
-        $role->permissions()->detach();
-        $role->users()->detach();
-        $this->roleService->delete($role->id);
+        $this->roleService->deleteWithRelations(role: $role);
 
-        return response()->json(null, 204);
+        return response()->json(data: null, status: 204);
     }
 
     #[Post(
@@ -147,23 +147,23 @@ class RoleController extends Controller
     )]
     public function assignRole(AssignRoleRequest $request, User $user): JsonResponse
     {
-        $this->authorize('assignRole', Role::class);
+        $this->authorize(ability: 'assignRole', arguments: Role::class);
 
-        $data = $request->validated();
+        $data     = $request->validated();
+        $assigned = $this->roleService->assignRoleToUser(
+            user:       $user,
+            roleId:     $data['role_id'],
+            assignedBy: $request->user()->id,
+        );
 
-        if ($user->roles()->where('roles.id', $data['role_id'])->exists()) {
-            return response()->json(['message' => 'User already has this role.'], 422);
+        if (!$assigned) {
+            return response()->json(data: ['message' => 'User already has this role.'], status: 422);
         }
 
-        $user->roles()->attach($data['role_id'], [
-            'assigned_at' => now(),
-            'assigned_by' => $request->user()->id,
-        ]);
+        $user->load(relations: 'roles');
 
-        $user->load('roles');
-
-        return response()->json([
-            'data' => new UserResource($user),
+        return response()->json(data: [
+            'data' => new UserResource(resource: $user),
         ]);
     }
 
@@ -194,15 +194,15 @@ class RoleController extends Controller
     )]
     public function removeRole(AssignRoleRequest $request, User $user): JsonResponse
     {
-        $this->authorize('removeRole', Role::class);
+        $this->authorize(ability: 'removeRole', arguments: Role::class);
 
         $data = $request->validated();
+        $this->roleService->removeRoleFromUser(user: $user, roleId: $data['role_id']);
 
-        $user->roles()->detach($data['role_id']);
-        $user->load('roles');
+        $user->load(relations: 'roles');
 
-        return response()->json([
-            'data' => new UserResource($user),
+        return response()->json(data: [
+            'data' => new UserResource(resource: $user),
         ]);
     }
 
@@ -234,19 +234,19 @@ class RoleController extends Controller
     )]
     public function addPermission(RolePermissionRequest $request, Role $role): JsonResponse
     {
-        $this->authorize('managePermissions', Role::class);
+        $this->authorize(ability: 'managePermissions', arguments: Role::class);
 
-        $data = $request->validated();
+        $data  = $request->validated();
+        $added = $this->roleService->addPermissionToRole(role: $role, permissionId: $data['permission_id']);
 
-        if ($role->permissions()->where('permissions.id', $data['permission_id'])->exists()) {
-            return response()->json(['message' => 'Role already has this permission.'], 422);
+        if (!$added) {
+            return response()->json(data: ['message' => 'Role already has this permission.'], status: 422);
         }
 
-        $role->permissions()->attach($data['permission_id']);
-        $role->load('permissions');
+        $role->load(relations: 'permissions');
 
-        return response()->json([
-            'data' => new RoleResource($role),
+        return response()->json(data: [
+            'data' => new RoleResource(resource: $role),
         ]);
     }
 
@@ -277,15 +277,15 @@ class RoleController extends Controller
     )]
     public function removePermission(RolePermissionRequest $request, Role $role): JsonResponse
     {
-        $this->authorize('managePermissions', Role::class);
+        $this->authorize(ability: 'managePermissions', arguments: Role::class);
 
         $data = $request->validated();
+        $this->roleService->removePermissionFromRole(role: $role, permissionId: $data['permission_id']);
 
-        $role->permissions()->detach($data['permission_id']);
-        $role->load('permissions');
+        $role->load(relations: 'permissions');
 
-        return response()->json([
-            'data' => new RoleResource($role),
+        return response()->json(data: [
+            'data' => new RoleResource(resource: $role),
         ]);
     }
 }
