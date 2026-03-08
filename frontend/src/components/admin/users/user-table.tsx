@@ -19,7 +19,6 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
-    DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import type { User, Role } from "@/types/auth";
 
@@ -41,6 +40,120 @@ function getRoleColor(name: string): string {
     return ROLE_COLORS[name] ?? "bg-muted text-muted-foreground hover:bg-muted";
 }
 
+function UserActions({ user, roles, onAssignRole, onRemoveRole }: {
+    user: User;
+    roles: Role[];
+    onAssignRole: (userId: string, roleId: string) => Promise<void>;
+    onRemoveRole: (userId: string, roleId: string) => Promise<void>;
+}) {
+    const availableRoles = roles.filter(r => !user.roles.some(ur => ur.id === r.id));
+
+    if (availableRoles.length === 0 && user.roles.length === 0) {
+        return null;
+    }
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="size-7 p-0">
+                    <MoreHorizontal className="size-3.5" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+                {availableRoles.length > 0 && (
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="text-xs">
+                            <ShieldCheck className="size-3.5 mr-2" />
+                            Rolle zuweisen
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent>
+                            {availableRoles.map(role => (
+                                <DropdownMenuItem
+                                    key={role.id}
+                                    className="text-xs"
+                                    onClick={() => onAssignRole(user.id, role.id)}
+                                >
+                                    {role.name}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                )}
+                {user.roles.length > 0 && (
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="text-xs">
+                            <ShieldX className="size-3.5 mr-2" />
+                            Rolle entfernen
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent>
+                            {user.roles.map(role => (
+                                <DropdownMenuItem
+                                    key={role.id}
+                                    className="text-xs text-destructive"
+                                    onClick={() => onRemoveRole(user.id, role.id)}
+                                >
+                                    {role.name}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                )}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
+
+/* ── Mobile card view ── */
+function UserCard({ user, roles, onAssignRole, onRemoveRole }: {
+    user: User;
+    roles: Role[];
+    onAssignRole: (userId: string, roleId: string) => Promise<void>;
+    onRemoveRole: (userId: string, roleId: string) => Promise<void>;
+}) {
+    return (
+        <div className="border border-border/60 rounded-lg p-3 space-y-2">
+            <div className="flex items-start justify-between">
+                <div className="min-w-0">
+                    <p className="text-sm font-medium text-card-foreground truncate">
+                        {user.display_name ?? user.username ?? user.email.split("@")[0]}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                    <Badge className={`text-[10px] font-medium border-0 px-1.5 py-0 ${
+                        user.is_active
+                            ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10"
+                            : "bg-red-500/10 text-red-600 hover:bg-red-500/10"
+                    }`}>
+                        {user.is_active ? "Aktiv" : "Inaktiv"}
+                    </Badge>
+                    <UserActions user={user} roles={roles} onAssignRole={onAssignRole} onRemoveRole={onRemoveRole} />
+                </div>
+            </div>
+            <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-1">
+                    {user.roles.map(role => (
+                        <Badge
+                            key={role.id}
+                            className={`text-[10px] font-medium border-0 px-1.5 py-0 ${getRoleColor(role.name)}`}
+                        >
+                            {role.name}
+                        </Badge>
+                    ))}
+                    {user.roles.length === 0 && (
+                        <span className="text-[10px] text-muted-foreground/50">Keine Rolle</span>
+                    )}
+                </div>
+                {user.last_login_at && (
+                    <span className="text-[10px] text-muted-foreground tabular-nums">
+                        {new Date(user.last_login_at).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })}
+                    </span>
+                )}
+            </div>
+        </div>
+    );
+}
+
 export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTableProps) {
     if (users.length === 0) {
         return (
@@ -52,27 +165,40 @@ export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTabl
     }
 
     return (
-        <div className="rounded-lg border border-border/60 max-h-[600px] overflow-auto">
-            <Table>
-                <TableHeader className="sticky top-0 z-10">
-                    <TableRow className="bg-muted hover:bg-muted border-b border-border/60">
-<TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Name</TableHead>
-                        <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground hidden md:table-cell">E-Mail</TableHead>
-                        <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Rollen</TableHead>
-                        <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground text-center hidden sm:table-cell w-20">Status</TableHead>
-                        <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground text-center hidden lg:table-cell w-28">Letzter Login</TableHead>
-                        <TableHead className="w-10" />
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {users.map(user => {
-                        const availableRoles = roles.filter(r => !user.roles.some(ur => ur.id === r.id));
-                        return (
+        <>
+            {/* Mobile: card list */}
+            <div className="space-y-2 md:hidden">
+                {users.map(user => (
+                    <UserCard
+                        key={user.id}
+                        user={user}
+                        roles={roles}
+                        onAssignRole={onAssignRole}
+                        onRemoveRole={onRemoveRole}
+                    />
+                ))}
+            </div>
+
+            {/* Desktop: table */}
+            <div className="hidden md:block rounded-lg border border-border/60 max-h-[600px] overflow-auto">
+                <Table>
+                    <TableHeader className="sticky top-0 z-10">
+                        <TableRow className="bg-muted hover:bg-muted border-b border-border/60">
+                            <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Name</TableHead>
+                            <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">E-Mail</TableHead>
+                            <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Rollen</TableHead>
+                            <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground text-center w-20">Status</TableHead>
+                            <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground text-center hidden lg:table-cell w-28">Letzter Login</TableHead>
+                            <TableHead className="w-10" />
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {users.map(user => (
                             <TableRow key={user.id} className="hover:bg-muted/30">
-                                <TableCell className="text-xs font-medium py-2.5">
-                                    {user.username ?? user.email.split("@")[0]}
+                                <TableCell className="text-xs font-medium text-card-foreground py-2.5">
+                                    {user.display_name ?? user.username ?? user.email.split("@")[0]}
                                 </TableCell>
-                                <TableCell className="text-[11px] text-muted-foreground hidden md:table-cell py-2.5 truncate max-w-[200px]">
+                                <TableCell className="text-[11px] text-muted-foreground py-2.5 truncate max-w-[200px]">
                                     {user.email}
                                 </TableCell>
                                 <TableCell className="py-2.5">
@@ -90,7 +216,7 @@ export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTabl
                                         )}
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-center hidden sm:table-cell py-2.5">
+                                <TableCell className="text-center py-2.5">
                                     <Badge className={`text-[10px] font-medium border-0 px-1.5 py-0 ${
                                         user.is_active
                                             ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10"
@@ -106,64 +232,13 @@ export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTabl
                                     }
                                 </TableCell>
                                 <TableCell className="py-2.5">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="sm" className="size-7 p-0">
-                                                <MoreHorizontal className="size-3.5" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end" className="w-48">
-                                            {availableRoles.length > 0 && (
-                                                <DropdownMenuSub>
-                                                    <DropdownMenuSubTrigger className="text-xs">
-                                                        <ShieldCheck className="size-3.5 mr-2" />
-                                                        Rolle zuweisen
-                                                    </DropdownMenuSubTrigger>
-                                                    <DropdownMenuSubContent>
-                                                        {availableRoles.map(role => (
-                                                            <DropdownMenuItem
-                                                                key={role.id}
-                                                                className="text-xs"
-                                                                onClick={() => onAssignRole(user.id, role.id)}
-                                                            >
-                                                                {role.name}
-                                                            </DropdownMenuItem>
-                                                        ))}
-                                                    </DropdownMenuSubContent>
-                                                </DropdownMenuSub>
-                                            )}
-                                            {user.roles.length > 0 && (
-                                                <DropdownMenuSub>
-                                                    <DropdownMenuSubTrigger className="text-xs">
-                                                        <ShieldX className="size-3.5 mr-2" />
-                                                        Rolle entfernen
-                                                    </DropdownMenuSubTrigger>
-                                                    <DropdownMenuSubContent>
-                                                        {user.roles.map(role => (
-                                                            <DropdownMenuItem
-                                                                key={role.id}
-                                                                className="text-xs text-destructive"
-                                                                onClick={() => onRemoveRole(user.id, role.id)}
-                                                            >
-                                                                {role.name}
-                                                            </DropdownMenuItem>
-                                                        ))}
-                                                    </DropdownMenuSubContent>
-                                                </DropdownMenuSub>
-                                            )}
-                                            {availableRoles.length === 0 && user.roles.length === 0 && (
-                                                <DropdownMenuItem disabled className="text-xs text-muted-foreground">
-                                                    Keine Aktionen verfügbar
-                                                </DropdownMenuItem>
-                                            )}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <UserActions user={user} roles={roles} onAssignRole={onAssignRole} onRemoveRole={onRemoveRole} />
                                 </TableCell>
                             </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </div>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </>
     );
 }
