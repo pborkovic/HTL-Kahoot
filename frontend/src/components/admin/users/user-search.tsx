@@ -10,14 +10,14 @@ interface UserSearchProps {
 
 export function UserSearch({ searchTerm, onSearchChange, resultCount, totalCount }: UserSearchProps) {
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
                 <Input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => onSearchChange(e.target.value)}
-                    placeholder="Nach Name, E-Mail, ID oder Rolle suchen..."
+                    placeholder="Nach Name, E-Mail oder Rolle suchen..."
                     className="pl-8 h-9 text-xs"
                 />
             </div>
