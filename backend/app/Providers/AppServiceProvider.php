@@ -2,14 +2,18 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
 use App\Models\Question;
 use App\Models\QuestionPool;
 use App\Models\Quiz;
+use App\Models\Role;
 use App\Models\Session;
 use App\Models\User;
+use App\Policies\PermissionPolicy;
 use App\Policies\QuestionPolicy;
 use App\Policies\QuestionPoolPolicy;
 use App\Policies\QuizPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\Contracts\PermissionRepositoryContract;
@@ -107,6 +111,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(
             class: Session::class,
             policy: SessionPolicy::class
+        );
+        Gate::policy(
+            class: Role::class,
+            policy: RolePolicy::class
+        );
+        Gate::policy(
+            class: Permission::class,
+            policy: PermissionPolicy::class
         );
     }
 }
