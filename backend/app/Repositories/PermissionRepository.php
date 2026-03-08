@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Permission;
@@ -10,6 +12,6 @@ class PermissionRepository extends BaseRepository implements PermissionRepositor
 {
     public function __construct(Permission $model)
     {
-        parent::__construct($model);
+        parent::__construct(model: $model);
     }
 }
