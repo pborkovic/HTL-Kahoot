@@ -1,6 +1,6 @@
 "use client";
 
-import { UsersRound } from "lucide-react";
+import { UsersRound, Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useAdminUsers } from "@/hooks/use-admin-users";
 import { UserSearch } from "@/components/admin/users/user-search";
@@ -11,25 +11,46 @@ export default function AdminUsersPage() {
     const { user: currentUser } = useAuth();
     const admin = useAdminUsers();
 
-    const isSuperadmin = currentUser?.roles?.some(r => r.name === "superadmin") ?? false;
+    const isSuperadmin = currentUser?.roles?.some(r => r.name === "superadmin" || r.name === "admin") ?? false;
 
     return (
         <div className="flex-1">
             <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
                 {/* Header */}
-                <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-lg bg-foreground flex items-center justify-center">
-                        <UsersRound className="size-4.5 text-primary-foreground" />
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="size-9 rounded-lg bg-foreground flex items-center justify-center shrink-0">
+                            <UsersRound className="size-4.5 text-primary-foreground" />
+                        </div>
+                        <div>
+                            <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+                                Benutzerverwaltung
+                            </h1>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                                Benutzerkonten und Rollen verwalten.
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                            Benutzerverwaltung
-                        </h1>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                            Benutzerkonten und Rollen verwalten.
-                        </p>
-                    </div>
+                    <RolesPanel
+                        roles={admin.roles}
+                        permissions={admin.permissions}
+                        isSuperadmin={isSuperadmin}
+                        onCreateRole={admin.createRole}
+                        onDeleteRole={admin.deleteRole}
+                        onAddPermission={admin.addPermissionToRole}
+                        onRemovePermission={admin.removePermissionFromRole}
+                        onCreatePermission={admin.createPermission}
+                        onDeletePermission={admin.deletePermission}
+                    />
                 </div>
+
+                {/* Error */}
+                {admin.error && (
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-600 text-xs">
+                        <AlertCircle className="size-4 shrink-0" />
+                        <span>{admin.error}</span>
+                    </div>
+                )}
 
                 {/* Users section */}
                 <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
@@ -48,27 +69,21 @@ export default function AdminUsersPage() {
                         />
                     </div>
                     <div className="px-4 sm:px-5 pb-4 sm:pb-5">
-                        <UserTable
-                            users={admin.filteredUsers}
-                            roles={admin.roles}
-                            onAssignRole={admin.assignRole}
-                            onRemoveRole={admin.removeRole}
-                        />
+                        {admin.loading ? (
+                            <div className="flex items-center justify-center py-12 gap-2 text-muted-foreground">
+                                <Loader2 className="size-4 animate-spin" />
+                                <span className="text-xs">Laden...</span>
+                            </div>
+                        ) : (
+                            <UserTable
+                                users={admin.filteredUsers}
+                                roles={admin.roles}
+                                onAssignRole={admin.assignRole}
+                                onRemoveRole={admin.removeRole}
+                            />
+                        )}
                     </div>
                 </div>
-
-                {/* Roles & Permissions (Superadmin only) */}
-                <RolesPanel
-                    roles={admin.roles}
-                    permissions={admin.permissions}
-                    isSuperadmin={isSuperadmin}
-                    onCreateRole={admin.createRole}
-                    onDeleteRole={admin.deleteRole}
-                    onAddPermission={admin.addPermissionToRole}
-                    onRemovePermission={admin.removePermissionFromRole}
-                    onCreatePermission={admin.createPermission}
-                    onDeletePermission={admin.deletePermission}
-                />
             </div>
         </div>
     );
