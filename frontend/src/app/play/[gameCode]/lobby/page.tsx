@@ -62,10 +62,35 @@ export default function StudentLobby() {
         return `${m}:${s.toString().padStart(2, "0")}`;
     };
 
+    /* HTML-Hintergrund anpassen + Overscroll-Bounce verhindern */
+    useEffect(() => {
+        const html = document.documentElement;
+        const body = document.body;
+        const prev = {
+            htmlBg: html.style.backgroundColor,
+            bodyBg: body.style.backgroundColor,
+            htmlOverflow: html.style.overflow,
+            bodyOverflow: body.style.overflow,
+            bodyOverscroll: body.style.overscrollBehavior,
+        };
+        html.style.backgroundColor = "#2D3436";
+        body.style.backgroundColor = "#2D3436";
+        html.style.overflow = "hidden";
+        body.style.overflow = "hidden";
+        body.style.overscrollBehavior = "none";
+        return () => {
+            html.style.backgroundColor = prev.htmlBg;
+            body.style.backgroundColor = prev.bodyBg;
+            html.style.overflow = prev.htmlOverflow;
+            body.style.overflow = prev.bodyOverflow;
+            body.style.overscrollBehavior = prev.bodyOverscroll;
+        };
+    }, []);
+
     const currentPlayer = participants.find((p) => p.id === CURRENT_PLAYER_ID);
 
     return (
-        <div className="fixed inset-0 z-50 flex flex-col items-center bg-text overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex flex-col items-center bg-text overflow-y-auto overscroll-none">
             {/* Radialer Glow */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full bg-primary/4 blur-[100px]" />
