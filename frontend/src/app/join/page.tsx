@@ -152,7 +152,7 @@ export default function JoinPage(): ReactNode {
         void handleJoin();
       }
     },
-    [digits, pin, handleJoin]
+    [digits, handleJoin, pin.length]
   );
 
   if (authLoading) {
@@ -170,7 +170,7 @@ export default function JoinPage(): ReactNode {
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-text overflow-hidden">
       {/* Subtle radial glow behind the content */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-[600px] rounded-full bg-primary/[0.04] blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full bg-primary/4 blur-[100px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg px-6 flex flex-col items-center">
@@ -227,11 +227,11 @@ export default function JoinPage(): ReactNode {
                   transition-all duration-200
                   ${
                     digit
-                      ? "bg-white text-[#2D3436] border-primary shadow-[0_0_16px_rgba(211,175,55,0.25)]"
-                      : "bg-white/[0.07] text-white/60 border-white/[0.12] hover:border-white/20"
+                      ? "bg-white text-text border-primary shadow-[0_0_16px_rgba(211,175,55,0.25)]"
+                      : "bg-white/[0.07] text-white/60 border-white/12 hover:border-white/20"
                   }
-                  focus:border-primary focus:bg-white/[0.12] focus:text-white focus:shadow-[0_0_20px_rgba(211,175,55,0.15)]
-                  ${digit ? "focus:bg-white focus:text-[#2D3436]" : ""}
+                  focus:border-primary focus:bg-white/12 focus:text-white focus:shadow-[0_0_20px_rgba(211,175,55,0.15)]
+                  ${digit ? "focus:bg-white focus:text-text" : ""}
                 `}
               />
             </div>
@@ -257,12 +257,12 @@ export default function JoinPage(): ReactNode {
             font-semibold rounded-xl
             transition-all duration-300 ease-out
             flex items-center justify-center gap-2.5
-            focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-[#2D3436]
+            focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-text
             disabled:cursor-not-allowed
             ${
               isComplete
-                ? "bg-primary text-[#2D3436] hover:bg-[#B8982E] hover:shadow-[0_0_30px_rgba(211,175,55,0.3)] scale-100 hover:scale-[1.02] active:scale-[0.98]"
-                : "bg-white/[0.06] text-white/30 border border-white/[0.08]"
+                ? "bg-primary text-text hover:bg-[#B8982E] hover:shadow-[0_0_30px_rgba(211,175,55,0.3)] scale-100 hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-white/6 text-white/30 border border-white/8"
             }
           `}
         >
@@ -280,7 +280,7 @@ export default function JoinPage(): ReactNode {
 
         {/* User badge */}
         {displayName && (
-          <div className="mt-8 flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.08]">
+          <div className="mt-8 flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/6 border border-white/8">
             <div className="size-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
               {displayName.charAt(0).toUpperCase()}
             </div>
