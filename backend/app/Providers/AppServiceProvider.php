@@ -17,10 +17,12 @@ use App\Policies\RolePolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\Contracts\PermissionRepositoryContract;
+use App\Repositories\Contracts\QuestionRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Repositories\PermissionRepository;
+use App\Repositories\QuestionRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\SessionRepository;
 use App\Repositories\UserRepository;
@@ -29,8 +31,10 @@ use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
 use App\Services\Contracts\SessionServiceContract;
+use App\Services\Contracts\QuestionImportServiceContract;
 use App\Services\Contracts\UserServiceContract;
 use App\Services\PermissionService;
+use App\Services\QuestionImportService;
 use App\Services\RoleService;
 use App\Services\SessionService;
 use App\Services\UserService;
@@ -61,6 +65,10 @@ class AppServiceProvider extends ServiceProvider
             abstract: SessionRepositoryContract::class,
             concrete: SessionRepository::class
         );
+        $this->app->bind(
+            abstract: QuestionRepositoryContract::class,
+            concrete: QuestionRepository::class
+        );
 
         // Services
         $this->app->bind(
@@ -82,6 +90,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: SessionServiceContract::class,
             concrete: SessionService::class
+        );
+        $this->app->bind(
+            abstract: QuestionImportServiceContract::class,
+            concrete: QuestionImportService::class
         );
     }
 
