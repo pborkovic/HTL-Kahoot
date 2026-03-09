@@ -4,6 +4,7 @@ namespace App\Services\Contracts;
 
 use App\DTOs\CreateSessionDto;
 use App\Models\Session;
+use App\Models\SessionParticipant;
 use App\Models\User;
 use App\Services\Base\Contracts\BaseServiceContract;
 
@@ -17,6 +18,24 @@ interface SessionServiceContract extends BaseServiceContract
      * @return Session The created session with quiz and host relations loaded.
      */
     public function createGame(CreateSessionDto $dto, User $host): Session;
+
+    /**
+     * Join an existing game session by its game pin.
+     *
+     * Looks up the session by game pin, verifies it is in the 'lobby' status,
+     * and creates a SessionParticipant record. If an authenticated user is
+     * provided and already participates, their existing participant record is
+     * returned instead of creating a duplicate.
+     *
+     * @param string $gamePin The 8-digit game pin of the session to join.
+     * @param User   $user    The authenticated user joining the session.
+     *
+     * @return SessionParticipant The created or existing participant record.
+     *
+     * @throws \InvalidArgumentException If no session with the given game pin exists.
+     * @throws \RuntimeException         If the session is not in 'lobby' status.
+     */
+    public function joinSession(string $gamePin, User $user): SessionParticipant;
 
     /**
      * Generate a base64-encoded SVG QR code data URI for the given game pin.
