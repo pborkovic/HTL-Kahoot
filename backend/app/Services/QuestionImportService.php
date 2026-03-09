@@ -73,7 +73,7 @@ class QuestionImportService implements QuestionImportServiceContract
         if (isset($data['questions']) && is_array($data['questions'])) {
             $data = $data['questions'];
         }
-        if (!is_array($data) || !array_is_list($data)) {
+        if (!is_array($data) || !array_is_list(array: $data)) {
             throw new InvalidArgumentException('JSON must be an array of questions or an object with a "questions" key.');
         }
 
