@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
     LayoutDashboard,
+    ClipboardList,
     MonitorPlay,
     Users,
     LogOut,
@@ -38,6 +39,11 @@ const navItems = [
         title: "Lehrer Dashboard",
         href: "/teacher/dashboard",
         icon: LayoutDashboard,
+    },
+    {
+        title: "Fragen",
+        href: "/teacher/questions",
+        icon: ClipboardList,
     },
 ];
 
