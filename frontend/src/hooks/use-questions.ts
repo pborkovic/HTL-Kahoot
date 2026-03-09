@@ -28,6 +28,7 @@ export interface UseQuestionsReturn {
     toggleSelect: (id: string) => void;
     toggleSelectAll: () => void;
     allSelected: boolean;
+    refetch: () => void;
 }
 
 export function useQuestions(): UseQuestionsReturn {
@@ -117,6 +118,10 @@ export function useQuestions(): UseQuestionsReturn {
 
     const allSelected = displayQuestions.length > 0 && selectedIds.size === displayQuestions.length;
 
+    function refetch(): void {
+        void fetchQuestions();
+    }
+
     return {
         questions,
         displayQuestions,
@@ -137,6 +142,7 @@ export function useQuestions(): UseQuestionsReturn {
         toggleSelect,
         toggleSelectAll,
         allSelected,
+        refetch,
     };
 }
 
