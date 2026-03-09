@@ -21,6 +21,43 @@ export function removeStoredToken(): void {
   localStorage.removeItem(TOKEN_KEY);
 }
 
+export async function apiUpload<T>(
+  path: string,
+  formData: FormData,
+): Promise<T> {
+  const token = getStoredToken();
+
+  const headers: HeadersInit = {
+    Accept: "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const body: ApiErrorBody | null = await response.json().catch((): null => null);
+
+    let errorMessage: string;
+    if (body?.errors) {
+      errorMessage = Object.values(body.errors).flat().join(". ");
+    } else if (body?.message) {
+      errorMessage = body.message;
+    } else if (body?.error) {
+      errorMessage = body.error;
+    } else {
+      errorMessage = friendlyStatusMessage(response.status);
+    }
+
+    throw new ApiError(response.status, errorMessage);
+  }
+
+  return response.json() as Promise<T>;
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
