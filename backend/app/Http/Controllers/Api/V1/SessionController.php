@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\DTOs\CreateSessionDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateSessionRequest;
+use App\Http\Requests\Api\V1\JoinSessionRequest;
 use App\Http\Resources\Api\V1\SessionResource;
 use App\Models\Session;
 use App\Services\Contracts\SessionServiceContract;
 use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Items;
@@ -151,6 +156,104 @@ class SessionController extends Controller
                     'message' => $e->getMessage(),
                 ],
                 status: 500
+            );
+        }
+    }
+
+    #[Post(
+        path: '/api/v1/sessions/join',
+        description: 'Join an existing game session using an 8-digit game pin. The authenticated user\'s display name is used as the participant nickname.',
+        summary: 'Join a game session by game pin',
+        security: [['sanctum' => []]],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                required: ['game_pin'],
+                properties: [
+                    new Property(
+                        property: 'game_pin',
+                        description: 'The 8-digit game pin',
+                        type: 'string',
+                        example: '48291037',
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Sessions'],
+        responses: [
+            new Response(
+                response: 200,
+                description: 'Successfully joined the session',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'participant_id', type: 'string', format: 'uuid'),
+                        new Property(property: 'session_id', type: 'string', format: 'uuid'),
+                        new Property(property: 'game_pin', type: 'string', example: '48291037'),
+                        new Property(property: 'nickname', type: 'string', example: 'Max M.'),
+                        new Property(property: 'status', type: 'string', example: 'lobby'),
+                    ],
+                ),
+            ),
+            new Response(
+                response: 401,
+                description: 'Unauthenticated',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'message', type: 'string', example: 'Unauthenticated.'),
+                    ],
+                ),
+            ),
+            new Response(
+                response: 404,
+                description: 'Game pin not found',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'error', type: 'string', example: 'Kein Spiel mit diesem Code gefunden.'),
+                    ],
+                ),
+            ),
+            new Response(
+                response: 409,
+                description: 'Session not in lobby state',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'error', type: 'string', example: 'Dieses Spiel hat bereits begonnen oder ist beendet.'),
+                    ],
+                ),
+            ),
+            new Response(
+                response: 422,
+                description: 'Validation error',
+            ),
+        ],
+    )]
+    public function join(JoinSessionRequest $request): JsonResponse
+    {
+        try {
+            $participant = $this->sessionService->joinSession(
+                gamePin: $request->validated('game_pin'),
+                user: $request->user(),
+            );
+
+            return response()->json(
+                data: [
+                    'participant_id' => $participant->id,
+                    'session_id' => $participant->session_id,
+                    'game_pin' => $request->validated('game_pin'),
+                    'nickname' => $participant->nickname,
+                    'status' => $participant->session->status,
+                ],
+                status: 200
+            );
+        } catch (InvalidArgumentException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 404
+            );
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
             );
         }
     }

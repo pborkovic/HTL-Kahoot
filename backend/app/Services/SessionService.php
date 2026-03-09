@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\DTOs\CreateSessionDto;
 use App\Models\Session;
+use App\Models\SessionParticipant;
 use App\Models\User;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Services\Base\BaseService;
 use App\Services\Contracts\SessionServiceContract;
+use InvalidArgumentException;
+use RuntimeException;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SessionService extends BaseService implements SessionServiceContract
@@ -39,6 +44,42 @@ class SessionService extends BaseService implements SessionServiceContract
         ]);
 
         return $session->load(relations: ['quiz', 'host']);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function joinSession(string $gamePin, User $user): SessionParticipant
+    {
+        $session = $this->repository->findByGamePin(gamePin: $gamePin);
+
+        if (!$session) {
+            throw new InvalidArgumentException(message: 'Kein Spiel mit diesem Code gefunden.');
+        }
+
+        if ($session->status !== 'lobby') {
+            throw new RuntimeException(message: 'Dieses Spiel hat bereits begonnen oder ist beendet.');
+        }
+
+        $existing = $session->participants()
+            ->where(column: 'user_id', operator: '=', value: $user->id)
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        $nickname = $user->display_name ?? $user->username ?? explode(separator: '@', string: $user->email)[0];
+
+        return $session->participants()->create(attributes: [
+            'user_id' => $user->id,
+            'nickname' => $nickname,
+            'total_score' => 0,
+            'is_connected' => true,
+            'joined_at' => now(),
+        ]);
     }
 
     /**
