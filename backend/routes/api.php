@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('questions')->group(function () {
             Route::get('/', [QuestionController::class, 'index']);
             Route::post('/', [QuestionController::class, 'store']);
+            Route::post('import', [QuestionController::class, 'import']);
             Route::post('{id}/restore', [QuestionController::class, 'restore']);
             Route::get('{question}/versions', [QuestionController::class, 'versions']);
             Route::patch('{question}/publish', [QuestionController::class, 'publish']);
