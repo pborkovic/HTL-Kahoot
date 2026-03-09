@@ -48,7 +48,15 @@ class QuestionImportService implements QuestionImportServiceContract
      *
      * @param string $content Raw JSON string.
      *
-     * @return array<int, array{type: string, title: string, answer_options: array<int, array{text: string, is_correct: bool, sort_order: int}>}>
+     * @return array<int, array{
+     *     type: string,
+     *     title: string,
+     *     answer_options: array<int, array{
+     *         text: string,
+     *         is_correct: bool,
+     *         sort_order: int
+     *     }>
+     * }>
      *
      * @throws InvalidArgumentException|JsonException If the JSON is malformed or has an unexpected structure.
      *
@@ -111,7 +119,11 @@ class QuestionImportService implements QuestionImportServiceContract
      *
      * @param string $content Raw GIFT format content.
      *
-     * @return array<int, array{type: string, title: string, answer_options: array}>
+     * @return array<int, array{
+     *     type: string,
+     *     title: string,
+     *     answer_options: array
+     * }>
      *
      * @see https://docs.moodle.org/en/GIFT_format
      *
@@ -295,11 +307,12 @@ class QuestionImportService implements QuestionImportServiceContract
      * @return array{
      *     type: string,
      *     title: string,
-     *     answer_options: array<int,
-     *     array{text: string,
-     *     is_correct: bool,
-     *     sort_order: int}>
-     *     }
+     *     answer_options: array<int, array{
+     *         text: string,
+     *         is_correct: bool,
+     *         sort_order: int
+     *     }>
+     * }
      *
      * @author Philipp Borkovic
      */
@@ -362,16 +375,15 @@ class QuestionImportService implements QuestionImportServiceContract
      * @return array{
      *     type: string,
      *     title: string,
-     *     answer_options: array<int,
-     *     array{
-     *          text: string,
-     *          is_correct: bool,
-     *          sort_order: int
-     *      }>
-     *     }
+     *     answer_options: array<int, array{
+     *         text: string,
+     *         is_correct: bool,
+     *         sort_order: int
+     *     }>
+     * }
      *
      * @author Philipp Borkovic
-     **/
+     */
     private function parseGiftMultipleChoice(string $answerContent, string $title): array
     {
         $options        = $this->extractGiftOptions(content: $answerContent);
@@ -420,9 +432,17 @@ class QuestionImportService implements QuestionImportServiceContract
      * @param string $answerContent The raw answer choices text.
      * @param string $title         The question title.
      *
-     * @return array{type: string, title: string, answer_options: array<int, array{text: string, is_correct: bool, sort_order: int}>}
+     * @return array{
+     *     type: string,
+     *     title: string,
+     *     answer_options: array<int, array{
+     *         text: string,
+     *         is_correct: bool,
+     *         sort_order: int
+     *     }>
+     * }
      *
-     *
+     * @author Philipp Borkovic
      */
     private function parseGiftShortAnswer(string $answerContent, string $title): array
     {
@@ -454,7 +474,15 @@ class QuestionImportService implements QuestionImportServiceContract
      * @param string $answerContent The raw answer choices text.
      * @param string $title         The question title.
      *
-     * @return array{type: string, title: string, answer_options: array<int, array{text: string, is_correct: bool, sort_order: int}>}
+     * @return array{
+     *     type: string,
+     *     title: string,
+     *     answer_options: array<int, array{
+     *         text: string,
+     *         is_correct: bool,
+     *         sort_order: int
+     *     }>
+     * }
      *
      * @author Philipp Borkovic
      */
@@ -505,7 +533,15 @@ class QuestionImportService implements QuestionImportServiceContract
      * @param string $answerContent The raw answer text (leading # already present).
      * @param string $title         The question title.
      *
-     * @return array{type: string, title: string, answer_options: array<int, array{text: string, is_correct: bool, sort_order: int}>}
+     * @return array{
+     *     type: string,
+     *     title: string,
+     *     answer_options: array<int, array{
+     *         text: string,
+     *         is_correct: bool,
+     *         sort_order: int
+     *     }>
+     * }
      *
      * @author Philipp Borkovic
      */
@@ -538,7 +574,11 @@ class QuestionImportService implements QuestionImportServiceContract
      *
      * @param string $content The raw answer choices text inside braces.
      *
-     * @return array<int, array{text: string, is_correct: bool, percentage: int|null}>
+     * @return array<int, array{
+     *     text: string,
+     *     is_correct: bool,
+     *     percentage: int|null
+     * }>
      *
      * @author Philipp Borkovic
      */
@@ -684,10 +724,19 @@ class QuestionImportService implements QuestionImportServiceContract
      * and collects results. Failures are caught individually so that one bad
      * question does not abort the entire import.
      *
-     * @param array<int, array{type: string, title: string, answer_options: array}> $questions Normalised question data.
+     * @param array<int, array{
+     *     type: string,
+     *     title: string,
+     *     answer_options: array
+     * }> $questions Normalised question data.
      * @param User $user The authenticated user performing the import.
      *
-     * @return array{imported: int, failed: int, errors: array<int, string>, questions: array<int, Question>}
+     * @return array{
+     *     imported: int,
+     *     failed: int,
+     *     errors: array<int, string>,
+     *     questions: array<int, Question>
+     * }
      *
      * @author Philipp Borkovic
      */
