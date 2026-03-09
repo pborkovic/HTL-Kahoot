@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Filters\QuestionFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateQuestionRequest;
 use App\Http\Requests\Api\V1\ImportQuestionsRequest;
@@ -13,9 +12,9 @@ use App\Http\Resources\Api\V1\QuestionResource;
 use App\Http\Resources\Api\V1\QuestionVersionResource;
 use App\Models\Question;
 use App\Services\Contracts\QuestionImportServiceContract;
+use App\Services\Contracts\QuestionServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes\Delete;
 use OpenApi\Attributes\Get;
 use OpenApi\Attributes\Items;
@@ -32,6 +31,7 @@ use OpenApi\Attributes\Schema;
 class QuestionController extends Controller
 {
     public function __construct(
+        private readonly QuestionServiceContract $questionService,
         private readonly QuestionImportServiceContract $importService,
     ) {}
 
@@ -61,22 +61,17 @@ class QuestionController extends Controller
     )]
     public function index(ListQuestionsRequest $request): ResourceCollection
     {
-        $this->authorize('viewAny', Question::class);
+        $this->authorize(ability: 'viewAny', arguments: Question::class);
 
-        $query = Question::query();
+        $withTrashed = $request->boolean(key: 'with_trashed') && $request->user()->hasAnyRole(roles: ['admin', 'superadmin']);
 
-        if ($request->boolean('with_trashed') && $request->user()->hasAnyRole(['admin', 'superadmin'])) {
-            $query->withTrashed();
-        }
+        $questions = $this->questionService->listFiltered(
+            filters: $request->validated(),
+            withTrashed: $withTrashed,
+            perPage: $request->integer(key: 'per_page', default: 20),
+        );
 
-        $query->with('currentVersion');
-
-        $filter = new QuestionFilter();
-        $filter->apply($query, $request->validated());
-
-        $perPage = $request->integer('per_page', 20);
-
-        return new QuestionCollection($query->paginate($perPage));
+        return new QuestionCollection(resource: $questions);
     }
 
     #[Post(
@@ -122,43 +117,14 @@ class QuestionController extends Controller
     )]
     public function store(CreateQuestionRequest $request): JsonResponse
     {
-        $this->authorize('create', Question::class);
+        $this->authorize(ability: 'create', arguments: Question::class);
 
-        $data = $request->validated();
+        $question = $this->questionService->createQuestion(
+            data: $request->validated(),
+            user: $request->user(),
+        );
 
-        $question = DB::transaction(function () use ($data, $request) {
-            $question = Question::create([
-                'created_by'   => $request->user()->id,
-                'type'         => $data['type'],
-                'is_published' => false,
-            ]);
-
-            $version = $question->versions()->create([
-                'version'            => 1,
-                'title'              => $data['title'],
-                'explanation'        => $data['explanation'] ?? null,
-                'difficulty'         => $data['difficulty'] ?? null,
-                'default_points'     => $data['default_points'] ?? 1000,
-                'default_time_limit' => $data['default_time_limit'] ?? null,
-                'randomize_options'  => $data['randomize_options'] ?? true,
-                'config'             => $data['config'] ?? [],
-                'created_by'         => $request->user()->id,
-            ]);
-
-            foreach ($data['answer_options'] ?? [] as $i => $option) {
-                $version->answerOptions()->create([
-                    'text'       => $option['text'],
-                    'is_correct' => $option['is_correct'] ?? false,
-                    'sort_order' => $option['sort_order'] ?? $i,
-                ]);
-            }
-
-            $question->update(['current_version_id' => $version->id]);
-
-            return $question->load('currentVersion.answerOptions');
-        });
-
-        return response()->json(new QuestionResource($question), 201);
+        return response()->json(data: new QuestionResource($question), status: 201);
     }
 
     #[Get(
@@ -179,11 +145,11 @@ class QuestionController extends Controller
     )]
     public function show(Question $question): JsonResponse
     {
-        $this->authorize('view', $question);
+        $this->authorize(ability: 'view', arguments: $question);
 
-        $question->load('currentVersion.answerOptions', 'currentVersion.quizQuestions');
+        $question = $this->questionService->showQuestion(question: $question);
 
-        return response()->json(new QuestionResource($question));
+        return response()->json(data: new QuestionResource($question));
     }
 
     #[Put(
@@ -232,44 +198,15 @@ class QuestionController extends Controller
     )]
     public function update(UpdateQuestionRequest $request, Question $question): JsonResponse
     {
-        $this->authorize('update', $question);
+        $this->authorize(ability: 'update', arguments: $question);
 
-        $data = $request->validated();
+        $question = $this->questionService->updateQuestion(
+            question: $question,
+            data: $request->validated(),
+            user: $request->user(),
+        );
 
-        $question = DB::transaction(function () use ($data, $request, $question) {
-            if (!empty($data['type'])) {
-                $question->update(['type' => $data['type']]);
-            }
-
-            $currentVersion = $question->currentVersion;
-            $nextVersion    = $question->versions()->max('version') + 1;
-
-            $version = $question->versions()->create([
-                'version'            => $nextVersion,
-                'title'              => $data['title'] ?? $currentVersion->title,
-                'explanation'        => array_key_exists('explanation', $data) ? $data['explanation'] : $currentVersion->explanation,
-                'difficulty'         => array_key_exists('difficulty', $data) ? $data['difficulty'] : $currentVersion->difficulty,
-                'default_points'     => $data['default_points'] ?? $currentVersion->default_points,
-                'default_time_limit' => array_key_exists('default_time_limit', $data) ? $data['default_time_limit'] : $currentVersion->default_time_limit,
-                'randomize_options'  => $data['randomize_options'] ?? $currentVersion->randomize_options,
-                'config'             => $data['config'] ?? $currentVersion->config,
-                'created_by'         => $request->user()->id,
-            ]);
-
-            foreach ($data['answer_options'] ?? [] as $i => $option) {
-                $version->answerOptions()->create([
-                    'text'       => $option['text'],
-                    'is_correct' => $option['is_correct'] ?? false,
-                    'sort_order' => $option['sort_order'] ?? $i,
-                ]);
-            }
-
-            $question->update(['current_version_id' => $version->id]);
-
-            return $question->load('currentVersion.answerOptions');
-        });
-
-        return response()->json(new QuestionResource($question));
+        return response()->json(data: new QuestionResource($question));
     }
 
     #[Delete(
@@ -290,11 +227,11 @@ class QuestionController extends Controller
     )]
     public function destroy(Question $question): JsonResponse
     {
-        $this->authorize('delete', $question);
+        $this->authorize(ability: 'delete', arguments: $question);
 
-        $question->delete();
+        $this->questionService->deleteQuestion(question: $question);
 
-        return response()->json(null, 204);
+        return response()->json(data: null, status: 204);
     }
 
     #[Post(
@@ -315,13 +252,11 @@ class QuestionController extends Controller
     )]
     public function restore(string $id): JsonResponse
     {
-        $question = Question::withTrashed()->findOrFail($id);
+        $question = $this->questionService->restoreQuestion(id: $id);
 
-        $this->authorize('restore', $question);
+        $this->authorize(ability: 'restore', arguments: $question);
 
-        $question->restore();
-
-        return response()->json(new QuestionResource($question->load('currentVersion')));
+        return response()->json(data: new QuestionResource($question));
     }
 
     #[Get(
@@ -350,11 +285,11 @@ class QuestionController extends Controller
     )]
     public function versions(Question $question): JsonResponse
     {
-        $this->authorize('viewVersions', $question);
+        $this->authorize(ability: 'viewVersions', arguments: $question);
 
-        $versions = $question->versions()->with('answerOptions')->orderBy('version')->get();
+        $versions = $this->questionService->getVersions(question: $question);
 
-        return response()->json(QuestionVersionResource::collection($versions));
+        return response()->json(data: QuestionVersionResource::collection(resource: $versions));
     }
 
     #[Patch(
@@ -375,11 +310,11 @@ class QuestionController extends Controller
     )]
     public function publish(Question $question): JsonResponse
     {
-        $this->authorize('publish', $question);
+        $this->authorize(ability: 'publish', arguments: $question);
 
-        $question->update(['is_published' => !$question->is_published]);
+        $question = $this->questionService->togglePublish(question: $question);
 
-        return response()->json(new QuestionResource($question->load('currentVersion')));
+        return response()->json(data: new QuestionResource($question));
     }
 
     #[Post(
@@ -426,7 +361,7 @@ class QuestionController extends Controller
             user: $request->user(),
         );
 
-        return response()->json([
+        return response()->json(data: [
             'imported'  => $result['imported'],
             'failed'    => $result['failed'],
             'errors'    => $result['errors'],
