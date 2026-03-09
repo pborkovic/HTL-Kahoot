@@ -21,7 +21,12 @@ interface QuestionImportServiceContract
      * @param string $format  The import format: 'json' or 'gift'.
      * @param User   $user    The authenticated user performing the import.
      *
-     * @return array{imported: int, failed: int, errors: array<int, string>, questions: array<int, Question>}
+     * @return array{
+     *     imported: int,
+     *     failed: int,
+     *     errors: array<int, string>,
+     *     questions: array<int, Question>
+     * }
      *
      * @throws InvalidArgumentException If the format is unsupported.
      */
