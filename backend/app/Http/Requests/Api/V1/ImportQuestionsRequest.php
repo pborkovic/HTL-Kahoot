@@ -19,7 +19,7 @@ class ImportQuestionsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'max:5120'], 
+            'file' => ['required', 'file', 'max:5120'],
             'format' => ['required', 'string', 'in:json,gift'],
         ];
     }
