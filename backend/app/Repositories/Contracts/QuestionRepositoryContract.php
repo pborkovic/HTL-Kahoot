@@ -26,7 +26,11 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      *     default_time_limit?: int|null,
      *     randomize_options?: bool,
      *     config?: array,
-     *     answer_options?: array<int, array{text: string, is_correct?: bool, sort_order?: int}>,
+     *     answer_options?: array<int, array{
+     *         text: string,
+     *         is_correct?: bool,
+     *         sort_order?: int
+     *     }>,
      * } $data     Normalised question data.
      * @param string $userId The UUID of the user creating the question.
      *
