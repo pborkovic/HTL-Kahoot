@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Filters\QuestionFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateQuestionRequest;
+use App\Http\Requests\Api\V1\ImportQuestionsRequest;
 use App\Http\Requests\Api\V1\ListQuestionsRequest;
 use App\Http\Requests\Api\V1\UpdateQuestionRequest;
 use App\Http\Resources\Api\V1\QuestionCollection;
 use App\Http\Resources\Api\V1\QuestionResource;
 use App\Http\Resources\Api\V1\QuestionVersionResource;
 use App\Models\Question;
+use App\Services\QuestionImportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -374,5 +376,57 @@ class QuestionController extends Controller
         $question->update(['is_published' => !$question->is_published]);
 
         return response()->json(new QuestionResource($question->load('currentVersion')));
+    }
+
+    #[Post(
+        path: '/api/v1/questions/import',
+        summary: 'Import questions from file',
+        description: 'Imports questions from a JSON or Moodle GIFT format file. Creates questions and their first versions atomically. Accessible by teachers, admins and superadmins.',
+        security: [['sanctum' => []]],
+        tags: ['Questions'],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                required: ['file', 'format'],
+                properties: [
+                    new Property(property: 'file', type: 'string', format: 'binary', description: 'The import file (JSON or GIFT)'),
+                    new Property(property: 'format', type: 'string', enum: ['json', 'gift'], description: 'The file format'),
+                ]
+            )
+        ),
+        responses: [
+            new Response(response: 200, description: 'Import results', content: new JsonContent(
+                properties: [
+                    new Property(property: 'imported', type: 'integer', example: 5),
+                    new Property(property: 'failed', type: 'integer', example: 1),
+                    new Property(property: 'errors', type: 'array', items: new Items(type: 'string')),
+                    new Property(property: 'questions', type: 'array', items: new Items(ref: '#/components/schemas/Question')),
+                ]
+            )),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 403, description: 'Forbidden'),
+            new Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function import(ImportQuestionsRequest $request, QuestionImportService $importService): JsonResponse
+    {
+        $this->authorize(ability: 'create', arguments: Question::class);
+
+        $file    = $request->file(key: 'file');
+        $format  = $request->validated(key: 'format');
+        $content = $file->get();
+
+        $result = $importService->import(
+            content: $content,
+            format: $format,
+            user: $request->user(),
+        );
+
+        return response()->json([
+            'imported'  => $result['imported'],
+            'failed'    => $result['failed'],
+            'errors'    => $result['errors'],
+            'questions' => QuestionResource::collection(resource: $result['questions']),
+        ]);
     }
 }
