@@ -32,9 +32,11 @@ use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
 use App\Services\Contracts\SessionServiceContract;
 use App\Services\Contracts\QuestionImportServiceContract;
+use App\Services\Contracts\QuestionServiceContract;
 use App\Services\Contracts\UserServiceContract;
 use App\Services\PermissionService;
 use App\Services\QuestionImportService;
+use App\Services\QuestionService;
 use App\Services\RoleService;
 use App\Services\SessionService;
 use App\Services\UserService;
@@ -90,6 +92,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: SessionServiceContract::class,
             concrete: SessionService::class
+        );
+        $this->app->bind(
+            abstract: QuestionServiceContract::class,
+            concrete: QuestionService::class
         );
         $this->app->bind(
             abstract: QuestionImportServiceContract::class,
