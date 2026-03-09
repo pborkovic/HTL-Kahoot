@@ -12,7 +12,7 @@ use App\Http\Resources\Api\V1\QuestionCollection;
 use App\Http\Resources\Api\V1\QuestionResource;
 use App\Http\Resources\Api\V1\QuestionVersionResource;
 use App\Models\Question;
-use App\Services\QuestionImportService;
+use App\Services\Contracts\QuestionImportServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +31,10 @@ use OpenApi\Attributes\Schema;
 
 class QuestionController extends Controller
 {
+    public function __construct(
+        private readonly QuestionImportServiceContract $importService,
+    ) {}
+
     #[Get(
         path: '/api/v1/questions',
         summary: 'List questions',
@@ -408,7 +412,7 @@ class QuestionController extends Controller
             new Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function import(ImportQuestionsRequest $request, QuestionImportService $importService): JsonResponse
+    public function import(ImportQuestionsRequest $request): JsonResponse
     {
         $this->authorize(ability: 'create', arguments: Question::class);
 
@@ -416,7 +420,7 @@ class QuestionController extends Controller
         $format  = $request->validated(key: 'format');
         $content = $file->get();
 
-        $result = $importService->import(
+        $result = $this->importService->import(
             content: $content,
             format: $format,
             user: $request->user(),
