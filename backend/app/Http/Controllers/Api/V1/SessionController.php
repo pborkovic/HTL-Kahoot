@@ -8,6 +8,7 @@ use App\DTOs\CreateSessionDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateSessionRequest;
 use App\Http\Requests\Api\V1\JoinSessionRequest;
+use App\Http\Requests\Api\V1\SubmitAnswerRequest;
 use App\Http\Resources\Api\V1\SessionParticipantResource;
 use App\Http\Resources\Api\V1\SessionResource;
 use App\Models\Session;
@@ -34,8 +35,8 @@ class SessionController extends Controller
 
     #[Get(
         path: '/api/v1/sessions/{gamePin}',
-        summary: 'Get a session by game pin',
         description: 'Returns session details including QR code and participants list. The host of the session can access this endpoint.',
+        summary: 'Get a session by game pin',
         security: [['sanctum' => []]],
         tags: ['Sessions'],
         parameters: [
@@ -58,8 +59,8 @@ class SessionController extends Controller
 
     #[Get(
         path: '/api/v1/sessions/{gamePin}/participants',
-        summary: 'Get session participants',
         description: 'Returns the list of participants for a session. Used for polling in the lobby.',
+        summary: 'Get session participants',
         security: [['sanctum' => []]],
         tags: ['Sessions'],
         parameters: [
@@ -310,5 +311,236 @@ class SessionController extends Controller
                 status: 409
             );
         }
+    }
+
+    #[Post(
+        path: '/api/v1/sessions/{gamePin}/start',
+        description: 'Starts the game session, creating session questions and opening the first question. Only the host can start the game.',
+        summary: 'Start a game session',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Game started'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 409, description: 'Invalid session state'),
+        ]
+    )]
+    public function start(string $gamePin): JsonResponse
+    {
+        try {
+            $session = $this->sessionService->startGame(
+                gamePin: $gamePin,
+                host: request()->user(),
+            );
+
+            return response()->json(data: [
+                'data' => new SessionResource($session),
+            ]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Post(
+        path: '/api/v1/sessions/{gamePin}/next',
+        description: 'Closes the current question and opens the next one. If no more questions, finishes the game.',
+        summary: 'Advance to the next question',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Advanced to next question or finished'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 409, description: 'Invalid session state'),
+        ]
+    )]
+    public function next(string $gamePin): JsonResponse
+    {
+        try {
+            $session = $this->sessionService->nextQuestion(
+                gamePin: $gamePin,
+                host: request()->user(),
+            );
+
+            return response()->json(data: [
+                'data' => new SessionResource($session),
+            ]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/current-question',
+        description: 'Returns the current question with answer options (without correct answers) and timing information.',
+        summary: 'Get the current question',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Current question data'),
+            new Response(response: 409, description: 'No active question'),
+        ]
+    )]
+    public function currentQuestion(string $gamePin): JsonResponse
+    {
+        try {
+            $data = $this->sessionService->getCurrentQuestion(gamePin: $gamePin);
+
+            return response()->json(data: ['data' => $data]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Post(
+        path: '/api/v1/sessions/{gamePin}/answer',
+        description: 'Submit an answer for the current question. The answer must be submitted before the time limit expires.',
+        summary: 'Submit an answer',
+        security: [['sanctum' => []]],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                required: ['answer'],
+                properties: [
+                    new Property(property: 'answer', type: 'array', items: new Items(type: 'string', format: 'uuid')),
+                ],
+            ),
+        ),
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Answer submitted'),
+            new Response(response: 409, description: 'Time expired or already answered'),
+            new Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function answer(SubmitAnswerRequest $request, string $gamePin): JsonResponse
+    {
+        try {
+            $response = $this->sessionService->submitAnswer(
+                gamePin: $gamePin,
+                user: $request->user(),
+                answerData: $request->validated(),
+            );
+
+            return response()->json(data: [
+                'data' => [
+                    'is_correct'    => $response->is_correct,
+                    'score_awarded' => $response->score_awarded,
+                    'time_taken_ms' => $response->time_taken_ms,
+                ],
+            ]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/status',
+        description: 'Returns the current session status, question index, and whether a question is currently open. Used for polling.',
+        summary: 'Get session status',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Session status'),
+        ]
+    )]
+    public function status(string $gamePin): JsonResponse
+    {
+        $data = $this->sessionService->getSessionStatus(gamePin: $gamePin);
+
+        return response()->json(data: ['data' => $data]);
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/question-results',
+        description: 'Returns the answer distribution for the current question. Teacher-facing endpoint.',
+        summary: 'Get question results',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Question results with answer distribution'),
+        ]
+    )]
+    public function questionResults(string $gamePin): JsonResponse
+    {
+        try {
+            $data = $this->sessionService->getQuestionResults(gamePin: $gamePin);
+
+            return response()->json(data: ['data' => $data]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/leaderboard',
+        description: 'Returns participants ranked by total score.',
+        summary: 'Get the leaderboard',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Leaderboard'),
+        ]
+    )]
+    public function leaderboard(string $gamePin): JsonResponse
+    {
+        $data = $this->sessionService->getLeaderboard(gamePin: $gamePin);
+
+        return response()->json(data: ['data' => $data]);
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/results',
+        description: 'Returns the final game results including leaderboard and quiz metadata.',
+        summary: 'Get final game results',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Final results'),
+        ]
+    )]
+    public function results(string $gamePin): JsonResponse
+    {
+        $data = $this->sessionService->getFinalResults(gamePin: $gamePin);
+
+        return response()->json(data: ['data' => $data]);
     }
 }
