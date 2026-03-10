@@ -65,7 +65,7 @@ export function ParticipantsPanel({ participants, connectedCount }: Participants
                                             {p.nickname}
                                         </td>
                                         <td className="px-3 py-2.5 text-right">
-                                            {p.isConnected ? (
+                                            {p.is_connected ? (
                                                 <span className="inline-flex items-center gap-1.5 text-xs text-emerald-500">
                                                     <Wifi className="size-3" />
                                                     Verbunden
