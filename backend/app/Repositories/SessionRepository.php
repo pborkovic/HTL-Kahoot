@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Session;
@@ -15,6 +17,11 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
         parent::__construct(model: $model);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function findByGamePin(string $gamePin): ?Session
     {
         try {
@@ -22,10 +29,10 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
                 ->where(column: 'game_pin', operator: '=', value: $gamePin)
                 ->first();
         } catch (Exception $e) {
-            Log::error("Error finding session by game pin: {$e->getMessage()}", [
-                'model' => get_class($this->model),
+            Log::error(message: "Error finding session by game pin: {$e->getMessage()}", context: [
+                'model'    => get_class(object: $this->model),
                 'game_pin' => $gamePin,
-                'trace' => $e->getTraceAsString(),
+                'trace'    => $e->getTraceAsString(),
             ]);
 
             return null;
@@ -50,11 +57,39 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
      *
      * @author Philipp Borkovic
      */
+    public function findByGamePinOrFail(string $gamePin): Session
+    {
+        return $this->model
+            ->where(column: 'game_pin', operator: '=', value: $gamePin)
+            ->firstOrFail();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findByGamePinWithQuizQuestions(string $gamePin): Session
+    {
+        return $this->model
+            ->where(column: 'game_pin', operator: '=', value: $gamePin)
+            ->with(relations: [
+                'quiz.quizQuestions' => fn($q) => $q->orderBy(column: 'sort_order'),
+                'quiz.quizQuestions.questionVersion.answerOptions',
+            ])
+            ->firstOrFail();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function generateUniqueGamePin(): string
     {
         do {
             $pin = str_pad(
-                string: (string) random_int(0, 99999999),
+                string: (string) random_int(min: 0, max: 99999999),
                 length: 8,
                 pad_string: '0',
                 pad_type: STR_PAD_LEFT
