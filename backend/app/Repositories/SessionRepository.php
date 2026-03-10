@@ -7,7 +7,6 @@ use App\Repositories\Base\BaseRepository;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class SessionRepository extends BaseRepository implements SessionRepositoryContract
 {
@@ -33,6 +32,24 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
         }
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findByGamePinWithParticipantsOrFail(string $gamePin): Session
+    {
+        return $this->model
+            ->where(column: 'game_pin', operator: '=', value: $gamePin)
+            ->with(relations: 'participants')
+            ->firstOrFail();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function generateUniqueGamePin(): string
     {
         do {
