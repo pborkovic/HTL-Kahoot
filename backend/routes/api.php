@@ -47,6 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('sessions')->group(function () {
             Route::post('/', [SessionController::class, 'store']);
             Route::post('join', [SessionController::class, 'join']);
+            Route::get('{gamePin}', [SessionController::class, 'show']);
+            Route::get('{gamePin}/participants', [SessionController::class, 'participants']);
         });
 
         Route::prefix('users')->group(function () {
