@@ -13,19 +13,18 @@ import type { Participant } from "@/types/participant";
 const CURRENT_PLAYER_ID = "3";
 
 const MOCK_PARTICIPANTS: Participant[] = [
-    { id: "1", nickname: "Max Mustermann", isConnected: true, joinedAt: "2026-03-09T10:00:00Z" },
-    { id: "2", nickname: "Anna Schmidt", isConnected: true, joinedAt: "2026-03-09T10:00:05Z" },
-    { id: "3", nickname: "Lukas Weber", isConnected: true, joinedAt: "2026-03-09T10:00:12Z" },
-    { id: "4", nickname: "Sophie Bauer", isConnected: true, joinedAt: "2026-03-09T10:00:18Z" },
-    { id: "5", nickname: "Felix Wagner", isConnected: false, joinedAt: "2026-03-09T10:00:25Z" },
+    { id: "1", nickname: "Max Mustermann", is_connected: true, joined_at: "2026-03-09T10:00:00Z" },
+    { id: "2", nickname: "Anna Schmidt", is_connected: true, joined_at: "2026-03-09T10:00:05Z" },
+    { id: "3", nickname: "Lukas Weber", is_connected: true, joined_at: "2026-03-09T10:00:12Z" },
+    { id: "4", nickname: "Sophie Bauer", is_connected: true, joined_at: "2026-03-09T10:00:18Z" },
+    { id: "5", nickname: "Felix Wagner", is_connected: false, joined_at: "2026-03-09T10:00:25Z" },
 ];
 
 const LATE_JOINERS: Participant[] = [
-    { id: "6", nickname: "Emma Fischer", isConnected: true, joinedAt: "2026-03-09T10:01:00Z" },
-    { id: "7", nickname: "Leon Hoffmann", isConnected: true, joinedAt: "2026-03-09T10:01:10Z" },
+    { id: "6", nickname: "Emma Fischer", is_connected: true, joined_at: "2026-03-09T10:01:00Z" },
+    { id: "7", nickname: "Leon Hoffmann", is_connected: true, joined_at: "2026-03-09T10:01:10Z" },
 ];
 
-/* ── Schüler-Lobby ─────────────────────────────────────────── */
 
 export default function StudentLobby() {
     const params = useParams();
@@ -35,7 +34,6 @@ export default function StudentLobby() {
     const [elapsed, setElapsed] = useState(0);
     const lateJoinerIdx = useRef(0);
 
-    /* Simulierter WebSocket: Neue Spieler joinen */
     useEffect(() => {
         const interval = setInterval(() => {
             if (lateJoinerIdx.current < LATE_JOINERS.length) {
@@ -48,7 +46,6 @@ export default function StudentLobby() {
         return () => clearInterval(interval);
     }, []);
 
-    /* Wartezeit-Timer */
     useEffect(() => {
         const interval = setInterval(() => {
             setElapsed((prev) => prev + 1);
@@ -62,7 +59,6 @@ export default function StudentLobby() {
         return `${m}:${s.toString().padStart(2, "0")}`;
     };
 
-    /* HTML-Hintergrund anpassen + Overscroll-Bounce verhindern */
     useEffect(() => {
         const html = document.documentElement;
         const body = document.body;
