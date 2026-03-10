@@ -44,6 +44,15 @@ services:
              php artisan config:cache &&
              php-fpm"
 
+  reverb:
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+    volumes:
+      - ./backend:/var/www/backend
+      - backend_vendor:/var/www/backend/vendor
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080 --debug
+
   frontend:
     build:
       context: ./frontend
@@ -57,6 +66,7 @@ services:
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://${APP_DOMAIN:-gamquiz.localhost}/api
+      NEXT_PUBLIC_REVERB_APP_KEY: ${REVERB_APP_KEY:-htl-kahoot-key}
     command: sh -c "bun install && bun run dev --hostname 0.0.0.0 --port 3001"
 
   nginx:

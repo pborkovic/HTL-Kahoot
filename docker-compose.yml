@@ -93,6 +93,13 @@ services:
       CACHE_STORE: redis
       SESSION_DRIVER: redis
       QUEUE_CONNECTION: redis
+      BROADCAST_CONNECTION: reverb
+      REVERB_APP_ID: ${REVERB_APP_ID:-htl-kahoot}
+      REVERB_APP_KEY: ${REVERB_APP_KEY:-htl-kahoot-key}
+      REVERB_APP_SECRET: ${REVERB_APP_SECRET:-htl-kahoot-secret}
+      REVERB_HOST: reverb
+      REVERB_PORT: "8080"
+      REVERB_SCHEME: http
       LOG_CHANNEL: stderr
       LOG_LEVEL: error
     volumes:
@@ -100,6 +107,44 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gamquiz
+
+  reverb:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gamquiz-reverb
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY:?APP_KEY is required}
+      APP_URL: https://${APP_DOMAIN:?APP_DOMAIN is required}
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_DATABASE:-gamquiz}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: "6379"
+      BROADCAST_CONNECTION: reverb
+      REVERB_APP_ID: ${REVERB_APP_ID:-htl-kahoot}
+      REVERB_APP_KEY: ${REVERB_APP_KEY:-htl-kahoot-key}
+      REVERB_APP_SECRET: ${REVERB_APP_SECRET:-htl-kahoot-secret}
+      REVERB_HOST: "0.0.0.0"
+      REVERB_PORT: "8080"
+      REVERB_SCHEME: http
+    volumes:
+      - backend_storage:/var/www/backend/storage
+    depends_on:
       redis:
         condition: service_healthy
     networks:
@@ -114,6 +159,7 @@ services:
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: https://${APP_DOMAIN}/api
+      NEXT_PUBLIC_REVERB_APP_KEY: ${REVERB_APP_KEY:-htl-kahoot-key}
     depends_on:
       - backend
     networks:
@@ -131,6 +177,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - reverb
     networks:
       - gamquiz
     labels:
