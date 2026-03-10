@@ -27,7 +27,7 @@ export function PlayerList({ participants, currentPlayerId }: PlayerListProps) {
                                 : "bg-white/6 text-white/70 border-white/10"
                         }`}
                     >
-                        <span className={`size-1.5 rounded-full ${p.isConnected ? "bg-emerald-400" : "bg-amber-400"}`} />
+                        <span className={`size-1.5 rounded-full ${p.is_connected ? "bg-emerald-400" : "bg-amber-400"}`} />
                         {p.nickname}
                         {p.id === currentPlayerId && <span className="text-[10px] opacity-70">(du)</span>}
                     </span>
