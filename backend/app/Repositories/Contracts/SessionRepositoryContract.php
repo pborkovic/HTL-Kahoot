@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Contracts;
 
 use App\Models\Session;
@@ -23,9 +25,34 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      *
      * @return Session The session with participants relation loaded.
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If no session found.
+     * @throws ModelNotFoundException If no session found.
      */
     public function findByGamePinWithParticipantsOrFail(string $gamePin): Session;
+
+    /**
+     * Find a session by game pin or fail.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     *
+     * @return Session The session.
+     *
+     * @throws ModelNotFoundException If no session found.
+     */
+    public function findByGamePinOrFail(string $gamePin): Session;
+
+    /**
+     * Find a session by game pin with quiz questions and answer options loaded.
+     *
+     * Eagerly loads quiz.quizQuestions (ordered by sort_order),
+     * questionVersion, and answerOptions for starting a game.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     *
+     * @return Session The session with full quiz question hierarchy loaded.
+     *
+     * @throws ModelNotFoundException If no session found.
+     */
+    public function findByGamePinWithQuizQuestions(string $gamePin): Session;
 
     /**
      * Generate a unique 8-digit game pin.
