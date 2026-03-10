@@ -129,7 +129,8 @@ export function QuestionsGrid({
               return (
                 <TableRow
                   key={q.id}
-                  className={`transition-colors ${
+                  onDoubleClick={(): void => onViewDetail(q)}
+                  className={`transition-colors cursor-pointer ${
                     isSelected
                       ? "bg-primary/[0.04] hover:bg-primary/[0.07]"
                       : "hover:bg-muted/30"
