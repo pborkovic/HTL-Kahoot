@@ -29,8 +29,8 @@ class PermissionController extends Controller
 
     #[Get(
         path: '/api/v1/permissions',
-        summary: 'List all permissions',
         description: 'Returns all available permissions. Admin and superadmin only.',
+        summary: 'List all permissions',
         security: [['sanctum' => []]],
         tags: ['Permissions'],
         responses: [
@@ -60,19 +60,19 @@ class PermissionController extends Controller
 
     #[Post(
         path: '/api/v1/permissions',
-        summary: 'Create a permission',
         description: 'Creates a new permission. Superadmin only.',
+        summary: 'Create a permission',
         security: [['sanctum' => []]],
-        tags: ['Permissions'],
         requestBody: new RequestBody(
             required: true,
             content: new JsonContent(
                 required: ['name'],
                 properties: [
-                    new Property(property: 'name', type: 'string', maxLength: 100, description: 'Unique permission name'),
+                    new Property(property: 'name', description: 'Unique permission name', type: 'string', maxLength: 100),
                 ]
             )
         ),
+        tags: ['Permissions'],
         responses: [
             new Response(response: 201, description: 'Permission created', content: new JsonContent(properties: [new Property(property: 'data', ref: '#/components/schemas/Permission')])),
             new Response(response: 401, description: 'Unauthenticated'),
@@ -93,8 +93,8 @@ class PermissionController extends Controller
 
     #[Delete(
         path: '/api/v1/permissions/{id}',
-        summary: 'Delete a permission',
         description: 'Deletes a permission and detaches it from all roles. Superadmin only.',
+        summary: 'Delete a permission',
         security: [['sanctum' => []]],
         tags: ['Permissions'],
         parameters: [
