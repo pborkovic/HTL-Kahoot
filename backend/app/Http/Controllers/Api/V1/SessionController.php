@@ -8,6 +8,7 @@ use App\DTOs\CreateSessionDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateSessionRequest;
 use App\Http\Requests\Api\V1\JoinSessionRequest;
+use App\Http\Resources\Api\V1\SessionParticipantResource;
 use App\Http\Resources\Api\V1\SessionResource;
 use App\Models\Session;
 use App\Services\Contracts\SessionServiceContract;
@@ -15,18 +16,71 @@ use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes\Get;
 use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Items;
+use OpenApi\Attributes\Parameter;
 use OpenApi\Attributes\Post;
 use OpenApi\Attributes\Property;
 use OpenApi\Attributes\RequestBody;
 use OpenApi\Attributes\Response;
+use OpenApi\Attributes\Schema;
 
 class SessionController extends Controller
 {
     public function __construct(
         private readonly SessionServiceContract $sessionService
     ) {}
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}',
+        summary: 'Get a session by game pin',
+        description: 'Returns session details including QR code and participants list. The host of the session can access this endpoint.',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Session details', content: new JsonContent(properties: [new Property(property: 'data', ref: '#/components/schemas/SessionResource')])),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 404, description: 'Not found'),
+        ]
+    )]
+    public function show(string $gamePin): JsonResponse
+    {
+        $session = $this->sessionService->findByGamePin(gamePin: $gamePin);
+
+        return response()->json(data: [
+            'data' => new SessionResource($session),
+        ]);
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/participants',
+        summary: 'Get session participants',
+        description: 'Returns the list of participants for a session. Used for polling in the lobby.',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Participants list', content: new JsonContent(properties: [
+                new Property(property: 'data', type: 'array', items: new Items(ref: '#/components/schemas/SessionParticipant')),
+            ])),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 404, description: 'Not found'),
+        ]
+    )]
+    public function participants(string $gamePin): JsonResponse
+    {
+        $session = $this->sessionService->findByGamePin(gamePin: $gamePin);
+
+        return response()->json(data: [
+            'data' => SessionParticipantResource::collection(resource: $session->participants),
+        ]);
+    }
 
     #[Post(
         path: '/api/v1/sessions',
