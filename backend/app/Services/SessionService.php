@@ -29,6 +29,16 @@ class SessionService extends BaseService implements SessionServiceContract
      *
      * @author Philipp Borkovic
      */
+    public function findByGamePin(string $gamePin): Session
+    {
+        return $this->repository->findByGamePinWithParticipantsOrFail(gamePin: $gamePin);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function createGame(CreateSessionDto $dto, User $host): Session
     {
         $gamePin = $this->repository->generateUniqueGamePin();
