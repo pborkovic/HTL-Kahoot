@@ -7,6 +7,7 @@ use App\Models\Session;
 use App\Models\SessionParticipant;
 use App\Models\User;
 use App\Services\Base\Contracts\BaseServiceContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface SessionServiceContract extends BaseServiceContract
 {
@@ -17,6 +18,17 @@ interface SessionServiceContract extends BaseServiceContract
      * @param User $host The authenticated user who will host the session.
      * @return Session The created session with quiz and host relations loaded.
      */
+    /**
+     * Find a session by game pin with participants loaded.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     *
+     * @return Session The session with participants relation loaded.
+     *
+     * @throws ModelNotFoundException If no session found.
+     */
+    public function findByGamePin(string $gamePin): Session;
+
     public function createGame(CreateSessionDto $dto, User $host): Session;
 
     /**
