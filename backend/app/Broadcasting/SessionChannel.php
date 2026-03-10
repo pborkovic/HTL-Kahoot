@@ -7,10 +7,10 @@ namespace App\Broadcasting;
 use App\Models\User;
 use App\Repositories\Contracts\SessionRepositoryContract;
 
-class SessionChannel
+readonly class SessionChannel
 {
     public function __construct(
-        private readonly SessionRepositoryContract $repository,
+        private SessionRepositoryContract $repository,
     ) {}
 
     /**
