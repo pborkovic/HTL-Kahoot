@@ -1,55 +1,62 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { LobbyHeader } from "@/components/teacher/lobby/lobby-header";
 import { ParticipantsPanel } from "@/components/teacher/lobby/participants-panel";
 import { GamePinCard } from "@/components/teacher/lobby/game-pin-card";
 import { ParticipantCounter } from "@/components/teacher/lobby/participant-counter";
 import { StartButton } from "@/components/teacher/lobby/start-button";
+import { apiFetch } from "@/lib/api";
 import type { Participant } from "@/types/participant";
 
-/* ── Testdaten ─────────────────────────────────────────────── */
+interface SessionResponse {
+    data: {
+        id: string;
+        game_pin: string;
+        qr_code_url: string;
+        status: string;
+        participants: Participant[];
+    };
+}
 
-const MOCK_PARTICIPANTS: Participant[] = [
-    { id: "1", nickname: "Max Mustermann", isConnected: true, joinedAt: "2026-03-09T10:00:00Z" },
-    { id: "2", nickname: "Anna Schmidt", isConnected: true, joinedAt: "2026-03-09T10:00:05Z" },
-    { id: "3", nickname: "Lukas Weber", isConnected: true, joinedAt: "2026-03-09T10:00:12Z" },
-    { id: "4", nickname: "Sophie Bauer", isConnected: true, joinedAt: "2026-03-09T10:00:18Z" },
-    { id: "5", nickname: "Felix Wagner", isConnected: false, joinedAt: "2026-03-09T10:00:25Z" },
-];
-
-const LATE_JOINERS: Participant[] = [
-    { id: "6", nickname: "Emma Fischer", isConnected: true, joinedAt: "2026-03-09T10:01:00Z" },
-    { id: "7", nickname: "Leon Hoffmann", isConnected: true, joinedAt: "2026-03-09T10:01:10Z" },
-    { id: "8", nickname: "Mia Schäfer", isConnected: true, joinedAt: "2026-03-09T10:01:20Z" },
-];
-
-/* ── Lobby-Seite ───────────────────────────────────────────── */
+interface ParticipantsResponse {
+    data: Participant[];
+}
 
 export default function Lobby() {
     const params = useParams();
     const router = useRouter();
     const gameCode = params.gameCode as string;
 
-    const [participants, setParticipants] = useState<Participant[]>(MOCK_PARTICIPANTS);
+    const [participants, setParticipants] = useState<Participant[]>([]);
+    const [qrCodeUrl, setQrCodeUrl] = useState<string>();
     const [isStarting, setIsStarting] = useState(false);
-    const lateJoinerIdx = useRef(0);
+    const [isLoading, setIsLoading] = useState(true);
 
-    /* Simulierter WebSocket: Alle 4 Sekunden joined ein neuer Schüler */
+    useEffect(() => {
+        apiFetch<SessionResponse>(`/v1/sessions/${gameCode}`)
+            .then((res) => {
+                setQrCodeUrl(res.data.qr_code_url);
+                setParticipants(res.data.participants);
+            })
+            .catch((err) => {
+                console.error("Failed to load session:", err);
+            })
+            .finally(() => setIsLoading(false));
+    }, [gameCode]);
+
     useEffect(() => {
         const interval = setInterval(() => {
-            if (lateJoinerIdx.current < LATE_JOINERS.length) {
-                const newParticipant = LATE_JOINERS[lateJoinerIdx.current];
-                lateJoinerIdx.current += 1;
-                setParticipants((prev) => [...prev, newParticipant]);
-            }
-        }, 4000);
+            apiFetch<ParticipantsResponse>(`/v1/sessions/${gameCode}/participants`)
+                .then((res) => setParticipants(res.data))
+                .catch((err) => console.error("Failed to poll participants:", err));
+        }, 3000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [gameCode]);
 
-    const connectedCount = participants.filter((p) => p.isConnected).length;
+    const connectedCount = participants.filter((p) => p.is_connected).length;
 
     const handleStart = useCallback(() => {
         setIsStarting(true);
@@ -57,6 +64,14 @@ export default function Lobby() {
             router.push(`/teacher/session/${gameCode}/live`);
         }, 1500);
     }, [gameCode, router]);
+
+    if (isLoading) {
+        return (
+            <div className="flex-1 flex items-center justify-center">
+                <div className="size-6 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin" />
+            </div>
+        );
+    }
 
     return (
         <div className="flex-1">
@@ -70,7 +85,7 @@ export default function Lobby() {
                     />
 
                     <div className="flex flex-col gap-4 sm:gap-5">
-                        <GamePinCard gameCode={gameCode} />
+                        <GamePinCard gameCode={gameCode} qrCodeUrl={qrCodeUrl} />
 
                         <ParticipantCounter
                             total={participants.length}
