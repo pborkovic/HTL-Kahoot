@@ -2,13 +2,13 @@
 
 import { useState, useCallback } from "react";
 import { QrCode, Copy, Check } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
 
 interface GamePinCardProps {
     gameCode: string;
+    qrCodeUrl?: string;
 }
 
-export function GamePinCard({ gameCode }: GamePinCardProps) {
+export function GamePinCard({ gameCode, qrCodeUrl }: GamePinCardProps) {
     const [copied, setCopied] = useState(false);
 
     const copyPin = useCallback(async () => {
@@ -51,11 +51,18 @@ export function GamePinCard({ gameCode }: GamePinCardProps) {
             {/* QR-Code */}
             <div className="flex items-center justify-center">
                 <div className="rounded-lg border border-border/40 p-3 bg-white">
-                    <QRCodeSVG
-                        value={`${typeof window !== "undefined" ? window.location.origin : ""}/join/${gameCode}`}
-                        size={192}
-                        level="M"
-                    />
+                    {qrCodeUrl ? (
+                        <img
+                            src={qrCodeUrl}
+                            alt="QR Code zum Beitreten"
+                            width={192}
+                            height={192}
+                        />
+                    ) : (
+                        <div className="size-48 flex items-center justify-center text-muted-foreground">
+                            <QrCode className="size-12 opacity-20 animate-pulse" />
+                        </div>
+                    )}
                 </div>
             </div>
 
