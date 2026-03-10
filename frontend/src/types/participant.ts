@@ -1,6 +1,6 @@
 export interface Participant {
     id: string;
     nickname: string;
-    isConnected: boolean;
-    joinedAt: string;
+    is_connected: boolean;
+    joined_at: string;
 }
