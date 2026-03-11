@@ -1,76 +1,100 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type MutableRefObject, useEffect, useRef } from "react";
+import type Echo from "laravel-echo";
 
-interface ParticipantJoinedData {
-    participant_id: string;
-    nickname: string;
-    is_connected: boolean;
-    joined_at: string;
+export interface ParticipantJoinedData {
+    readonly participant_id: string;
+    readonly nickname: string;
+    readonly is_connected: boolean;
+    readonly joined_at: string;
 }
 
-interface QuestionOpenedData {
-    question_index: number;
-    total_questions: number;
+export interface QuestionOpenedData {
+    readonly question_index: number;
+    readonly total_questions: number;
 }
 
-interface QuestionClosedData {
-    question_index: number;
+export interface QuestionClosedData {
+    readonly question_index: number;
 }
 
-interface AnswerReceivedData {
-    total_responses: number;
-    total_participants: number;
+export interface AnswerReceivedData {
+    readonly total_responses: number;
+    readonly total_participants: number;
 }
 
-interface SessionChannelHandlers {
-    onParticipantJoined?: (data: ParticipantJoinedData) => void;
-    onGameStarted?: () => void;
-    onQuestionOpened?: (data: QuestionOpenedData) => void;
-    onAnswerReceived?: (data: AnswerReceivedData) => void;
-    onQuestionClosed?: (data: QuestionClosedData) => void;
-    onGameFinished?: () => void;
+export interface GameStartedData {
+    readonly status: string;
 }
 
-export function useSessionChannel(gamePin: string, handlers: SessionChannelHandlers) {
-    const handlersRef = useRef(handlers);
+export interface GameFinishedData {
+    readonly status: string;
+}
+
+export interface SessionChannelHandlers {
+    readonly onParticipantJoined?: (data: ParticipantJoinedData) => void;
+    readonly onGameStarted?: () => void;
+    readonly onQuestionOpened?: (data: QuestionOpenedData) => void;
+    readonly onAnswerReceived?: (data: AnswerReceivedData) => void;
+    readonly onQuestionClosed?: (data: QuestionClosedData) => void;
+    readonly onGameFinished?: () => void;
+}
+
+type SessionEventMap = {
+    readonly ".ParticipantJoined": ParticipantJoinedData;
+    readonly ".GameStarted": GameStartedData;
+    readonly ".QuestionOpened": QuestionOpenedData;
+    readonly ".AnswerReceived": AnswerReceivedData;
+    readonly ".QuestionClosed": QuestionClosedData;
+    readonly ".GameFinished": GameFinishedData;
+};
+
+type SessionEventName = keyof SessionEventMap;
+
+function bindListeners(
+    channel: ReturnType<Echo<"reverb">["join"]>,
+    handlersRef: MutableRefObject<SessionChannelHandlers>,
+): void {
+    const events: Array<[SessionEventName, (data: SessionEventMap[SessionEventName]) => void]> = [
+        [".ParticipantJoined", (data) => handlersRef.current.onParticipantJoined?.(data as ParticipantJoinedData)],
+        [".GameStarted", () => handlersRef.current.onGameStarted?.()],
+        [".QuestionOpened", (data) => handlersRef.current.onQuestionOpened?.(data as QuestionOpenedData)],
+        [".AnswerReceived", (data) => handlersRef.current.onAnswerReceived?.(data as AnswerReceivedData)],
+        [".QuestionClosed", (data) => handlersRef.current.onQuestionClosed?.(data as QuestionClosedData)],
+        [".GameFinished", () => handlersRef.current.onGameFinished?.()],
+    ];
+
+    for (const [event, handler] of events) {
+        channel.listen(event, handler);
+    }
+}
+
+export function useSessionChannel(gamePin: string, handlers: SessionChannelHandlers): void {
+    const handlersRef: MutableRefObject<SessionChannelHandlers> = useRef<SessionChannelHandlers>(handlers);
     handlersRef.current = handlers;
 
     useEffect(() => {
-        if (!gamePin) return;
+        if (!gamePin) {
+            return;
+        }
 
-        let mounted = true;
+        let mounted: boolean = true;
 
-        import("@/lib/echo").then(({ getEcho }) => {
-            if (!mounted) return;
+        import("@/lib/echo").then(({ getEcho }: { getEcho: () => Echo<"reverb"> }) => {
+            if (!mounted) {
+                return;
+            }
 
-            const echo = getEcho();
-            const channel = echo.join(`session.${gamePin}`);
+            const echo: Echo<"reverb"> = getEcho();
+            const channel: ReturnType<Echo<"reverb">["join"]> = echo.join(`session.${gamePin}`);
 
-            channel
-                .listen(".ParticipantJoined", (data: ParticipantJoinedData) => {
-                    handlersRef.current.onParticipantJoined?.(data);
-                })
-                .listen(".GameStarted", () => {
-                    handlersRef.current.onGameStarted?.();
-                })
-                .listen(".QuestionOpened", (data: QuestionOpenedData) => {
-                    handlersRef.current.onQuestionOpened?.(data);
-                })
-                .listen(".AnswerReceived", (data: AnswerReceivedData) => {
-                    handlersRef.current.onAnswerReceived?.(data);
-                })
-                .listen(".QuestionClosed", (data: QuestionClosedData) => {
-                    handlersRef.current.onQuestionClosed?.(data);
-                })
-                .listen(".GameFinished", () => {
-                    handlersRef.current.onGameFinished?.();
-                });
+            bindListeners(channel, handlersRef);
         });
 
-        return () => {
+        return (): void => {
             mounted = false;
-            import("@/lib/echo").then(({ getEcho }) => {
+            import("@/lib/echo").then(({ getEcho }: { getEcho: () => Echo<"reverb"> }) => {
                 getEcho().leave(`session.${gamePin}`);
             });
         };
