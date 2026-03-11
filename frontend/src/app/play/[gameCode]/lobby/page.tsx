@@ -1,50 +1,77 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { WaitingHeader } from "@/components/play/lobby/waiting-header";
 import { WaitingAnimation } from "@/components/play/lobby/waiting-animation";
 import { StatusCard } from "@/components/play/lobby/status-card";
 import { PlayerList } from "@/components/play/lobby/player-list";
+import { useSessionChannel } from "@/hooks/use-session-channel";
+import { apiFetch } from "@/lib/api";
 import type { Participant } from "@/types/participant";
 
-/* ── Testdaten ─────────────────────────────────────────────── */
+interface JoinResponse {
+    participant_id: string;
+    session_id: string;
+    game_pin: string;
+    nickname: string;
+    status: string;
+}
 
-const CURRENT_PLAYER_ID = "3";
-
-const MOCK_PARTICIPANTS: Participant[] = [
-    { id: "1", nickname: "Max Mustermann", is_connected: true, joined_at: "2026-03-09T10:00:00Z" },
-    { id: "2", nickname: "Anna Schmidt", is_connected: true, joined_at: "2026-03-09T10:00:05Z" },
-    { id: "3", nickname: "Lukas Weber", is_connected: true, joined_at: "2026-03-09T10:00:12Z" },
-    { id: "4", nickname: "Sophie Bauer", is_connected: true, joined_at: "2026-03-09T10:00:18Z" },
-    { id: "5", nickname: "Felix Wagner", is_connected: false, joined_at: "2026-03-09T10:00:25Z" },
-];
-
-const LATE_JOINERS: Participant[] = [
-    { id: "6", nickname: "Emma Fischer", is_connected: true, joined_at: "2026-03-09T10:01:00Z" },
-    { id: "7", nickname: "Leon Hoffmann", is_connected: true, joined_at: "2026-03-09T10:01:10Z" },
-];
-
+interface ParticipantsResponse {
+    data: Participant[];
+}
 
 export default function StudentLobby() {
-    const params = useParams();
-    const gameCode = params.gameCode as string;
+    const { gameCode } = useParams<{ gameCode: string }>();
+    const router = useRouter();
 
-    const [participants, setParticipants] = useState<Participant[]>(MOCK_PARTICIPANTS);
+    const [participants, setParticipants] = useState<Participant[]>([]);
+    const [nickname, setNickname] = useState("Spieler");
+    const [participantId, setParticipantId] = useState<string | null>(null);
     const [elapsed, setElapsed] = useState(0);
-    const lateJoinerIdx = useRef(0);
+    const [hasJoined, setHasJoined] = useState(false);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            if (lateJoinerIdx.current < LATE_JOINERS.length) {
-                const newParticipant = LATE_JOINERS[lateJoinerIdx.current];
-                lateJoinerIdx.current += 1;
-                setParticipants((prev) => [...prev, newParticipant]);
-            }
-        }, 5000);
+        apiFetch<JoinResponse>("/v1/sessions/join", {
+            method: "POST",
+            body: JSON.stringify({ game_pin: gameCode }),
+        })
+            .then((res) => {
+                setParticipantId(res.participant_id);
+                setNickname(res.nickname);
+                setHasJoined(true);
 
-        return () => clearInterval(interval);
-    }, []);
+                if (res.status === "active") {
+                    router.push(`/play/${gameCode}/game`);
+                    return;
+                }
+
+                apiFetch<ParticipantsResponse>(`/v1/sessions/${gameCode}/participants`)
+                    .then((pRes) => setParticipants(pRes.data))
+                    .catch((err) => console.error("Failed to load participants:", err));
+            })
+            .catch((err) => {
+                console.error("Failed to join session:", err);
+            });
+    }, [gameCode, router]);
+
+    useSessionChannel(hasJoined ? gameCode : "", {
+        onParticipantJoined: (data) => {
+            setParticipants((prev) => {
+                if (prev.some((p) => p.id === data.participant_id)) return prev;
+                return [...prev, {
+                    id: data.participant_id,
+                    nickname: data.nickname,
+                    is_connected: data.is_connected,
+                    joined_at: data.joined_at,
+                }];
+            });
+        },
+        onGameStarted: () => {
+            router.push(`/play/${gameCode}/game`);
+        },
+    });
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -53,7 +80,7 @@ export default function StudentLobby() {
         return () => clearInterval(interval);
     }, []);
 
-    const formatElapsed = (seconds: number) => {
+    const formatElapsed = (seconds: number): string => {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
         return `${m}:${s.toString().padStart(2, "0")}`;
@@ -83,8 +110,6 @@ export default function StudentLobby() {
         };
     }, []);
 
-    const currentPlayer = participants.find((p) => p.id === CURRENT_PLAYER_ID);
-
     return (
         <div className="fixed inset-0 z-50 flex flex-col items-center bg-text overflow-y-auto overscroll-none">
             {/* Radialer Glow */}
@@ -99,14 +124,14 @@ export default function StudentLobby() {
 
                 <StatusCard
                     gameCode={gameCode}
-                    nickname={currentPlayer?.nickname ?? "Spieler"}
+                    nickname={nickname}
                     playerCount={participants.length}
                     waitingSince={formatElapsed(elapsed)}
                 />
 
                 <PlayerList
                     participants={participants}
-                    currentPlayerId={CURRENT_PLAYER_ID}
+                    currentPlayerId={participantId ?? ""}
                 />
             </div>
         </div>
