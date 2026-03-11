@@ -7,6 +7,7 @@ import { ParticipantsPanel } from "@/components/teacher/lobby/participants-panel
 import { GamePinCard } from "@/components/teacher/lobby/game-pin-card";
 import { ParticipantCounter } from "@/components/teacher/lobby/participant-counter";
 import { StartButton } from "@/components/teacher/lobby/start-button";
+import { useSessionChannel } from "@/hooks/use-session-channel";
 import { apiFetch } from "@/lib/api";
 import type { Participant } from "@/types/participant";
 
@@ -20,20 +21,16 @@ interface SessionResponse {
     };
 }
 
-interface ParticipantsResponse {
-    data: Participant[];
-}
-
 export default function Lobby() {
-    const params = useParams();
+    const { gameCode } = useParams<{ gameCode: string }>();
     const router = useRouter();
-    const gameCode = params.gameCode as string;
 
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [qrCodeUrl, setQrCodeUrl] = useState<string>();
     const [isStarting, setIsStarting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    /* Initial session load */
     useEffect(() => {
         apiFetch<SessionResponse>(`/v1/sessions/${gameCode}`)
             .then((res) => {
@@ -46,23 +43,32 @@ export default function Lobby() {
             .finally(() => setIsLoading(false));
     }, [gameCode]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            apiFetch<ParticipantsResponse>(`/v1/sessions/${gameCode}/participants`)
-                .then((res) => setParticipants(res.data))
-                .catch((err) => console.error("Failed to poll participants:", err));
-        }, 3000);
-
-        return () => clearInterval(interval);
-    }, [gameCode]);
+    /* Real-time participant updates via WebSocket */
+    useSessionChannel(gameCode, {
+        onParticipantJoined: (data) => {
+            setParticipants((prev) => {
+                if (prev.some((p) => p.id === data.participant_id)) return prev;
+                return [...prev, {
+                    id: data.participant_id,
+                    nickname: data.nickname,
+                    is_connected: data.is_connected,
+                    joined_at: data.joined_at,
+                }];
+            });
+        },
+    });
 
     const connectedCount = participants.filter((p) => p.is_connected).length;
 
-    const handleStart = useCallback(() => {
+    const handleStart = useCallback(async () => {
         setIsStarting(true);
-        setTimeout(() => {
+        try {
+            await apiFetch(`/v1/sessions/${gameCode}/start`, { method: "POST" });
             router.push(`/teacher/session/${gameCode}/live`);
-        }, 1500);
+        } catch (err) {
+            console.error("Failed to start game:", err);
+            setIsStarting(false);
+        }
     }, [gameCode, router]);
 
     if (isLoading) {
