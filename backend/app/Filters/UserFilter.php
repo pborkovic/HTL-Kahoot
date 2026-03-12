@@ -1,27 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class UserFilter
+class UserFilter extends BaseFilter
 {
-    private array $allowedSorts = ['email', 'created_at', 'display_name', 'class_name', 'last_login_at'];
+    protected array $allowedSorts = [
+        'email',
+        'created_at',
+        'display_name',
+        'class_name',
+        'last_login_at'
+    ];
 
     public function apply(Builder $query, array $filters): Builder
     {
         if (!empty($filters['role'])) {
             $query->whereHas('roles', fn($q) => $q->where('name', $filters['role']));
         }
-
         if (!empty($filters['class'])) {
             $query->where('class_name', $filters['class']);
         }
-
         if (!empty($filters['class_prefix'])) {
             $query->whereRaw('LOWER(class_name) LIKE ?', [strtolower($filters['class_prefix']) . '%']);
         }
-
         if (!empty($filters['search'])) {
             $term = '%' . strtolower($filters['search']) . '%';
             $query->where(function (Builder $q) use ($term) {
@@ -31,25 +36,25 @@ class UserFilter
             });
         }
 
-        if (array_key_exists('is_active', $filters) && $filters['is_active'] !== null) {
-            $query->where('is_active', filter_var($filters['is_active'], FILTER_VALIDATE_BOOLEAN));
-        }
+        $this->applyBooleanFilter(
+            query: $query,
+            filters: $filters,
+            field: 'is_active'
+        );
 
         if (!empty($filters['auth_provider'])) {
             $query->where('auth_provider', $filters['auth_provider']);
         }
-
         if (!empty($filters['created_after'])) {
             $query->where('created_at', '>=', $filters['created_after']);
         }
-
         if (!empty($filters['created_before'])) {
             $query->where('created_at', '<=', $filters['created_before'] . ' 23:59:59');
         }
 
-        $sort      = in_array($filters['sort'] ?? null, $this->allowedSorts) ? $filters['sort'] : 'created_at';
-        $direction = strtolower($filters['direction'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
-
-        return $query->orderBy($sort, $direction);
+        return $this->applySorting(
+            query: $query,
+            filters: $filters
+        );
     }
 }
