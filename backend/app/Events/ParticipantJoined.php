@@ -4,38 +4,17 @@ declare(strict_types=1);
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
-
-class ParticipantJoined implements ShouldBroadcastNow
+class ParticipantJoined extends BaseSessionEvent
 {
-    use Dispatchable;
-    use InteractsWithSockets;
-    use SerializesModels;
-
     public function __construct(
-        private readonly string $gamePin,
+        string $gamePin,
         public readonly string $participantId,
         public readonly string $nickname,
         public readonly string $joinedAt,
-    ) {}
-
-    /**
-     * @return array<int, PresenceChannel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PresenceChannel(name: 'session.' . $this->gamePin),
-        ];
+    ) {
+        parent::__construct(gamePin: $gamePin);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function broadcastAs(): string
     {
         return 'ParticipantJoined';
