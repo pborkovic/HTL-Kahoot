@@ -27,7 +27,7 @@ class SessionResource extends JsonResource
             'created_at'           => $this->created_at,
             'quiz'                 => new QuizResource($this->whenLoaded('quiz')),
             'host'                 => new UserResource($this->whenLoaded('host')),
-            'participants'         => UserResource::collection($this->whenLoaded('participants')),
+            'participants'         => SessionParticipantResource::collection($this->whenLoaded('participants')),
         ];
     }
 }

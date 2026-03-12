@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\PermissionController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,10 +44,22 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Broadcast::routes();
+
     Route::prefix('v1')->group(function () {
         Route::prefix('sessions')->group(function () {
             Route::post('/', [SessionController::class, 'store']);
             Route::post('join', [SessionController::class, 'join']);
+            Route::get('{gamePin}', [SessionController::class, 'show']);
+            Route::get('{gamePin}/participants', [SessionController::class, 'participants']);
+            Route::get('{gamePin}/status', [SessionController::class, 'status']);
+            Route::get('{gamePin}/current-question', [SessionController::class, 'currentQuestion']);
+            Route::get('{gamePin}/question-results', [SessionController::class, 'questionResults']);
+            Route::get('{gamePin}/leaderboard', [SessionController::class, 'leaderboard']);
+            Route::get('{gamePin}/results', [SessionController::class, 'results']);
+            Route::post('{gamePin}/start', [SessionController::class, 'start']);
+            Route::post('{gamePin}/next', [SessionController::class, 'next']);
+            Route::post('{gamePin}/answer', [SessionController::class, 'answer']);
         });
 
         Route::prefix('users')->group(function () {
