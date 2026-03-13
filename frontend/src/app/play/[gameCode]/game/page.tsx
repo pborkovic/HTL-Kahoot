@@ -49,7 +49,7 @@ export default function StudentGame() {
             }
         },
         onQuestionClosed: () => {
-            if (gameStateRef.current === "answering") {
+            if (gameStateRef.current === "answering" || gameStateRef.current === "submitted") {
                 setGameState("waiting");
             }
         },
