@@ -1,11 +1,12 @@
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Flame } from "lucide-react";
 
 interface AnswerFeedbackProps {
     isCorrect: boolean;
     scoreAwarded: number;
+    answerStreak?: number;
 }
 
-export function AnswerFeedback({ isCorrect, scoreAwarded }: AnswerFeedbackProps) {
+export function AnswerFeedback({ isCorrect, scoreAwarded, answerStreak = 0 }: AnswerFeedbackProps) {
     return (
         <div className="flex flex-col items-center gap-4 py-8">
             {isCorrect ? (
@@ -22,6 +23,12 @@ export function AnswerFeedback({ isCorrect, scoreAwarded }: AnswerFeedbackProps)
             <p className="text-white/60 text-lg tabular-nums">
                 +{scoreAwarded} Punkte
             </p>
+            {answerStreak >= 2 && (
+                <div className="flex items-center gap-1.5 text-amber-400 text-sm font-semibold">
+                    <Flame className="size-4" />
+                    {answerStreak}er Serie!
+                </div>
+            )}
         </div>
     );
 }
