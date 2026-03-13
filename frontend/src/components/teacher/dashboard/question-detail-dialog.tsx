@@ -1,4 +1,6 @@
-import { Check, X } from "lucide-react";
+import { useState } from "react";
+import { Check, X, Pencil, Trash2, Loader2 } from "lucide-react";
+import { apiFetch } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +14,35 @@ import type { Question } from "@/types/question";
 interface QuestionDetailDialogProps {
     question: Question | null;
     onClose: () => void;
+    onEdit?: (question: Question) => void;
+    onDeleted?: () => void;
 }
 
-export function QuestionDetailDialog({ question, onClose }: QuestionDetailDialogProps) {
-    if (!question) return null;
+export function QuestionDetailDialog({ question, onClose, onEdit, onDeleted }: QuestionDetailDialogProps) {
+    const [deleting, setDeleting] = useState(false);
+
+    if (!question) {
+        return null;
+    }
 
     const version = question.current_version;
+
+    async function handleDelete() {
+        if (!question) {
+            return;
+        }
+
+        setDeleting(true);
+
+        try {
+            await apiFetch(`/v1/questions/${question.id}`, { method: "DELETE" });
+            onClose();
+            onDeleted?.();
+        } catch {
+        } finally {
+            setDeleting(false);
+        }
+    }
 
     return (
         <Dialog open={!!question} onOpenChange={(open) => { if (!open) onClose(); }}>
@@ -110,9 +135,32 @@ export function QuestionDetailDialog({ question, onClose }: QuestionDetailDialog
                         <span>Versionen: {question.versions?.length ?? 1}</span>
                     </div>
 
-                    <Button onClick={onClose} variant="outline" className="w-full h-9 text-xs">
-                        Schließen
-                    </Button>
+                    <div className="flex gap-2">
+                        {onEdit && (
+                            <Button
+                                onClick={() => onEdit(question)}
+                                variant="outline"
+                                className="flex-1 h-9 text-xs gap-1.5"
+                            >
+                                <Pencil className="size-3" />
+                                Bearbeiten
+                            </Button>
+                        )}
+                        {onDeleted && (
+                            <Button
+                                onClick={handleDelete}
+                                variant="outline"
+                                disabled={deleting}
+                                className="h-9 text-xs gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/5 border-destructive/20"
+                            >
+                                {deleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+                                Löschen
+                            </Button>
+                        )}
+                        <Button onClick={onClose} variant="outline" className="flex-1 h-9 text-xs">
+                            Schließen
+                        </Button>
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>
