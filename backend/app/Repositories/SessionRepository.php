@@ -193,6 +193,16 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
      *
      * @author Philipp Borkovic
      */
+    public function updateParticipant(SessionParticipant $participant, array $data): void
+    {
+        $participant->update(attributes: $data);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function createSessionQuestion(Session $session, array $data): SessionQuestion
     {
         return $session->sessionQuestions()->create(attributes: $data);

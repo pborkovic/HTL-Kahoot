@@ -340,20 +340,25 @@ class SessionService extends BaseService implements SessionServiceContract
             ->pluck(value: 'id')
             ->all();
 
-        $isCorrect     = $this->evaluateAnswer(
+        $isCorrect = $this->evaluateAnswer(
             submittedIds: $submittedIds,
             correctIds: $correctIds
         );
-        $scoreAwarded  = $this->calculateScore(
+
+        $baseScore = $this->calculateScore(
             isCorrect: $isCorrect,
             quizQuestion: $quizQuestion,
             questionVersion: $questionVersion,
-            session: $session,
             timeTakenMs: $timeTakenMs,
             timeLimit: $timeLimit,
         );
 
-        $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedIds, $isCorrect, $scoreAwarded, $timeTakenMs, $submittedAt): Response {
+        $currentStreak = $participant->answer_streak ?? 0;
+        $newStreak     = $isCorrect ? $currentStreak + 1 : 0;
+        $streakBonus   = $isCorrect ? $this->calculateStreakBonus(streak: $newStreak) : 0;
+        $scoreAwarded  = $baseScore + $streakBonus;
+
+        $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedIds, $isCorrect, $scoreAwarded, $streakBonus, $timeTakenMs, $submittedAt, $newStreak): Response {
             $response = $this->repository->createResponse(sessionQuestion: $sessionQuestion, data: [
                 'participant_id'    => $participant->id,
                 'answer'            => $submittedIds,
@@ -367,6 +372,11 @@ class SessionService extends BaseService implements SessionServiceContract
             $this->repository->incrementParticipantScore(
                 participant: $participant,
                 amount: $scoreAwarded
+            );
+
+            $this->repository->updateParticipant(
+                participant: $participant,
+                data: ['answer_streak' => $newStreak],
             );
 
             return $response;
@@ -707,20 +717,24 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * Calculate the score for an answer.
+     * Calculate the score using the Kahoot-style algorithm.
      *
-     * Applies speed scoring if enabled on the quiz. The speed factor
-     * scales linearly between speed_factor_min (answering at the deadline)
-     * and speed_factor_max (answering instantly).
+     * Formula: basePoints × (1 − timeTakenMs / (timeLimitMs × 2))
+     *  - Answers within 500 ms receive maximum points.
+     *  - At exactly the time limit the score is half the base (≈ 500 for 1000-pt question).
+     *  - ~80 % of the score comes from answering correctly, ~20 % from speed.
+     *
+     * Point loss per second examples (for 1000-pt base):
+     *  - 30 s timer → ≈ 17 pts/s lost
+     *  - 20 s timer → ≈ 25 pts/s lost
      *
      * @param bool                        $isCorrect       Whether the answer is correct.
      * @param \App\Models\QuizQuestion    $quizQuestion    The quiz question (for points override).
      * @param \App\Models\QuestionVersion $questionVersion The question version (for default points).
-     * @param Session                     $session         The session (for quiz scoring settings).
      * @param int                         $timeTakenMs     Time taken in milliseconds.
      * @param int                         $timeLimit       The time limit in seconds.
      *
-     * @return int The score to award (0 if incorrect).
+     * @return int The base score to award (0 if incorrect), before streak bonus.
      *
      * @author Philipp Borkovic
      */
@@ -728,7 +742,6 @@ class SessionService extends BaseService implements SessionServiceContract
         bool $isCorrect,
         mixed $quizQuestion,
         mixed $questionVersion,
-        Session $session,
         int $timeTakenMs,
         int $timeLimit,
     ): int {
@@ -736,25 +749,43 @@ class SessionService extends BaseService implements SessionServiceContract
             return 0;
         }
 
-        $basePoints = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
+        $basePoints  = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
+        $timeLimitMs = $timeLimit * 1000;
 
-        $this->repository->loadSessionRelations(
-            session: $session,
-            relations: 'quiz'
-        );
-        $quiz = $session->quiz;
-
-        if (!$quiz->speed_scoring) {
+        if ($timeTakenMs <= 500) {
             return $basePoints;
         }
 
-        $timeLimitMs    = $timeLimit * 1000;
-        $remainingRatio = max(0, ($timeLimitMs - $timeTakenMs) / $timeLimitMs);
-
-        $speedFactor = $quiz->speed_factor_min
-            + $remainingRatio * ($quiz->speed_factor_max - $quiz->speed_factor_min);
+        $speedFactor = 1 - ($timeTakenMs / ($timeLimitMs * 2));
+        $speedFactor = max(0.5, min(1.0, $speedFactor));
 
         return (int) round(num: $basePoints * $speedFactor);
+    }
+
+    /**
+     * Calculate the streak bonus for consecutive correct answers.
+     *
+     * Streak rewards:
+     *  - 2 in a row → +100
+     *  - 3 in a row → +200
+     *  - 4 in a row → +300
+     *  - 5+ in a row → +500
+     *
+     * @param int $streak The current answer streak (after this answer).
+     *
+     * @return int The bonus points to add.
+     *
+     * @author Philipp Borkovic
+     */
+    private function calculateStreakBonus(int $streak): int
+    {
+        return match (true) {
+            $streak >= 5 => 500,
+            $streak === 4 => 300,
+            $streak === 3 => 200,
+            $streak === 2 => 100,
+            default       => 0,
+        };
     }
 
     /**
