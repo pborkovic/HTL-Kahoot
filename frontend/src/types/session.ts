@@ -25,6 +25,7 @@ export interface AnswerResult {
     is_correct: boolean;
     score_awarded: number;
     time_taken_ms: number;
+    answer_streak: number;
 }
 
 export interface LeaderboardEntry {
