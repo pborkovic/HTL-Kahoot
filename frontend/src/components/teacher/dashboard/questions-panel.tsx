@@ -1,14 +1,18 @@
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, Plus } from "lucide-react";
 import { QuestionFilters } from "./question-filters";
 import { QuestionTable } from "./question-table";
 import { QuestionDetailDialog } from "./question-detail-dialog";
 import type { UseQuestionsReturn } from "@/hooks/use-questions";
+import type { Question } from "@/types/question";
 
 interface QuestionsPanelProps {
     questions: UseQuestionsReturn;
+    onCreateQuestion?: () => void;
+    onEditQuestion?: (question: Question) => void;
+    onQuestionDeleted?: () => void;
 }
 
-export function QuestionsPanel({ questions: q }: QuestionsPanelProps) {
+export function QuestionsPanel({ questions: q, onCreateQuestion, onEditQuestion, onQuestionDeleted }: QuestionsPanelProps) {
     return (
         <>
             <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
@@ -20,9 +24,21 @@ export function QuestionsPanel({ questions: q }: QuestionsPanelProps) {
                             </div>
                             <h2 className="text-sm font-semibold text-foreground">Fragen</h2>
                         </div>
-                        <span className="text-xs tabular-nums text-muted-foreground">
-                            {q.selectedIds.size} von {q.displayQuestions.length} ausgewählt
-                        </span>
+                        <div className="flex items-center gap-3">
+                            <span className="text-xs tabular-nums text-muted-foreground">
+                                {q.selectedIds.size} von {q.displayQuestions.length} ausgewählt
+                            </span>
+                            {onCreateQuestion && (
+                                <button
+                                    type="button"
+                                    onClick={onCreateQuestion}
+                                    className="h-7 px-2 rounded-md text-[11px] font-medium flex items-center gap-1 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer"
+                                >
+                                    <Plus className="size-3" />
+                                    Neu
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -56,6 +72,8 @@ export function QuestionsPanel({ questions: q }: QuestionsPanelProps) {
             <QuestionDetailDialog
                 question={q.detailQuestion}
                 onClose={() => q.setDetailQuestion(null)}
+                onEdit={onEditQuestion}
+                onDeleted={onQuestionDeleted}
             />
         </>
     );
