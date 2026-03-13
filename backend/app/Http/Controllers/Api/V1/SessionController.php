@@ -447,6 +447,7 @@ class SessionController extends Controller
                     'is_correct'    => $response->is_correct,
                     'score_awarded' => $response->score_awarded,
                     'time_taken_ms' => $response->time_taken_ms,
+                    'answer_streak' => $response->participant->answer_streak ?? 0,
                 ],
             ]);
         } catch (RuntimeException $e) {
