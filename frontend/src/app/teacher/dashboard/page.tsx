@@ -52,7 +52,9 @@ export default function Dashboard() {
     }, [questions]);
 
     async function createLobby() {
-        if (!canCreateLobby || isCreating) return;
+        if (!canCreateLobby || isCreating) {
+            return;
+        }
 
         setIsCreating(true);
         setCreateError(null);
