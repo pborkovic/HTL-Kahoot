@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { DashboardHeader } from "@/components/teacher/dashboard/dashboard-header";
@@ -8,8 +8,10 @@ import { QuestionsPanel } from "@/components/teacher/dashboard/questions-panel";
 import { StudentsPanel } from "@/components/teacher/dashboard/students-panel";
 import { QuizSettings } from "@/components/teacher/dashboard/quiz-settings";
 import { LobbyButton } from "@/components/teacher/dashboard/lobby-button";
+import { QuestionFormDialog } from "@/components/teacher/questions/question-form-dialog";
 import { useQuestions } from "@/hooks/use-questions";
 import { useStudents } from "@/hooks/use-students";
+import type { Question } from "@/types/question";
 
 interface QuizData {
     id: string;
@@ -29,8 +31,25 @@ export default function Dashboard() {
     const [maxTimePerQuestion, setMaxTimePerQuestion] = useState(30);
     const [isCreating, setIsCreating] = useState(false);
     const [createError, setCreateError] = useState<string | null>(null);
+    const [formOpen, setFormOpen] = useState(false);
+    const [editQuestion, setEditQuestion] = useState<Question | null>(null);
 
     const canCreateLobby = questions.selectedIds.size > 0 && students.selectedIds.size > 0;
+
+    const handleCreateQuestion = useCallback(() => {
+        setEditQuestion(null);
+        setFormOpen(true);
+    }, []);
+
+    const handleEditQuestion = useCallback((q: Question) => {
+        setEditQuestion(q);
+        setFormOpen(true);
+        questions.setDetailQuestion(null);
+    }, [questions]);
+
+    const handleQuestionSaved = useCallback(() => {
+        questions.refetch();
+    }, [questions]);
 
     async function createLobby() {
         if (!canCreateLobby || isCreating) return;
@@ -104,7 +123,12 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] xl:grid-cols-[1fr_480px] gap-4 sm:gap-5 items-stretch">
                     {/* Primary: Question selection */}
-                    <QuestionsPanel questions={questions} />
+                    <QuestionsPanel
+                        questions={questions}
+                        onCreateQuestion={handleCreateQuestion}
+                        onEditQuestion={handleEditQuestion}
+                        onQuestionDeleted={handleQuestionSaved}
+                    />
 
                     {/* Sidebar: Session builder */}
                     <div className="flex flex-col gap-4 sm:gap-5">
@@ -128,6 +152,12 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+            <QuestionFormDialog
+                open={formOpen}
+                question={editQuestion}
+                onClose={() => setFormOpen(false)}
+                onSaved={handleQuestionSaved}
+            />
         </div>
     );
 }
