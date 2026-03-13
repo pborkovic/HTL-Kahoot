@@ -78,7 +78,7 @@ export default function StudentGame() {
                 setGameState("submitted");
             } catch {
                 setGameState("submitted");
-                setResult({ is_correct: false, score_awarded: 0, time_taken_ms: 0 });
+                setResult({ is_correct: false, score_awarded: 0, time_taken_ms: 0, answer_streak: 0 });
             } finally {
                 setSubmitting(false);
             }
@@ -153,6 +153,7 @@ export default function StudentGame() {
                     <AnswerFeedback
                         isCorrect={result.is_correct}
                         scoreAwarded={result.score_awarded}
+                        answerStreak={result.answer_streak}
                     />
                 )}
 
