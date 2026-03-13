@@ -193,12 +193,18 @@ class SessionService extends BaseService implements SessionServiceContract
         $this->assertStatus(session: $session, expected: 'active');
 
         $currentQuestion = $this->findCurrentSessionQuestion(session: $session);
-        $this->repository->updateSessionQuestion(sessionQuestion: $currentQuestion, data: ['closed_at' => now()]);
 
-        broadcast(event: new QuestionClosed(
-            gamePin: $gamePin,
-            questionIndex: $session->current_question_idx,
-        ));
+        if (!$currentQuestion->closed_at) {
+            $this->repository->updateSessionQuestion(
+                sessionQuestion: $currentQuestion,
+                data: ['closed_at' => now()],
+            );
+
+            broadcast(event: new QuestionClosed(
+                gamePin: $gamePin,
+                questionIndex: $session->current_question_idx,
+            ));
+        }
 
         $nextIdx = $session->current_question_idx + 1;
         $totalQuestions = $this->repository->countSessionQuestions(session: $session);
@@ -415,6 +421,19 @@ class SessionService extends BaseService implements SessionServiceContract
         $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
 
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
+
+        if (!$sessionQuestion->closed_at) {
+            $this->repository->updateSessionQuestion(
+                sessionQuestion: $sessionQuestion,
+                data: ['closed_at' => now()],
+            );
+
+            broadcast(event: new QuestionClosed(
+                gamePin: $gamePin,
+                questionIndex: $session->current_question_idx,
+            ));
+        }
+
         $this->repository->loadSessionQuestionRelations(
             sessionQuestion: $sessionQuestion,
             relations: [
