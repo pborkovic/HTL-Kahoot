@@ -92,13 +92,18 @@ export default function TeacherLive() {
                 `/v1/sessions/${gameCode}/question-results`,
             );
             setQuestionResults(res.data);
-            setLiveState("question_closed");
         } catch {
-            setLiveState("question_closed");
+            setQuestionResults((prev) => prev ?? {
+                answer_distribution: [],
+                total_responses: 0,
+                correct_count: 0,
+                total_participants: totalParticipants,
+            });
         } finally {
+            setLiveState("question_closed");
             setIsAdvancing(false);
         }
-    }, [gameCode]);
+    }, [gameCode, totalParticipants]);
 
     const handleShowLeaderboard = useCallback(async () => {
         try {
