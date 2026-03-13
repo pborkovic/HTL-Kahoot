@@ -221,14 +221,31 @@ export default function TeacherLive() {
                             <span>{questionResults.total_participants} Teilnehmer</span>
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={handleShowLeaderboard}
-                            className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer"
-                        >
-                            <Trophy className="size-4" />
-                            Bestenliste zeigen
-                        </button>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={handleShowLeaderboard}
+                                className="h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-border bg-card text-foreground hover:bg-muted transition-colors cursor-pointer"
+                            >
+                                <Trophy className="size-4" />
+                                Bestenliste
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleNext}
+                                disabled={isAdvancing}
+                                className="h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                            >
+                                {isAdvancing ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <>
+                                        <SkipForward className="size-4" />
+                                        {isLastQuestion ? "Ergebnisse" : "Nächste Frage"}
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </>
                 )}
 
