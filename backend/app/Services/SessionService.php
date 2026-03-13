@@ -122,7 +122,7 @@ class SessionService extends BaseService implements SessionServiceContract
             ->margin(margin: 1)
             ->generate(text: $joinUrl);
 
-        return 'data:image/svg+xml;base64,' . base64_encode(string: $qrCode);
+        return 'data:image/svg+xml;base64,' . base64_encode(string: (string) $qrCode);
     }
 
     /**
