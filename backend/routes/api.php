@@ -119,6 +119,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [QuizController::class, 'store']);
             Route::post('{id}/restore', [QuizController::class, 'restore']);
             Route::patch('{quiz}/publish', [QuizController::class, 'publish']);
+            Route::get('{quiz}/sessions', [QuizController::class, 'sessions']);
             Route::get('{quiz}', [QuizController::class, 'show']);
             Route::put('{quiz}', [QuizController::class, 'update']);
             Route::delete('{quiz}', [QuizController::class, 'destroy']);
