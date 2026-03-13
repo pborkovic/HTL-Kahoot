@@ -78,10 +78,11 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - backend_storage:/var/www/backend/storage
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`${APP_DOMAIN:-gamquiz.localhost}`)"
-      - "traefik.http.routers.app.entrypoints=web"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
+      traefik.enable: "true"
+      traefik.http.routers.app.entrypoints: ""
+      traefik.http.routers.app-dev.rule: "Host(`${APP_DOMAIN:-gamquiz.localhost}`)"
+      traefik.http.routers.app-dev.entrypoints: "web"
+      traefik.http.services.app.loadbalancer.server.port: "80"
 
 volumes:
   backend_vendor:
