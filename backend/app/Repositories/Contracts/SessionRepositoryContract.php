@@ -65,8 +65,6 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      */
     public function generateUniqueGamePin(): string;
 
-    /* ── Session mutations ──────────────────────────────────── */
-
     /**
      * Update a session's attributes.
      *
@@ -93,8 +91,6 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return Session The session with relations loaded.
      */
     public function loadSessionRelations(Session $session, string|array $relations): Session;
-
-    /* ── Participant operations ──────────────────────────────── */
 
     /**
      * Find a participant in a session by user ID.
@@ -142,7 +138,13 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      */
     public function incrementParticipantScore(SessionParticipant $participant, int $amount): void;
 
-    /* ── Session question operations ─────────────────────────── */
+    /**
+     * Update a participant's attributes.
+     *
+     * @param SessionParticipant   $participant The participant.
+     * @param array<string, mixed> $data        The attributes to update.
+     */
+    public function updateParticipant(SessionParticipant $participant, array $data): void;
 
     /**
      * Create a session question for a session.
@@ -202,8 +204,6 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return SessionQuestion The session question with relations loaded.
      */
     public function loadSessionQuestionRelations(SessionQuestion $sessionQuestion, string|array $relations): SessionQuestion;
-
-    /* ── Response operations ─────────────────────────────────── */
 
     /**
      * Create a response for a session question.
