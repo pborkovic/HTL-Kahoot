@@ -18,28 +18,12 @@ Route::get('/', function () {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::get(
-        uri: 'redirect',
-        action: [AuthController::class, 'redirect']
-    );
-    Route::match(
-        methods: [
-            'get',
-            'post'
-        ],
-        uri: 'callback',
-        action: [AuthController::class, 'callback']
-    );
+    Route::get(uri: 'redirect', action: [AuthController::class, 'redirect']);
+    Route::match(methods: ['get', 'post'], uri: 'callback', action: [AuthController::class, 'callback']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get(
-            uri: 'user',
-            action: [AuthController::class, 'user']
-        );
-        Route::post(
-            uri: 'logout',
-            action: [AuthController::class, 'logout']
-        );
+        Route::get(uri: 'user', action: [AuthController::class, 'user']);
+        Route::post(uri: 'logout', action: [AuthController::class, 'logout']);
     });
 });
 
@@ -75,6 +59,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('{user}', [UserController::class, 'update']);
             Route::delete('{user}', [UserController::class, 'destroy']);
             Route::patch('{user}/password', [UserController::class, 'changePassword']);
+            Route::get('{user}/completed-quizzes', [UserController::class, 'completedQuizzes']);
+            Route::get('{user}/answer-distribution', [UserController::class, 'answerDistribution']);
+            Route::get('{user}/quiz-history', [UserController::class, 'quizHistory']);
         });
 
         Route::prefix('questions')->group(function () {
