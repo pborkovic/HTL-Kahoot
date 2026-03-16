@@ -576,6 +576,70 @@ class SessionService extends BaseService implements SessionServiceContract
         ];
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getFullReview(string $gamePin): array
+    {
+        $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
+        $this->repository->loadSessionRelations(
+            session: $session,
+            relations: ['quiz', 'participants']
+        );
+
+        $sessionQuestions = $this->repository->getSessionQuestionsWithAllResponses(session: $session);
+
+        $participants = $session->participants
+            ->sortByDesc(callback: 'total_score')
+            ->values()
+            ->map(callback: fn($p) => [
+                'participant_id' => $p->id,
+                'nickname'       => $p->nickname,
+                'total_score'    => $p->total_score,
+            ])
+            ->all();
+
+        $questions = $sessionQuestions->map(callback: function (SessionQuestion $sq) {
+            $questionVersion = $sq->quizQuestion->questionVersion;
+
+            $answerOptions = $questionVersion->answerOptions
+                ->sortBy(callback: 'sort_order')
+                ->values()
+                ->map(callback: fn($opt) => [
+                    'id'         => $opt->id,
+                    'text'       => $opt->text,
+                    'is_correct' => $opt->is_correct,
+                    'sort_order' => $opt->sort_order,
+                ])
+                ->all();
+
+            $studentAnswers = $sq->responses->map(callback: fn($response) => [
+                'participant_id'      => $response->participant_id,
+                'nickname'            => $response->participant->nickname,
+                'selected_option_ids' => $response->answer,
+                'is_correct'          => $response->is_correct,
+                'score_awarded'       => $response->score_awarded,
+                'time_taken_ms'       => $response->time_taken_ms,
+            ])->all();
+
+            return [
+                'question_index'  => $sq->display_order,
+                'question_text'   => $questionVersion->title,
+                'answer_options'  => $answerOptions,
+                'student_answers' => $studentAnswers,
+            ];
+        })->all();
+
+        return [
+            'session_id'   => $session->id,
+            'quiz_title'   => $session->quiz->title,
+            'participants' => $participants,
+            'questions'    => $questions,
+        ];
+    }
+
     public function getModelForPolicy(): string
     {
         return Session::class;
