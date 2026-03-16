@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, use } from "react";
 import type { StudentUser } from "@/types/student";
+import { apiFetch, ApiError } from "@/lib/api";
 
 type QuizResult = {
     id: string;
@@ -29,22 +30,29 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
             setIsLoadingUser(true);
             setUserError(null);
             try {
-                const res = await fetch(`/api/v1/users/${id}`);
+                // `apiFetch` hängt `API_URL` davor und wirft bei Fehlern eine ApiError
+                const res = await apiFetch<{ data: StudentUser }>(
+                    `/v1/users/${id}`,
+                    {
+                        method: "GET",
+                    },
+                );
 
-                if (!res.ok) {
-                    setUserError(
-                        res.status === 404
-                            ? "Dieser Student wurde nicht gefunden."
-                            : "Beim Laden der Nutzerdaten ist ein Fehler aufgetreten."
-                    );
-                    return;
-                }
-
-                const json: { data: StudentUser } = await res.json();
-                setStudent(json.data);
+                setStudent(res.data);
             } catch (error) {
                 console.error("Fehler beim Laden des Nutzers", error);
-                setUserError("Die Nutzerdaten konnten nicht geladen werden.");
+
+                if (error instanceof ApiError && error.status === 401) {
+                    setUserError(
+                        "Du bist nicht angemeldet. Bitte melde dich erneut an.",
+                    );
+                } else if (error instanceof ApiError && error.status === 404) {
+                    setUserError("Dieser Student wurde nicht gefunden.");
+                } else if (error instanceof Error) {
+                    setUserError(error.message);
+                } else {
+                    setUserError("Die Nutzerdaten konnten nicht geladen werden.");
+                }
             } finally {
                 setIsLoadingUser(false);
             }
@@ -54,29 +62,27 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
     }, [id]);
 
     useEffect(() => {
-        // \[PLACEHOLDER\] Beispiel\-Daten \-\- hier später echte API\-Requests machen
-        // z\.B.: fetch(`/api/students/${id}`) und fetch(`/api/students/${id}/quizzes`)
         const mockQuizResults: QuizResult[] = [
             {
                 id: "1",
                 title: "Mathe Grundlagen",
                 correctAnswers: 8,
                 totalQuestions: 10,
-                date: "2025\-03\-01",
+                date: "2025-03-01",
             },
             {
                 id: "2",
                 title: "Geschichte Europas",
                 correctAnswers: 6,
                 totalQuestions: 10,
-                date: "2025\-03\-05",
+                date: "2025-03-05",
             },
             {
                 id: "3",
-                title: "Physik \- Mechanik",
+                title: "Physik - Mechanik",
                 correctAnswers: 9,
                 totalQuestions: 10,
-                date: "2025\-03\-10",
+                date: "2025-03-10",
             },
         ];
 
@@ -84,17 +90,14 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
 
         const totalCorrect = mockQuizResults.reduce(
             (sum, quiz) => sum + quiz.correctAnswers,
-            0
+            0,
         );
         const totalQuestions = mockQuizResults.reduce(
             (sum, quiz) => sum + quiz.totalQuestions,
-            0
+            0,
         );
         const rate = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
         setOverallCorrectRate(rate);
-
-        // \[PLACEHOLDER\] Student\-Name aus API laden
-        // setStudentName(response.name)
     }, [id]);
 
     if (isLoadingUser) {
@@ -102,7 +105,9 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
             <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
                 <div className="flex flex-col items-center gap-2">
                     <div className="h-8 w-8 rounded-full border-2 border-muted border-t-primary animate-spin" />
-                    <p className="text-sm text-muted-foreground">Lade Nutzerdaten...</p>
+                    <p className="text-sm text-muted-foreground">
+                        Lade Nutzerdaten...
+                    </p>
                 </div>
             </div>
         );
@@ -116,7 +121,8 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                         {userError ?? "Unbekannter Fehler beim Laden des Studenten."}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                        Bitte versuche es später erneut oder wende dich an die Lehrkraft.
+                        Bitte versuche es später erneut oder wende dich an die
+                        Lehrkraft.
                     </p>
                 </div>
             </div>
@@ -128,7 +134,6 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
     return (
         <div className="min-h-screen bg-background text-foreground px-6 py-8">
             <div className="max-w-5xl mx-auto space-y-8">
-                {/* Header / Student Info */}
                 <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
@@ -154,7 +159,6 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                     </div>
                 </header>
 
-                {/* Gesamtstatistik */}
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-card text-card-foreground border border-border/60 rounded-xl p-4 shadow-sm">
                         <h2 className="text-sm font-medium text-muted-foreground mb-1">
@@ -163,7 +167,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                         <p className="text-2xl font-bold">
                             {quizResults.reduce(
                                 (sum, quiz) => sum + quiz.totalQuestions,
-                                0
+                                0,
                             )}
                         </p>
                     </div>
@@ -174,13 +178,13 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                         <p className="text-2xl font-bold">
                             {quizResults.reduce(
                                 (sum, quiz) => sum + quiz.correctAnswers,
-                                0
+                                0,
                             )}
                         </p>
                     </div>
                     <div className="bg-primary text-primary-foreground rounded-xl p-4 shadow-sm">
                         <h2 className="text-sm font-medium opacity-80 mb-1">
-                            Gesamt\-Quote
+                            Gesamt-Quote
                         </h2>
                         <p className="text-2xl font-bold">
                             {overallCorrectRate.toFixed(0)}%
@@ -188,11 +192,8 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                     </div>
                 </section>
 
-                {/* Quiz Liste */}
                 <section className="bg-card text-card-foreground border border-border/60 rounded-xl p-6 shadow-sm">
-                    <h2 className="text-lg font-semibold mb-4">
-                        Quiz\-Historie
-                    </h2>
+                    <h2 className="text-lg font-semibold mb-4">Quiz-Historie</h2>
 
                     {quizResults.length === 0 ? (
                         <p className="text-sm text-muted-foreground">
@@ -217,7 +218,8 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <p className="text-sm">
-                                                {quiz.correctAnswers}/{quiz.totalQuestions} korrekt
+                                                {quiz.correctAnswers}/{quiz.totalQuestions}{" "}
+                                                korrekt
                                             </p>
                                             <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
                                                 <div
