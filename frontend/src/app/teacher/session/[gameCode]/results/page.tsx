@@ -40,7 +40,6 @@ export default function TeacherResults() {
 
     function handleShowDetail(participantId: string) {
         return () => {
-            // Toggle logic: Wenn bereits offen, dann schließen (null setzen), sonst ID setzen
             setShowDetail(prev => prev === participantId ? null : participantId);
         };
     }
@@ -126,7 +125,7 @@ export default function TeacherResults() {
 
                                     {/* Detail View inside the loop */}
                                     {showDetail === entry.participant_id && (
-                                        <StudentQuestionReview entry={entry}/>
+                                        <StudentQuestionReview studentId={entry.participant_id} gamePin={gameCode}/>
                                     )}
                                 </div>
                             ))}
