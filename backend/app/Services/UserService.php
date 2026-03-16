@@ -7,17 +7,21 @@ use App\Models\SessionParticipant;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Services\Base\BaseService;
+use App\Services\Contracts\RoleServiceContract;
 use App\Services\Contracts\UserServiceContract;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 use RuntimeException;
 
 class UserService extends BaseService implements UserServiceContract
 {
     protected UserRepositoryContract $repository;
 
-    public function __construct(UserRepositoryContract $repository)
-    {
+    public function __construct(
+        UserRepositoryContract $repository,
+        private readonly RoleServiceContract $roleService,
+    ) {
         $this->repository = $repository;
     }
 
@@ -59,7 +63,10 @@ class UserService extends BaseService implements UserServiceContract
      */
     public function getStats(): array
     {
-        return $this->repository->getUserStats();
+        $userStats = $this->repository->getUserStats();
+        $byRole = $this->roleService->getUserCountsByRole();
+
+        return array_merge($userStats, ['by_role' => $byRole]);
     }
 
     /**
@@ -69,11 +76,58 @@ class UserService extends BaseService implements UserServiceContract
      */
     public function bulkImport(array $users, string $defaultProvider, string $assignedBy): array
     {
-        return $this->repository->bulkCreateWithRoles(
-            users: $users,
-            defaultProvider: $defaultProvider,
-            assignedBy: $assignedBy,
-        );
+        $created = 0;
+        $skipped = 0;
+        $errors  = [];
+
+        $this->repository->wrapInTransaction(callback: function () use ($users, $defaultProvider, $assignedBy, &$created, &$skipped, &$errors) {
+            foreach ($users as $index => $row) {
+                $validator = Validator::make(data: $row, rules: [
+                    'email'        => 'required|email',
+                    'display_name' => 'nullable|string|max:255',
+                    'class_name'   => 'nullable|string|max:20',
+                    'role'         => 'required|string|exists:roles,name',
+                ]);
+
+                if ($validator->fails()) {
+                    $errors[] = [
+                        'row'    => $index + 1,
+                        'email'  => $row['email'] ?? null,
+                        'errors' => $validator->errors()->all(),
+                    ];
+                    continue;
+                }
+
+                if ($this->repository->emailExists(email: $row['email'])) {
+                    $skipped++;
+                    continue;
+                }
+
+                $role = $this->roleService->findWhereFirst(criteria: ['name' => $row['role']]);
+
+                $user = $this->repository->createUser(data: [
+                    'email'         => $row['email'],
+                    'display_name'  => $row['display_name'] ?? null,
+                    'class_name'    => $row['class_name'] ?? null,
+                    'auth_provider' => $row['auth_provider'] ?? $defaultProvider,
+                    'is_active'     => true,
+                ]);
+
+                $this->repository->attachRole(
+                    user: $user,
+                    roleId: $role->id,
+                    assignedBy: $assignedBy,
+                );
+
+                $created++;
+            }
+        });
+
+        return [
+            'created' => $created,
+            'skipped' => $skipped,
+            'errors' => $errors
+        ];
     }
 
     /**
@@ -83,6 +137,8 @@ class UserService extends BaseService implements UserServiceContract
      */
     public function createUser(array $data, string $assignedBy): User
     {
+        $role = $this->roleService->findWhereFirst(criteria: ['name' => $data['role']]);
+
         $userData = [
             'email'         => $data['email'],
             'username'      => $data['username'] ?? null,
@@ -95,7 +151,7 @@ class UserService extends BaseService implements UserServiceContract
 
         return $this->repository->createWithRole(
             userData: $userData,
-            roleName: $data['role'],
+            roleId: $role->id,
             assignedBy: $assignedBy,
         );
     }
@@ -128,9 +184,11 @@ class UserService extends BaseService implements UserServiceContract
             }
 
             if (isset($data['role'])) {
+                $role = $this->roleService->findWhereFirst(criteria: ['name' => $data['role']]);
+
                 $this->repository->syncRole(
                     user: $user,
-                    roleName: $data['role'],
+                    roleId: $role->id,
                     assignedBy: $authUser->id,
                 );
             }
@@ -162,7 +220,6 @@ class UserService extends BaseService implements UserServiceContract
         if ($user->id === $authUser->id) {
             throw new RuntimeException(message: 'Cannot delete yourself.');
         }
-
         if ($user->hasRole(role: 'superadmin')) {
             if ($this->repository->countSuperadmins() <= 1) {
                 throw new RuntimeException(message: 'Cannot delete the last superadmin.');
