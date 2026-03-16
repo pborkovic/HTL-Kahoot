@@ -1,11 +1,16 @@
 "use client";
-import { useTheme } from "./ThemeProvider";
+import { Sun, Moon, Contrast, Eye } from "lucide-react";
+import { useTheme, THEMES, type Theme } from "./ThemeProvider";
 import { useState, useRef, useEffect } from "react";
 
-const themes = [
-    { value: "light", label: "Hell" },
-    { value: "dark", label: "Dunkel" },
-] as const;
+function ThemeIcon({ theme }: { theme: Theme }) {
+    if (theme === "dark")                    return <Moon className="w-4 h-4" />;
+    if (theme === "high-contrast")           return <Contrast className="w-4 h-4" />;
+    if (theme === "dark-high-contrast")      return <Contrast className="w-4 h-4" />;
+    if (theme === "colorblind-friendly")     return <Eye className="w-4 h-4" />;
+    if (theme === "dark-colorblind-friendly")return <Eye className="w-4 h-4" />;
+    return <Sun className="w-4 h-4" />;
+}
 
 export function ThemeSelector() {
     const { theme, setTheme } = useTheme();
@@ -26,23 +31,15 @@ export function ThemeSelector() {
         <div ref={dropdownRef} className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2.5 rounded-xl bg-secondary text-white hover:bg-secondary-muted transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 transition-all duration-200 shadow-lg hover:shadow-xl"
                 aria-label="Theme wechseln"
             >
-                {theme === "dark" ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                        <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                    </svg>
-                ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                        <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" />
-                    </svg>
-                )}
+                <ThemeIcon theme={theme} />
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-36 bg-background border border-text-primary/10 rounded-xl shadow-xl overflow-hidden z-50">
-                    {themes.map((t) => (
+                <div className="absolute right-0 mt-2 w-52 bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50">
+                    {THEMES.map((t) => (
                         <button
                             key={t.value}
                             onClick={() => {
@@ -51,19 +48,11 @@ export function ThemeSelector() {
                             }}
                             className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-colors flex items-center gap-2 ${
                                 theme === t.value
-                                    ? "bg-primary text-white"
-                                    : "text-text-primary hover:bg-text-primary/5"
+                                    ? "bg-primary text-primary-foreground"
+                                    : "text-foreground hover:bg-muted"
                             }`}
                         >
-                            {t.value === "light" ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                                    <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" />
-                                </svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                                    <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                                </svg>
-                            )}
+                            <ThemeIcon theme={t.value} />
                             {t.label}
                         </button>
                     ))}

@@ -1,7 +1,32 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+export type Theme =
+    | "light"
+    | "dark"
+    | "high-contrast"
+    | "dark-high-contrast"
+    | "colorblind-friendly"
+    | "dark-colorblind-friendly";
+
+export const THEMES: { value: Theme; label: string }[] = [
+    { value: "light",                   label: "Helles Design"        },
+    { value: "dark",                    label: "Dunkles Design"       },
+    { value: "high-contrast",           label: "Hoher Kontrast"       },
+    { value: "dark-high-contrast",      label: "Dunkler Kontrast"     },
+    { value: "colorblind-friendly",     label: "Farbenblind"      },
+    { value: "dark-colorblind-friendly",label: "Farbenblind Dunkel" },
+];
+
+function applyTheme(theme: Theme): void {
+    const el = document.documentElement;
+    el.classList.remove("dark", "high-contrast", "colorblind-friendly");
+    if (theme === "dark")                    el.classList.add("dark");
+    if (theme === "high-contrast")           el.classList.add("high-contrast");
+    if (theme === "dark-high-contrast")      el.classList.add("dark", "high-contrast");
+    if (theme === "colorblind-friendly")     el.classList.add("colorblind-friendly");
+    if (theme === "dark-colorblind-friendly")el.classList.add("dark", "colorblind-friendly");
+}
 
 const ThemeContext = createContext<{
     theme: Theme;
@@ -15,12 +40,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const saved = localStorage.getItem("theme") as Theme | null;
         const initial = saved ?? "light";
         setThemeState(initial);
-        document.documentElement.classList.toggle("dark", initial === "dark");
+        applyTheme(initial);
     }, []);
 
     const setTheme = useCallback((next: Theme) => {
         setThemeState(next);
-        document.documentElement.classList.toggle("dark", next === "dark");
+        applyTheme(next);
         localStorage.setItem("theme", next);
     }, []);
 
