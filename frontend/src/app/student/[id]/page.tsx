@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
+import type { StudentUser } from "@/types/student";
 
 type QuizResult = {
     id: string;
@@ -11,16 +12,46 @@ type QuizResult = {
 };
 
 type StudentDashboardProps = {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 };
 
 const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
-    const { id } = params;
+    const { id } = use(params);
 
-    // \[PLACEHOLDER\] Später durch echten API\-Call ersetzen
-    const [studentName, setStudentName] = useState<string>("Max Mustermann");
+    const [student, setStudent] = useState<StudentUser | null>(null);
     const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
     const [overallCorrectRate, setOverallCorrectRate] = useState<number>(0);
+    const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
+    const [userError, setUserError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            setIsLoadingUser(true);
+            setUserError(null);
+            try {
+                const res = await fetch(`/api/v1/users/${id}`);
+
+                if (!res.ok) {
+                    setUserError(
+                        res.status === 404
+                            ? "Dieser Student wurde nicht gefunden."
+                            : "Beim Laden der Nutzerdaten ist ein Fehler aufgetreten."
+                    );
+                    return;
+                }
+
+                const json: { data: StudentUser } = await res.json();
+                setStudent(json.data);
+            } catch (error) {
+                console.error("Fehler beim Laden des Nutzers", error);
+                setUserError("Die Nutzerdaten konnten nicht geladen werden.");
+            } finally {
+                setIsLoadingUser(false);
+            }
+        };
+
+        fetchUser();
+    }, [id]);
 
     useEffect(() => {
         // \[PLACEHOLDER\] Beispiel\-Daten \-\- hier später echte API\-Requests machen
@@ -66,6 +97,34 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
         // setStudentName(response.name)
     }, [id]);
 
+    if (isLoadingUser) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+                <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 rounded-full border-2 border-muted border-t-primary animate-spin" />
+                    <p className="text-sm text-muted-foreground">Lade Nutzerdaten...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (userError || !student) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
+                <div className="max-w-md text-center space-y-3">
+                    <p className="text-sm text-destructive font-medium">
+                        {userError ?? "Unbekannter Fehler beim Laden des Studenten."}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                        Bitte versuche es später erneut oder wende dich an die Lehrkraft.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    const displayName = student.display_name || student.username || "Unbekannter Student";
+
     return (
         <div className="min-h-screen bg-background text-foreground px-6 py-8">
             <div className="max-w-5xl mx-auto space-y-8">
@@ -79,12 +138,19 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                             Übersicht über vergangene Quizzes und Performance
                         </p>
                     </div>
-                    <div className="bg-card text-card-foreground border border-border/60 rounded-xl px-4 py-3 shadow-sm">
+                    <div className="bg-card text-card-foreground border border-border/60 rounded-xl px-4 py-3 shadow-sm min-w-55">
                         <p className="text-sm font-medium text-muted-foreground">
                             Student
                         </p>
-                        <p className="text-lg font-semibold">{studentName}</p>
-                        <p className="text-xs text-muted-foreground mt-1">ID: {id}</p>
+                        <p className="text-lg font-semibold truncate">{displayName}</p>
+                        {student.class_name && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Klasse: {student.class_name}
+                            </p>
+                        )}
+                        <p className="text-xs text-muted-foreground mt-1 break-all">
+                            ID: {student.id}
+                        </p>
                     </div>
                 </header>
 
