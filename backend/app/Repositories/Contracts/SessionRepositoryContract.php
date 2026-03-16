@@ -253,4 +253,14 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return Collection<int, SessionQuestion> The session questions with relations loaded.
      */
     public function getSessionQuestionsWithParticipantResponses(Session $session, string $participantId): Collection;
+
+    /**
+     * Get all session questions ordered by display order with quiz question,
+     * question version, answer options, and all participant responses.
+     *
+     * @param Session $session The session.
+     *
+     * @return Collection<int, SessionQuestion> The session questions with relations loaded.
+     */
+    public function getSessionQuestionsWithAllResponses(Session $session): Collection;
 }
