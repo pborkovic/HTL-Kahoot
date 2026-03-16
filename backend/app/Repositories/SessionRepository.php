@@ -303,4 +303,36 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     {
         return DB::transaction(callback: $callback);
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getSessionQuestionsWithParticipantResponses(Session $session, string $participantId): Collection
+    {
+        return $session->sessionQuestions()
+            ->orderBy(column: 'display_order')
+            ->with(relations: [
+                'quizQuestion.questionVersion.answerOptions',
+                'responses' => fn($q) => $q->where(column: 'participant_id', operator: '=', value: $participantId),
+            ])
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getSessionQuestionsWithAllResponses(Session $session): Collection
+    {
+        return $session->sessionQuestions()
+            ->orderBy(column: 'display_order')
+            ->with(relations: [
+                'quizQuestion.questionVersion.answerOptions',
+                'responses.participant',
+            ])
+            ->get();
+    }
 }

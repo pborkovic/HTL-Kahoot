@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
     LayoutDashboard,
     ClipboardList,
+    BookOpen,
     MonitorPlay,
     Users,
     LogOut,
@@ -44,6 +45,11 @@ const navItems = [
         title: "Fragen",
         href: "/teacher/questions",
         icon: ClipboardList,
+    },
+    {
+        title: "Quizze",
+        href: "/teacher/quizzes",
+        icon: BookOpen,
     },
 ];
 
