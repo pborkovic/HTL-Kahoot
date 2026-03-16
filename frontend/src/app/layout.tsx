@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarLayout } from "@/components/sidebar-layout";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,13 +29,15 @@ export default async function RootLayout({children}: Readonly<{
     return (
         <html lang="de">
         <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
-        <AuthProvider>
-            <TooltipProvider>
-                <SidebarLayout defaultOpen={sidebarOpen}>
-                    {children}
-                </SidebarLayout>
-            </TooltipProvider>
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <TooltipProvider>
+                    <SidebarLayout defaultOpen={sidebarOpen}>
+                        {children}
+                    </SidebarLayout>
+                </TooltipProvider>
+            </AuthProvider>
+        </ThemeProvider>
         </body>
         </html>
     );
