@@ -242,4 +242,25 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return mixed The callback return value.
      */
     public function wrapInTransaction(callable $callback): mixed;
+
+    /**
+     * Get all session questions ordered by display order with quiz question,
+     * question version, answer options, and responses for a specific participant.
+     *
+     * @param Session $session       The session.
+     * @param string  $participantId The participant ID to filter responses by.
+     *
+     * @return Collection<int, SessionQuestion> The session questions with relations loaded.
+     */
+    public function getSessionQuestionsWithParticipantResponses(Session $session, string $participantId): Collection;
+
+    /**
+     * Get all session questions ordered by display order with quiz question,
+     * question version, answer options, and all participant responses.
+     *
+     * @param Session $session The session.
+     *
+     * @return Collection<int, SessionQuestion> The session questions with relations loaded.
+     */
+    public function getSessionQuestionsWithAllResponses(Session $session): Collection;
 }

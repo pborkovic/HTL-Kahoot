@@ -12,6 +12,7 @@ export interface UseQuestionsReturn {
     questions: Question[];
     displayQuestions: Question[];
     selectedIds: Set<string>;
+    setSelectedIds: Dispatch<SetStateAction<Set<string>>>;
     detailQuestion: Question | null;
     setDetailQuestion: Dispatch<SetStateAction<Question | null>>;
     searchTerm: string;
@@ -126,6 +127,7 @@ export function useQuestions(): UseQuestionsReturn {
         questions,
         displayQuestions,
         selectedIds,
+        setSelectedIds,
         detailQuestion,
         setDetailQuestion,
         searchTerm,

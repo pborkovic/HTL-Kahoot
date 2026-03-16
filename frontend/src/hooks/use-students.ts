@@ -15,6 +15,7 @@ export interface UseStudentsReturn {
     students: StudentUser[];
     displayStudents: StudentUser[];
     selectedIds: Set<string>;
+    setSelectedIds: Dispatch<SetStateAction<Set<string>>>;
     searchTerm: string;
     setSearchTerm: Dispatch<SetStateAction<string>>;
     activeClassFilters: Set<string>;
@@ -151,6 +152,7 @@ export function useStudents(): UseStudentsReturn {
         students,
         displayStudents,
         selectedIds,
+        setSelectedIds,
         searchTerm,
         setSearchTerm,
         activeClassFilters,
