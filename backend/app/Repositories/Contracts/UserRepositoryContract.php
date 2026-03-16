@@ -18,8 +18,8 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Get a paginated, filtered list of users with roles.
      *
-     * @param array $filters  The validated filter parameters.
-     * @param int   $perPage  Items per page.
+     * @param array $filters     The validated filter parameters.
+     * @param int   $perPage     Items per page.
      * @param bool  $withTrashed Whether to include soft-deleted users.
      *
      * @return LengthAwarePaginator The paginated users.
@@ -34,33 +34,58 @@ interface UserRepositoryContract extends BaseRepositoryContract
     public function getClassesWithStudentCounts(): Collection;
 
     /**
-     * Get user statistics (total, active, by role, by auth provider, recent signups).
+     * Get user-specific statistics (total, active, by auth provider, recent signups).
      *
-     * @return array The statistics data.
+     * @return array The user statistics (without role counts).
      */
     public function getUserStats(): array;
 
     /**
-     * Create a user and assign a role.
+     * Create a user and attach a role by ID.
      *
-     * @param array  $userData    The user attributes.
-     * @param string $roleName   The role name to assign.
+     * @param array  $userData   The user attributes.
+     * @param string $roleId     The role UUID to assign.
      * @param string $assignedBy The ID of the user assigning the role.
      *
      * @return User The created user with roles loaded.
      */
-    public function createWithRole(array $userData, string $roleName, string $assignedBy): User;
+    public function createWithRole(array $userData, string $roleId, string $assignedBy): User;
 
     /**
-     * Bulk import users with role assignment.
+     * Create a single user record.
      *
-     * @param array  $users           The user rows to import.
-     * @param string $defaultProvider The default auth provider.
-     * @param string $assignedBy      The ID of the user assigning roles.
+     * @param array $data The user attributes.
      *
-     * @return array{created: int, skipped: int, errors: array}
+     * @return User The created user.
      */
-    public function bulkCreateWithRoles(array $users, string $defaultProvider, string $assignedBy): array;
+    public function createUser(array $data): User;
+
+    /**
+     * Attach a role to a user by role ID.
+     *
+     * @param User   $user       The user.
+     * @param string $roleId     The role UUID.
+     * @param string $assignedBy The ID of the user assigning the role.
+     */
+    public function attachRole(User $user, string $roleId, string $assignedBy): void;
+
+    /**
+     * Check if a user exists by email.
+     *
+     * @param string $email The email to check.
+     *
+     * @return bool
+     */
+    public function emailExists(string $email): bool;
+
+    /**
+     * Execute a callback within a database transaction.
+     *
+     * @param callable $callback The callback.
+     *
+     * @return mixed The callback return value.
+     */
+    public function wrapInTransaction(callable $callback): mixed;
 
     /**
      * Update a user's attributes.
@@ -73,13 +98,13 @@ interface UserRepositoryContract extends BaseRepositoryContract
     public function updateUser(User $user, array $data): User;
 
     /**
-     * Sync a user's role (replace all roles with the given one).
+     * Sync a user's role by role ID (replace all roles).
      *
      * @param User   $user       The user.
-     * @param string $roleName   The role name.
+     * @param string $roleId     The role UUID.
      * @param string $assignedBy The ID of the user assigning the role.
      */
-    public function syncRole(User $user, string $roleName, string $assignedBy): void;
+    public function syncRole(User $user, string $roleId, string $assignedBy): void;
 
     /**
      * Invalidate all active tokens for a user.
