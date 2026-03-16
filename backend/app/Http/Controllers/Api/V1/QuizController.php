@@ -58,7 +58,9 @@ class QuizController extends Controller
     {
         $this->authorize('viewAny', Quiz::class);
 
-        $query = Quiz::query();
+        $query = Quiz::query()
+            ->withCount(['quizQuestions', 'sessions', 'participants'])
+            ->with(['sessions' => fn($q) => $q->latest('created_at')->limit(1)]);
 
         if ($request->boolean('with_trashed') && $request->user()->hasAnyRole(['admin', 'superadmin'])) {
             $query->withTrashed();
@@ -137,7 +139,7 @@ class QuizController extends Controller
     {
         $this->authorize('view', $quiz);
 
-        $quiz->load(['quizQuestions.questionVersion.answerOptions', 'pool']);
+        $quiz->load(['quizQuestions.questionVersion.answerOptions', 'pool', 'participants']);
 
         return response()->json(new QuizResource($quiz));
     }
@@ -260,6 +262,154 @@ class QuizController extends Controller
         $this->authorize('publish', $quiz);
 
         $quiz->update(['is_published' => !$quiz->is_published]);
+
+        return response()->json(new QuizResource($quiz));
+    }
+
+    #[Get(
+        path: '/api/v1/quizzes/{id}/sessions',
+        summary: 'List sessions for a quiz',
+        description: 'Returns all game sessions for a quiz, ordered by most recent first. Includes participant counts and scores.',
+        security: [['sanctum' => []]],
+        tags: ['Quizzes'],
+        parameters: [
+            new Parameter(name: 'id', in: 'path', required: true, schema: new Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Session list'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 403, description: 'Forbidden'),
+            new Response(response: 404, description: 'Not found'),
+        ]
+    )]
+    public function sessions(Quiz $quiz): JsonResponse
+    {
+        $this->authorize('view', $quiz);
+
+        $sessions = $quiz->sessions()
+            ->withCount('participants')
+            ->with(['participants' => fn($q) => $q->orderByDesc('total_score')->limit(3)])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $data = $sessions->map(fn($session) => [
+            'id'                  => $session->id,
+            'game_pin'            => $session->game_pin,
+            'status'              => $session->status,
+            'participants_count'  => $session->participants_count,
+            'started_at'          => $session->started_at,
+            'finished_at'         => $session->finished_at,
+            'created_at'          => $session->created_at,
+            'top_participants'    => $session->participants->map(fn($p) => [
+                'nickname'    => $p->nickname,
+                'total_score' => $p->total_score,
+            ])->all(),
+        ]);
+
+        return response()->json(['data' => $data]);
+    }
+
+    #[Put(
+        path: '/api/v1/quizzes/{id}/participants',
+        summary: 'Sync quiz participants',
+        description: 'Replaces all quiz participants with the given user IDs. Owner or admin/superadmin only.',
+        security: [['sanctum' => []]],
+        tags: ['Quizzes'],
+        parameters: [
+            new Parameter(name: 'id', in: 'path', required: true, schema: new Schema(type: 'string', format: 'uuid')),
+        ],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                required: ['user_ids'],
+                properties: [
+                    new Property(property: 'user_ids', type: 'array', items: new Items(type: 'string', format: 'uuid')),
+                ]
+            )
+        ),
+        responses: [
+            new Response(response: 200, description: 'Participants synced', content: new JsonContent(properties: [new Property(property: 'data', ref: '#/components/schemas/Quiz')])),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 403, description: 'Forbidden'),
+            new Response(response: 404, description: 'Not found'),
+            new Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function syncParticipants(\Illuminate\Http\Request $request, Quiz $quiz): JsonResponse
+    {
+        $this->authorize('update', $quiz);
+
+        $validated = $request->validate([
+            'user_ids'   => ['required', 'array'],
+            'user_ids.*' => ['uuid', 'exists:users,id'],
+        ]);
+
+        $quiz->participants()->sync($validated['user_ids']);
+        $quiz->load('participants');
+
+        return response()->json(new QuizResource($quiz));
+    }
+
+    #[Put(
+        path: '/api/v1/quizzes/{id}/questions/sync',
+        summary: 'Sync all quiz questions',
+        description: 'Replaces all quiz questions atomically. Deletes existing and creates new entries in a single transaction.',
+        security: [['sanctum' => []]],
+        tags: ['Quizzes'],
+        parameters: [
+            new Parameter(name: 'id', in: 'path', required: true, schema: new Schema(type: 'string', format: 'uuid')),
+        ],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                required: ['questions'],
+                properties: [
+                    new Property(
+                        property: 'questions',
+                        type: 'array',
+                        items: new Items(
+                            properties: [
+                                new Property(property: 'question_version_id', type: 'string', format: 'uuid'),
+                                new Property(property: 'sort_order', type: 'integer', minimum: 0),
+                                new Property(property: 'points_override', type: 'integer', minimum: 0, nullable: true),
+                                new Property(property: 'time_limit_override', type: 'integer', minimum: 1, nullable: true),
+                                new Property(property: 'weight', type: 'number'),
+                            ]
+                        )
+                    ),
+                ]
+            )
+        ),
+        responses: [
+            new Response(response: 200, description: 'Questions synced', content: new JsonContent(properties: [new Property(property: 'data', ref: '#/components/schemas/Quiz')])),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 403, description: 'Forbidden'),
+            new Response(response: 404, description: 'Not found'),
+            new Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function syncQuestions(\Illuminate\Http\Request $request, Quiz $quiz): JsonResponse
+    {
+        $this->authorize('update', $quiz);
+
+        $validated = $request->validate([
+            'questions'                        => ['required', 'array'],
+            'questions.*.question_version_id'  => ['required', 'uuid', 'exists:question_versions,id'],
+            'questions.*.sort_order'           => ['required', 'integer', 'min:0'],
+            'questions.*.points_override'      => ['nullable', 'integer', 'min:0'],
+            'questions.*.time_limit_override'  => ['nullable', 'integer', 'min:1'],
+            'questions.*.weight'               => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($quiz, $validated) {
+            $quiz->quizQuestions()->delete();
+
+            foreach ($validated['questions'] as $entry) {
+                $quiz->quizQuestions()->create($entry);
+            }
+        });
+
+        $quiz->load('quizQuestions.questionVersion.answerOptions');
 
         return response()->json(new QuizResource($quiz));
     }
