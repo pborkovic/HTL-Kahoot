@@ -102,4 +102,11 @@ interface RoleServiceContract extends BaseServiceContract
      * @see addPermissionToRole() For adding a permission to a role
      */
     public function removePermissionFromRole(Role $role, string $permissionId): void;
+
+    /**
+     * Get user counts grouped by role name.
+     *
+     * @return Collection Keyed by role name, values are user counts.
+     */
+    public function getUserCountsByRole(): Collection;
 }

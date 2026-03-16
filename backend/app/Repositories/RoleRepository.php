@@ -36,4 +36,17 @@ class RoleRepository extends BaseRepository implements RoleRepositoryContract
             throw $e;
         }
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getUserCountsByRole(): Collection
+    {
+        return $this->model
+            ->withCount(relations: 'users')
+            ->get()
+            ->pluck(value: 'users_count', key: 'name');
+    }
 }

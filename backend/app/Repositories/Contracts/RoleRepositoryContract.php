@@ -21,4 +21,11 @@ interface RoleRepositoryContract extends BaseRepositoryContract
      * @see all() For retrieving roles without eager-loaded permissions
      */
     public function allWithPermissions(): Collection;
+
+    /**
+     * Get all roles with their user counts.
+     *
+     * @return Collection Keyed by role name, values are user counts.
+     */
+    public function getUserCountsByRole(): Collection;
 }
