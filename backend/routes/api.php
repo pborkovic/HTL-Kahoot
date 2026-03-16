@@ -56,6 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('{gamePin}/current-question', [SessionController::class, 'currentQuestion']);
             Route::get('{gamePin}/question-results', [SessionController::class, 'questionResults']);
             Route::get('{gamePin}/leaderboard', [SessionController::class, 'leaderboard']);
+            Route::get('{gamePin}/review', [SessionController::class, 'review']);
+            Route::get('{gamePin}/full-review', [SessionController::class, 'fullReview']);
             Route::get('{gamePin}/results', [SessionController::class, 'results']);
             Route::post('{gamePin}/start', [SessionController::class, 'start']);
             Route::post('{gamePin}/next', [SessionController::class, 'next']);
