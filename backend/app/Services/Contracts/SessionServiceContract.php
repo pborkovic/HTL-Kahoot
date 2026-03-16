@@ -199,4 +199,37 @@ interface SessionServiceContract extends BaseServiceContract
      * }
      */
     public function getFinalResults(string $gamePin): array;
+
+    /**
+     * Get a student's review of all questions in a session.
+     *
+     * Returns every question with the correct answer options and
+     * the answer options the student chose, along with scoring details.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     * @param User   $user    The authenticated student user.
+     *
+     * @return array{
+     *     session_id: string,
+     *     quiz_title: string,
+     *     total_score: int,
+     *     questions: array<int, array{
+     *         question_index: int,
+     *         question_text: string,
+     *         answer_options: array<int, array{
+     *             id: string,
+     *             text: string,
+     *             is_correct: bool,
+     *             was_selected: bool,
+     *             sort_order: int
+     *         }>,
+     *         is_correct: bool|null,
+     *         score_awarded: int,
+     *         time_taken_ms: int|null
+     *     }>
+     * }
+     *
+     * @throws RuntimeException If the user is not a participant of the session.
+     */
+    public function getStudentReview(string $gamePin, User $user): array;
 }
