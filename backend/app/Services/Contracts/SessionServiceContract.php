@@ -232,4 +232,42 @@ interface SessionServiceContract extends BaseServiceContract
      * @throws RuntimeException If the user is not a participant of the session.
      */
     public function getStudentReview(string $gamePin, User $user): array;
+
+    /**
+     * Get a full review of all questions in a session with every student's answers.
+     *
+     * Returns every question with the correct answer options and each
+     * participant's chosen answers with scoring details. Teacher-facing endpoint.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     *
+     * @return array{
+     *     session_id: string,
+     *     quiz_title: string,
+     *     participants: array<int, array{
+     *         participant_id: string,
+     *         nickname: string,
+     *         total_score: int
+     *     }>,
+     *     questions: array<int, array{
+     *         question_index: int,
+     *         question_text: string,
+     *         answer_options: array<int, array{
+     *             id: string,
+     *             text: string,
+     *             is_correct: bool,
+     *             sort_order: int
+     *         }>,
+     *         student_answers: array<int, array{
+     *             participant_id: string,
+     *             nickname: string,
+     *             selected_option_ids: array<int, string>,
+     *             is_correct: bool|null,
+     *             score_awarded: int,
+     *             time_taken_ms: int|null
+     *         }>
+     *     }>
+     * }
+     */
+    public function getFullReview(string $gamePin): array;
 }
