@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Trophy, ArrowLeft } from "lucide-react";
 import { apiFetch } from "@/lib/api";
+import StudentQuestionReview from "@/components/teacher/results/student-question-review";
 import type { FinalResults, LeaderboardEntry } from "@/types/session";
 
 export default function TeacherResults() {
@@ -12,6 +13,7 @@ export default function TeacherResults() {
 
     const [results, setResults] = useState<FinalResults | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [showDetail, setShowDetail] = useState<string | null>(null);
 
     useEffect(() => {
         apiFetch<{ data: FinalResults }>(`/v1/sessions/${gameCode}/results`)
@@ -34,6 +36,13 @@ export default function TeacherResults() {
                 <p className="text-sm text-muted-foreground">Ergebnisse konnten nicht geladen werden.</p>
             </div>
         );
+    }
+
+    function handleShowDetail(participantId: string) {
+        return () => {
+            // Toggle logic: Wenn bereits offen, dann schließen (null setzen), sonst ID setzen
+            setShowDetail(prev => prev === participantId ? null : participantId);
+        };
     }
 
     return (
@@ -92,26 +101,33 @@ export default function TeacherResults() {
                     ) : (
                         <div className="space-y-1.5">
                             {results.leaderboard.map((entry: LeaderboardEntry) => (
-                                <div
-                                    key={entry.participant_id}
-                                    className="flex items-center justify-between px-3 py-2 rounded-lg bg-muted/20"
-                                >
-                                    <div className="flex items-center gap-2.5">
-                                        <span className={`text-xs font-bold tabular-nums w-5 text-center ${
-                                            entry.rank === 1 ? "text-amber-500" :
-                                            entry.rank === 2 ? "text-gray-400" :
-                                            entry.rank === 3 ? "text-amber-700" :
-                                            "text-muted-foreground"
-                                        }`}>
-                                            {entry.rank}
-                                        </span>
-                                        <span className="text-sm font-medium text-foreground">
-                                            {entry.nickname}
+                                <div key={entry.participant_id} className="flex flex-col bg-muted/20 rounded-lg overflow-hidden transition-colors">
+                                    <div
+                                        className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-muted/30"
+                                        onClick={handleShowDetail(entry.participant_id)}
+                                    >
+                                        <div className="flex items-center gap-2.5">
+                                            <span className={`text-xs font-bold tabular-nums w-5 text-center ${
+                                                entry.rank === 1 ? "text-amber-500" :
+                                                    entry.rank === 2 ? "text-gray-400" :
+                                                        entry.rank === 3 ? "text-amber-700" :
+                                                            "text-muted-foreground"
+                                            }`}>
+                                                {entry.rank}
+                                            </span>
+                                            <span className="text-sm font-medium text-foreground">
+                                                {entry.nickname}
+                                            </span>
+                                        </div>
+                                        <span className="text-sm font-bold tabular-nums text-foreground">
+                                            {entry.total_score.toLocaleString()}
                                         </span>
                                     </div>
-                                    <span className="text-sm font-bold tabular-nums text-foreground">
-                                        {entry.total_score.toLocaleString()}
-                                    </span>
+
+                                    {/* Detail View inside the loop */}
+                                    {showDetail === entry.participant_id && (
+                                        <StudentQuestionReview entry={entry}/>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -133,10 +149,10 @@ export default function TeacherResults() {
 }
 
 function PodiumPlace({
-    entry,
-    height,
-    medal,
-}: {
+                         entry,
+                         height,
+                         medal,
+                     }: {
     entry: LeaderboardEntry;
     height: string;
     medal: string;
