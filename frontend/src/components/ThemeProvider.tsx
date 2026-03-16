@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -9,20 +9,20 @@ const ThemeContext = createContext<{
 }>({ theme: "light", setTheme: () => {} });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>("light");
-    const [mounted, setMounted] = useState(false);
+    const [theme, setThemeState] = useState<Theme>("light");
 
     useEffect(() => {
-        setMounted(true);
         const saved = localStorage.getItem("theme") as Theme | null;
-        if (saved) setTheme(saved);
+        const initial = saved ?? "light";
+        setThemeState(initial);
+        document.documentElement.classList.toggle("dark", initial === "dark");
     }, []);
 
-    useEffect(() => {
-        if (!mounted) return;
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
-    }, [theme, mounted]);
+    const setTheme = useCallback((next: Theme) => {
+        setThemeState(next);
+        document.documentElement.classList.toggle("dark", next === "dark");
+        localStorage.setItem("theme", next);
+    }, []);
 
     return (
         <ThemeContext.Provider value={{ theme, setTheme }}>

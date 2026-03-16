@@ -12,7 +12,10 @@ import {
     ChevronsLeft,
     ChevronsRight,
     Shield,
+    Sun,
+    Moon,
 } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/context/AuthContext";
 import {
     Sidebar,
@@ -64,6 +67,7 @@ export function AppSidebar() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
     const { toggleSidebar, state } = useSidebar();
+    const { theme, setTheme } = useTheme();
 
     const userRoles = user?.roles?.map(r => r.name) ?? [];
     const isAdmin = userRoles.some(r => r === "admin" || r === "superadmin");
@@ -140,7 +144,21 @@ export function AppSidebar() {
                 )}
             </SidebarContent>
 
-            <div className="px-2 py-1.5">
+            <div className="px-2 py-1.5 flex flex-col gap-0.5">
+                <button
+                    type="button"
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+                >
+                    {theme === "dark" ? (
+                        <Sun className="size-4" />
+                    ) : (
+                        <Moon className="size-4" />
+                    )}
+                    {state === "expanded" && (
+                        <span>{theme === "dark" ? "Helles Design" : "Dunkles Design"}</span>
+                    )}
+                </button>
                 <button
                     type="button"
                     onClick={toggleSidebar}
