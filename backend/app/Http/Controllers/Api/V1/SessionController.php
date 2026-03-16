@@ -526,6 +526,61 @@ class SessionController extends Controller
     }
 
     #[Get(
+        path: '/api/v1/sessions/{gamePin}/review',
+        description: 'Returns all questions in the session with the correct answers and the authenticated student\'s chosen answers, along with scoring details.',
+        summary: 'Get student review of all questions',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Student review with all questions and answers'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 404, description: 'Not found'),
+            new Response(response: 409, description: 'Not a participant'),
+        ]
+    )]
+    public function review(string $gamePin): JsonResponse
+    {
+        try {
+            $data = $this->sessionService->getStudentReview(
+                gamePin: $gamePin,
+                user: request()->user(),
+            );
+
+            return response()->json(data: ['data' => $data]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/full-review',
+        description: 'Returns all questions with correct answers and every student\'s chosen answers. Teacher-facing endpoint.',
+        summary: 'Get full review with all students\' answers',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Full review with all students and answers'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 404, description: 'Not found'),
+        ]
+    )]
+    public function fullReview(string $gamePin): JsonResponse
+    {
+        $data = $this->sessionService->getFullReview(gamePin: $gamePin);
+
+        return response()->json(data: ['data' => $data]);
+    }
+
+    #[Get(
         path: '/api/v1/sessions/{gamePin}/results',
         description: 'Returns the final game results including leaderboard and quiz metadata.',
         summary: 'Get final game results',

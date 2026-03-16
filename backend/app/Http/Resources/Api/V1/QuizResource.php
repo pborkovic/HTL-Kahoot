@@ -28,8 +28,24 @@ class QuizResource extends JsonResource
             'created_at'           => $this->created_at,
             'updated_at'           => $this->updated_at,
             'deleted_at'           => $this->deleted_at,
+            'quiz_questions_count' => $this->whenCounted('quizQuestions'),
+            'sessions_count'       => $this->whenCounted('sessions'),
+            'latest_session'       => $this->whenLoaded('sessions', fn() => $this->sessions->first() ? [
+                'id'          => $this->sessions->first()->id,
+                'game_pin'    => $this->sessions->first()->game_pin,
+                'status'      => $this->sessions->first()->status,
+                'started_at'  => $this->sessions->first()->started_at,
+                'finished_at' => $this->sessions->first()->finished_at,
+            ] : null),
             'pool'                 => new QuestionPoolResource($this->whenLoaded('pool')),
             'quiz_questions'       => QuizQuestionResource::collection($this->whenLoaded('quizQuestions')),
+            'participants'         => $this->whenLoaded('participants', fn() => $this->participants->map(fn($u) => [
+                'id'           => $u->id,
+                'display_name' => $u->display_name,
+                'email'        => $u->email,
+                'class_name'   => $u->class_name,
+            ])),
+            'participants_count'   => $this->whenCounted('participants'),
         ];
     }
 }

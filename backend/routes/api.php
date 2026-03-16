@@ -56,6 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('{gamePin}/current-question', [SessionController::class, 'currentQuestion']);
             Route::get('{gamePin}/question-results', [SessionController::class, 'questionResults']);
             Route::get('{gamePin}/leaderboard', [SessionController::class, 'leaderboard']);
+            Route::get('{gamePin}/review', [SessionController::class, 'review']);
+            Route::get('{gamePin}/full-review', [SessionController::class, 'fullReview']);
             Route::get('{gamePin}/results', [SessionController::class, 'results']);
             Route::post('{gamePin}/start', [SessionController::class, 'start']);
             Route::post('{gamePin}/next', [SessionController::class, 'next']);
@@ -119,9 +121,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [QuizController::class, 'store']);
             Route::post('{id}/restore', [QuizController::class, 'restore']);
             Route::patch('{quiz}/publish', [QuizController::class, 'publish']);
+            Route::get('{quiz}/sessions', [QuizController::class, 'sessions']);
             Route::get('{quiz}', [QuizController::class, 'show']);
             Route::put('{quiz}', [QuizController::class, 'update']);
             Route::delete('{quiz}', [QuizController::class, 'destroy']);
+            Route::put('{quiz}/participants', [QuizController::class, 'syncParticipants']);
+            Route::put('{quiz}/questions/sync', [QuizController::class, 'syncQuestions']);
             Route::post('{quiz}/questions', [QuizController::class, 'addQuestion']);
             Route::put('{quiz}/questions/{quizQuestion}', [QuizController::class, 'updateQuestion']);
             Route::delete('{quiz}/questions/{quizQuestion}', [QuizController::class, 'removeQuestion']);
