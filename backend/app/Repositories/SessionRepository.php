@@ -319,4 +319,20 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
             ])
             ->get();
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getSessionQuestionsWithAllResponses(Session $session): Collection
+    {
+        return $session->sessionQuestions()
+            ->orderBy(column: 'display_order')
+            ->with(relations: [
+                'quizQuestion.questionVersion.answerOptions',
+                'responses.participant',
+            ])
+            ->get();
+    }
 }
