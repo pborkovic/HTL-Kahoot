@@ -158,7 +158,6 @@
         --popover: #FFFFFF;
         --popover-foreground: #0A0A0A;
 
-        /* Primary: Dunkleres Gold — auf Weiß ~6.2:1 Kontrast (AAA) */
         --primary: #7A6600;
         --primary-foreground: #FFFFFF;
 
@@ -166,21 +165,17 @@
         --secondary-foreground: #0A0A0A;
 
         --muted: #E8E8E8;
-        /* Muted-Text deutlich dunkler: ~7.5:1 auf #E8E8E8 */
         --muted-foreground: #3D3D3D;
 
         --accent: #7A6600;
         --accent-foreground: #FFFFFF;
 
-        /* Destructive: Dunkles Rot für AAA-Kontrast auf Weiß */
         --destructive: #9B0000;
 
-        /* Borders: Deutlich sichtbar, ~4:1 Kontrast auf Weiß */
         --border: #595959;
         --input: #595959;
         --ring: #7A6600;
 
-        /* Charts: Maximaler Helligkeitsunterschied zwischen den Werten */
         --chart-1: #7A6600;
         --chart-2: #0A0A0A;
         --chart-3: #595959;
@@ -208,7 +203,6 @@
         --popover: #1A1A1A;
         --popover-foreground: #F5F5F5;
 
-        /* Helleres Gold auf Schwarz → ~10:1 Kontrast */
         --primary: #F0D050;
         --primary-foreground: #000000;
 
@@ -253,7 +247,6 @@
         --popover: #FFFFFF;
         --popover-foreground: #1A1A1A;
 
-        /* Primary: Kräftiges Blau — universell gut erkennbar */
         --primary: #0072B2;
         --primary-foreground: #FFFFFF;
 
@@ -299,7 +292,6 @@
         --popover: #2A2A2A;
         --popover-foreground: #F0F0F0;
 
-        /* Helleres Blau auf dunklem Grund → ~8.5:1 Kontrast */
         --primary: #56B4E9;
         --primary-foreground: #1A1A1A;
 
@@ -312,7 +304,6 @@
         --accent: #56B4E9;
         --accent-foreground: #1A1A1A;
 
-        /* Helles Orange auf dunklem Grund */
         --destructive: #E69F00;
 
         --border: #808080;
