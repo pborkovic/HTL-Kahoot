@@ -1,8 +1,26 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useMemo, useState, use } from "react";
 import type { StudentUser } from "@/types/student";
 import { apiFetch, ApiError } from "@/lib/api";
+
+type CompletedQuizzesData = {
+    completed_quizzes: number;
+};
+
+type AnswerDistributionData = {
+    total_answers: number;
+    correct_answers: number;
+    correct_rate?: number;
+};
+
+type QuizHistoryItem = {
+    id: string | number;
+    title: string;
+    correct_answers: number;
+    total_questions: number;
+    completed_at: string;
+};
 
 type QuizResult = {
     id: string;
@@ -21,31 +39,31 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
 
     const [student, setStudent] = useState<StudentUser | null>(null);
     const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
+    const [completedQuizzes, setCompletedQuizzes] = useState<number>(0);
+    const [totalAnswers, setTotalAnswers] = useState<number>(0);
+    const [correctAnswers, setCorrectAnswers] = useState<number>(0);
     const [overallCorrectRate, setOverallCorrectRate] = useState<number>(0);
+
     const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
+    const [isLoadingStats, setIsLoadingStats] = useState<boolean>(true);
+    const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(true);
+
     const [userError, setUserError] = useState<string | null>(null);
+    const [statsError, setStatsError] = useState<string | null>(null);
+    const [historyError, setHistoryError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUser = async () => {
             setIsLoadingUser(true);
             setUserError(null);
             try {
-                // `apiFetch` hängt `API_URL` davor und wirft bei Fehlern eine ApiError
-                const res = await apiFetch<{ data: StudentUser }>(
-                    `/v1/users/${id}`,
-                    {
-                        method: "GET",
-                    },
-                );
-
+                const res = await apiFetch<{ data: StudentUser }>(`/v1/users/${id}`, {
+                    method: "GET",
+                });
                 setStudent(res.data);
             } catch (error) {
-                console.error("Fehler beim Laden des Nutzers", error);
-
                 if (error instanceof ApiError && error.status === 401) {
-                    setUserError(
-                        "Du bist nicht angemeldet. Bitte melde dich erneut an.",
-                    );
+                    setUserError("Du bist nicht angemeldet. Bitte melde dich erneut an.");
                 } else if (error instanceof ApiError && error.status === 404) {
                     setUserError("Dieser Student wurde nicht gefunden.");
                 } else if (error instanceof Error) {
@@ -62,43 +80,92 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
     }, [id]);
 
     useEffect(() => {
-        const mockQuizResults: QuizResult[] = [
-            {
-                id: "1",
-                title: "Mathe Grundlagen",
-                correctAnswers: 8,
-                totalQuestions: 10,
-                date: "2025-03-01",
-            },
-            {
-                id: "2",
-                title: "Geschichte Europas",
-                correctAnswers: 6,
-                totalQuestions: 10,
-                date: "2025-03-05",
-            },
-            {
-                id: "3",
-                title: "Physik - Mechanik",
-                correctAnswers: 9,
-                totalQuestions: 10,
-                date: "2025-03-10",
-            },
-        ];
+        const fetchStats = async () => {
+            setIsLoadingStats(true);
+            setStatsError(null);
+            try {
+                const [completedRes, distributionRes] = await Promise.all([
+                    apiFetch<{ data: CompletedQuizzesData }>(
+                        `/v1/users/${id}/completed-quizzes`,
+                        { method: "GET" },
+                    ),
+                    apiFetch<{ data: AnswerDistributionData }>(
+                        `/v1/users/${id}/answer-distribution`,
+                        { method: "GET" },
+                    ),
+                ]);
 
-        setQuizResults(mockQuizResults);
+                const completed = completedRes.data?.completed_quizzes ?? 0;
+                const total = distributionRes.data?.total_answers ?? 0;
+                const correct = distributionRes.data?.correct_answers ?? 0;
+                const rateFromApi = distributionRes.data?.correct_rate;
+                const rate =
+                    typeof rateFromApi === "number"
+                        ? rateFromApi
+                        : total > 0
+                          ? (correct / total) * 100
+                          : 0;
 
-        const totalCorrect = mockQuizResults.reduce(
-            (sum, quiz) => sum + quiz.correctAnswers,
-            0,
-        );
-        const totalQuestions = mockQuizResults.reduce(
-            (sum, quiz) => sum + quiz.totalQuestions,
-            0,
-        );
-        const rate = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
-        setOverallCorrectRate(rate);
+                setCompletedQuizzes(completed);
+                setTotalAnswers(total);
+                setCorrectAnswers(correct);
+                setOverallCorrectRate(rate);
+            } catch (error) {
+                if (error instanceof Error) {
+                    setStatsError(error.message);
+                } else {
+                    setStatsError("Die Statistikdaten konnten nicht geladen werden.");
+                }
+            } finally {
+                setIsLoadingStats(false);
+            }
+        };
+
+        fetchStats();
     }, [id]);
+
+    useEffect(() => {
+        const fetchQuizHistory = async () => {
+            setIsLoadingHistory(true);
+            setHistoryError(null);
+            try {
+                const res = await apiFetch<{ data: QuizHistoryItem[] }>(
+                    `/v1/users/${id}/quiz-history`,
+                    { method: "GET" },
+                );
+
+                const mappedResults = (res.data ?? []).map((quiz) => ({
+                    id: String(quiz.id),
+                    title: quiz.title,
+                    correctAnswers: quiz.correct_answers,
+                    totalQuestions: quiz.total_questions,
+                    date: quiz.completed_at,
+                }));
+
+                setQuizResults(mappedResults);
+            } catch (error) {
+                if (error instanceof Error) {
+                    setHistoryError(error.message);
+                } else {
+                    setHistoryError("Die Quiz-Historie konnte nicht geladen werden.");
+                }
+            } finally {
+                setIsLoadingHistory(false);
+            }
+        };
+
+        fetchQuizHistory();
+    }, [id]);
+
+    const totalQuestionsFromHistory = useMemo(
+        () => quizResults.reduce((sum, quiz) => sum + quiz.totalQuestions, 0),
+        [quizResults],
+    );
+
+    const totalCorrectFromHistory = useMemo(
+        () => quizResults.reduce((sum, quiz) => sum + quiz.correctAnswers, 0),
+        [quizResults],
+    );
 
     if (isLoadingUser) {
         return (
@@ -162,13 +229,10 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-card text-card-foreground border border-border/60 rounded-xl p-4 shadow-sm">
                         <h2 className="text-sm font-medium text-muted-foreground mb-1">
-                            Insgesamt beantwortet
+                            Absolvierte Quizzes
                         </h2>
                         <p className="text-2xl font-bold">
-                            {quizResults.reduce(
-                                (sum, quiz) => sum + quiz.totalQuestions,
-                                0,
-                            )}
+                            {isLoadingStats ? "..." : completedQuizzes}
                         </p>
                     </div>
                     <div className="bg-card text-card-foreground border border-border/60 rounded-xl p-4 shadow-sm">
@@ -176,10 +240,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                             Davon korrekt
                         </h2>
                         <p className="text-2xl font-bold">
-                            {quizResults.reduce(
-                                (sum, quiz) => sum + quiz.correctAnswers,
-                                0,
-                            )}
+                            {isLoadingStats ? "..." : correctAnswers}
                         </p>
                     </div>
                     <div className="bg-primary text-primary-foreground rounded-xl p-4 shadow-sm">
@@ -187,15 +248,23 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                             Gesamt-Quote
                         </h2>
                         <p className="text-2xl font-bold">
-                            {overallCorrectRate.toFixed(0)}%
+                            {isLoadingStats ? "..." : `${overallCorrectRate.toFixed(0)}%`}
                         </p>
                     </div>
                 </section>
 
+                {statsError && (
+                    <p className="text-xs text-destructive">{statsError}</p>
+                )}
+
                 <section className="bg-card text-card-foreground border border-border/60 rounded-xl p-6 shadow-sm">
                     <h2 className="text-lg font-semibold mb-4">Quiz-Historie</h2>
 
-                    {quizResults.length === 0 ? (
+                    {isLoadingHistory ? (
+                        <p className="text-sm text-muted-foreground">Lade Quiz-Historie...</p>
+                    ) : historyError ? (
+                        <p className="text-sm text-destructive">{historyError}</p>
+                    ) : quizResults.length === 0 ? (
                         <p className="text-sm text-muted-foreground">
                             Noch keine Quizzes absolviert.
                         </p>
@@ -203,7 +272,9 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                         <div className="space-y-3">
                             {quizResults.map((quiz) => {
                                 const rate =
-                                    (quiz.correctAnswers / quiz.totalQuestions) * 100;
+                                    quiz.totalQuestions > 0
+                                        ? (quiz.correctAnswers / quiz.totalQuestions) * 100
+                                        : 0;
 
                                 return (
                                     <div
@@ -237,6 +308,10 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                         </div>
                     )}
                 </section>
+
+                <p className="text-xs text-muted-foreground">
+                    Gesamt beantwortete Fragen: {isLoadingStats ? "..." : totalAnswers} (aus Historie: {totalQuestionsFromHistory}) | Historie korrekt: {totalCorrectFromHistory}
+                </p>
             </div>
         </div>
     );
