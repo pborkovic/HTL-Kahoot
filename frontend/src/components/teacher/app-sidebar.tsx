@@ -13,7 +13,12 @@ import {
     ChevronsLeft,
     ChevronsRight,
     Shield,
+    Sun,
+    Moon,
+    Contrast,
+    Eye,
 } from "lucide-react";
+import { useTheme, THEMES, type Theme } from "@/components/ThemeProvider";
 import { useAuth } from "@/context/AuthContext";
 import {
     Sidebar,
@@ -34,6 +39,15 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+function ThemeIcon({ theme }: { theme: Theme }) {
+    if (theme === "dark")                    return <Moon className="size-4" />;
+    if (theme === "high-contrast")           return <Contrast className="size-4" />;
+    if (theme === "dark-high-contrast")      return <Contrast className="size-4" />;
+    if (theme === "colorblind-friendly")     return <Eye className="size-4" />;
+    if (theme === "dark-colorblind-friendly")return <Eye className="size-4" />;
+    return <Sun className="size-4" />;
+}
 
 const navItems = [
     {
@@ -70,6 +84,7 @@ export function AppSidebar() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
     const { toggleSidebar, state } = useSidebar();
+    const { theme, setTheme } = useTheme();
 
     const userRoles = user?.roles?.map(r => r.name) ?? [];
     const isAdmin = userRoles.some(r => r === "admin" || r === "superadmin");
@@ -146,7 +161,32 @@ export function AppSidebar() {
                 )}
             </SidebarContent>
 
-            <div className="px-2 py-1.5">
+            <div className="px-2 py-1.5 flex flex-col gap-0.5">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button
+                            type="button"
+                            className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+                        >
+                            <ThemeIcon theme={theme} />
+                            {state === "expanded" && (
+                                <span>{THEMES.find(t => t.value === theme)?.label}</span>
+                            )}
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="top" align="start">
+                        {THEMES.map(t => (
+                            <DropdownMenuItem
+                                key={t.value}
+                                onClick={() => setTheme(t.value)}
+                                className={theme === t.value ? "bg-sidebar-accent" : ""}
+                            >
+                                <ThemeIcon theme={t.value} />
+                                <span>{t.label}</span>
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <button
                     type="button"
                     onClick={toggleSidebar}

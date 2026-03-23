@@ -80,7 +80,7 @@ class RoleService extends BaseService implements RoleServiceContract
                 return false;
             }
 
-            $user->roles()->attach(id: $roleId, attributes: [
+            $user->roles()->attach(ids: $roleId, attributes: [
                 'assigned_at' => now(),
                 'assigned_by' => $assignedBy,
             ]);
@@ -131,7 +131,7 @@ class RoleService extends BaseService implements RoleServiceContract
                 return false;
             }
 
-            $role->permissions()->attach(id: $permissionId);
+            $role->permissions()->attach(ids: $permissionId);
 
             return true;
         } catch (Exception $e) {
@@ -165,5 +165,15 @@ class RoleService extends BaseService implements RoleServiceContract
 
             throw $e;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function getUserCountsByRole(): Collection
+    {
+        return $this->repository->getUserCountsByRole();
     }
 }
