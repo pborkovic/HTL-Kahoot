@@ -37,6 +37,60 @@ type StudentDashboardProps = {
 const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
     const { id } = use(params);
 
+    const getUserErrorMessage = (error: unknown): string => {
+        if (error instanceof ApiError) {
+            if (error.status === 401) return "Du bist nicht angemeldet. Bitte melde dich erneut an.";
+            if (error.status === 403) return "Du hast keine Berechtigung, diesen Studenten anzuzeigen.";
+            if (error.status === 404) return "Dieser Student wurde nicht gefunden.";
+            if (error.status === 422) return "Die Student-ID ist ungueltig. Bitte pruefe den Link.";
+            if (error.status === 429) return "Zu viele Anfragen. Bitte versuche es in einer Minute erneut.";
+            if (error.status >= 500) return "Serverfehler beim Laden der Nutzerdaten. Bitte spaeter erneut versuchen.";
+            return `Fehler beim Laden der Nutzerdaten (HTTP ${error.status}).`;
+        }
+
+        if (error instanceof Error) {
+            return `Nutzerdaten konnten nicht geladen werden: ${error.message}`;
+        }
+
+        return "Die Nutzerdaten konnten nicht geladen werden.";
+    };
+
+    const getStatsErrorMessage = (error: unknown): string => {
+        if (error instanceof ApiError) {
+            if (error.status === 401) return "Sitzung abgelaufen. Bitte melde dich erneut an, um die Statistik zu sehen.";
+            if (error.status === 403) return "Keine Berechtigung fuer diese Statistikdaten.";
+            if (error.status === 404) return "Statistikdaten fuer diesen Studenten wurden nicht gefunden.";
+            if (error.status === 422) return "Die Anfrage fuer Statistikdaten ist ungueltig.";
+            if (error.status === 429) return "Zu viele Anfragen auf Statistikdaten. Bitte kurz warten und erneut versuchen.";
+            if (error.status >= 500) return "Serverfehler beim Laden der Statistikdaten. Bitte spaeter erneut versuchen.";
+            return `Fehler beim Laden der Statistikdaten (HTTP ${error.status}).`;
+        }
+
+        if (error instanceof Error) {
+            return `Statistikdaten konnten nicht geladen werden: ${error.message}`;
+        }
+
+        return "Die Statistikdaten konnten nicht geladen werden.";
+    };
+
+    const getHistoryErrorMessage = (error: unknown): string => {
+        if (error instanceof ApiError) {
+            if (error.status === 401) return "Sitzung abgelaufen. Bitte melde dich erneut an, um die Quiz-Historie zu sehen.";
+            if (error.status === 403) return "Keine Berechtigung fuer diese Quiz-Historie.";
+            if (error.status === 404) return "Es wurde keine Quiz-Historie fuer diesen Studenten gefunden.";
+            if (error.status === 422) return "Die Anfrage fuer die Quiz-Historie ist ungueltig.";
+            if (error.status === 429) return "Zu viele Anfragen auf die Quiz-Historie. Bitte kurz warten und erneut versuchen.";
+            if (error.status >= 500) return "Serverfehler beim Laden der Quiz-Historie. Bitte spaeter erneut versuchen.";
+            return `Fehler beim Laden der Quiz-Historie (HTTP ${error.status}).`;
+        }
+
+        if (error instanceof Error) {
+            return `Quiz-Historie konnte nicht geladen werden: ${error.message}`;
+        }
+
+        return "Die Quiz-Historie konnte nicht geladen werden.";
+    };
+
     const [student, setStudent] = useState<StudentUser | null>(null);
     const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
     const [completedQuizzes, setCompletedQuizzes] = useState<number>(0);
@@ -62,15 +116,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                 });
                 setStudent(res.data);
             } catch (error) {
-                if (error instanceof ApiError && error.status === 401) {
-                    setUserError("Du bist nicht angemeldet. Bitte melde dich erneut an.");
-                } else if (error instanceof ApiError && error.status === 404) {
-                    setUserError("Dieser Student wurde nicht gefunden.");
-                } else if (error instanceof Error) {
-                    setUserError(error.message);
-                } else {
-                    setUserError("Die Nutzerdaten konnten nicht geladen werden.");
-                }
+                setUserError(getUserErrorMessage(error));
             } finally {
                 setIsLoadingUser(false);
             }
@@ -111,11 +157,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
                 setCorrectAnswers(correct);
                 setOverallCorrectRate(rate);
             } catch (error) {
-                if (error instanceof Error) {
-                    setStatsError(error.message);
-                } else {
-                    setStatsError("Die Statistikdaten konnten nicht geladen werden.");
-                }
+                setStatsError(getStatsErrorMessage(error));
             } finally {
                 setIsLoadingStats(false);
             }
@@ -144,11 +186,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ params }) => {
 
                 setQuizResults(mappedResults);
             } catch (error) {
-                if (error instanceof Error) {
-                    setHistoryError(error.message);
-                } else {
-                    setHistoryError("Die Quiz-Historie konnte nicht geladen werden.");
-                }
+                setHistoryError(getHistoryErrorMessage(error));
             } finally {
                 setIsLoadingHistory(false);
             }
