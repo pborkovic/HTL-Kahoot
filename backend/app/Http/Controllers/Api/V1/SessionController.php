@@ -410,6 +410,40 @@ class SessionController extends Controller
     }
 
     #[Post(
+        path: '/api/v1/sessions/{gamePin}/close-question',
+        description: 'Closes the current question without advancing to the next one. Only the host can close a question.',
+        summary: 'Close the current question',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Question closed'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 409, description: 'Invalid session state'),
+        ]
+    )]
+    public function closeQuestion(string $gamePin): JsonResponse
+    {
+        try {
+            $this->sessionService->closeCurrentQuestion(
+                gamePin: $gamePin,
+                host: request()->user(),
+            );
+
+            return response()->json(data: [
+                'data' => ['message' => 'Frage geschlossen.'],
+            ]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['error' => $e->getMessage()],
+                status: 409
+            );
+        }
+    }
+
+    #[Post(
         path: '/api/v1/sessions/{gamePin}/answer',
         description: 'Submit an answer for the current question. The answer must be submitted before the time limit expires.',
         summary: 'Submit an answer',
