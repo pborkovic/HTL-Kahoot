@@ -148,6 +148,18 @@ interface SessionServiceContract extends BaseServiceContract
     public function getSessionStatus(string $gamePin): array;
 
     /**
+     * Close the current question without advancing to the next one.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     * @param User   $host    The authenticated host user.
+     *
+     * @return void
+     *
+     * @throws RuntimeException If the session is not active or the user is not the host.
+     */
+    public function closeCurrentQuestion(string $gamePin, User $host): void;
+
+    /**
      * Get answer distribution for the current question.
      *
      * @param string $gamePin The 8-digit game pin.
