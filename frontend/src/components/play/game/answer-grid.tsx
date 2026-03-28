@@ -1,6 +1,6 @@
 "use client";
 
-import type { AnswerOption } from "@/types/session";
+import type { AnswerOption, QuestionType } from "@/types/session";
 
 const OPTION_COLORS = [
     "bg-red-500/90 hover:bg-red-500 border-red-400/30",
@@ -15,38 +15,48 @@ const OPTION_SHAPES = ["◆", "●", "▲", "■", "★", "⬟"];
 
 interface AnswerGridProps {
     options: AnswerOption[];
-    selectedId: string | null;
+    questionType: QuestionType;
+    selectedIds: string[];
     disabled: boolean;
     onSelect: (optionId: string) => void;
 }
 
-export function AnswerGrid({ options, selectedId, disabled, onSelect }: AnswerGridProps) {
-    return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {options.map((opt, i) => {
-                const isSelected = selectedId === opt.id;
-                const colorClass = OPTION_COLORS[i % OPTION_COLORS.length];
-                const shape = OPTION_SHAPES[i % OPTION_SHAPES.length];
+export function AnswerGrid({ options, questionType, selectedIds, disabled, onSelect }: AnswerGridProps) {
+    const isMultiSelect = questionType === "multiple_choice";
 
-                return (
-                    <button
-                        key={opt.id}
-                        type="button"
-                        disabled={disabled}
-                        onClick={() => onSelect(opt.id)}
-                        className={`relative w-full min-h-20 sm:min-h-24 rounded-xl border-2 px-5 py-4 text-left text-white font-semibold text-base sm:text-lg transition-all ${colorClass} ${
-                            isSelected
-                                ? "ring-4 ring-white/50 scale-[0.97]"
-                                : ""
-                        } ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer active:scale-95"}`}
-                    >
-                        <span className="flex items-start gap-3">
-                            <span className="text-white/60 text-lg shrink-0 mt-0.5">{shape}</span>
-                            <span>{opt.text}</span>
-                        </span>
-                    </button>
-                );
-            })}
+    return (
+        <div className="flex flex-col gap-3">
+            {isMultiSelect && (
+                <p className="text-xs text-white/40 text-center uppercase tracking-wider">
+                    Mehrere Antworten auswählen
+                </p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {options.map((opt, i) => {
+                    const isSelected = selectedIds.includes(opt.id);
+                    const colorClass = OPTION_COLORS[i % OPTION_COLORS.length];
+                    const shape = OPTION_SHAPES[i % OPTION_SHAPES.length];
+
+                    return (
+                        <button
+                            key={opt.id}
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => onSelect(opt.id)}
+                            className={`relative w-full min-h-20 sm:min-h-24 rounded-xl border-2 px-5 py-4 text-left text-white font-semibold text-base sm:text-lg transition-all ${colorClass} ${
+                                isSelected
+                                    ? "ring-4 ring-white/50 scale-[0.97]"
+                                    : ""
+                            } ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer active:scale-95"}`}
+                        >
+                            <span className="flex items-start gap-3">
+                                <span className="text-white/60 text-lg shrink-0 mt-0.5">{shape}</span>
+                                <span>{opt.text}</span>
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 }
