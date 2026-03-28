@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { Send } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { useSessionChannel } from "@/hooks/use-session-channel";
 import { CountdownTimer } from "@/components/play/game/countdown-timer";
@@ -17,7 +18,7 @@ export default function StudentGame() {
     const router = useRouter();
     const [gameState, setGameState] = useState<GameState>("loading");
     const [question, setQuestion] = useState<CurrentQuestion | null>(null);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [result, setResult] = useState<AnswerResult | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const lastQuestionIdx = useRef<number | null>(null);
@@ -30,7 +31,7 @@ export default function StudentGame() {
                 `/v1/sessions/${gameCode}/current-question`,
             );
             setQuestion(res.data);
-            setSelectedId(null);
+            setSelectedIds([]);
             setResult(null);
             setGameState("answering");
             lastQuestionIdx.current = res.data.question_index;
@@ -59,11 +60,12 @@ export default function StudentGame() {
         },
     });
 
-    const handleSelect = useCallback(
-        async (optionId: string) => {
-            if (submitting || gameState !== "answering") return;
+    const isMultiSelect = question?.question_type === "multiple_choice";
 
-            setSelectedId(optionId);
+    const submitAnswer = useCallback(
+        async (answerIds: string[]) => {
+            if (submitting || gameState !== "answering" || answerIds.length === 0) return;
+
             setSubmitting(true);
 
             try {
@@ -71,7 +73,7 @@ export default function StudentGame() {
                     `/v1/sessions/${gameCode}/answer`,
                     {
                         method: "POST",
-                        body: JSON.stringify({ answer: [optionId] }),
+                        body: JSON.stringify({ answer: answerIds }),
                     },
                 );
                 setResult(res.data);
@@ -85,6 +87,28 @@ export default function StudentGame() {
         },
         [gameCode, submitting, gameState],
     );
+
+    const handleSelect = useCallback(
+        (optionId: string) => {
+            if (submitting || gameState !== "answering") return;
+
+            if (isMultiSelect) {
+                setSelectedIds((prev) =>
+                    prev.includes(optionId)
+                        ? prev.filter((id) => id !== optionId)
+                        : [...prev, optionId],
+                );
+            } else {
+                setSelectedIds([optionId]);
+                submitAnswer([optionId]);
+            }
+        },
+        [submitting, gameState, isMultiSelect, submitAnswer],
+    );
+
+    const handleConfirm = useCallback(() => {
+        submitAnswer(selectedIds);
+    }, [submitAnswer, selectedIds]);
 
     const handleExpired = useCallback(() => {
         if (gameState === "answering") {
@@ -142,10 +166,24 @@ export default function StudentGame() {
                         {/* Answers */}
                         <AnswerGrid
                             options={question.answer_options}
-                            selectedId={selectedId}
+                            questionType={question.question_type}
+                            selectedIds={selectedIds}
                             disabled={submitting}
                             onSelect={handleSelect}
                         />
+
+                        {/* Confirm button for multi-select */}
+                        {isMultiSelect && selectedIds.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={handleConfirm}
+                                disabled={submitting}
+                                className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                            >
+                                <Send className="size-4" />
+                                Antwort absenden ({selectedIds.length} ausgewählt)
+                            </button>
+                        )}
                     </>
                 )}
 
