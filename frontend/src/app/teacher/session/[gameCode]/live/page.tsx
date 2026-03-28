@@ -88,6 +88,10 @@ export default function TeacherLive() {
     const handleCloseQuestion = useCallback(async () => {
         setIsAdvancing(true);
         try {
+            await apiFetch(
+                `/v1/sessions/${gameCode}/close-question`,
+                { method: "POST" },
+            );
             const res = await apiFetch<{ data: QuestionResults }>(
                 `/v1/sessions/${gameCode}/question-results`,
             );

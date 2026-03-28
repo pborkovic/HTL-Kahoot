@@ -11,8 +11,11 @@ export interface AnswerOption {
     sort_order: number;
 }
 
+export type QuestionType = "single_choice" | "multiple_choice" | "true_false";
+
 export interface CurrentQuestion {
     question_text: string;
+    question_type: QuestionType;
     answer_options: AnswerOption[];
     question_index: number;
     total_questions: number;

@@ -271,9 +271,8 @@ class SessionService extends BaseService implements SessionServiceContract
         );
         $totalQuestions = $this->repository->countSessionQuestions(session: $session);
 
-        $answerOptions = $questionVersion->answerOptions
-            ->sortBy(callback: 'sort_order')
-            ->values()
+        $sortedOptions = $questionVersion->answerOptions->sortBy(callback: 'sort_order')->values();
+        $answerOptions = ($questionVersion->randomize_options ? $sortedOptions->shuffle()->values() : $sortedOptions)
             ->map(callback: fn($opt) => [
                 'id'         => $opt->id,
                 'text'       => $opt->text,
@@ -282,13 +281,14 @@ class SessionService extends BaseService implements SessionServiceContract
             ->all();
 
         return [
-            'question_text'  => $questionVersion->title,
-            'answer_options' => $answerOptions,
-            'question_index' => $session->current_question_idx,
+            'question_text'   => $questionVersion->title,
+            'question_type'   => $questionVersion->type,
+            'answer_options'  => $answerOptions,
+            'question_index'  => $session->current_question_idx,
             'total_questions' => $totalQuestions,
-            'time_limit'     => $timeLimit,
-            'time_remaining' => $timeRemaining,
-            'opened_at'      => $sessionQuestion->opened_at->toIso8601String(),
+            'time_limit'      => $timeLimit,
+            'time_remaining'  => $timeRemaining,
+            'opened_at'       => $sessionQuestion->opened_at->toIso8601String(),
         ];
     }
 
@@ -426,9 +426,18 @@ class SessionService extends BaseService implements SessionServiceContract
      *
      * @author Philipp Borkovic
      */
-    public function getQuestionResults(string $gamePin): array
+    public function closeCurrentQuestion(string $gamePin, User $host): void
     {
         $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
+
+        $this->assertHost(
+            session: $session,
+            user: $host
+        );
+        $this->assertStatus(
+            session: $session,
+            expected: 'active'
+        );
 
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
@@ -443,6 +452,18 @@ class SessionService extends BaseService implements SessionServiceContract
                 questionIndex: $session->current_question_idx,
             ));
         }
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getQuestionResults(string $gamePin): array
+    {
+        $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
+
+        $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
         $this->repository->loadSessionQuestionRelations(
             sessionQuestion: $sessionQuestion,
