@@ -31,6 +31,8 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         $user->update(attributes: [
             'email'         => $entraDto->email,
             'username'      => $entraDto->displayName,
+            'display_name'  => $entraDto->displayName,
+            'class_name'    => $entraDto->className,
             'last_login_at' => now(),
         ]);
 
@@ -43,6 +45,8 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             'external_id'   => $entraDto->externalId,
             'email'         => $entraDto->email,
             'username'      => $entraDto->displayName,
+            'display_name'  => $entraDto->displayName,
+            'class_name'    => $entraDto->className,
             'auth_provider' => 'azure',
             'last_login_at' => now(),
         ]);
