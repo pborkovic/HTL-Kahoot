@@ -100,6 +100,14 @@ services:
       REVERB_HOST: reverb
       REVERB_PORT: "8080"
       REVERB_SCHEME: http
+      FILESYSTEM_DISK: s3
+      AWS_ACCESS_KEY_ID: ${SEAWEEDFS_ACCESS_KEY:?SEAWEEDFS_ACCESS_KEY is required}
+      AWS_SECRET_ACCESS_KEY: ${SEAWEEDFS_SECRET_KEY:?SEAWEEDFS_SECRET_KEY is required}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_BUCKET: ${AWS_BUCKET:-media}
+      AWS_ENDPOINT: http://seaweedfs-filer:8333
+      AWS_URL: /media
+      AWS_USE_PATH_STYLE_ENDPOINT: "true"
       LOG_CHANNEL: stderr
       LOG_LEVEL: error
     volumes:
@@ -109,6 +117,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      seaweedfs-filer:
+        condition: service_started
     networks:
       - gamquiz
 
@@ -165,6 +175,53 @@ services:
     networks:
       - gamquiz
 
+  seaweedfs-master:
+    image: chrislusf/seaweedfs:latest
+    container_name: gamquiz-seaweedfs-master
+    restart: unless-stopped
+    command: "master -ip=seaweedfs-master -ip.bind=0.0.0.0 -defaultReplication=000"
+    volumes:
+      - seaweedfs_master:/data
+    networks:
+      - gamquiz
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9333/cluster/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  seaweedfs-volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: gamquiz-seaweedfs-volume
+    restart: unless-stopped
+    command: "volume -mserver=seaweedfs-master:9333 -ip.bind=0.0.0.0 -port=8080 -max=50"
+    depends_on:
+      seaweedfs-master:
+        condition: service_healthy
+    volumes:
+      - seaweedfs_volume:/data
+    networks:
+      - gamquiz
+
+  seaweedfs-filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: gamquiz-seaweedfs-filer
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/etc/seaweedfs/filer-entrypoint.sh"]
+    environment:
+      SEAWEEDFS_ACCESS_KEY: ${SEAWEEDFS_ACCESS_KEY:?SEAWEEDFS_ACCESS_KEY is required}
+      SEAWEEDFS_SECRET_KEY: ${SEAWEEDFS_SECRET_KEY:?SEAWEEDFS_SECRET_KEY is required}
+    depends_on:
+      seaweedfs-master:
+        condition: service_healthy
+    volumes:
+      - seaweedfs_filer:/data
+      - ./seaweedfs/s3.json.tpl:/etc/seaweedfs/s3.json.tpl:ro
+      - ./seaweedfs/filer-entrypoint.sh:/etc/seaweedfs/filer-entrypoint.sh:ro
+    networks:
+      - gamquiz
+
   nginx:
     image: nginx:1.27-alpine
     container_name: gamquiz-nginx
@@ -178,6 +235,7 @@ services:
       - backend
       - frontend
       - reverb
+      - seaweedfs-filer
     networks:
       - gamquiz
     labels:
@@ -197,3 +255,6 @@ volumes:
   backend_storage:
   traefik_certs:
   nginx_logs:
+  seaweedfs_master:
+  seaweedfs_volume:
+  seaweedfs_filer:
