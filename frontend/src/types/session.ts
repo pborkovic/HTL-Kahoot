@@ -13,9 +13,17 @@ export interface AnswerOption {
 
 export type QuestionType = "single_choice" | "multiple_choice" | "true_false";
 
+export interface QuestionMediaItem {
+    id: string;
+    type: "image" | "video" | "code_snippet";
+    url: string;
+    alt_text: string | null;
+}
+
 export interface CurrentQuestion {
     question_text: string;
     question_type: QuestionType;
+    question_media?: QuestionMediaItem[];
     answer_options: AnswerOption[];
     question_index: number;
     total_questions: number;
