@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -31,8 +32,8 @@ interface QuizFormDialogProps {
 }
 
 export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogProps) {
+    const router = useRouter();
     const isEdit = !!quiz;
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [timeMode, setTimeMode] = useState("per_question");
@@ -70,6 +71,7 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
 
         if (!title.trim()) {
             setError("Bitte gib einen Titel ein.");
+
             return;
         }
 
@@ -90,14 +92,17 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
                     method: "PUT",
                     body: JSON.stringify(body),
                 });
+                onSaved();
+                onClose();
             } else {
-                await apiFetch("/v1/quizzes", {
+                const res = await apiFetch<{ id: string }>("/v1/quizzes", {
                     method: "POST",
                     body: JSON.stringify(body),
                 });
+                onSaved();
+                onClose();
+                router.push(`/teacher/dashboard?quiz=${res.id}`);
             }
-            onSaved();
-            onClose();
         } catch (err) {
             setError(err instanceof Error ? err.message : "Fehler beim Speichern");
         } finally {
