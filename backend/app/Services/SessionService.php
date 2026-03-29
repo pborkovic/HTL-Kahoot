@@ -256,7 +256,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $this->repository->loadSessionQuestionRelations(
             sessionQuestion: $sessionQuestion,
-            relations: 'quizQuestion.questionVersion.answerOptions',
+            relations: ['quizQuestion.questionVersion.answerOptions', 'quizQuestion.questionVersion.question.media'],
         );
 
         $quizQuestion = $sessionQuestion->quizQuestion;
@@ -280,9 +280,20 @@ class SessionService extends BaseService implements SessionServiceContract
             ])
             ->all();
 
+        $question = $questionVersion->question;
+        $questionMedia = $question->relationLoaded(key: 'media')
+            ? $question->media->map(callback: fn($m) => [
+                'id'       => $m->id,
+                'type'     => $m->type,
+                'url'      => $m->url,
+                'alt_text' => $m->alt_text,
+            ])->all()
+            : [];
+
         return [
             'question_text'   => $questionVersion->title,
             'question_type'   => $questionVersion->type,
+            'question_media'  => $questionMedia,
             'answer_options'  => $answerOptions,
             'question_index'  => $session->current_question_idx,
             'total_questions' => $totalQuestions,
