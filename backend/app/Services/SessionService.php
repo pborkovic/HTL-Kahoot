@@ -661,6 +661,101 @@ class SessionService extends BaseService implements SessionServiceContract
         ];
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getSessionReport(string $gamePin): array
+    {
+        $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
+        $this->repository->loadSessionRelations(
+            session: $session,
+            relations: 'quiz'
+        );
+
+        $totalQuestions = $this->repository->countSessionQuestions(session: $session);
+        $sessionQuestions = $this->repository->getSessionQuestionsWithAllResponses(session: $session);
+        $participants = $this->repository->getParticipantsWithResponses(session: $session);
+
+        $rank = 0;
+        $lastScore = null;
+
+        $participantData = $participants->map(callback: function ($participant) use ($sessionQuestions, $totalQuestions, &$rank, &$lastScore) {
+            if ($participant->total_score !== $lastScore) {
+                $rank++;
+                $lastScore = $participant->total_score;
+            }
+
+            $responses = $participant->responses->keyBy(keyBy: 'session_question_id');
+
+            $correctCount = 0;
+            $totalAnswered = 0;
+            $totalTimeMs = 0;
+            $timeCount = 0;
+
+            $questions = $sessionQuestions->map(callback: function ($sq) use ($responses, &$correctCount, &$totalAnswered, &$totalTimeMs, &$timeCount) {
+                $questionVersion = $sq->quizQuestion->questionVersion;
+                $response = $responses->get(key: $sq->id);
+
+                if ($response) {
+                    $totalAnswered++;
+                    if ($response->is_correct) {
+                        $correctCount++;
+                    }
+                    if ($response->time_taken_ms !== null) {
+                        $totalTimeMs += $response->time_taken_ms;
+                        $timeCount++;
+                    }
+                }
+
+                $answerOptions = $questionVersion->answerOptions
+                    ->sortBy(callback: 'sort_order')
+                    ->values()
+                    ->map(callback: fn($opt) => [
+                        'id'         => $opt->id,
+                        'text'       => $opt->text,
+                        'is_correct' => $opt->is_correct,
+                        'sort_order' => $opt->sort_order,
+                    ])
+                    ->all();
+
+                return [
+                    'question_index'      => $sq->display_order,
+                    'question_text'       => $questionVersion->title,
+                    'is_correct'          => $response?->is_correct,
+                    'score_awarded'       => $response?->score_awarded ?? 0,
+                    'time_taken_ms'       => $response?->time_taken_ms,
+                    'answer_options'      => $answerOptions,
+                    'selected_option_ids' => $response ? $response->answer : [],
+                ];
+            })->all();
+
+            return [
+                'participant_id' => $participant->id,
+                'user_id'        => $participant->user_id,
+                'nickname'       => $participant->nickname,
+                'total_score'    => $participant->total_score,
+                'rank'           => $rank,
+                'correct_count'  => $correctCount,
+                'total_answered' => $totalAnswered,
+                'accuracy'       => $totalAnswered > 0 ? round(num: ($correctCount / $totalAnswered) * 100, precision: 1) : 0.0,
+                'avg_time_ms'    => $timeCount > 0 ? (int) round(num: $totalTimeMs / $timeCount) : null,
+                'questions'      => $questions,
+            ];
+        })->all();
+
+        return [
+            'session_id'         => $session->id,
+            'quiz_title'         => $session->quiz->title,
+            'total_questions'    => $totalQuestions,
+            'total_participants' => $participants->count(),
+            'started_at'         => $session->started_at?->toISOString(),
+            'finished_at'        => $session->finished_at?->toISOString(),
+            'participants'       => $participantData,
+        ];
+    }
+
     public function getModelForPolicy(): string
     {
         return Session::class;
