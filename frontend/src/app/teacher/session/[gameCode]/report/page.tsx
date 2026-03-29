@@ -182,12 +182,12 @@ export default function ReportPage() {
                                         <th className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground h-9 px-3 text-center">
                                             Punkte
                                         </th>
+                                        <SortHeader field="accuracy" current={sortField} dir={sortDir} onSort={handleSort} className="text-center">
+                                            %
+                                        </SortHeader>
                                         <th className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground h-9 px-3 text-center">
                                             Richtig
                                         </th>
-                                        <SortHeader field="accuracy" current={sortField} dir={sortDir} onSort={handleSort} className="text-center">
-                                            Genauigkeit
-                                        </SortHeader>
                                         <SortHeader field="avg_time" current={sortField} dir={sortDir} onSort={handleSort} className="text-center pr-4 sm:pr-5">
                                             Ø Zeit
                                         </SortHeader>
@@ -219,18 +219,6 @@ export default function ReportPage() {
                                                 </span>
                                             </td>
                                             <td className="py-2.5 px-3 text-center">
-                                                <div className="flex items-center justify-center gap-1">
-                                                    <Check className="size-3 text-emerald-500" />
-                                                    <span className="text-xs tabular-nums text-foreground">
-                                                        {p.correct_count}
-                                                    </span>
-                                                    <span className="text-xs text-muted-foreground">/</span>
-                                                    <span className="text-xs tabular-nums text-muted-foreground">
-                                                        {report.total_questions}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="py-2.5 px-3 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
                                                         <div
@@ -248,6 +236,18 @@ export default function ReportPage() {
                                                         "text-red-600"
                                                     }`}>
                                                         {p.accuracy}%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="py-2.5 px-3 text-center">
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <Check className="size-3 text-emerald-500" />
+                                                    <span className="text-xs tabular-nums text-foreground">
+                                                        {p.correct_count}
+                                                    </span>
+                                                    <span className="text-xs text-muted-foreground">/</span>
+                                                    <span className="text-xs tabular-nums text-muted-foreground">
+                                                        {report.total_questions}
                                                     </span>
                                                 </div>
                                             </td>
