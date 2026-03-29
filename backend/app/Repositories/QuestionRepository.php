@@ -55,7 +55,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
             $question->update(attributes: ['current_version_id' => $version->id]);
 
-            return $question->load(relations: 'currentVersion.answerOptions');
+            return $question->load(relations: ['currentVersion.answerOptions', 'media']);
         });
     }
 
@@ -96,7 +96,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
             $question->update(attributes: ['current_version_id' => $version->id]);
 
-            return $question->load(relations: 'currentVersion.answerOptions');
+            return $question->load(relations: ['currentVersion.answerOptions', 'media']);
         });
     }
 
@@ -138,7 +138,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
             $query->withTrashed();
         }
 
-        $query->with(relations: 'currentVersion');
+        $query->with(relations: ['currentVersion', 'media']);
 
         $filter = new QuestionFilter();
         $filter->apply(query: $query, filters: $filters);
