@@ -633,4 +633,26 @@ class SessionController extends Controller
 
         return response()->json(data: ['data' => $data]);
     }
+
+    #[Get(
+        path: '/api/v1/sessions/{gamePin}/report',
+        description: 'Returns a participant-centric session report with per-student statistics including accuracy percentage, average response time, and detailed per-question answers.',
+        summary: 'Get session report',
+        security: [['sanctum' => []]],
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Session report with participant statistics'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 404, description: 'Not found'),
+        ]
+    )]
+    public function report(string $gamePin): JsonResponse
+    {
+        $data = $this->sessionService->getSessionReport(gamePin: $gamePin);
+
+        return response()->json(data: ['data' => $data]);
+    }
 }

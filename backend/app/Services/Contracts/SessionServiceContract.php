@@ -282,4 +282,48 @@ interface SessionServiceContract extends BaseServiceContract
      * }
      */
     public function getFullReview(string $gamePin): array;
+
+    /**
+     * Get a participant-centric session report with per-student statistics.
+     *
+     * Returns each participant's total score, rank, accuracy percentage,
+     * average response time, and detailed per-question answers.
+     *
+     * @param string $gamePin The 8-digit game pin.
+     *
+     * @return array{
+     *     session_id: string,
+     *     quiz_title: string,
+     *     total_questions: int,
+     *     total_participants: int,
+     *     started_at: string|null,
+     *     finished_at: string|null,
+     *     participants: array<int, array{
+     *         participant_id: string,
+     *         user_id: string|null,
+     *         nickname: string,
+     *         total_score: int,
+     *         rank: int,
+     *         correct_count: int,
+     *         total_answered: int,
+     *         accuracy: float,
+     *         avg_time_ms: int|null,
+     *         questions: array<int, array{
+     *             question_index: int,
+     *             question_text: string,
+     *             is_correct: bool|null,
+     *             score_awarded: int,
+     *             time_taken_ms: int|null,
+     *             answer_options: array<int, array{
+     *                 id: string,
+     *                 text: string,
+     *                 is_correct: bool,
+     *                 sort_order: int
+     *             }>,
+     *             selected_option_ids: array<int, string>
+     *         }>
+     *     }>
+     * }
+     */
+    public function getSessionReport(string $gamePin): array;
 }

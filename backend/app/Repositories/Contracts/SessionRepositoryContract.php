@@ -263,4 +263,13 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return Collection<int, SessionQuestion> The session questions with relations loaded.
      */
     public function getSessionQuestionsWithAllResponses(Session $session): Collection;
+
+    /**
+     * Get all participants for a session with their response data eagerly loaded.
+     *
+     * @param Session $session The session.
+     *
+     * @return Collection<int, SessionParticipant> The participants with responses and question data loaded.
+     */
+    public function getParticipantsWithResponses(Session $session): Collection;
 }

@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('{gamePin}/review', [SessionController::class, 'review']);
             Route::get('{gamePin}/full-review', [SessionController::class, 'fullReview']);
             Route::get('{gamePin}/results', [SessionController::class, 'results']);
+            Route::get('{gamePin}/report', [SessionController::class, 'report']);
             Route::post('{gamePin}/start', [SessionController::class, 'start']);
             Route::post('{gamePin}/close-question', [SessionController::class, 'closeQuestion']);
             Route::post('{gamePin}/next', [SessionController::class, 'next']);

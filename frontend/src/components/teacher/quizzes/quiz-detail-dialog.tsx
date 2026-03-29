@@ -13,6 +13,7 @@ import {
     FileText,
     Eye,
     Rocket,
+    FileBarChart,
 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
@@ -346,14 +347,24 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                             </div>
                                         </div>
                                         {session.status === "finished" && (
-                                            <button
-                                                type="button"
-                                                onClick={() => router.push(`/teacher/session/${session.game_pin}/results`)}
-                                                className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-                                            >
-                                                <Eye className="size-3" />
-                                                Ergebnis
-                                            </button>
+                                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => router.push(`/teacher/session/${session.game_pin}/report`)}
+                                                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                                >
+                                                    <FileBarChart className="size-3" />
+                                                    Report
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => router.push(`/teacher/session/${session.game_pin}/results`)}
+                                                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                                >
+                                                    <Eye className="size-3" />
+                                                    Ergebnis
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 ))}

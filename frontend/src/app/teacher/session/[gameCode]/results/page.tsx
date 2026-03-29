@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Trophy, ArrowLeft } from "lucide-react";
+import { Trophy, ArrowLeft, FileBarChart } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import StudentQuestionReview from "@/components/teacher/results/student-question-review";
 import type { FinalResults, LeaderboardEntry } from "@/types/session";
@@ -133,15 +133,25 @@ export default function TeacherResults() {
                     )}
                 </div>
 
-                {/* Back button */}
-                <button
-                    type="button"
-                    onClick={() => router.push("/teacher")}
-                    className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer"
-                >
-                    <ArrowLeft className="size-4" />
-                    Zurück zum Dashboard
-                </button>
+                {/* Actions */}
+                <div className="flex gap-3">
+                    <button
+                        type="button"
+                        onClick={() => router.push(`/teacher/session/${gameCode}/report`)}
+                        className="flex-1 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer"
+                    >
+                        <FileBarChart className="size-4" />
+                        Report
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => router.push("/teacher")}
+                        className="flex-1 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-border hover:bg-muted transition-colors cursor-pointer"
+                    >
+                        <ArrowLeft className="size-4" />
+                        Zurück zum Dashboard
+                    </button>
+                </div>
             </div>
         </div>
     );
