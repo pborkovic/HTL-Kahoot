@@ -19,6 +19,16 @@ export interface QuestionVersion {
     answer_options: AnswerOption[];
 }
 
+export interface QuestionMedia {
+    id: string;
+    question_id: string;
+    type: "image" | "video" | "code_snippet";
+    url: string;
+    alt_text: string | null;
+    sort_order: number;
+    created_at: string;
+}
+
 export interface Question {
     id: string;
     type: string;
@@ -29,6 +39,7 @@ export interface Question {
     deleted_at: string | null;
     current_version: QuestionVersion | null;
     versions: QuestionVersion[];
+    media?: QuestionMedia[];
 }
 
 export interface PaginationMeta {
