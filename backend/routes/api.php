@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\MediaController;
 use App\Http\Controllers\Api\V1\QuestionController;
 use App\Http\Controllers\Api\V1\QuestionPoolController;
 use App\Http\Controllers\Api\V1\QuizController;
@@ -76,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('{question}', [QuestionController::class, 'show']);
             Route::put('{question}', [QuestionController::class, 'update']);
             Route::delete('{question}', [QuestionController::class, 'destroy']);
+            Route::post('{question}/media', [MediaController::class, 'store']);
+            Route::delete('{question}/media/{questionMedia}', [MediaController::class, 'destroy']);
         });
 
         Route::prefix('pools')->group(function () {
