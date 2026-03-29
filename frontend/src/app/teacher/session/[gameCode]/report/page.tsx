@@ -85,12 +85,6 @@ export default function ReportPage() {
         return list;
     }, [report, sortField, sortDir]);
 
-    const avgAccuracy = useMemo(() => {
-        if (!report || report.participants.length === 0) return 0;
-        const sum = report.participants.reduce((s, p) => s + p.accuracy, 0);
-        return Math.round(sum / report.participants.length);
-    }, [report]);
-
     const avgTime = useMemo(() => {
         if (!report) return null;
         const withTime = report.participants.filter((p) => p.avg_time_ms !== null);
@@ -143,7 +137,7 @@ export default function ReportPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div className="bg-card border border-border/60 rounded-xl p-4 text-center">
                         <p className="text-2xl font-bold tabular-nums text-foreground">{report.total_questions}</p>
                         <p className="text-xs text-muted-foreground mt-1">Fragen</p>
@@ -155,10 +149,6 @@ export default function ReportPage() {
                     <div className="bg-card border border-border/60 rounded-xl p-4 text-center">
                         <p className="text-2xl font-bold tabular-nums text-foreground">{highScore.toLocaleString()}</p>
                         <p className="text-xs text-muted-foreground mt-1">Highscore</p>
-                    </div>
-                    <div className="bg-card border border-border/60 rounded-xl p-4 text-center">
-                        <p className="text-2xl font-bold tabular-nums text-foreground">{avgAccuracy}%</p>
-                        <p className="text-xs text-muted-foreground mt-1">Ø Genauigkeit</p>
                     </div>
                     <div className="bg-card border border-border/60 rounded-xl p-4 text-center">
                         <p className="text-2xl font-bold tabular-nums text-foreground">{formatTime(avgTime)}</p>
