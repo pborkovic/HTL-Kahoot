@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, X, Clock, Target, Trophy } from "lucide-react";
+import { Check, X, Clock, Trophy } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -44,20 +44,13 @@ export function StudentDetailDialog({ participant, totalQuestions, onClose }: St
                 </DialogHeader>
 
                 {/* Stats */}
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                     <div className="rounded-lg border border-border/60 px-3 py-2.5 text-center">
                         <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
                             <Trophy className="size-3" />
                         </div>
                         <span className="text-lg font-semibold tabular-nums">{participant.total_score.toLocaleString()}</span>
                         <p className="text-[10px] text-muted-foreground">Punkte</p>
-                    </div>
-                    <div className="rounded-lg border border-border/60 px-3 py-2.5 text-center">
-                        <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                            <Target className="size-3" />
-                        </div>
-                        <span className="text-lg font-semibold tabular-nums">{participant.accuracy}%</span>
-                        <p className="text-[10px] text-muted-foreground">Genauigkeit</p>
                     </div>
                     <div className="rounded-lg border border-border/60 px-3 py-2.5 text-center">
                         <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
