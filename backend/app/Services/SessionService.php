@@ -739,7 +739,7 @@ class SessionService extends BaseService implements SessionServiceContract
                 'rank'           => $rank,
                 'correct_count'  => $correctCount,
                 'total_answered' => $totalAnswered,
-                'accuracy'       => $totalAnswered > 0 ? round(num: ($correctCount / $totalAnswered) * 100, precision: 1) : 0.0,
+                'accuracy'       => $totalQuestions > 0 ? round(num: ($correctCount / $totalQuestions) * 100, precision: 1) : 0.0,
                 'avg_time_ms'    => $timeCount > 0 ? (int) round(num: $totalTimeMs / $timeCount) : null,
                 'questions'      => $questions,
             ];
