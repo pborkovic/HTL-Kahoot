@@ -85,6 +85,25 @@ export function QuestionDetailDialog({ question, onClose, onEdit, onDeleted }: Q
                         </Badge>
                     </div>
 
+                    {question.media && question.media.length > 0 && (
+                        <div>
+                            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-2">
+                                Medien
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {question.media.map((m) => (
+                                    <div key={m.id} className="w-28 h-20 rounded-lg border border-border/60 overflow-hidden">
+                                        {m.type === "video" ? (
+                                            <video src={m.url} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <img src={m.url} alt={m.alt_text ?? ""} className="w-full h-full object-cover" />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {version?.explanation && (
                         <div>
                             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1.5">
