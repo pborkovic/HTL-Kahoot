@@ -45,30 +45,26 @@ export default function Dashboard() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const quizIdParam = searchParams.get("quiz");
-
     const questions = useQuestions();
     const students = useStudents();
     const [questionWeight, setQuestionWeight] = useState(5);
     const [maxTimePerQuestion, setMaxTimePerQuestion] = useState(30);
     const [isCreating, setIsCreating] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [createError, setCreateError] = useState<string | null>(null);
     const [formOpen, setFormOpen] = useState(false);
     const [editQuestion, setEditQuestion] = useState<Question | null>(null);
-
-    // ── Quiz loading & save state machine ──
+    const [quizTitle, setQuizTitle] = useState<string>("");
     const [loadedQuiz, setLoadedQuiz] = useState<Quiz | null>(null);
-    // State (not ref!) so React batches it with setSelectedIds
     const [preselected, setPreselected] = useState(false);
-    // Becomes true one render AFTER preselection, when keys reflect preselected values
     const [autosaveEnabled, setAutosaveEnabled] = useState(false);
-
     const lastSavedQuestionKey = useRef("");
     const lastSavedStudentKey = useRef("");
     const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const quizIdRef = useRef<string | null>(null);
+    const busyRef = useRef(false);
     quizIdRef.current = loadedQuiz?.id ?? null;
 
-    // Stable serialized keys for current selections
     const questionKey = useMemo(
         () => [...questions.selectedIds].sort().join(","),
         [questions.selectedIds]
@@ -78,7 +74,6 @@ export default function Dashboard() {
         [students.selectedIds]
     );
 
-    // ── 1. Load quiz data ──
     useEffect(() => {
         if (!quizIdParam) {
             setLoadedQuiz(null);
@@ -86,17 +81,18 @@ export default function Dashboard() {
             setAutosaveEnabled(false);
             lastSavedQuestionKey.current = "";
             lastSavedStudentKey.current = "";
+
             return;
         }
 
-        // Reset when switching quizzes
         setPreselected(false);
         setAutosaveEnabled(false);
 
         async function loadQuiz() {
             try {
-                const res = await apiFetch<{ data: Quiz }>(`/v1/quizzes/${quizIdParam}`);
-                setLoadedQuiz(res.data);
+                const quiz = await apiFetch<Quiz>(`/v1/quizzes/${quizIdParam}`);
+                setLoadedQuiz(quiz);
+                setQuizTitle(quiz.title);
             } catch {
                 setLoadedQuiz(null);
             }
@@ -105,18 +101,15 @@ export default function Dashboard() {
         void loadQuiz();
     }, [quizIdParam]);
 
-    // ── 2. Pre-select questions & students from loaded quiz ──
-    // setPreselected(true) is batched with setSelectedIds calls,
-    // so the NEXT render will have both preselected=true AND updated selection keys.
     useEffect(() => {
         if (!loadedQuiz || questions.loading || students.loading || preselected) {
             return;
         }
 
-        // Pre-select questions
         const quizQuestionVersionIds = new Set(
             loadedQuiz.quiz_questions?.map((qq) => qq.question_version?.id) ?? []
         );
+
         const matchedQuestionIds = new Set<string>();
         if (quizQuestionVersionIds.size > 0) {
             for (const q of questions.displayQuestions) {
@@ -129,7 +122,6 @@ export default function Dashboard() {
             questions.setSelectedIds(matchedQuestionIds);
         }
 
-        // Pre-select students
         const savedParticipantIds = new Set(
             loadedQuiz.participants?.map((p) => p.id) ?? []
         );
@@ -137,24 +129,16 @@ export default function Dashboard() {
             students.setSelectedIds(savedParticipantIds);
         }
 
-        console.log("[preselect] matched questions:", matchedQuestionIds.size, "students:", savedParticipantIds.size);
-
-        // Batched with the setSelectedIds calls above — all take effect in the same render
         setPreselected(true);
     }, [loadedQuiz, questions.loading, students.loading, questions.displayQuestions, questions.setSelectedIds, students.setSelectedIds, loadedQuiz?.quiz_questions, loadedQuiz?.participants, preselected]);
 
-    // ── 3. Snapshot keys and enable autosave ──
-    // This runs in the render AFTER preselection, where questionKey/studentKey
-    // already reflect the preselected values. So we correctly record what's "saved".
     useEffect(() => {
         if (!preselected || autosaveEnabled) return;
-        console.log("[snapshot] questionKey:", questionKey.substring(0, 40), "studentKey:", studentKey.substring(0, 40));
         lastSavedQuestionKey.current = questionKey;
         lastSavedStudentKey.current = studentKey;
         setAutosaveEnabled(true);
     }, [preselected, autosaveEnabled, questionKey, studentKey]);
 
-    // ── Build sync payloads ──
     const buildQuestionsSyncBody = useCallback(() => {
         const selected = questions.displayQuestions.filter(
             (q) => questions.selectedIds.has(q.id) && q.current_version
@@ -173,21 +157,11 @@ export default function Dashboard() {
         return { user_ids: [...students.selectedIds] };
     }, [students.selectedIds]);
 
-    // ── 4. Auto-save on selection changes (debounced) ──
     useEffect(() => {
         if (!loadedQuiz || !autosaveEnabled) return;
 
         const questionsChanged = questionKey !== lastSavedQuestionKey.current;
         const studentsChanged = studentKey !== lastSavedStudentKey.current;
-
-        console.log("[autosave] check", {
-            questionsChanged,
-            studentsChanged,
-            questionKey: questionKey.substring(0, 40),
-            lastSavedQ: lastSavedQuestionKey.current.substring(0, 40),
-            studentKey: studentKey.substring(0, 40),
-            lastSavedS: lastSavedStudentKey.current.substring(0, 40),
-        });
 
         if (!questionsChanged && !studentsChanged) return;
 
@@ -199,24 +173,18 @@ export default function Dashboard() {
 
             try {
                 if (questionsChanged) {
-                    const body = buildQuestionsSyncBody();
-                    console.log("[autosave] saving questions:", body.questions.length, "items");
                     await apiFetch(`/v1/quizzes/${quizId}/questions/sync`, {
                         method: "PUT",
-                        body: JSON.stringify(body),
+                        body: JSON.stringify(buildQuestionsSyncBody()),
                     });
                     lastSavedQuestionKey.current = questionKey;
-                    console.log("[autosave] questions saved OK");
                 }
                 if (studentsChanged) {
-                    const body = buildParticipantsSyncBody();
-                    console.log("[autosave] saving students:", body.user_ids.length, "items");
                     await apiFetch(`/v1/quizzes/${quizId}/participants`, {
                         method: "PUT",
-                        body: JSON.stringify(body),
+                        body: JSON.stringify(buildParticipantsSyncBody()),
                     });
                     lastSavedStudentKey.current = studentKey;
-                    console.log("[autosave] students saved OK");
                 }
             } catch (err) {
                 console.error("[autosave] SAVE FAILED:", err);
@@ -229,10 +197,8 @@ export default function Dashboard() {
                 saveTimer.current = null;
             }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [questionKey, studentKey, loadedQuiz?.id, autosaveEnabled]);
 
-    // ── 5. Unmount: fire-and-forget with keepalive ──
     const questionKeyRef = useRef(questionKey);
     const studentKeyRef = useRef(studentKey);
     const buildQuestionsSyncBodyRef = useRef(buildQuestionsSyncBody);
@@ -268,11 +234,97 @@ export default function Dashboard() {
                 );
             }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // ── UI handlers ──
+    async function ensureQuizWithSelections(): Promise<string> {
+        let quizId: string;
+
+        if (loadedQuiz) {
+            if (saveTimer.current) {
+                clearTimeout(saveTimer.current);
+                saveTimer.current = null;
+            }
+            const questionsChanged = questionKey !== lastSavedQuestionKey.current;
+            const studentsChanged = studentKey !== lastSavedStudentKey.current;
+
+            if (questionsChanged) {
+                await apiFetch(`/v1/quizzes/${loadedQuiz.id}/questions/sync`, {
+                    method: "PUT",
+                    body: JSON.stringify(buildQuestionsSyncBody()),
+                });
+                lastSavedQuestionKey.current = questionKey;
+            }
+            if (studentsChanged) {
+                await apiFetch(`/v1/quizzes/${loadedQuiz.id}/participants`, {
+                    method: "PUT",
+                    body: JSON.stringify(buildParticipantsSyncBody()),
+                });
+                lastSavedStudentKey.current = studentKey;
+            }
+
+            if (quizTitle && quizTitle !== loadedQuiz.title) {
+                await apiFetch(`/v1/quizzes/${loadedQuiz.id}`, {
+                    method: "PUT",
+                    body: JSON.stringify({ title: quizTitle }),
+                });
+            }
+
+            quizId = loadedQuiz.id;
+        } else {
+            const title = quizTitle.trim() || `Quiz ${new Date().toLocaleDateString("de-DE")}`;
+
+            const quizRes = await apiFetch<{ id: string }>("/v1/quizzes", {
+                method: "POST",
+                body: JSON.stringify({
+                    title,
+                    time_mode: "per_question",
+                    speed_scoring: true,
+                    randomize_questions: false,
+                }),
+            });
+
+            quizId = quizRes.id;
+            if (!quizId) {
+                throw new Error("Quiz konnte nicht erstellt werden — keine ID erhalten.");
+            }
+
+            const selectedQuestions = questions.displayQuestions.filter(
+                (q) => questions.selectedIds.has(q.id) && q.current_version
+            );
+
+            if (selectedQuestions.length === 0) {
+                throw new Error("Keine der ausgewählten Fragen hat eine gültige Version.");
+            }
+
+            await apiFetch(`/v1/quizzes/${quizId}/questions/sync`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    questions: selectedQuestions.map((q, i) => ({
+                        question_version_id: q.current_version!.id,
+                        sort_order: i,
+                        weight: questionWeight,
+                        time_limit_override: maxTimePerQuestion,
+                    })),
+                }),
+            });
+
+            if (students.selectedIds.size > 0) {
+                await apiFetch(`/v1/quizzes/${quizId}/participants`, {
+                    method: "PUT",
+                    body: JSON.stringify({ user_ids: [...students.selectedIds] }),
+                });
+            }
+
+            setLoadedQuiz({ id: quizId, title } as Quiz);
+            lastSavedQuestionKey.current = questionKey;
+            lastSavedStudentKey.current = studentKey;
+        }
+
+        return quizId;
+    }
+
     const canCreateLobby = questions.selectedIds.size > 0 && students.selectedIds.size > 0;
+    const canSave = questions.selectedIds.size > 0 || students.selectedIds.size > 0;
 
     const handleCreateQuestion = useCallback(() => {
         setEditQuestion(null);
@@ -289,76 +341,25 @@ export default function Dashboard() {
         questions.refetch();
     }, [questions]);
 
+    const handleTitleChange = useCallback((title: string) => {
+        setQuizTitle(title);
+        if (loadedQuiz) {
+            apiFetch(`/v1/quizzes/${loadedQuiz.id}`, {
+                method: "PUT",
+                body: JSON.stringify({ title }),
+            }).catch(() => {});
+        }
+    }, [loadedQuiz]);
+
     async function createLobby() {
-        if (!canCreateLobby || isCreating) return;
+        if (!canCreateLobby || busyRef.current) return;
+        busyRef.current = true;
 
         setIsCreating(true);
         setCreateError(null);
 
         try {
-            let quizId: string;
-
-            if (loadedQuiz) {
-                // Flush any pending saves before creating lobby
-                if (saveTimer.current) {
-                    clearTimeout(saveTimer.current);
-                    saveTimer.current = null;
-                }
-                const questionsChanged = questionKey !== lastSavedQuestionKey.current;
-                const studentsChanged = studentKey !== lastSavedStudentKey.current;
-
-                if (questionsChanged) {
-                    await apiFetch(`/v1/quizzes/${loadedQuiz.id}/questions/sync`, {
-                        method: "PUT",
-                        body: JSON.stringify(buildQuestionsSyncBody()),
-                    });
-                    lastSavedQuestionKey.current = questionKey;
-                }
-                if (studentsChanged) {
-                    await apiFetch(`/v1/quizzes/${loadedQuiz.id}/participants`, {
-                        method: "PUT",
-                        body: JSON.stringify(buildParticipantsSyncBody()),
-                    });
-                    lastSavedStudentKey.current = studentKey;
-                }
-
-                quizId = loadedQuiz.id;
-            } else {
-                const quizRes = await apiFetch<{ id: string }>("/v1/quizzes", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        title: `Quiz ${new Date().toLocaleDateString("de-DE")}`,
-                        time_mode: "per_question",
-                        speed_scoring: true,
-                        randomize_questions: false,
-                    }),
-                });
-
-                quizId = quizRes.id;
-                if (!quizId) {
-                    throw new Error("Quiz konnte nicht erstellt werden — keine ID erhalten.");
-                }
-
-                const selectedQuestions = questions.displayQuestions.filter((q) =>
-                    questions.selectedIds.has(q.id) && q.current_version
-                );
-
-                if (selectedQuestions.length === 0) {
-                    throw new Error("Keine der ausgewählten Fragen hat eine gültige Version.");
-                }
-
-                await apiFetch(`/v1/quizzes/${quizId}/questions/sync`, {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        questions: selectedQuestions.map((q, i) => ({
-                            question_version_id: q.current_version!.id,
-                            sort_order: i,
-                            weight: questionWeight,
-                            time_limit_override: maxTimePerQuestion,
-                        })),
-                    }),
-                });
-            }
+            const quizId = await ensureQuizWithSelections();
 
             const sessionRes = await apiFetch<{ session: SessionData }>("/v1/sessions", {
                 method: "POST",
@@ -377,13 +378,40 @@ export default function Dashboard() {
             );
         } finally {
             setIsCreating(false);
+            busyRef.current = false;
+        }
+    }
+
+    async function saveQuiz() {
+        if (!canSave || busyRef.current) return;
+        busyRef.current = true;
+
+        setIsSaving(true);
+        setCreateError(null);
+
+        try {
+            const quizId = await ensureQuizWithSelections();
+
+            if (!loadedQuiz) {
+                router.replace(`/teacher/dashboard?quiz=${quizId}`);
+            }
+        } catch (err) {
+            setCreateError(
+                err instanceof Error ? err.message : "Fehler beim Speichern"
+            );
+        } finally {
+            setIsSaving(false);
+            busyRef.current = false;
         }
     }
 
     return (
         <div className="flex-1">
             <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
-                <DashboardHeader quizTitle={loadedQuiz?.title} />
+                <DashboardHeader
+                    quizTitle={quizTitle || loadedQuiz?.title}
+                    onTitleChange={handleTitleChange}
+                />
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] xl:grid-cols-[1fr_480px] gap-4 sm:gap-5 items-stretch">
                     <QuestionsPanel
@@ -405,10 +433,13 @@ export default function Dashboard() {
 
                         <LobbyButton
                             canCreate={canCreateLobby}
+                            canSave={canSave}
                             isCreating={isCreating}
+                            isSaving={isSaving}
                             selectedQuestionsCount={questions.selectedIds.size}
                             selectedStudentsCount={students.selectedIds.size}
                             onCreateLobby={createLobby}
+                            onSaveQuiz={saveQuiz}
                             createError={createError}
                         />
                     </div>
