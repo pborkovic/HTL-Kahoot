@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { Plus, Trash2, GripVertical, Check, X, Loader2 } from "lucide-react";
-import { apiFetch } from "@/lib/api";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { Plus, Trash2, GripVertical, Check, X, Loader2, ImagePlus, Film } from "lucide-react";
+import { apiFetch, apiUpload } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,7 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import type { Question } from "@/types/question";
+import type { Question, QuestionMedia } from "@/types/question";
 
 interface AnswerOptionForm {
     readonly id: string;
@@ -39,8 +39,14 @@ function createEmptyOption(): AnswerOptionForm {
     return { id: crypto.randomUUID(), text: "", is_correct: false };
 }
 
+function inferMediaType(file: File): "image" | "video" | "code_snippet" {
+    if (file.type.startsWith("video/")) return "video";
+    return "image";
+}
+
 export function QuestionFormDialog({ open, question, onClose, onSaved }: QuestionFormDialogProps) {
     const isEdit = !!question;
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [title, setTitle] = useState("");
     const [type, setType] = useState("multiple_choice");
@@ -56,6 +62,9 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
     ]);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [existingMedia, setExistingMedia] = useState<QuestionMedia[]>([]);
+    const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+    const [mediaToDelete, setMediaToDelete] = useState<string[]>([]);
 
     useEffect(() => {
         if (!open) {
@@ -77,6 +86,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                           .map((o) => ({ id: o.id, text: o.text, is_correct: o.is_correct }))
                     : [{ ...createEmptyOption(), is_correct: true }, createEmptyOption()]
             );
+            setExistingMedia(question.media ?? []);
         } else {
             setTitle("");
             setType("multiple_choice");
@@ -90,7 +100,10 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                 createEmptyOption(),
                 createEmptyOption(),
             ]);
+            setExistingMedia([]);
         }
+        setPendingFiles([]);
+        setMediaToDelete([]);
         setError(null);
     }, [open, question]);
 
@@ -122,6 +135,24 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
             [next[index], next[target]] = [next[target], next[index]];
             return next;
         });
+    }, []);
+
+    const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files ?? []);
+        if (files.length > 0) {
+            setPendingFiles((prev) => [...prev, ...files]);
+        }
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    }, []);
+
+    const removePendingFile = useCallback((index: number) => {
+        setPendingFiles((prev) => prev.filter((_, i) => i !== index));
+    }, []);
+
+    const markMediaForDeletion = useCallback((mediaId: string) => {
+        setMediaToDelete((prev) => [...prev, mediaId]);
     }, []);
 
     const handleSave = useCallback(async () => {
@@ -161,17 +192,37 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
         };
 
         try {
+            let questionId: string;
+
             if (isEdit) {
                 await apiFetch(`/v1/questions/${question.id}`, {
                     method: "PUT",
                     body: JSON.stringify(body),
                 });
+                questionId = question.id;
             } else {
-                await apiFetch("/v1/questions", {
+                const res = await apiFetch<{ id: string }>("/v1/questions", {
                     method: "POST",
                     body: JSON.stringify(body),
                 });
+                questionId = res.id;
             }
+
+            for (const mediaId of mediaToDelete) {
+                await apiFetch(`/v1/questions/${questionId}/media/${mediaId}`, {
+                    method: "DELETE",
+                }).catch(() => {});
+            }
+
+            for (let i = 0; i < pendingFiles.length; i++) {
+                const file = pendingFiles[i];
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("type", inferMediaType(file));
+                formData.append("sort_order", String(existingMedia.length + i));
+                await apiUpload(`/v1/questions/${questionId}/media`, formData);
+            }
+
             onSaved();
             onClose();
         } catch (err) {
@@ -189,11 +240,15 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
         options,
         isEdit,
         question,
+        mediaToDelete,
+        pendingFiles,
+        existingMedia.length,
         onSaved,
         onClose
     ]);
 
     const hasCorrect = options.some((o) => o.is_correct);
+    const visibleMedia = existingMedia.filter((m) => !mediaToDelete.includes(m.id));
 
     return (
         <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
@@ -301,6 +356,88 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                             rows={2}
                             className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 placeholder:text-muted-foreground resize-none"
                         />
+                    </div>
+
+                    {/* Media Upload */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
+                            Medien (optional)
+                        </label>
+                        <p className="text-[10px] text-muted-foreground -mt-1">
+                            Bilder, Code-Screenshots oder Videos zur Frage hinzufügen
+                        </p>
+
+                        {(visibleMedia.length > 0 || pendingFiles.length > 0) && (
+                            <div className="flex flex-wrap gap-2">
+                                {visibleMedia.map((m) => (
+                                    <div key={m.id} className="relative w-24 h-20 rounded-lg border border-border/60 overflow-hidden group">
+                                        {m.type === "video" ? (
+                                            <div className="w-full h-full bg-muted/30 flex items-center justify-center">
+                                                <Film className="size-6 text-muted-foreground" />
+                                            </div>
+                                        ) : (
+                                            <img
+                                                src={m.url}
+                                                alt={m.alt_text ?? ""}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => markMediaForDeletion(m.id)}
+                                            className="absolute top-1 right-1 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X className="size-3" />
+                                        </button>
+                                        <span className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[9px] text-center py-0.5 truncate px-1">
+                                            {m.type}
+                                        </span>
+                                    </div>
+                                ))}
+                                {pendingFiles.map((file, i) => (
+                                    <div key={`pending-${i}`} className="relative w-24 h-20 rounded-lg border border-dashed border-border overflow-hidden group">
+                                        {file.type.startsWith("video/") ? (
+                                            <div className="w-full h-full bg-muted/30 flex items-center justify-center">
+                                                <Film className="size-6 text-muted-foreground" />
+                                            </div>
+                                        ) : (
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                alt=""
+                                                className="w-full h-full object-cover"
+                                            />
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => removePendingFile(i)}
+                                            className="absolute top-1 right-1 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X className="size-3" />
+                                        </button>
+                                        <span className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[9px] text-center py-0.5 truncate px-1">
+                                            Neu
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm"
+                            multiple
+                            onChange={handleFileSelect}
+                            className="hidden"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+                        >
+                            <ImagePlus className="size-3" />
+                            Bild oder Video hinzufügen
+                        </button>
                     </div>
 
                     {/* Answer Options */}
