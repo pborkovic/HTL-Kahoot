@@ -84,31 +84,31 @@ export function RolesPanel({
                 <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 gap-2 text-xs w-full sm:w-auto"
+                    className="h-8 gap-2 text-xs w-full sm:w-auto rounded-xl backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer"
                 >
                     <Settings2 className="size-3.5" />
                     Rollen & Berechtigungen
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col gap-0 p-0 text-popover-foreground">
-                <DialogHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
+            <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col gap-0 p-0 text-popover-foreground backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-2xl shadow-2xl shadow-primary/5">
+                <DialogHeader className="px-4 sm:px-6 pt-5 sm:pt-6 pb-0">
                     <DialogTitle className="flex items-center gap-2.5 text-base">
-                        <div className="size-8 rounded-lg bg-foreground flex items-center justify-center">
-                            <Settings2 className="size-4 text-primary-foreground" />
+                        <div className="size-8 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                            <Settings2 className="size-4 text-primary" />
                         </div>
                         Rollen & Berechtigungen
                     </DialogTitle>
                 </DialogHeader>
 
                 {/* Tab bar */}
-                <div className="flex gap-1 px-4 sm:px-5 pt-4 pb-1">
+                <div className="flex gap-1.5 px-4 sm:px-6 pt-4 pb-1">
                     <button
                         type="button"
                         onClick={() => setActiveTab("roles")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
                             activeTab === "roles"
-                                ? "bg-foreground text-background"
-                                : "text-muted-foreground hover:text-popover-foreground hover:bg-muted/60"
+                                ? "bg-primary/15 text-primary border border-primary/20"
+                                : "text-muted-foreground hover:text-popover-foreground hover:bg-muted/40"
                         }`}
                     >
                         <Shield className="size-3" />
@@ -118,10 +118,10 @@ export function RolesPanel({
                     <button
                         type="button"
                         onClick={() => setActiveTab("permissions")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
                             activeTab === "permissions"
-                                ? "bg-foreground text-background"
-                                : "text-muted-foreground hover:text-popover-foreground hover:bg-muted/60"
+                                ? "bg-primary/15 text-primary border border-primary/20"
+                                : "text-muted-foreground hover:text-popover-foreground hover:bg-muted/40"
                         }`}
                     >
                         <Lock className="size-3" />
@@ -130,10 +130,10 @@ export function RolesPanel({
                     </button>
                 </div>
 
-                <div className="border-t border-border/40 mx-4 sm:mx-5 mt-2" />
+                <div className="border-t border-border/20 mx-4 sm:mx-6 mt-2" />
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
                     {activeTab === "roles" ? (
                         <div className="space-y-3">
                             {/* Create role */}
@@ -143,7 +143,7 @@ export function RolesPanel({
                                     value={newRoleName}
                                     onChange={(e) => setNewRoleName(e.target.value)}
                                     placeholder="Neue Rolle erstellen..."
-                                    className="h-8 text-xs flex-1"
+                                    className="h-8 text-xs flex-1 rounded-lg bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             handleCreateRole();
@@ -154,14 +154,14 @@ export function RolesPanel({
                                     size="sm"
                                     onClick={handleCreateRole}
                                     disabled={newRoleName.trim().length === 0}
-                                    className="h-8 px-3 bg-foreground text-background hover:bg-foreground/90 disabled:bg-muted disabled:text-muted-foreground"
+                                    className="h-8 px-3 bg-primary text-primary-foreground hover:bg-primary-hover rounded-lg shadow-md shadow-primary/20 disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none cursor-pointer"
                                 >
                                     <Plus className="size-3.5" />
                                 </Button>
                             </div>
 
                             {/* Role list */}
-                            <div className="space-y-1">
+                            <div className="space-y-1.5">
                                 {roles.length === 0 && (
                                     <p className="text-[11px] text-muted-foreground py-6 text-center">
                                         Keine Rollen vorhanden
@@ -170,16 +170,16 @@ export function RolesPanel({
                                 {roles.map(role => (
                                     <div
                                         key={role.id}
-                                        className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs transition-colors ${
+                                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-all duration-200 ${
                                             selectedRoleId === role.id
-                                                ? "bg-primary/[0.06] ring-1 ring-border/60"
-                                                : "hover:bg-muted/40"
+                                                ? "backdrop-blur-sm bg-primary/[0.08] border border-primary/20 shadow-sm shadow-primary/5"
+                                                : "hover:bg-muted/30 border border-transparent"
                                         }`}
                                     >
                                         <button
                                             type="button"
                                             onClick={() => setSelectedRoleId(role.id)}
-                                            className="flex items-center gap-2 min-w-0 flex-1 text-left"
+                                            className="flex items-center gap-2 min-w-0 flex-1 text-left cursor-pointer"
                                         >
                                             <Shield className="size-3 text-muted-foreground shrink-0" />
                                             <span className="font-medium text-popover-foreground truncate">{role.name}</span>
@@ -191,7 +191,7 @@ export function RolesPanel({
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => onDeleteRole(role.id)}
-                                            className="size-6 p-0 text-muted-foreground hover:text-destructive shrink-0"
+                                            className="size-6 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg shrink-0 cursor-pointer"
                                         >
                                             <Trash2 className="size-3" />
                                         </Button>
@@ -201,24 +201,24 @@ export function RolesPanel({
 
                             {/* Selected role permissions */}
                             {selectedRole && (
-                                <div className="border-t border-border/40 pt-3 space-y-2.5">
+                                <div className="border-t border-border/20 pt-3 space-y-2.5">
                                     <div className="flex items-center justify-between gap-2">
                                         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest truncate">
                                             Berechtigungen für {selectedRole.name}
                                         </p>
-                                        <Badge variant="outline" className="text-[10px] font-medium shrink-0">
+                                        <Badge variant="outline" className="text-[10px] font-medium shrink-0 rounded-lg border-border/40">
                                             {selectedRole.permissions?.length ?? 0} zugewiesen
                                         </Badge>
                                     </div>
 
                                     {availablePerms.length > 0 && (
                                         <Select onValueChange={(val) => onAddPermission(selectedRole.id, val)}>
-                                            <SelectTrigger className="h-8 text-xs">
+                                            <SelectTrigger className="h-8 text-xs rounded-lg bg-background/50 backdrop-blur-sm border-border/40">
                                                 <SelectValue placeholder="Berechtigung hinzufügen..." />
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className="backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl">
                                                 {availablePerms.map(p => (
-                                                    <SelectItem key={p.id} value={p.id} className="text-xs">
+                                                    <SelectItem key={p.id} value={p.id} className="text-xs cursor-pointer">
                                                         {p.name}
                                                     </SelectItem>
                                                 ))}
@@ -236,13 +236,13 @@ export function RolesPanel({
                                             <Badge
                                                 key={perm.id}
                                                 variant="secondary"
-                                                className="text-[10px] gap-1 pr-1"
+                                                className="text-[10px] gap-1 pr-1 rounded-lg bg-secondary/60 backdrop-blur-sm border border-border/30"
                                             >
                                                 {perm.name}
                                                 <button
                                                     type="button"
                                                     onClick={() => onRemovePermission(selectedRole.id, perm.id)}
-                                                    className="text-muted-foreground/50 hover:text-destructive transition-colors"
+                                                    className="text-muted-foreground/50 hover:text-destructive transition-colors cursor-pointer"
                                                 >
                                                     <X className="size-2.5" />
                                                 </button>
@@ -261,7 +261,7 @@ export function RolesPanel({
                                     value={newPermName}
                                     onChange={(e) => setNewPermName(e.target.value)}
                                     placeholder="Neue Berechtigung erstellen..."
-                                    className="h-8 text-xs flex-1"
+                                    className="h-8 text-xs flex-1 rounded-lg bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             handleCreatePermission();
@@ -272,14 +272,14 @@ export function RolesPanel({
                                     size="sm"
                                     onClick={handleCreatePermission}
                                     disabled={newPermName.trim().length === 0}
-                                    className="h-8 px-3 bg-foreground text-background hover:bg-foreground/90 disabled:bg-muted disabled:text-muted-foreground"
+                                    className="h-8 px-3 bg-primary text-primary-foreground hover:bg-primary-hover rounded-lg shadow-md shadow-primary/20 disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none cursor-pointer"
                                 >
                                     <Plus className="size-3.5" />
                                 </Button>
                             </div>
 
                             {/* Permissions list */}
-                            <div className="space-y-1">
+                            <div className="space-y-1.5">
                                 {permissions.length === 0 && (
                                     <p className="text-[11px] text-muted-foreground py-6 text-center">
                                         Keine Berechtigungen vorhanden
@@ -288,7 +288,7 @@ export function RolesPanel({
                                 {permissions.map(p => (
                                     <div
                                         key={p.id}
-                                        className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-muted/40 transition-colors"
+                                        className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-muted/30 transition-all duration-200 border border-transparent hover:border-border/20"
                                     >
                                         <div className="flex items-center gap-2 min-w-0 flex-1">
                                             <Lock className="size-3 text-muted-foreground shrink-0" />
@@ -298,7 +298,7 @@ export function RolesPanel({
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => onDeletePermission(p.id)}
-                                            className="size-6 p-0 text-muted-foreground hover:text-destructive shrink-0"
+                                            className="size-6 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg shrink-0 cursor-pointer"
                                         >
                                             <Trash2 className="size-3" />
                                         </Button>
