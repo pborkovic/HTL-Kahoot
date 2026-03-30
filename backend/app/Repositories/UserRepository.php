@@ -19,6 +19,23 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         parent::__construct(model: $model);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findByEmail(string $email): ?User
+    {
+        return $this->model
+            ->where(column: 'email', operator: '=', value: $email)
+            ->first();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function findByExternalId(string $externalId): ?User
     {
         return $this->model
@@ -26,6 +43,11 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             ->first();
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function updateFromEntra(User $user, EntraUserDto $entraDto): User
     {
         $user->update(attributes: [
@@ -39,6 +61,11 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         return $user->fresh();
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function createFromEntra(EntraUserDto $entraDto): User
     {
         return $this->model->create(attributes: [
