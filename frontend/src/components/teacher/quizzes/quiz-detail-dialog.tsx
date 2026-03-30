@@ -59,10 +59,10 @@ function statusLabel(status: string): string {
 
 function statusColor(status: string): string {
     switch (status) {
-        case "finished": return "border-emerald-300 text-emerald-600";
-        case "active": return "border-amber-300 text-amber-600";
-        case "lobby": return "border-blue-300 text-blue-600";
-        default: return "text-muted-foreground";
+        case "finished": return "border-emerald-300/60 text-emerald-600 bg-emerald-500/5";
+        case "active": return "border-amber-300/60 text-amber-600 bg-amber-500/5";
+        case "lobby": return "border-blue-300/60 text-blue-600 bg-blue-500/5";
+        default: return "text-muted-foreground border-border/40";
     }
 }
 
@@ -73,10 +73,10 @@ function difficultyLabel(d: number | null): string {
 }
 
 function difficultyColor(d: number | null): string {
-    if (d === null) { return "text-muted-foreground"; }
-    if (d <= 2) { return "border-emerald-300 text-emerald-600"; }
-    if (d <= 3) { return "border-amber-300 text-amber-600"; }
-    return "border-red-300 text-red-600";
+    if (d === null) { return "text-muted-foreground border-border/40"; }
+    if (d <= 2) { return "border-emerald-300/60 text-emerald-600 bg-emerald-500/5"; }
+    if (d <= 3) { return "border-amber-300/60 text-amber-600 bg-amber-500/5"; }
+    return "border-red-300/60 text-red-600 bg-red-500/5";
 }
 
 export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogProps) {
@@ -176,7 +176,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
 
     return (
         <Dialog open={!!quiz} onOpenChange={(open) => { if (!open) { onClose(); } }}>
-            <DialogContent className="max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-2xl shadow-2xl shadow-primary/5">
                 <DialogHeader>
                     <DialogTitle className="text-base font-semibold">
                         {quiz.title}
@@ -189,7 +189,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                 <div className="space-y-4 pt-1">
                     {/* Stats row */}
                     <div className="grid grid-cols-4 gap-3">
-                        <div className="rounded-lg border border-border/60 px-3 py-2.5">
+                        <div className="rounded-xl backdrop-blur-sm bg-background/30 border border-border/30 px-3 py-2.5">
                             <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
                                 <FileText className="size-3" />
                                 <span className="text-[10px] font-medium uppercase tracking-widest">Fragen</span>
@@ -198,7 +198,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                 {quizQuestions.length}
                             </span>
                         </div>
-                        <div className="rounded-lg border border-border/60 px-3 py-2.5">
+                        <div className="rounded-xl backdrop-blur-sm bg-background/30 border border-border/30 px-3 py-2.5">
                             <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
                                 <Users className="size-3" />
                                 <span className="text-[10px] font-medium uppercase tracking-widest">Schüler</span>
@@ -207,7 +207,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                 {participantsCount}
                             </span>
                         </div>
-                        <div className="rounded-lg border border-border/60 px-3 py-2.5">
+                        <div className="rounded-xl backdrop-blur-sm bg-background/30 border border-border/30 px-3 py-2.5">
                             <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
                                 <Play className="size-3" />
                                 <span className="text-[10px] font-medium uppercase tracking-widest">Gespielt</span>
@@ -216,7 +216,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                 {finishedSessions.length}
                             </span>
                         </div>
-                        <div className="rounded-lg border border-border/60 px-3 py-2.5">
+                        <div className="rounded-xl backdrop-blur-sm bg-background/30 border border-border/30 px-3 py-2.5">
                             <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
                                 <Trophy className="size-3" />
                                 <span className="text-[10px] font-medium uppercase tracking-widest">Teilnehmer</span>
@@ -230,24 +230,24 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                     {/* Badges */}
                     <div className="flex flex-wrap gap-1.5">
                         {quiz.is_published ? (
-                            <Badge variant="outline" className="text-[10px] border-emerald-300 text-emerald-600">
+                            <Badge variant="outline" className="text-[10px] border-emerald-300/60 text-emerald-600 bg-emerald-500/5 rounded-lg">
                                 Veröffentlicht
                             </Badge>
                         ) : (
-                            <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border/40 rounded-lg">
                                 Entwurf
                             </Badge>
                         )}
-                        <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                        <Badge variant="outline" className="text-[10px] text-muted-foreground border-border/40 rounded-lg">
                             {quiz.time_mode === "per_question" ? "Zeit pro Frage" : "Gesamtzeit"}
                         </Badge>
                         {quiz.speed_scoring && (
-                            <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border/40 rounded-lg">
                                 Speed-Scoring
                             </Badge>
                         )}
                         {quiz.randomize_questions && (
-                            <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border/40 rounded-lg">
                                 Zufällige Reihenfolge
                             </Badge>
                         )}
@@ -276,7 +276,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                 {sortedQuestions.map((qq, idx) => (
                                     <div
                                         key={qq.id}
-                                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-border/60"
+                                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl backdrop-blur-sm bg-background/20 border border-border/30"
                                     >
                                         <span className="text-[10px] tabular-nums text-muted-foreground/60 w-4 text-right shrink-0">
                                             {idx + 1}
@@ -285,7 +285,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                             {qq.question_version?.title ?? "Unbekannte Frage"}
                                         </span>
                                         {qq.question_version?.difficulty != null && (
-                                            <Badge variant="outline" className={`text-[9px] ${difficultyColor(qq.question_version.difficulty)}`}>
+                                            <Badge variant="outline" className={`text-[9px] rounded-lg ${difficultyColor(qq.question_version.difficulty)}`}>
                                                 {difficultyLabel(qq.question_version.difficulty)}
                                             </Badge>
                                         )}
@@ -317,11 +317,11 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                 {sessions.map((session) => (
                                     <div
                                         key={session.id}
-                                        className="flex items-center gap-3 px-3 py-2 rounded-lg border border-border/60 hover:bg-muted/30 transition-colors group"
+                                        className="flex items-center gap-3 px-3 py-2 rounded-xl backdrop-blur-sm bg-background/20 border border-border/30 hover:border-primary/20 hover:bg-background/30 transition-all duration-200 group"
                                     >
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2">
-                                                <Badge variant="outline" className={`text-[9px] ${statusColor(session.status)}`}>
+                                                <Badge variant="outline" className={`text-[9px] rounded-lg ${statusColor(session.status)}`}>
                                                     {statusLabel(session.status)}
                                                 </Badge>
                                                 <span className="text-[10px] tabular-nums text-muted-foreground">
@@ -351,7 +351,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                                 <button
                                                     type="button"
                                                     onClick={() => router.push(`/teacher/session/${session.game_pin}/report`)}
-                                                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                                    className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1 cursor-pointer transition-colors"
                                                 >
                                                     <FileBarChart className="size-3" />
                                                     Report
@@ -359,7 +359,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                                 <button
                                                     type="button"
                                                     onClick={() => router.push(`/teacher/session/${session.game_pin}/results`)}
-                                                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                                    className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1 cursor-pointer transition-colors"
                                                 >
                                                     <Eye className="size-3" />
                                                     Ergebnis
@@ -378,7 +378,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                             <Button
                                 onClick={handleStart}
                                 disabled={starting}
-                                className="w-full h-10 text-sm font-semibold gap-2 bg-foreground text-background hover:bg-foreground/90"
+                                className="w-full h-10 text-sm font-semibold gap-2 bg-primary text-primary-foreground hover:bg-primary-hover rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 cursor-pointer"
                             >
                                 {starting ? (
                                     <Loader2 className="size-4 animate-spin" />
@@ -401,7 +401,7 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                             <Button
                                 onClick={handleEdit}
                                 variant="outline"
-                                className="flex-1 h-9 text-xs gap-1.5"
+                                className="flex-1 h-9 text-xs gap-1.5 rounded-xl backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer"
                             >
                                 <Pencil className="size-3" />
                                 Bearbeiten
@@ -410,12 +410,12 @@ export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogP
                                 onClick={handleDelete}
                                 variant="outline"
                                 disabled={deleting}
-                                className="h-9 text-xs gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/5 border-destructive/20"
+                                className="h-9 text-xs gap-1.5 rounded-xl text-destructive hover:text-destructive hover:bg-destructive/5 border-destructive/20 cursor-pointer"
                             >
                                 {deleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
                                 Löschen
                             </Button>
-                            <Button onClick={onClose} variant="outline" className="flex-1 h-9 text-xs">
+                            <Button onClick={onClose} variant="outline" className="flex-1 h-9 text-xs rounded-xl backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer">
                                 Schließen
                             </Button>
                         </div>
