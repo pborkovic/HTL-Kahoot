@@ -63,11 +63,6 @@ type ImportStatus = "idle" | "importing" | "done" | "error";
 
 type ImportFormat = "json" | "gift";
 
-const ACCEPTED_EXTENSIONS: Record<ImportFormat, string[]> = {
-  json: [".json"],
-  gift: [".gift", ".txt"],
-};
-
 const ACCEPT_STRING: string = ".json,.gift,.txt";
 
 function detectFormat(file: File): ImportFormat {
@@ -217,7 +212,7 @@ export function MassManagementDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o: boolean): void => { if (!o) handleClose(); }}>
-      <DialogContent className="max-w-lg sm:max-w-xl">
+      <DialogContent className="max-w-lg sm:max-w-xl backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-2xl shadow-2xl shadow-primary/5">
         <DialogHeader>
           <DialogTitle className="text-base font-semibold">
             Fragen Import / Export
@@ -255,17 +250,17 @@ export function MassManagementDialog({
                 className={`
                   flex flex-col items-center justify-center gap-3 p-8
                   rounded-xl border-2 border-dashed cursor-pointer
-                  transition-all duration-200
+                  transition-all duration-200 backdrop-blur-sm
                   ${
                     isDragging
                       ? "border-primary bg-primary/5 scale-[1.01]"
-                      : "border-border/60 hover:border-primary/40 hover:bg-muted/30"
+                      : "border-border/40 hover:border-primary/30 hover:bg-background/30"
                   }
                 `}
               >
                 <div
-                  className={`size-10 rounded-lg flex items-center justify-center transition-colors ${
-                    isDragging ? "bg-primary/10" : "bg-muted"
+                  className={`size-10 rounded-xl flex items-center justify-center transition-colors border ${
+                    isDragging ? "bg-primary/10 border-primary/20" : "bg-background/40 border-border/30"
                   }`}
                 >
                   <FileUp
@@ -294,7 +289,7 @@ export function MassManagementDialog({
             )}
 
             {importStatus === "importing" && (
-              <div className="flex flex-col items-center justify-center gap-3 p-8 rounded-xl border border-border/60 bg-muted/20">
+              <div className="flex flex-col items-center justify-center gap-3 p-8 rounded-xl border border-border/30 backdrop-blur-sm bg-background/20">
                 <Loader2 className="size-6 animate-spin text-primary" />
                 <p className="text-sm text-muted-foreground">
                   Fragen werden importiert...
@@ -303,7 +298,7 @@ export function MassManagementDialog({
             )}
 
             {importStatus === "done" && importResult && (
-              <div className="rounded-xl border border-border/60 p-4 space-y-3">
+              <div className="rounded-xl border border-border/30 backdrop-blur-sm bg-background/20 p-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="size-4 text-emerald-500" />
                   <p className="text-sm font-medium text-foreground">
@@ -344,7 +339,7 @@ export function MassManagementDialog({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs h-7"
+                  className="text-xs h-7 rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 cursor-pointer"
                   onClick={resetState}
                 >
                   Weitere importieren
@@ -353,7 +348,7 @@ export function MassManagementDialog({
             )}
 
             {importStatus === "error" && importError && (
-              <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 space-y-2">
+              <div className="rounded-xl border border-destructive/20 backdrop-blur-sm bg-destructive/5 p-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="size-4 text-red-500" />
                   <p className="text-sm font-medium text-red-600">
@@ -364,7 +359,7 @@ export function MassManagementDialog({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs h-7"
+                  className="text-xs h-7 rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 cursor-pointer"
                   onClick={resetState}
                 >
                   Erneut versuchen
@@ -378,10 +373,10 @@ export function MassManagementDialog({
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-2.5">
               Exportieren
             </p>
-            <div className="flex items-center justify-between p-4 rounded-xl border border-border/60">
+            <div className="flex items-center justify-between p-4 rounded-xl border border-border/30 backdrop-blur-sm bg-background/20">
               <div className="flex items-center gap-3">
-                <div className="size-9 rounded-lg bg-muted flex items-center justify-center">
-                  <FileJson className="size-4 text-muted-foreground" />
+                <div className="size-9 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                  <FileJson className="size-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground">
@@ -397,7 +392,7 @@ export function MassManagementDialog({
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5 text-xs h-8"
+                className="gap-1.5 text-xs h-8 rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer"
                 onClick={handleExport}
                 disabled={questions.length === 0}
               >
@@ -409,13 +404,13 @@ export function MassManagementDialog({
 
           {/* Format hints */}
           <details className="group">
-            <summary className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest cursor-pointer hover:text-foreground transition-colors">
+            <summary className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest cursor-pointer hover:text-primary transition-colors">
               Formatbeispiele anzeigen
             </summary>
             <div className="mt-2 space-y-3">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground mb-1">JSON</p>
-                <pre className="p-3 rounded-lg bg-muted text-[11px] font-mono text-foreground/70 overflow-x-auto leading-relaxed">
+                <pre className="p-3 rounded-xl backdrop-blur-sm bg-background/30 border border-border/30 text-[11px] font-mono text-foreground/70 overflow-x-auto leading-relaxed">
 {`[
   {
     "type": "multiple_choice",
@@ -430,7 +425,7 @@ export function MassManagementDialog({
               </div>
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground mb-1">Moodle GIFT</p>
-                <pre className="p-3 rounded-lg bg-muted text-[11px] font-mono text-foreground/70 overflow-x-auto leading-relaxed">
+                <pre className="p-3 rounded-xl backdrop-blur-sm bg-background/30 border border-border/30 text-[11px] font-mono text-foreground/70 overflow-x-auto leading-relaxed">
 {`::Hauptstadt::Was ist die Hauptstadt
 von Frankreich?{
   =Paris
@@ -447,7 +442,7 @@ von Frankreich?{
 
           <Button
             variant="outline"
-            className="w-full h-9 text-xs"
+            className="w-full h-9 text-xs rounded-xl backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer"
             onClick={handleClose}
           >
             Schließen
