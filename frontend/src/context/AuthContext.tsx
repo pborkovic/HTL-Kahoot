@@ -33,6 +33,7 @@ interface AuthState {
 
 interface AuthActions {
   login: () => Promise<void>;
+  loginWithEmail: (email: string, password: string) => Promise<User>;
   handleCallback: (code: string) => Promise<User>;
   logout: () => Promise<void>;
 }
@@ -78,6 +79,18 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
     window.location.href = data.url;
   }, []);
 
+  const loginWithEmail = useCallback(async (email: string, password: string): Promise<User> => {
+    const data: AuthResponse = await apiFetch<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+
+    setStoredToken(data.token);
+    setUser(data.user);
+
+    return data.user;
+  }, []);
+
   const handleCallback = useCallback(async (code: string): Promise<User> => {
     const data: AuthResponse = await apiFetch<AuthResponse>("/auth/callback", {
       method: "POST",
@@ -100,14 +113,15 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isLoading, isAuthenticated, login, handleCallback, logout }),
+    () => ({ user, isLoading, isAuthenticated, login, loginWithEmail, handleCallback, logout }),
     [
         user,
         isLoading,
         isAuthenticated,
         login,
+        loginWithEmail,
         handleCallback,
-        logout
+        logout,
     ],
   );
 
