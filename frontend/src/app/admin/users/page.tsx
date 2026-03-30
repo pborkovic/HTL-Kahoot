@@ -14,13 +14,19 @@ export default function AdminUsersPage() {
     const isSuperadmin = currentUser?.roles?.some(r => r.name === "superadmin" || r.name === "admin") ?? false;
 
     return (
-        <div className="flex-1">
-            <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
+        <div className="flex-1 relative overflow-hidden">
+            {/* Background orbs */}
+            <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
+                <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/15 blur-3xl animate-pulse" />
+                <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-primary/10 blur-3xl animate-pulse [animation-delay:3s]" />
+            </div>
+
+            <div className="relative flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
                 {/* Header */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="size-9 rounded-lg bg-foreground flex items-center justify-center shrink-0">
-                            <UsersRound className="size-4.5 text-primary-foreground" />
+                        <div className="size-10 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center shrink-0">
+                            <UsersRound className="size-5 text-primary" />
                         </div>
                         <div>
                             <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
@@ -46,18 +52,18 @@ export default function AdminUsersPage() {
 
                 {/* Error */}
                 {admin.error && (
-                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 text-red-600 text-xs">
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-xl backdrop-blur-sm bg-destructive/10 border border-destructive/20 text-destructive text-xs">
                         <AlertCircle className="size-4 shrink-0" />
                         <span>{admin.error}</span>
                     </div>
                 )}
 
-                {/* Users section */}
-                <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
-                    <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
+                {/* Users section — glass card */}
+                <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">
+                    <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
                         <div className="flex items-center gap-2.5 mb-3">
-                            <div className="size-7 rounded-md bg-foreground flex items-center justify-center">
-                                <UsersRound className="size-3.5 text-primary-foreground" />
+                            <div className="size-7 rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                                <UsersRound className="size-3.5 text-primary" />
                             </div>
                             <h2 className="text-sm font-semibold text-foreground">Benutzer</h2>
                         </div>
@@ -68,7 +74,7 @@ export default function AdminUsersPage() {
                             totalCount={admin.users.length}
                         />
                     </div>
-                    <div className="px-4 sm:px-5 pb-4 sm:pb-5">
+                    <div className="px-4 sm:px-6 pb-5 sm:pb-6">
                         {admin.loading ? (
                             <div className="flex items-center justify-center py-12 gap-2 text-muted-foreground">
                                 <Loader2 className="size-4 animate-spin" />
