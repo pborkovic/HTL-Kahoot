@@ -1,0 +1,21 @@
+{
+  "identities": [
+    {
+      "name": "gamquiz",
+      "credentials": [
+        {
+          "accessKey": "${SEAWEEDFS_ACCESS_KEY}",
+          "secretKey": "${SEAWEEDFS_SECRET_KEY}"
+        }
+      ],
+      "actions": [
+        "Admin",
+        "Read",
+        "Write",
+        "List",
+        "Tagging",
+        "Lock"
+      ]
+    }
+  ]
+}
