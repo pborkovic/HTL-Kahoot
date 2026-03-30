@@ -16,7 +16,7 @@ export interface UseQuestionsReturn {
     detailQuestion: Question | null;
     setDetailQuestion: Dispatch<SetStateAction<Question | null>>;
     searchTerm: string;
-    setSearchTerm: Dispatch<SetStateAction<string>>;
+    setSearchTerm: (value: string) => void;
     activeFilters: Set<string>;
     toggleFilter: (type: string) => void;
     sortField: QuestionSortField;
@@ -25,6 +25,8 @@ export interface UseQuestionsReturn {
     loading: boolean;
     error: string | null;
     meta: PaginationMeta | null;
+    page: number;
+    setPage: (page: number) => void;
     uniqueTypes: string[];
     toggleSelect: (id: string) => void;
     toggleSelectAll: () => void;
@@ -44,6 +46,7 @@ export function useQuestions(): UseQuestionsReturn {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [meta, setMeta] = useState<PaginationMeta | null>(null);
+    const [page, setPageState] = useState<number>(1);
 
     const fetchQuestions = useCallback(async () => {
         setLoading(true);
@@ -51,7 +54,8 @@ export function useQuestions(): UseQuestionsReturn {
         try {
             const params = new URLSearchParams();
 
-            params.set("per_page", "100");
+            params.set("per_page", "20");
+            params.set("page", String(page));
             params.set("sort", sortField);
             params.set("direction", sortDirection);
 
@@ -74,13 +78,23 @@ export function useQuestions(): UseQuestionsReturn {
         } finally {
             setLoading(false);
         }
-    }, [searchTerm, sortField, sortDirection, activeFilters]);
+    }, [searchTerm, sortField, sortDirection, activeFilters, page]);
 
     useEffect(() => {
         void fetchQuestions();
     }, [fetchQuestions]);
 
     const uniqueTypes = Array.from(new Set(questions.map(q => q.type)));
+
+    function setPage(newPage: number): void {
+        setSelectedIds(new Set());
+        setPageState(newPage);
+    }
+
+    function handleSearchChange(value: string): void {
+        setPageState(1);
+        setSearchTerm(value);
+    }
 
     function toggleFilter(type: string): void {
         const next = new Set(activeFilters);
@@ -90,10 +104,12 @@ export function useQuestions(): UseQuestionsReturn {
         else{
             next.add(type);
         }
+        setPageState(1);
         setActiveFilters(next);
     }
 
     function sort(field: QuestionSortField, direction: SortDirection): void {
+        setPageState(1);
         setSortField(field);
         setSortDirection(direction);
     }
@@ -131,7 +147,7 @@ export function useQuestions(): UseQuestionsReturn {
         detailQuestion,
         setDetailQuestion,
         searchTerm,
-        setSearchTerm,
+        setSearchTerm: handleSearchChange,
         activeFilters,
         toggleFilter,
         sortField,
@@ -140,6 +156,8 @@ export function useQuestions(): UseQuestionsReturn {
         loading,
         error,
         meta,
+        page,
+        setPage,
         uniqueTypes,
         toggleSelect,
         toggleSelectAll,
@@ -147,4 +165,3 @@ export function useQuestions(): UseQuestionsReturn {
         refetch,
     };
 }
-

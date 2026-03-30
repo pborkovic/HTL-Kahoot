@@ -11,13 +11,15 @@ type QuizSortField = "created_at" | "title" | "is_published";
 export interface UseQuizzesReturn {
     quizzes: Quiz[];
     searchTerm: string;
-    setSearchTerm: Dispatch<SetStateAction<string>>;
+    setSearchTerm: (value: string) => void;
     sortField: QuizSortField;
     sortDirection: SortDirection;
     sort: (field: QuizSortField, direction: SortDirection) => void;
     loading: boolean;
     error: string | null;
     meta: PaginationMeta | null;
+    page: number;
+    setPage: (page: number) => void;
     detailQuiz: Quiz | null;
     setDetailQuiz: Dispatch<SetStateAction<Quiz | null>>;
     refetch: () => void;
@@ -25,12 +27,13 @@ export interface UseQuizzesReturn {
 
 export function useQuizzes(): UseQuizzesReturn {
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [searchTerm, setSearchTermState] = useState<string>("");
     const [sortField, setSortField] = useState<QuizSortField>("created_at");
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [meta, setMeta] = useState<PaginationMeta | null>(null);
+    const [page, setPageState] = useState<number>(1);
     const [detailQuiz, setDetailQuiz] = useState<Quiz | null>(null);
 
     const fetchQuizzes = useCallback(async () => {
@@ -38,7 +41,8 @@ export function useQuizzes(): UseQuizzesReturn {
         setError(null);
         try {
             const params = new URLSearchParams();
-            params.set("per_page", "50");
+            params.set("per_page", "20");
+            params.set("page", String(page));
             params.set("sort", sortField);
             params.set("direction", sortDirection);
 
@@ -54,15 +58,25 @@ export function useQuizzes(): UseQuizzesReturn {
         } finally {
             setLoading(false);
         }
-    }, [searchTerm, sortField, sortDirection]);
+    }, [searchTerm, sortField, sortDirection, page]);
 
     useEffect(() => {
         void fetchQuizzes();
     }, [fetchQuizzes]);
 
+    function setSearchTerm(value: string): void {
+        setPageState(1);
+        setSearchTermState(value);
+    }
+
     function sort(field: QuizSortField, direction: SortDirection): void {
+        setPageState(1);
         setSortField(field);
         setSortDirection(direction);
+    }
+
+    function setPage(newPage: number): void {
+        setPageState(newPage);
     }
 
     function refetch(): void {
@@ -79,6 +93,8 @@ export function useQuizzes(): UseQuizzesReturn {
         loading,
         error,
         meta,
+        page,
+        setPage,
         detailQuiz,
         setDetailQuiz,
         refetch,

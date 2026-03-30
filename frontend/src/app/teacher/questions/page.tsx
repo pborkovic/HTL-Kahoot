@@ -9,6 +9,7 @@ import { QuestionsGrid } from "@/components/teacher/questions/questions-grid";
 import { MassManagementDialog } from "@/components/teacher/questions/mass-management-dialog";
 import { QuestionDetailDialog } from "@/components/teacher/dashboard/question-detail-dialog";
 import { QuestionFormDialog } from "@/components/teacher/questions/question-form-dialog";
+import { Pagination } from "@/components/ui/pagination";
 import type { Question } from "@/types/question";
 
 export default function QuestionsPage(): ReactNode {
@@ -87,12 +88,8 @@ export default function QuestionsPage(): ReactNode {
           onViewDetail={q.setDetailQuestion}
         />
 
-        {/* Pagination info */}
-        {q.meta && q.meta.total > q.displayQuestions.length && (
-          <p className="text-xs text-muted-foreground text-right">
-            Zeige {q.displayQuestions.length} von {q.meta.total} Fragen
-          </p>
-        )}
+        {/* Pagination */}
+        {q.meta && <Pagination meta={q.meta} onPageChange={q.setPage} />}
       </div>
 
       {/* Detail dialog */}

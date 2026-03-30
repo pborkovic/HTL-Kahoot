@@ -6,6 +6,7 @@ import { useAdminUsers } from "@/hooks/use-admin-users";
 import { UserSearch } from "@/components/admin/users/user-search";
 import { UserTable } from "@/components/admin/users/user-table";
 import { RolesPanel } from "@/components/admin/users/roles-panel";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function AdminUsersPage() {
     const { user: currentUser } = useAuth();
@@ -71,7 +72,7 @@ export default function AdminUsersPage() {
                             searchTerm={admin.searchTerm}
                             onSearchChange={admin.setSearchTerm}
                             resultCount={admin.filteredUsers.length}
-                            totalCount={admin.users.length}
+                            totalCount={admin.meta?.total ?? admin.users.length}
                         />
                     </div>
                     <div className="px-4 sm:px-6 pb-5 sm:pb-6">
@@ -81,12 +82,19 @@ export default function AdminUsersPage() {
                                 <span className="text-xs">Laden...</span>
                             </div>
                         ) : (
-                            <UserTable
-                                users={admin.filteredUsers}
-                                roles={admin.roles}
-                                onAssignRole={admin.assignRole}
-                                onRemoveRole={admin.removeRole}
-                            />
+                            <>
+                                <UserTable
+                                    users={admin.filteredUsers}
+                                    roles={admin.roles}
+                                    onAssignRole={admin.assignRole}
+                                    onRemoveRole={admin.removeRole}
+                                />
+                                {admin.meta && (
+                                    <div className="mt-4">
+                                        <Pagination meta={admin.meta} onPageChange={admin.setPage} />
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

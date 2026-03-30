@@ -3,15 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { apiFetch } from "@/lib/api";
 import type { User, Role, Permission } from "@/types/auth";
+import type { PaginationMeta } from "@/types/question";
 
 interface UsersResponse {
     data: User[];
-    meta: {
-        current_page: number;
-        last_page: number;
-        per_page: number;
-        total: number;
-    };
+    meta: PaginationMeta;
 }
 
 interface RolesResponse {
@@ -31,6 +27,9 @@ export interface UseAdminUsersReturn {
     setSearchTerm: (value: string) => void;
     loading: boolean;
     error: string | null;
+    meta: PaginationMeta | null;
+    page: number;
+    setPage: (page: number) => void;
     assignRole: (userId: string, roleId: string) => Promise<void>;
     removeRole: (userId: string, roleId: string) => Promise<void>;
     createRole: (name: string) => Promise<void>;
@@ -46,15 +45,20 @@ export function useAdminUsers(): UseAdminUsersReturn {
     const [users, setUsers] = useState<User[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [permissions, setPermissions] = useState<Permission[]>([]);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTermState] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [meta, setMeta] = useState<PaginationMeta | null>(null);
+    const [page, setPageState] = useState<number>(1);
 
     const fetchAll = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            const params = new URLSearchParams({ per_page: "100" });
+            const params = new URLSearchParams({
+                per_page: "25",
+                page: String(page),
+            });
             if (searchTerm) {
                 params.set("search", searchTerm);
             }
@@ -66,6 +70,7 @@ export function useAdminUsers(): UseAdminUsersReturn {
             ]);
 
             setUsers(usersRes.data);
+            setMeta(usersRes.meta);
             setRoles(rolesRes.data);
             setPermissions(permsRes.data);
         } catch (err) {
@@ -73,13 +78,22 @@ export function useAdminUsers(): UseAdminUsersReturn {
         } finally {
             setLoading(false);
         }
-    }, [searchTerm]);
+    }, [searchTerm, page]);
 
     useEffect(() => {
         void fetchAll();
     }, [fetchAll]);
 
     const filteredUsers = users;
+
+    function setSearchTerm(value: string): void {
+        setPageState(1);
+        setSearchTermState(value);
+    }
+
+    function setPage(newPage: number): void {
+        setPageState(newPage);
+    }
 
     const assignRole = useCallback(async (userId: string, roleId: string) => {
         await apiFetch(`/v1/users/${userId}/roles`, {
@@ -152,6 +166,9 @@ export function useAdminUsers(): UseAdminUsersReturn {
         setSearchTerm,
         loading,
         error,
+        meta,
+        page,
+        setPage,
         assignRole,
         removeRole,
         createRole,

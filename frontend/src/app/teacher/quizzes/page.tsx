@@ -8,6 +8,7 @@ import { QuizToolbar } from "@/components/teacher/quizzes/quiz-toolbar";
 import { QuizTable } from "@/components/teacher/quizzes/quiz-table";
 import { QuizFormDialog } from "@/components/teacher/quizzes/quiz-form-dialog";
 import { QuizDetailDialog } from "@/components/teacher/quizzes/quiz-detail-dialog";
+import { Pagination } from "@/components/ui/pagination";
 import type { Quiz } from "@/types/quiz";
 
 export default function QuizzesPage(): ReactNode {
@@ -66,12 +67,8 @@ export default function QuizzesPage(): ReactNode {
                     onViewDetail={q.setDetailQuiz}
                 />
 
-                {/* Pagination info */}
-                {q.meta && q.meta.total > q.quizzes.length && (
-                    <p className="text-xs text-muted-foreground text-right">
-                        Zeige {q.quizzes.length} von {q.meta.total} Quizze
-                    </p>
-                )}
+                {/* Pagination */}
+                {q.meta && <Pagination meta={q.meta} onPageChange={q.setPage} />}
             </div>
 
             {/* Detail dialog */}
