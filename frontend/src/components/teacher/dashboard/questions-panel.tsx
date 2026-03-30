@@ -15,24 +15,24 @@ interface QuestionsPanelProps {
 export function QuestionsPanel({ questions: q, onCreateQuestion, onEditQuestion, onQuestionDeleted }: QuestionsPanelProps) {
     return (
         <>
-            <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
-                <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
+            <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">
+                <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                            <div className="size-7 rounded-md bg-foreground flex items-center justify-center">
-                                <ClipboardList className="size-3.5 text-primary-foreground" />
+                            <div className="size-7 rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                                <ClipboardList className="size-3.5 text-primary" />
                             </div>
                             <h2 className="text-sm font-semibold text-foreground">Fragen</h2>
                         </div>
                         <div className="flex items-center gap-3">
-                            <span className="text-xs tabular-nums text-muted-foreground">
+                            <span className="text-xs tabular-nums text-muted-foreground backdrop-blur-sm bg-background/30 px-2.5 py-1 rounded-lg">
                                 {q.selectedIds.size} von {q.displayQuestions.length} ausgewählt
                             </span>
                             {onCreateQuestion && (
                                 <button
                                     type="button"
                                     onClick={onCreateQuestion}
-                                    className="h-7 px-2 rounded-md text-[11px] font-medium flex items-center gap-1 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer"
+                                    className="h-7 px-2.5 rounded-lg text-[11px] font-medium flex items-center gap-1 bg-primary text-primary-foreground hover:bg-primary-hover transition-colors cursor-pointer shadow-md shadow-primary/20"
                                 >
                                     <Plus className="size-3" />
                                     Neu
@@ -42,7 +42,7 @@ export function QuestionsPanel({ questions: q, onCreateQuestion, onEditQuestion,
                     </div>
                 </div>
 
-                <div className="px-4 sm:px-5 pb-4 sm:pb-5 space-y-3">
+                <div className="px-4 sm:px-6 pb-5 sm:pb-6 space-y-3">
                     <QuestionFilters
                         searchTerm={q.searchTerm}
                         onSearchChange={q.setSearchTerm}
