@@ -9,10 +9,41 @@ use Illuminate\Support\Collection;
 
 interface UserRepositoryContract extends BaseRepositoryContract
 {
+    /**
+     * Find a user by email address.
+     *
+     * @param string $email The email address to search for.
+     *
+     * @return User|null The user, or null if not found.
+     */
+    public function findByEmail(string $email): ?User;
+
+    /**
+     * Find a user by their external OAuth provider ID.
+     *
+     * @param string $externalId The external ID from the OAuth provider.
+     *
+     * @return User|null The user, or null if not found.
+     */
     public function findByExternalId(string $externalId): ?User;
 
+    /**
+     * Update an existing user from Entra ID (Azure AD) data.
+     *
+     * @param User         $user     The user to update.
+     * @param EntraUserDto $entraDto The Entra user data.
+     *
+     * @return User The updated user.
+     */
     public function updateFromEntra(User $user, EntraUserDto $entraDto): User;
 
+    /**
+     * Create a new user from Entra ID (Azure AD) data.
+     *
+     * @param EntraUserDto $entraDto The Entra user data.
+     *
+     * @return User The newly created user.
+     */
     public function createFromEntra(EntraUserDto $entraDto): User;
 
     /**
