@@ -40,7 +40,7 @@ export function StudentTable({
 
     if (error) {
         return (
-            <div className="flex items-center justify-center py-12 text-destructive text-xs rounded-lg bg-destructive/5 border border-destructive/10">
+            <div className="flex items-center justify-center py-12 text-destructive text-xs rounded-xl backdrop-blur-sm bg-destructive/5 border border-destructive/15">
                 {error}
             </div>
         );
@@ -56,10 +56,10 @@ export function StudentTable({
     }
 
     return (
-        <div className="rounded-lg border border-border/60 max-h-[400px] overflow-auto">
+        <div className="rounded-xl border border-border/30 max-h-[400px] overflow-auto backdrop-blur-sm bg-background/20">
                 <Table>
                     <TableHeader className="sticky top-0 z-10">
-                        <TableRow className="bg-muted hover:bg-muted border-b border-border/60">
+                        <TableRow className="bg-muted/60 backdrop-blur-md hover:bg-muted/60 border-b border-border/30">
                             <TableHead className="w-10 pl-3">
                                 <Checkbox
                                     checked={allSelected}
@@ -77,18 +77,18 @@ export function StudentTable({
                             return (
                                 <TableRow
                                     key={s.id}
-                                    className={`transition-colors ${isSelected ? "bg-primary/[0.04] hover:bg-primary/[0.07]" : "hover:bg-muted/30"}`}
+                                    className={`transition-colors duration-150 border-b border-border/20 ${isSelected ? "bg-primary/[0.04] hover:bg-primary/[0.07]" : "hover:bg-primary/[0.03]"}`}
                                 >
-                                    <TableCell className="pl-3 py-2.5">
+                                    <TableCell className="pl-3 py-3">
                                         <Checkbox
                                             checked={isSelected}
                                             onCheckedChange={() => onToggleSelect(s.id)}
                                         />
                                     </TableCell>
-                                    <TableCell className="text-xs font-medium py-2.5">
+                                    <TableCell className="text-xs font-medium py-3">
                                         {s.display_name ?? s.username ?? s.email}
                                     </TableCell>
-                                    <TableCell className="hidden sm:table-cell py-2.5">
+                                    <TableCell className="hidden sm:table-cell py-3">
                                         {s.class_name ? (
                                             <span className="text-[11px] font-medium text-muted-foreground">
                                                 {s.class_name}
@@ -97,7 +97,7 @@ export function StudentTable({
                                             <span className="text-muted-foreground/50 text-xs">\u2014</span>
                                         )}
                                     </TableCell>
-                                    <TableCell className="text-[11px] text-muted-foreground hidden md:table-cell truncate max-w-[200px] py-2.5">
+                                    <TableCell className="text-[11px] text-muted-foreground hidden md:table-cell truncate max-w-[200px] py-3">
                                         {s.email}
                                     </TableCell>
                                 </TableRow>
