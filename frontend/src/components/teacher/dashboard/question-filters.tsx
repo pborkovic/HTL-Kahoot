@@ -35,7 +35,7 @@ export function QuestionFilters({
                     <Button
                         variant="outline"
                         size="sm"
-                        className={`gap-1.5 h-8 text-xs ${activeFilters.size > 0 ? "border-primary/40 bg-primary/5 text-primary" : ""}`}
+                        className={`gap-1.5 h-8 text-xs rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer ${activeFilters.size > 0 ? "border-primary/40 bg-primary/5 text-primary" : ""}`}
                     >
                         <Filter className="size-3" />
                         <span className="hidden sm:inline">Filtern</span>
@@ -46,13 +46,13 @@ export function QuestionFilters({
                         )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-52 p-2.5" align="start">
+                <PopoverContent className="w-52 p-2.5 backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl" align="start">
                     <p className="text-xs font-medium text-muted-foreground mb-2 px-1">Typ filtern</p>
                     <div className="space-y-0.5 max-h-52 overflow-y-auto">
                         {uniqueTypes.map(type => (
                             <label
                                 key={type}
-                                className="flex items-center gap-2.5 cursor-pointer hover:bg-muted/60 p-2 rounded-lg transition-colors text-sm"
+                                className="flex items-center gap-2.5 cursor-pointer hover:bg-muted/40 p-2 rounded-lg transition-colors text-sm"
                             >
                                 <Checkbox
                                     checked={activeFilters.has(type)}
@@ -70,29 +70,29 @@ export function QuestionFilters({
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                    <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer">
                         <ArrowUpDown className="size-3" />
                         <span className="hidden sm:inline">Sortieren</span>
                         <ChevronDown className="size-3 opacity-40" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                    <DropdownMenuItem onClick={() => onSort("created_at", "desc")}>Neueste zuerst</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onSort("created_at", "asc")}>Älteste zuerst</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onSort("type", "asc")}>Typ A-Z</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onSort("type", "desc")}>Typ Z-A</DropdownMenuItem>
+                <DropdownMenuContent align="start" className="backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl">
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => onSort("created_at", "desc")}>Neueste zuerst</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => onSort("created_at", "asc")}>Älteste zuerst</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => onSort("type", "asc")}>Typ A-Z</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => onSort("type", "desc")}>Typ Z-A</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
             <div className="flex-1 min-w-[120px]">
                 <div className="relative">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3 text-muted-foreground" />
                     <Input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder="Suchen..."
-                        className="pl-8 h-8 text-xs"
+                        className="pl-8 h-8 text-xs rounded-lg bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30 transition-all duration-200"
                     />
                 </div>
             </div>
