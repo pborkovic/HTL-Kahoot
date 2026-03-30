@@ -406,8 +406,14 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="flex-1">
-            <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
+        <div className="flex-1 relative overflow-hidden">
+            {/* Background orbs */}
+            <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
+                <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/15 blur-3xl animate-pulse" />
+                <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-primary/10 blur-3xl animate-pulse [animation-delay:3s]" />
+            </div>
+
+            <div className="relative flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
                 <DashboardHeader
                     quizTitle={quizTitle || loadedQuiz?.title}
                     onTitleChange={handleTitleChange}

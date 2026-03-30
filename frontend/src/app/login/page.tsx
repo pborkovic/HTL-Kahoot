@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { GraduationCap, Mail, Lock, ArrowLeft } from "lucide-react";
 
 export default function LoginPage(): ReactNode {
   const { login, loginWithEmail, isAuthenticated, isLoading } = useAuth();
@@ -60,144 +61,173 @@ export default function LoginPage(): ReactNode {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md p-15 space-y-8 rounded-lg border border-primary">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-text">Willkommen bei GamQuiz</h1>
-          <p className="mt-2 text-text/60">
-            {showEmailForm
-              ? "Melde dich mit deinem Admin-Konto an"
-              : "Melde dich mit deinem Microsoft-Konto an"}
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-background">
+      {/* Animated background orbs */}
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary/20 blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-primary/15 blur-3xl animate-pulse [animation-delay:2s]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-accent/10 blur-3xl animate-pulse [animation-delay:4s]" />
+      </div>
 
-        <div className="space-y-4">
-          {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
-          )}
+      {/* Glass card */}
+      <div className="relative w-full max-w-md mx-4">
+        <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 rounded-2xl border border-primary/20 shadow-2xl shadow-primary/5 p-10 space-y-8">
+          {/* Logo & heading */}
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 backdrop-blur-sm border border-primary/20 mb-2">
+              <GraduationCap className="w-8 h-8 text-primary" />
+            </div>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">
+              Willkommen bei GamQuiz
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {showEmailForm
+                ? "Melde dich mit deinem Admin-Konto an"
+                : "Melde dich an, um loszulegen"}
+            </p>
+          </div>
 
-          {showEmailForm ? (
-            <form onSubmit={handleEmailLogin} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-text/80 mb-1"
-                >
-                  E-Mail
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-background border border-primary/40 text-text placeholder-text/40 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                  placeholder="admin@example.com"
-                  autoComplete="email"
-                />
+          {/* Auth forms */}
+          <div className="space-y-4">
+            {error && (
+              <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3">
+                <p className="text-destructive text-sm text-center">{error}</p>
               </div>
+            )}
 
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-text/80 mb-1"
-                >
-                  Passwort
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-background border border-primary/40 text-text placeholder-text/40 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                  placeholder="Passwort"
-                  autoComplete="current-password"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-3 px-4 bg-accent hover:bg-accent/80 text-white font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  "Anmelden"
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setShowEmailForm(false);
-                  setError(null);
-                }}
-                className="w-full py-2 text-sm text-text/60 hover:text-text transition-colors"
-              >
-                Zurück zur Microsoft-Anmeldung
-              </button>
-            </form>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={handleLogin}
-                disabled={isRedirecting}
-                className="w-full py-3 px-4 bg-[#2f2f2f] hover:bg-[#1a1a1a] text-white font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isRedirecting ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 23 23"
-                    className="w-5 h-5"
+            {showEmailForm ? (
+              <form onSubmit={handleEmailLogin} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-foreground/80"
                   >
-                    <path fill="#f35325" d="M1 1h10v10H1z" />
-                    <path fill="#81bc06" d="M12 1h10v10H12z" />
-                    <path fill="#05a6f0" d="M1 12h10v10H1z" />
-                    <path fill="#ffba08" d="M12 12h10v10H12z" />
-                  </svg>
-                )}
-                {isRedirecting ? "Weiterleitung..." : "Mit Microsoft anmelden"}
-              </button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-primary/30" />
+                    E-Mail
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 text-foreground placeholder-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-200"
+                      placeholder="admin@example.com"
+                      autoComplete="email"
+                    />
+                  </div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-background text-text/40">oder</span>
+
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-foreground/80"
+                  >
+                    Passwort
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      id="password"
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 text-foreground placeholder-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-200"
+                      placeholder="Passwort"
+                      autoComplete="current-password"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setShowEmailForm(true);
-                  setError(null);
-                }}
-                className="w-full py-3 px-4 border border-primary/40 hover:border-primary text-text font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-              >
-                Als Administrator anmelden
-              </button>
-            </>
-          )}
-        </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 px-4 bg-primary hover:bg-primary-hover text-primary-foreground font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+                >
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Anmelden"
+                  )}
+                </button>
 
-        <div className="text-center text-sm text-text/50">
-          <p>
-            Mit der Anmeldung akzeptierst du unsere{" "}
-            <a href="/terms" className="text-accent hover:underline">
-              Nutzungsbedingungen
-            </a>{" "}
-            und{" "}
-            <a href="/privacy" className="text-accent hover:underline">
-              Datenschutzrichtlinie
-            </a>
-          </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEmailForm(false);
+                    setError(null);
+                  }}
+                  className="w-full py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Zurück zur Microsoft-Anmeldung
+                </button>
+              </form>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={handleLogin}
+                  disabled={isRedirecting}
+                  className="w-full py-3 px-4 bg-[#2f2f2f] hover:bg-[#1a1a1a] text-white font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg shadow-black/10 hover:shadow-xl"
+                >
+                  {isRedirecting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 23 23"
+                      className="w-5 h-5"
+                    >
+                      <path fill="#f35325" d="M1 1h10v10H1z" />
+                      <path fill="#81bc06" d="M12 1h10v10H12z" />
+                      <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                      <path fill="#ffba08" d="M12 12h10v10H12z" />
+                    </svg>
+                  )}
+                  {isRedirecting ? "Weiterleitung..." : "Mit Microsoft anmelden"}
+                </button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border/40" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-3 bg-card/60 backdrop-blur-sm text-muted-foreground rounded-full text-xs">
+                      oder
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEmailForm(true);
+                    setError(null);
+                  }}
+                  className="w-full py-3 px-4 backdrop-blur-sm bg-background/40 border border-border/40 hover:border-primary/40 hover:bg-background/60 text-foreground font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background cursor-pointer"
+                >
+                  Als Administrator anmelden
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="text-center text-xs text-muted-foreground pt-2">
+            <p>
+              Mit der Anmeldung akzeptierst du unsere{" "}
+              <a href="/terms" className="text-primary hover:underline">
+                Nutzungsbedingungen
+              </a>{" "}
+              und{" "}
+              <a href="/privacy" className="text-primary hover:underline">
+                Datenschutzrichtlinie
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

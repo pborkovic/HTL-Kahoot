@@ -35,7 +35,7 @@ function DifficultyIndicator({ difficulty }: { difficulty: number }) {
                                 : difficulty <= 3
                                     ? "bg-amber-500"
                                     : "bg-red-500"
-                            : "bg-border"
+                            : "bg-border/40"
                     }`}
                 />
             ))}
@@ -64,7 +64,7 @@ export function QuestionTable({
 
     if (error) {
         return (
-            <div className="flex items-center justify-center py-12 text-destructive text-xs rounded-lg bg-destructive/5 border border-destructive/10">
+            <div className="flex items-center justify-center py-12 text-destructive text-xs rounded-xl backdrop-blur-sm bg-destructive/5 border border-destructive/15">
                 {error}
             </div>
         );
@@ -80,10 +80,10 @@ export function QuestionTable({
     }
 
     return (
-        <div className="rounded-lg border border-border/60 max-h-[420px] overflow-auto">
+        <div className="rounded-xl border border-border/30 max-h-[420px] overflow-auto backdrop-blur-sm bg-background/20">
                 <Table>
                     <TableHeader className="sticky top-0 z-10">
-                        <TableRow className="bg-muted hover:bg-muted border-b border-border/60">
+                        <TableRow className="bg-muted/60 backdrop-blur-md hover:bg-muted/60 border-b border-border/30">
                             <TableHead className="w-10 pl-3">
                                 <Checkbox
                                     checked={allSelected}
@@ -102,38 +102,38 @@ export function QuestionTable({
                             return (
                                 <TableRow
                                     key={q.id}
-                                    className={`cursor-pointer transition-colors ${isSelected ? "bg-primary/[0.04] hover:bg-primary/[0.07]" : "hover:bg-muted/30"}`}
+                                    className={`cursor-pointer transition-colors duration-150 border-b border-border/20 ${isSelected ? "bg-primary/[0.04] hover:bg-primary/[0.07]" : "hover:bg-primary/[0.03]"}`}
                                 >
-                                    <TableCell className="pl-3 py-2.5" onClick={(e) => e.stopPropagation()}>
+                                    <TableCell className="pl-3 py-3" onClick={(e) => e.stopPropagation()}>
                                         <Checkbox
                                             checked={isSelected}
                                             onCheckedChange={() => onToggleSelect(q.id)}
                                         />
                                     </TableCell>
-                                    <TableCell className="py-2.5" onClick={() => onViewDetail(q)}>
+                                    <TableCell className="py-3" onClick={() => onViewDetail(q)}>
                                         <span className="text-[11px] font-medium text-muted-foreground">
                                             {q.type}
                                         </span>
                                     </TableCell>
                                     <TableCell
-                                        className="text-xs font-medium truncate max-w-[200px] lg:max-w-none py-2.5"
+                                        className="text-xs font-medium truncate max-w-[200px] lg:max-w-none py-3"
                                         onClick={() => onViewDetail(q)}
                                     >
                                         {q.current_version?.title ?? "\u2014"}
                                     </TableCell>
-                                    <TableCell className="text-center hidden sm:table-cell py-2.5" onClick={() => onViewDetail(q)}>
+                                    <TableCell className="text-center hidden sm:table-cell py-3" onClick={() => onViewDetail(q)}>
                                         {q.current_version?.difficulty != null
                                             ? <DifficultyIndicator difficulty={q.current_version.difficulty} />
                                             : <span className="text-muted-foreground text-xs">\u2014</span>
                                         }
                                     </TableCell>
-                                    <TableCell className="text-center hidden sm:table-cell py-2.5" onClick={() => onViewDetail(q)}>
+                                    <TableCell className="text-center hidden sm:table-cell py-3" onClick={() => onViewDetail(q)}>
                                         {q.is_published ? (
-                                            <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10 border-0 text-[10px] font-medium px-1.5 py-0">
+                                            <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-medium px-1.5 py-0">
                                                 Live
                                             </Badge>
                                         ) : (
-                                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border/60 font-normal px-1.5 py-0">
+                                            <Badge variant="outline" className="text-[10px] text-muted-foreground border-border/40 font-normal px-1.5 py-0">
                                                 Entwurf
                                             </Badge>
                                         )}

@@ -35,8 +35,8 @@ export function DashboardHeader({ quizTitle, onTitleChange }: DashboardHeaderPro
 
     return (
         <div className="flex items-center gap-3">
-            <div className="size-9 rounded-lg bg-foreground flex items-center justify-center">
-                <LayoutDashboard className="size-4.5 text-primary-foreground" />
+            <div className="size-10 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                <LayoutDashboard className="size-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
                 {editing ? (
@@ -50,10 +50,10 @@ export function DashboardHeader({ quizTitle, onTitleChange }: DashboardHeaderPro
                                 if (e.key === "Enter") commit();
                                 if (e.key === "Escape") { setTitle(quizTitle ?? ""); setEditing(false); }
                             }}
-                            className="text-xl font-semibold tracking-tight text-foreground bg-transparent border-b-2 border-foreground/20 focus:border-foreground outline-none py-0.5 w-full max-w-md"
+                            className="text-xl font-semibold tracking-tight text-foreground bg-transparent border-b-2 border-primary/30 focus:border-primary outline-none py-0.5 w-full max-w-md"
                             placeholder="Quiz-Titel eingeben..."
                         />
-                        <button type="button" onClick={commit} className="text-muted-foreground hover:text-foreground">
+                        <button type="button" onClick={commit} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                             <Check className="size-4" />
                         </button>
                     </div>
@@ -66,7 +66,7 @@ export function DashboardHeader({ quizTitle, onTitleChange }: DashboardHeaderPro
                             <button
                                 type="button"
                                 onClick={() => setEditing(true)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary cursor-pointer"
                             >
                                 <Pencil className="size-3.5" />
                             </button>
