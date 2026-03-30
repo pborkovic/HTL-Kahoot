@@ -18,18 +18,18 @@ export function QuizSettings({
     onTimeChange,
 }: QuizSettingsProps) {
     return (
-        <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
-            <div className="px-4 sm:px-5 py-4 sm:py-5 space-y-4">
+        <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">
+            <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4">
                 <div className="flex items-center gap-2.5">
-                    <div className="size-7 rounded-md bg-foreground flex items-center justify-center">
-                        <SlidersHorizontal className="size-3.5 text-primary-foreground" />
+                    <div className="size-7 rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                        <SlidersHorizontal className="size-3.5 text-primary" />
                     </div>
                     <h2 className="text-sm font-semibold text-foreground">Einstellungen</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                            <Weight className="size-3.5 text-foreground" />
+                            <Weight className="size-3.5 text-primary" />
                             <label className="text-xs font-medium text-foreground">Gewichtung</label>
                         </div>
                         <div className="flex items-center gap-3">
@@ -50,7 +50,7 @@ export function QuizSettings({
                                     const val = Math.min(10, Math.max(1, Number(e.target.value)));
                                     onWeightChange(val);
                                 }}
-                                className="w-14 text-center text-xs font-semibold h-8"
+                                className="w-14 text-center text-xs font-semibold h-8 rounded-lg bg-background/50 backdrop-blur-sm border-border/40"
                             />
                         </div>
                         <div className="flex justify-between text-[10px] text-muted-foreground/70">
@@ -61,7 +61,7 @@ export function QuizSettings({
 
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                            <Clock className="size-3.5 text-foreground" />
+                            <Clock className="size-3.5 text-primary" />
                             <label className="text-xs font-medium text-foreground">Zeit pro Frage</label>
                         </div>
                         <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ export function QuizSettings({
                                         const val = Math.min(120, Math.max(5, Number(e.target.value)));
                                         onTimeChange(val);
                                     }}
-                                    className="w-14 text-center text-xs font-semibold h-8"
+                                    className="w-14 text-center text-xs font-semibold h-8 rounded-lg bg-background/50 backdrop-blur-sm border-border/40"
                                 />
                                 <span className="text-[10px] text-muted-foreground">s</span>
                             </div>
