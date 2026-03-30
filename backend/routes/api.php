@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::prefix('auth')->group(function () {
     Route::get(uri: 'redirect', action: [AuthController::class, 'redirect']);
     Route::match(methods: ['get', 'post'], uri: 'callback', action: [AuthController::class, 'callback']);
+    Route::post(uri: 'login', action: [AuthController::class, 'emailLogin']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get(uri: 'user', action: [AuthController::class, 'user']);
