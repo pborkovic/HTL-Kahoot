@@ -1,4 +1,4 @@
-import type { AnswerOption } from "@/types/session";
+import type { AnswerOption, QuestionMediaItem } from "@/types/session";
 
 const OPTION_COLORS = [
     "bg-red-500/10 border-red-500/30 text-red-500",
@@ -14,15 +14,37 @@ const OPTION_SHAPES = ["◆", "●", "▲", "■", "★", "⬟"];
 interface QuestionCardProps {
     questionText: string;
     answerOptions: AnswerOption[];
+    media?: QuestionMediaItem[];
 }
 
-export function QuestionCard({ questionText, answerOptions }: QuestionCardProps) {
+export function QuestionCard({ questionText, answerOptions, media }: QuestionCardProps) {
     return (
         <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
-            <div className="px-5 py-6 border-b border-border/40">
+            <div className="px-5 py-6 border-b border-border/40 space-y-4">
                 <h2 className="text-xl font-bold text-foreground text-center leading-snug">
                     {questionText}
                 </h2>
+                {media && media.length > 0 && (
+                    <div className="flex justify-center gap-3 flex-wrap">
+                        {media.map((m) =>
+                            m.type === "video" ? (
+                                <video
+                                    key={m.id}
+                                    src={m.url}
+                                    controls
+                                    className="max-h-56 rounded-lg"
+                                />
+                            ) : (
+                                <img
+                                    key={m.id}
+                                    src={m.url}
+                                    alt={m.alt_text ?? ""}
+                                    className="max-h-56 rounded-lg object-contain"
+                                />
+                            )
+                        )}
+                    </div>
+                )}
             </div>
             <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {answerOptions.map((opt, i) => {

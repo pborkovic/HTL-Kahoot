@@ -175,6 +175,7 @@ export default function TeacherLive() {
                         <QuestionCard
                             questionText={question.question_text}
                             answerOptions={question.answer_options}
+                            media={question.question_media}
                         />
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

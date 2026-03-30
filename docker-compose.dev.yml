@@ -27,6 +27,15 @@ services:
     ports:
       - "${REDIS_PORT:-6379}:6379"
 
+  seaweedfs-master:
+    ports:
+      - "9333:9333"
+
+  seaweedfs-filer:
+    ports:
+      - "8888:8888"
+      - "8333:8333"
+
   backend:
     environment:
       APP_ENV: local

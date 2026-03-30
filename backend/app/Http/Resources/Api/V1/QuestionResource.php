@@ -17,8 +17,9 @@ class QuestionResource extends JsonResource
             'created_at'      => $this->created_at,
             'updated_at'      => $this->updated_at,
             'deleted_at'      => $this->deleted_at,
-            'current_version' => new QuestionVersionResource($this->whenLoaded('currentVersion')),
-            'versions'        => QuestionVersionResource::collection($this->whenLoaded('versions')),
+            'current_version' => new QuestionVersionResource(resource: $this->whenLoaded(relationship: 'currentVersion')),
+            'versions'        => QuestionVersionResource::collection(resource: $this->whenLoaded(relationship: 'versions')),
+            'media'           => QuestionMediaResource::collection(resource: $this->whenLoaded(relationship: 'media')),
         ];
     }
 }

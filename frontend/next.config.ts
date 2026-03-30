@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
       source: "/api/:path*",
       destination: `${process.env.BACKEND_URL ?? "http://localhost:8081"}/api/:path*`,
     },
+    {
+      source: "/media/:path*",
+      destination: `${process.env.BACKEND_URL ?? "http://localhost:8081"}/media/:path*`,
+    },
   ],
 };
 

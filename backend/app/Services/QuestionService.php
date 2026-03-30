@@ -58,6 +58,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
         return $question->load(relations: [
             'currentVersion.answerOptions',
             'currentVersion.quizQuestions',
+            'media',
         ]);
     }
 

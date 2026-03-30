@@ -157,10 +157,31 @@ export default function StudentGame() {
                         </div>
 
                         {/* Question */}
-                        <div className="rounded-xl bg-white/5 border border-white/10 px-5 py-6">
+                        <div className="rounded-xl bg-white/5 border border-white/10 px-5 py-6 space-y-4">
                             <h2 className="text-xl sm:text-2xl font-bold text-white text-center leading-snug">
                                 {question.question_text}
                             </h2>
+                            {question.question_media && question.question_media.length > 0 && (
+                                <div className="flex justify-center gap-3 flex-wrap">
+                                    {question.question_media.map((m) =>
+                                        m.type === "video" ? (
+                                            <video
+                                                key={m.id}
+                                                src={m.url}
+                                                controls
+                                                className="max-h-48 rounded-lg"
+                                            />
+                                        ) : (
+                                            <img
+                                                key={m.id}
+                                                src={m.url}
+                                                alt={m.alt_text ?? ""}
+                                                className="max-h-48 rounded-lg object-contain"
+                                            />
+                                        )
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Answers */}
