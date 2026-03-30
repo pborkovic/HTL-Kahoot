@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\DTOs\AuthCallbackDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AuthCallbackRequest;
+use App\Http\Requests\Api\V1\EmailLoginRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Services\Contracts\AuthServiceContract;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes\Get;
@@ -247,6 +249,65 @@ class AuthController extends Controller
             return response()->json(
                 data: [
                     'error' => 'Authentication failed',
+                    'message' => $e->getMessage(),
+                ],
+                status: 401
+            );
+        }
+    }
+
+    #[Post(
+        path: '/api/auth/login',
+        description: 'Authenticates an admin user with email and password credentials. Returns a Sanctum token.',
+        summary: 'Login with email and password',
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                required: ['email', 'password'],
+                properties: [
+                    new Property(property: 'email', type: 'string', format: 'email', example: 'admin@example.com'),
+                    new Property(property: 'password', type: 'string', example: 'password'),
+                ],
+            ),
+        ),
+        tags: ['Auth'],
+        responses: [
+            new Response(
+                response: 200,
+                description: 'Authentication successful',
+                content: new JsonContent(
+                    properties: [
+                        new Property(property: 'user', ref: '#/components/schemas/User'),
+                        new Property(property: 'token', type: 'string', example: '1|abc123tokenvalue'),
+                    ],
+                ),
+            ),
+            new Response(response: 401, description: 'Invalid credentials'),
+            new Response(response: 422, description: 'Validation error'),
+        ],
+    )]
+    public function emailLogin(EmailLoginRequest $request): JsonResponse
+    {
+        try {
+            $user = $this->authService->loginWithEmail(
+                email: $request->validated(key: 'email'),
+                password: $request->validated(key: 'password'),
+            );
+
+            $token = $this->authService->createToken(user: $user);
+
+            $user->load(relations: 'roles');
+
+            return response()->json(
+                data: [
+                    'user'  => new UserResource($user),
+                    'token' => $token,
+                ]
+            );
+        } catch (AuthenticationException $e) {
+            return response()->json(
+                data: [
+                    'error'   => 'Authentication failed',
                     'message' => $e->getMessage(),
                 ],
                 status: 401
