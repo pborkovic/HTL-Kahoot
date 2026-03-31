@@ -99,7 +99,7 @@ export function AppSidebar(): ReactNode {
         .join("");
 
     return (
-        <Sidebar collapsible="icon">
+        <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

@@ -244,7 +244,7 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="flex h-full w-full flex-col backdrop-blur-xl bg-sidebar/80 dark:bg-sidebar/60 border-r border-border/20 group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-border/20 group-data-[variant=floating]:shadow-xl group-data-[variant=floating]:shadow-primary/5"
+          className="flex h-full w-full flex-col backdrop-blur-xl bg-sidebar/80 dark:bg-sidebar/60 border-r border-border/20 group-data-[variant=floating]:border-r-0 group-data-[variant=floating]:rounded-2xl group-data-[variant=floating]:border group-data-[variant=floating]:border-border/20 group-data-[variant=floating]:shadow-2xl group-data-[variant=floating]:shadow-primary/10"
         >
           {children}
         </div>
