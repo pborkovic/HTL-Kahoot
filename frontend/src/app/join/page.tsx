@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
-import { Loader2, ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 interface JoinResponse {
   participant_id: string;
@@ -28,7 +28,7 @@ const SEPARATOR_INDEX: number = 4;
 export default function JoinPage(): ReactNode {
   const router = useRouter();
   const searchParams: ReturnType<typeof useSearchParams> = useSearchParams();
-  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [digits, setDigits] = useState<string[]>(
     (): string[] => Array<string>(DIGIT_COUNT).fill("")
   );
@@ -47,18 +47,10 @@ export default function JoinPage(): ReactNode {
   }, [searchParams]);
 
   useEffect((): void => {
-    if (!authLoading) {
-      const firstEmpty: number = digits.findIndex((d: string): boolean => d === "");
-      const idx: number = firstEmpty === -1 ? DIGIT_COUNT - 1 : firstEmpty;
-      inputRefs.current[idx]?.focus();
-    }
-  }, [authLoading, digits]);
-
-  useEffect((): void => {
-    if (!authLoading && !isAuthenticated) {
-      router.replace("/login");
-    }
-  }, [authLoading, isAuthenticated, router]);
+    const firstEmpty: number = digits.findIndex((d: string): boolean => d === "");
+    const idx: number = firstEmpty === -1 ? DIGIT_COUNT - 1 : firstEmpty;
+    inputRefs.current[idx]?.focus();
+  }, [digits]);
 
   const handleDigitChange = useCallback(
     (index: number, value: string): void => {
@@ -154,14 +146,6 @@ export default function JoinPage(): ReactNode {
     },
     [digits, handleJoin, pin.length]
   );
-
-  if (authLoading) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-text">
-        <Loader2 className="size-8 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   const displayName: string =
     user?.display_name ?? user?.username ?? user?.email?.split("@")[0] ?? "";
