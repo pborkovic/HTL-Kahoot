@@ -36,10 +36,10 @@ function statusLabel(status: string): string {
 
 function statusColor(status: string): string {
     switch (status) {
-        case "finished": return "border-emerald-300 text-emerald-600";
-        case "active": return "border-amber-300 text-amber-600";
-        case "lobby": return "border-blue-300 text-blue-600";
-        default: return "text-muted-foreground";
+        case "finished": return "border-emerald-300/60 text-emerald-600 bg-emerald-500/5";
+        case "active": return "border-amber-300/60 text-amber-600 bg-amber-500/5";
+        case "lobby": return "border-blue-300/60 text-blue-600 bg-blue-500/5";
+        default: return "text-muted-foreground border-border/40";
     }
 }
 
@@ -55,7 +55,7 @@ export function QuizTable({ quizzes, loading, error, onViewDetail }: QuizTablePr
 
     if (error) {
         return (
-            <div className="text-xs text-destructive bg-destructive/5 border border-destructive/10 rounded-lg px-3 py-2">
+            <div className="text-xs text-destructive rounded-xl backdrop-blur-sm bg-destructive/5 border border-destructive/15 px-3 py-2">
                 {error}
             </div>
         );
@@ -71,10 +71,10 @@ export function QuizTable({ quizzes, loading, error, onViewDetail }: QuizTablePr
     }
 
     return (
-        <div className="rounded-lg border border-border/60 overflow-auto">
+        <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-auto">
             <Table>
                 <TableHeader className="sticky top-0 z-10">
-                    <TableRow className="hover:bg-transparent">
+                    <TableRow className="bg-muted/60 backdrop-blur-md hover:bg-muted/60 border-b border-border/30">
                         <TableHead className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground h-8">
                             Quiz
                         </TableHead>
@@ -99,26 +99,26 @@ export function QuizTable({ quizzes, loading, error, onViewDetail }: QuizTablePr
                     {quizzes.map((quiz) => (
                         <TableRow
                             key={quiz.id}
-                            className="cursor-pointer hover:bg-muted/50 transition-colors"
+                            className="cursor-pointer hover:bg-primary/[0.03] transition-colors duration-150 border-b border-border/20"
                             onClick={() => onViewDetail(quiz)}
                         >
-                            <TableCell className="py-2.5">
+                            <TableCell className="py-3">
                                 <div className="flex flex-col gap-0.5">
                                     <span className="text-xs font-medium text-foreground truncate max-w-[300px]">
                                         {quiz.title}
                                     </span>
                                     <div className="flex items-center gap-1.5">
                                         {quiz.is_published ? (
-                                            <Badge variant="outline" className="text-[9px] border-emerald-300 text-emerald-600">
+                                            <Badge variant="outline" className="text-[9px] border-emerald-300/60 text-emerald-600 bg-emerald-500/5">
                                                 Veröffentlicht
                                             </Badge>
                                         ) : (
-                                            <Badge variant="outline" className="text-[9px] text-muted-foreground">
+                                            <Badge variant="outline" className="text-[9px] text-muted-foreground border-border/40">
                                                 Entwurf
                                             </Badge>
                                         )}
                                         {quiz.randomize_questions && (
-                                            <Badge variant="outline" className="text-[9px] text-muted-foreground">
+                                            <Badge variant="outline" className="text-[9px] text-muted-foreground border-border/40">
                                                 Zufällig
                                             </Badge>
                                         )}

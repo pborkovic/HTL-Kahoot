@@ -252,7 +252,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
 
     return (
         <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-            <DialogContent className="max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-2xl shadow-2xl shadow-primary/5">
                 <DialogHeader>
                     <DialogTitle className="text-base font-semibold">
                         {isEdit ? "Frage bearbeiten" : "Neue Frage erstellen"}
@@ -274,7 +274,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Wie heißt die Hauptstadt von Österreich?"
-                            className="text-sm"
+                            className="text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                         />
                     </div>
 
@@ -285,13 +285,13 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                 Typ
                             </label>
                             <Select value={type} onValueChange={setType}>
-                                <SelectTrigger className="w-full text-sm">
+                                <SelectTrigger className="w-full text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
-                                    <SelectItem value="true_false">Wahr / Falsch</SelectItem>
-                                    <SelectItem value="single_choice">Single Choice</SelectItem>
+                                <SelectContent className="backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl">
+                                    <SelectItem value="multiple_choice" className="cursor-pointer">Multiple Choice</SelectItem>
+                                    <SelectItem value="true_false" className="cursor-pointer">Wahr / Falsch</SelectItem>
+                                    <SelectItem value="single_choice" className="cursor-pointer">Single Choice</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -300,15 +300,15 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                 Schwierigkeit
                             </label>
                             <Select value={difficulty} onValueChange={setDifficulty}>
-                                <SelectTrigger className="w-full text-sm">
+                                <SelectTrigger className="w-full text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="1">1 — Sehr leicht</SelectItem>
-                                    <SelectItem value="2">2 — Leicht</SelectItem>
-                                    <SelectItem value="3">3 — Mittel</SelectItem>
-                                    <SelectItem value="4">4 — Schwer</SelectItem>
-                                    <SelectItem value="5">5 — Sehr schwer</SelectItem>
+                                <SelectContent className="backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl">
+                                    <SelectItem value="1" className="cursor-pointer">1 — Sehr leicht</SelectItem>
+                                    <SelectItem value="2" className="cursor-pointer">2 — Leicht</SelectItem>
+                                    <SelectItem value="3" className="cursor-pointer">3 — Mittel</SelectItem>
+                                    <SelectItem value="4" className="cursor-pointer">4 — Schwer</SelectItem>
+                                    <SelectItem value="5" className="cursor-pointer">5 — Sehr schwer</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -326,7 +326,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                 max="300"
                                 value={timeLimit}
                                 onChange={(e) => setTimeLimit(e.target.value)}
-                                className="text-sm"
+                                className="text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -339,7 +339,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                 max="10000"
                                 value={points}
                                 onChange={(e) => setPoints(e.target.value)}
-                                className="text-sm"
+                                className="text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                             />
                         </div>
                     </div>
@@ -354,7 +354,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                             onChange={(e) => setExplanation(e.target.value)}
                             placeholder="Wird nach der Auflösung angezeigt..."
                             rows={2}
-                            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 placeholder:text-muted-foreground resize-none"
+                            className="w-full rounded-xl bg-background/50 backdrop-blur-sm border border-border/40 px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-primary/50 focus-visible:ring-[3px] focus-visible:ring-primary/30 placeholder:text-muted-foreground resize-none transition-all duration-200"
                         />
                     </div>
 
@@ -370,7 +370,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                         {(visibleMedia.length > 0 || pendingFiles.length > 0) && (
                             <div className="flex flex-wrap gap-2">
                                 {visibleMedia.map((m) => (
-                                    <div key={m.id} className="relative w-24 h-20 rounded-lg border border-border/60 overflow-hidden group">
+                                    <div key={m.id} className="relative w-24 h-20 rounded-xl border border-border/30 overflow-hidden group backdrop-blur-sm bg-background/20">
                                         {m.type === "video" ? (
                                             <div className="w-full h-full bg-muted/30 flex items-center justify-center">
                                                 <Film className="size-6 text-muted-foreground" />
@@ -385,7 +385,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                         <button
                                             type="button"
                                             onClick={() => markMediaForDeletion(m.id)}
-                                            className="absolute top-1 right-1 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-1 right-1 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                         >
                                             <X className="size-3" />
                                         </button>
@@ -395,7 +395,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                     </div>
                                 ))}
                                 {pendingFiles.map((file, i) => (
-                                    <div key={`pending-${i}`} className="relative w-24 h-20 rounded-lg border border-dashed border-border overflow-hidden group">
+                                    <div key={`pending-${i}`} className="relative w-24 h-20 rounded-xl border-2 border-dashed border-border/40 overflow-hidden group backdrop-blur-sm bg-background/20">
                                         {file.type.startsWith("video/") ? (
                                             <div className="w-full h-full bg-muted/30 flex items-center justify-center">
                                                 <Film className="size-6 text-muted-foreground" />
@@ -410,7 +410,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                         <button
                                             type="button"
                                             onClick={() => removePendingFile(i)}
-                                            className="absolute top-1 right-1 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-1 right-1 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                         >
                                             <X className="size-3" />
                                         </button>
@@ -433,7 +433,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1 cursor-pointer"
                         >
                             <ImagePlus className="size-3" />
                             Bild oder Video hinzufügen
@@ -457,10 +457,10 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                             {options.map((option, index) => (
                                 <div
                                     key={option.id}
-                                    className={`flex items-center gap-1.5 rounded-lg border px-2 py-1.5 transition-colors ${
+                                    className={`flex items-center gap-1.5 rounded-xl border px-2 py-1.5 transition-all duration-200 backdrop-blur-sm ${
                                         option.is_correct
-                                            ? "bg-emerald-500/5 border-emerald-200"
-                                            : "border-border/60"
+                                            ? "bg-emerald-500/5 border-emerald-200/60"
+                                            : "bg-background/20 border-border/30"
                                     }`}
                                 >
                                     {/* Reorder buttons */}
@@ -469,7 +469,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                             type="button"
                                             onClick={() => moveOption(index, -1)}
                                             disabled={index === 0}
-                                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 p-0 leading-none"
+                                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 p-0 leading-none cursor-pointer"
                                             tabIndex={-1}
                                         >
                                             <GripVertical className="size-3" />
@@ -480,10 +480,10 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                     <button
                                         type="button"
                                         onClick={() => toggleCorrect(option.id)}
-                                        className={`size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
+                                        className={`size-5 rounded-lg border flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
                                             option.is_correct
                                                 ? "bg-emerald-500 border-emerald-500 text-white"
-                                                : "border-border hover:border-emerald-300"
+                                                : "border-border/40 hover:border-emerald-300"
                                         }`}
                                         title={option.is_correct ? "Als falsch markieren" : "Als korrekt markieren"}
                                     >
@@ -503,7 +503,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                         type="button"
                                         onClick={() => removeOption(option.id)}
                                         disabled={options.length <= 2}
-                                        className="text-muted-foreground/40 hover:text-destructive disabled:opacity-20 p-0.5 shrink-0"
+                                        className="text-muted-foreground/40 hover:text-destructive disabled:opacity-20 p-0.5 shrink-0 cursor-pointer"
                                         tabIndex={-1}
                                     >
                                         <Trash2 className="size-3" />
@@ -516,7 +516,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                             <button
                                 type="button"
                                 onClick={addOption}
-                                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+                                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1 cursor-pointer"
                             >
                                 <Plus className="size-3" />
                                 Antwortoption hinzufügen
@@ -526,17 +526,17 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
 
                     {/* Error */}
                     {error && (
-                        <div className="text-xs text-destructive bg-destructive/5 border border-destructive/10 rounded-lg px-3 py-2">
+                        <div className="text-xs text-destructive rounded-xl backdrop-blur-sm bg-destructive/5 border border-destructive/15 px-3 py-2">
                             {error}
                         </div>
                     )}
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose} disabled={saving} className="text-xs h-9">
+                    <Button variant="outline" onClick={onClose} disabled={saving} className="text-xs h-9 rounded-xl backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer">
                         Abbrechen
                     </Button>
-                    <Button onClick={handleSave} disabled={saving} className="text-xs h-9">
+                    <Button onClick={handleSave} disabled={saving} className="text-xs h-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary-hover shadow-md shadow-primary/20 cursor-pointer">
                         {saving ? (
                             <Loader2 className="size-3.5 animate-spin" />
                         ) : isEdit ? (

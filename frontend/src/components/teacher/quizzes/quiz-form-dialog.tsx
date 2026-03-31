@@ -112,7 +112,7 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
 
     return (
         <Dialog open={open} onOpenChange={(v) => { if (!v) { onClose(); } }}>
-            <DialogContent className="max-w-lg sm:max-w-xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-lg sm:max-w-xl max-h-[90vh] overflow-y-auto backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-2xl shadow-2xl shadow-primary/5">
                 <DialogHeader>
                     <DialogTitle className="text-base font-semibold">
                         {isEdit ? "Quiz bearbeiten" : "Neues Quiz erstellen"}
@@ -133,7 +133,7 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="z.B. Geografie Quiz Europa"
-                            className="text-sm"
+                            className="text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                         />
                     </div>
 
@@ -146,7 +146,7 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Worum geht es in diesem Quiz?"
                             rows={2}
-                            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 placeholder:text-muted-foreground resize-none"
+                            className="w-full rounded-xl bg-background/50 backdrop-blur-sm border border-border/40 px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-primary/50 focus-visible:ring-[3px] focus-visible:ring-primary/30 placeholder:text-muted-foreground resize-none transition-all duration-200"
                         />
                     </div>
 
@@ -156,12 +156,12 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
                                 Zeitmodus
                             </label>
                             <Select value={timeMode} onValueChange={setTimeMode}>
-                                <SelectTrigger className="w-full text-sm">
+                                <SelectTrigger className="w-full text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="per_question">Pro Frage</SelectItem>
-                                    <SelectItem value="total">Gesamtzeit</SelectItem>
+                                <SelectContent className="backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl">
+                                    <SelectItem value="per_question" className="cursor-pointer">Pro Frage</SelectItem>
+                                    <SelectItem value="total" className="cursor-pointer">Gesamtzeit</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -176,7 +176,7 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
                                     max="3600"
                                     value={totalTimeLimit}
                                     onChange={(e) => setTotalTimeLimit(e.target.value)}
-                                    className="text-sm"
+                                    className="text-sm rounded-xl bg-background/50 backdrop-blur-sm border-border/40 focus:border-primary/50 focus:ring-primary/30"
                                 />
                             </div>
                         )}
@@ -207,17 +207,17 @@ export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogP
                     </div>
 
                     {error && (
-                        <div className="text-xs text-destructive bg-destructive/5 border border-destructive/10 rounded-lg px-3 py-2">
+                        <div className="text-xs text-destructive rounded-xl backdrop-blur-sm bg-destructive/5 border border-destructive/15 px-3 py-2">
                             {error}
                         </div>
                     )}
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose} disabled={saving} className="text-xs h-9">
+                    <Button variant="outline" onClick={onClose} disabled={saving} className="text-xs h-9 rounded-xl backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer">
                         Abbrechen
                     </Button>
-                    <Button onClick={handleSave} disabled={saving} className="text-xs h-9">
+                    <Button onClick={handleSave} disabled={saving} className="text-xs h-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary-hover shadow-md shadow-primary/20 cursor-pointer">
                         {saving ? (
                             <Loader2 className="size-3.5 animate-spin" />
                         ) : isEdit ? (

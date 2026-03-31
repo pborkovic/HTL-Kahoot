@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -40,7 +41,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-function ThemeIcon({ theme }: { theme: Theme }) {
+function ThemeIcon({ theme }: { theme: Theme }): ReactNode {
     if (theme === "dark")                    return <Moon className="size-4" />;
     if (theme === "high-contrast")           return <Contrast className="size-4" />;
     if (theme === "dark-high-contrast")      return <Contrast className="size-4" />;
@@ -80,7 +81,7 @@ const adminItems = [
     },
 ];
 
-export function AppSidebar() {
+export function AppSidebar(): ReactNode {
     const pathname = usePathname();
     const { user, logout } = useAuth();
     const { toggleSidebar, state } = useSidebar();
@@ -98,14 +99,14 @@ export function AppSidebar() {
         .join("");
 
     return (
-        <Sidebar collapsible="icon">
+        <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
                             <Link href="/teacher/dashboard">
-                                <div className="size-8 rounded-lg bg-foreground flex items-center justify-center shrink-0">
-                                    <MonitorPlay className="size-4 text-primary-foreground" />
+                                <div className="size-8 rounded-xl bg-primary/15 backdrop-blur-sm border border-primary/20 flex items-center justify-center shrink-0">
+                                    <MonitorPlay className="size-4 text-primary" />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold text-sm">gamquiz</span>
@@ -119,7 +120,9 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">
+                        Navigation
+                    </SidebarGroupLabel>
                     <SidebarMenu>
                         {navItems.map(item => (
                             <SidebarMenuItem key={item.href}>
@@ -127,6 +130,7 @@ export function AppSidebar() {
                                     asChild
                                     isActive={pathname === item.href}
                                     tooltip={item.title}
+                                    className="cursor-pointer"
                                 >
                                     <Link href={item.href}>
                                         <item.icon className="size-4" />
@@ -140,7 +144,9 @@ export function AppSidebar() {
 
                 {isAdmin && (
                     <SidebarGroup>
-                        <SidebarGroupLabel>Administration</SidebarGroupLabel>
+                        <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">
+                            Administration
+                        </SidebarGroupLabel>
                         <SidebarMenu>
                             {adminItems.map(item => (
                                 <SidebarMenuItem key={item.href}>
@@ -148,6 +154,7 @@ export function AppSidebar() {
                                         asChild
                                         isActive={pathname.startsWith(item.href)}
                                         tooltip={item.title}
+                                        className="cursor-pointer"
                                     >
                                         <Link href={item.href}>
                                             <item.icon className="size-4" />
@@ -166,7 +173,7 @@ export function AppSidebar() {
                     <DropdownMenuTrigger asChild>
                         <button
                             type="button"
-                            className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+                            className="flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:bg-primary/10 hover:text-foreground transition-colors cursor-pointer"
                         >
                             <ThemeIcon theme={theme} />
                             {state === "expanded" && (
@@ -174,12 +181,16 @@ export function AppSidebar() {
                             )}
                         </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent side="top" align="start">
+                    <DropdownMenuContent
+                        side="top"
+                        align="start"
+                        className="backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-xl shadow-xl shadow-primary/5"
+                    >
                         {THEMES.map(t => (
                             <DropdownMenuItem
                                 key={t.value}
                                 onClick={() => setTheme(t.value)}
-                                className={theme === t.value ? "bg-sidebar-accent" : ""}
+                                className={`cursor-pointer rounded-lg ${theme === t.value ? "bg-primary/10 text-primary" : ""}`}
                             >
                                 <ThemeIcon theme={t.value} />
                                 <span>{t.label}</span>
@@ -190,7 +201,7 @@ export function AppSidebar() {
                 <button
                     type="button"
                     onClick={toggleSidebar}
-                    className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+                    className="flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:bg-primary/10 hover:text-foreground transition-colors cursor-pointer"
                 >
                     {state === "expanded" ? (
                         <ChevronsLeft className="size-4" />
@@ -208,9 +219,9 @@ export function AppSidebar() {
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton
                                     size="lg"
-                                    className="data-[state=open]:bg-sidebar-accent"
+                                    className="data-[state=open]:bg-primary/10 cursor-pointer"
                                 >
-                                    <div className="size-8 rounded-lg bg-foreground/10 flex items-center justify-center text-xs font-semibold text-foreground shrink-0">
+                                    <div className="size-8 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-xs font-semibold text-primary shrink-0">
                                         {initials}
                                     </div>
                                     <div className="flex flex-col gap-0.5 leading-none min-w-0">
@@ -223,9 +234,12 @@ export function AppSidebar() {
                             <DropdownMenuContent
                                 side="top"
                                 align="start"
-                                className="w-[--radix-dropdown-menu-trigger-width]"
+                                className="w-[--radix-dropdown-menu-trigger-width] backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-xl shadow-xl shadow-primary/5"
                             >
-                                <DropdownMenuItem onClick={() => logout()}>
+                                <DropdownMenuItem
+                                    onClick={() => logout()}
+                                    className="cursor-pointer rounded-lg text-red-500 hover:text-red-600 focus:text-red-600"
+                                >
                                     <LogOut className="size-4 mr-2" />
                                     Abmelden
                                 </DropdownMenuItem>
