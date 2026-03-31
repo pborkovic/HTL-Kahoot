@@ -42,7 +42,7 @@ function DifficultyDots({ difficulty }: { difficulty: number }): ReactNode {
                   : difficulty <= 3
                     ? "bg-amber-500"
                     : "bg-red-500"
-                : "bg-border"
+                : "bg-border/40"
             }`}
           />
         )
@@ -72,7 +72,7 @@ export function QuestionsGrid({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center py-20 text-destructive text-xs rounded-lg bg-destructive/5 border border-destructive/10">
+      <div className="flex items-center justify-center py-20 text-destructive text-xs rounded-xl backdrop-blur-sm bg-destructive/5 border border-destructive/15">
         {error}
       </div>
     );
@@ -90,10 +90,10 @@ export function QuestionsGrid({
   }
 
   return (
-    <div className="rounded-lg border border-border/60 overflow-auto">
+    <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-auto">
       <Table>
         <TableHeader className="sticky top-0 z-10">
-          <TableRow className="bg-muted hover:bg-muted border-b border-border/60">
+          <TableRow className="bg-muted/60 backdrop-blur-md hover:bg-muted/60 border-b border-border/30">
             <TableHead className="w-10 pl-3">
               <Checkbox
                 checked={allSelected}
@@ -130,14 +130,14 @@ export function QuestionsGrid({
                 <TableRow
                   key={q.id}
                   onDoubleClick={(): void => onViewDetail(q)}
-                  className={`transition-colors cursor-pointer ${
+                  className={`transition-colors duration-150 cursor-pointer border-b border-border/20 ${
                     isSelected
                       ? "bg-primary/[0.04] hover:bg-primary/[0.07]"
-                      : "hover:bg-muted/30"
+                      : "hover:bg-primary/[0.03]"
                   }`}
                 >
                   <TableCell
-                    className="pl-3 py-2.5"
+                    className="pl-3 py-3"
                     onClick={(e: React.MouseEvent): void => e.stopPropagation()}
                   >
                     <Checkbox
@@ -145,18 +145,18 @@ export function QuestionsGrid({
                       onCheckedChange={(): void => onToggleSelect(q.id)}
                     />
                   </TableCell>
-                  <TableCell className="py-2.5">
+                  <TableCell className="py-3">
                     <Badge
                       variant="outline"
-                      className="text-[10px] font-medium border-border/60 text-muted-foreground"
+                      className="text-[10px] font-medium border-border/40 text-muted-foreground rounded-lg"
                     >
                       {q.type}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs font-medium truncate max-w-[250px] xl:max-w-none py-2.5">
+                  <TableCell className="text-xs font-medium truncate max-w-[250px] xl:max-w-none py-3">
                     {version?.title ?? "\u2014"}
                   </TableCell>
-                  <TableCell className="text-center hidden md:table-cell py-2.5">
+                  <TableCell className="text-center hidden md:table-cell py-3">
                     {version?.difficulty != null ? (
                       <DifficultyDots difficulty={version.difficulty} />
                     ) : (
@@ -165,26 +165,26 @@ export function QuestionsGrid({
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="text-center hidden md:table-cell py-2.5">
+                  <TableCell className="text-center hidden md:table-cell py-3">
                     <span className="text-xs tabular-nums text-muted-foreground">
                       {version?.default_points ?? "\u2014"}
                     </span>
                   </TableCell>
-                  <TableCell className="text-center hidden sm:table-cell py-2.5">
+                  <TableCell className="text-center hidden sm:table-cell py-3">
                     {q.is_published ? (
-                      <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10 border-0 text-[10px] font-medium px-1.5 py-0">
+                      <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-medium px-1.5 py-0">
                         Live
                       </Badge>
                     ) : (
                       <Badge
                         variant="outline"
-                        className="text-[10px] text-muted-foreground border-border/60 font-normal px-1.5 py-0"
+                        className="text-[10px] text-muted-foreground border-border/40 font-normal px-1.5 py-0"
                       >
                         Entwurf
                       </Badge>
                     )}
                   </TableCell>
-                  <TableCell className="text-center hidden lg:table-cell py-2.5">
+                  <TableCell className="text-center hidden lg:table-cell py-3">
                     <span className="text-[11px] tabular-nums text-muted-foreground">
                       {new Date(q.created_at).toLocaleDateString("de-AT", {
                         day: "2-digit",
@@ -193,11 +193,11 @@ export function QuestionsGrid({
                       })}
                     </span>
                   </TableCell>
-                  <TableCell className="py-2.5">
+                  <TableCell className="py-3">
                     <button
                       type="button"
                       onClick={(): void => onViewDetail(q)}
-                      className="size-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      className="size-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
                     >
                       <Eye className="size-3.5" />
                     </button>
