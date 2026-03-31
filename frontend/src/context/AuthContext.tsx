@@ -14,6 +14,8 @@ import {
   getStoredToken,
   removeStoredToken,
   setStoredToken,
+  setAuthCookie,
+  removeAuthCookie,
 } from "@/lib/api";
 import type { AuthResponse, User } from "@/types/auth";
 
@@ -59,11 +61,18 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
     let cancelled: boolean = false;
 
     apiFetch<UserResponse>("/auth/user")
-      .then((data: UserResponse): void => {
-        if (!cancelled) setUser(data.user);
+      .then(async (data: UserResponse): Promise<void> => {
+        if (!cancelled) {
+          const roles: string[] = data.user.roles?.map((r) => r.name) ?? [];
+          await setAuthCookie(token, roles);
+          setUser(data.user);
+        }
       })
-      .catch((): void => {
-        if (!cancelled) removeStoredToken();
+      .catch(async (): Promise<void> => {
+        if (!cancelled) {
+          removeStoredToken();
+          await removeAuthCookie();
+        }
       })
       .finally((): void => {
         if (!cancelled) setIsLoading(false);
@@ -86,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
     });
 
     setStoredToken(data.token);
+    const roles: string[] = data.user.roles?.map((r) => r.name) ?? [];
+    await setAuthCookie(data.token, roles);
     setUser(data.user);
 
     return data.user;
@@ -98,6 +109,8 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
     });
 
     setStoredToken(data.token);
+    const roles: string[] = data.user.roles?.map((r) => r.name) ?? [];
+    await setAuthCookie(data.token, roles);
     setUser(data.user);
 
     return data.user;
@@ -108,6 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
       await apiFetch<unknown>("/auth/logout", { method: "POST" });
     } finally {
       removeStoredToken();
+      await removeAuthCookie();
       setUser(null);
     }
   }, []);
