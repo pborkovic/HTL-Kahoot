@@ -21,6 +21,18 @@ export function removeStoredToken(): void {
   localStorage.removeItem(TOKEN_KEY);
 }
 
+export async function setAuthCookie(token: string, roles: string[]): Promise<void> {
+  await fetch("/api/auth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, roles }),
+  });
+}
+
+export async function removeAuthCookie(): Promise<void> {
+  await fetch("/api/auth/token", { method: "DELETE" });
+}
+
 export async function apiUpload<T>(
   path: string,
   formData: FormData,
