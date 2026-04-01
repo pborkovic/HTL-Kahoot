@@ -50,13 +50,19 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
      */
     public function updateFromEntra(User $user, EntraUserDto $entraDto): User
     {
-        $user->update(attributes: [
+        $attributes = [
             'email'         => $entraDto->email,
             'username'      => $entraDto->displayName,
             'display_name'  => $entraDto->displayName,
             'class_name'    => $entraDto->className,
             'last_login_at' => now(),
-        ]);
+        ];
+
+        if ($entraDto->avatarUrl !== null) {
+            $attributes['avatar_url'] = $entraDto->avatarUrl;
+        }
+
+        $user->update(attributes: $attributes);
 
         return $user->fresh();
     }
@@ -68,7 +74,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
      */
     public function createFromEntra(EntraUserDto $entraDto): User
     {
-        return $this->model->create(attributes: [
+        $attributes = [
             'external_id'   => $entraDto->externalId,
             'email'         => $entraDto->email,
             'username'      => $entraDto->displayName,
@@ -76,7 +82,13 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             'class_name'    => $entraDto->className,
             'auth_provider' => 'azure',
             'last_login_at' => now(),
-        ]);
+        ];
+
+        if ($entraDto->avatarUrl !== null) {
+            $attributes['avatar_url'] = $entraDto->avatarUrl;
+        }
+
+        return $this->model->create(attributes: $attributes);
     }
 
     /**

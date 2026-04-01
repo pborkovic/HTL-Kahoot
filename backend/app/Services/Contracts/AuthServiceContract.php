@@ -42,6 +42,10 @@ interface AuthServiceContract
     /**
      * Find an existing user by external ID or create one from Socialite data.
      *
+     * Fetches group memberships (GroupMember.Read.All) and the profile photo
+     * (User.Read) from Microsoft Graph using the Socialite user's access token,
+     * then merges the enriched data into the local user record.
+     *
      * @param SocialiteUser $socialiteUser The Socialite user returned by the OAuth provider.
      *
      * @return User The found or newly created user.

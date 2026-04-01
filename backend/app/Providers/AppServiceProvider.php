@@ -31,9 +31,11 @@ use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
 use App\Services\Contracts\SessionServiceContract;
+use App\Services\Contracts\MicrosoftGraphServiceContract;
 use App\Services\Contracts\QuestionImportServiceContract;
 use App\Services\Contracts\QuestionServiceContract;
 use App\Services\Contracts\UserServiceContract;
+use App\Services\MicrosoftGraphService;
 use App\Services\PermissionService;
 use App\Services\QuestionImportService;
 use App\Services\QuestionService;
@@ -100,6 +102,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: QuestionImportServiceContract::class,
             concrete: QuestionImportService::class
+        );
+        $this->app->bind(
+            abstract: MicrosoftGraphServiceContract::class,
+            concrete: MicrosoftGraphService::class
         );
     }
 

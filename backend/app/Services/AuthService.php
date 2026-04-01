@@ -6,6 +6,7 @@ use App\DTOs\EntraUserDto;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Services\Contracts\AuthServiceContract;
+use App\Services\Contracts\MicrosoftGraphServiceContract;
 use Illuminate\Auth\AuthenticationException;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
@@ -18,7 +19,8 @@ use Laravel\Socialite\Facades\Socialite;
 class AuthService implements AuthServiceContract
 {
     public function __construct(
-        private readonly UserRepositoryContract $userRepository
+        private readonly UserRepositoryContract $userRepository,
+        private readonly MicrosoftGraphServiceContract $graphService,
     ) {}
 
 
@@ -57,6 +59,7 @@ class AuthService implements AuthServiceContract
     {
         return Socialite::driver('azure')
             ->stateless()
+            ->scopes(scopes: ['User.Read'])
             ->redirect()
             ->getTargetUrl();
     }
@@ -86,20 +89,46 @@ class AuthService implements AuthServiceContract
             socialiteUser: $socialiteUser
         );
 
-        $user = $this->userRepository->findByExternalId(
+        $accessToken = $socialiteUser->token;
+
+        $groups = $this->graphService->getUserGroups(accessToken: $accessToken);
+
+        $existingUser = $this->userRepository->findByExternalId(
             externalId: $entraDto->externalId
         );
 
-        if ($user) {
+        $avatarUrl = $this->graphService->getUserPhoto(
+            accessToken: $accessToken,
+            userId: $existingUser?->id ?? $entraDto->externalId,
+        );
+
+        $enrichedDto = $entraDto->withGraphData(groups: $groups, avatarUrl: $avatarUrl);
+
+        if ($existingUser) {
             return $this->userRepository->updateFromEntra(
-                user: $user,
-                entraDto: $entraDto
+                user: $existingUser,
+                entraDto: $enrichedDto
             );
         }
 
-        return $this->userRepository->createFromEntra(
-            entraDto: $entraDto
+        $newUser = $this->userRepository->createFromEntra(entraDto: $enrichedDto);
+
+        if ($avatarUrl === null) {
+            return $newUser;
+        }
+
+        $realAvatarUrl = $this->graphService->getUserPhoto(
+            accessToken: $accessToken,
+            userId: $newUser->id,
         );
+
+        if ($realAvatarUrl) {
+            $newUser->update(attributes: ['avatar_url' => $realAvatarUrl]);
+
+            return $newUser->fresh();
+        }
+
+        return $newUser;
     }
 
     /**
