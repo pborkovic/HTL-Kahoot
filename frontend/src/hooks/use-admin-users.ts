@@ -32,6 +32,7 @@ export interface UseAdminUsersReturn {
     setPage: (page: number) => void;
     assignRole: (userId: string, roleId: string) => Promise<void>;
     removeRole: (userId: string, roleId: string) => Promise<void>;
+    deleteUser: (userId: string) => Promise<void>;
     createRole: (name: string) => Promise<void>;
     deleteRole: (roleId: string) => Promise<void>;
     addPermissionToRole: (roleId: string, permissionId: string) => Promise<void>;
@@ -111,6 +112,11 @@ export function useAdminUsers(): UseAdminUsersReturn {
         await fetchAll();
     }, [fetchAll]);
 
+    const deleteUser = useCallback(async (userId: string) => {
+        await apiFetch(`/v1/users/${userId}`, { method: "DELETE" });
+        await fetchAll();
+    }, [fetchAll]);
+
     const createRole = useCallback(async (name: string) => {
         await apiFetch("/v1/roles", {
             method: "POST",
@@ -171,6 +177,7 @@ export function useAdminUsers(): UseAdminUsersReturn {
         setPage,
         assignRole,
         removeRole,
+        deleteUser,
         createRole,
         deleteRole,
         addPermissionToRole,
