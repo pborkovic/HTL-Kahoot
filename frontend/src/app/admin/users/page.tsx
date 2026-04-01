@@ -88,6 +88,7 @@ export default function AdminUsersPage() {
                                     roles={admin.roles}
                                     onAssignRole={admin.assignRole}
                                     onRemoveRole={admin.removeRole}
+                                    onDeleteUser={admin.deleteUser}
                                 />
                                 {admin.meta && (
                                     <div className="mt-4">
