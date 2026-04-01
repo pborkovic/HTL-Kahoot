@@ -15,6 +15,7 @@ export interface User {
   email: string;
   username: string | null;
   display_name: string | null;
+  avatar_url: string | null;
   class_name: string | null;
   auth_provider: string;
   is_active: boolean;
