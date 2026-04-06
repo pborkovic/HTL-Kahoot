@@ -23,6 +23,7 @@ class User extends Authenticatable
             'is_active'     => 'boolean',
             'last_login_at' => 'datetime',
             'totp_secret'   => 'encrypted',
+            'preferences'   => 'array',
         ];
     }
 
