@@ -10,6 +10,7 @@ import {
     MonitorPlay,
     Users,
     LogOut,
+    Settings,
     ChevronsUpDown,
     ChevronsLeft,
     ChevronsRight,
@@ -236,6 +237,12 @@ export function AppSidebar(): ReactNode {
                                 align="start"
                                 className="w-[--radix-dropdown-menu-trigger-width] backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-xl shadow-xl shadow-primary/5"
                             >
+                                <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                                    <Link href="/settings">
+                                        <Settings className="size-4 mr-2" />
+                                        Einstellungen
+                                    </Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => logout()}
                                     className="cursor-pointer rounded-lg text-red-500 hover:text-red-600 focus:text-red-600"

@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\BulkCreateUsersRequest;
 use App\Http\Requests\Api\V1\ChangePasswordRequest;
 use App\Http\Requests\Api\V1\CreateUserRequest;
 use App\Http\Requests\Api\V1\ListUsersRequest;
+use App\Http\Requests\Api\V1\UpdatePreferencesRequest;
 use App\Http\Requests\Api\V1\UpdateUserRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
@@ -477,5 +478,58 @@ class UserController extends Controller
         $data = $this->userService->getQuizHistory(userId: $user->id);
 
         return response()->json(data: ['data' => $data]);
+    }
+
+    #[Get(
+        path: '/api/v1/users/me/preferences',
+        description: 'Returns the authenticated user\'s personal preferences (theme, language, font size).',
+        summary: 'Get own preferences',
+        security: [['sanctum' => []]],
+        tags: ['Users'],
+        responses: [
+            new Response(response: 200, description: 'User preferences'),
+            new Response(response: 401, description: 'Unauthenticated'),
+        ]
+    )]
+    public function preferences(Request $request): JsonResponse
+    {
+        return response()->json(data: [
+            'data' => $request->user()->preferences ?? (object) [],
+        ]);
+    }
+
+    #[Put(
+        path: '/api/v1/users/me/preferences',
+        description: 'Updates the authenticated user\'s personal preferences. Only provided fields are updated, others are preserved.',
+        summary: 'Update own preferences',
+        security: [['sanctum' => []]],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(
+                properties: [
+                    new Property(property: 'theme', type: 'string', enum: ['light', 'dark', 'high-contrast', 'dark-high-contrast', 'colorblind-friendly', 'dark-colorblind-friendly']),
+                    new Property(property: 'language', type: 'string', enum: ['de', 'en']),
+                    new Property(property: 'font_size', type: 'string', enum: ['small', 'medium', 'large']),
+                ]
+            )
+        ),
+        tags: ['Users'],
+        responses: [
+            new Response(response: 200, description: 'Updated preferences'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function updatePreferences(UpdatePreferencesRequest $request): JsonResponse
+    {
+        $user = $request->user();
+        $current = $user->preferences ?? [];
+        $user->update(attributes: [
+            'preferences' => array_merge($current, $request->validated()),
+        ]);
+
+        return response()->json(data: [
+            'data' => $user->fresh()->preferences,
+        ]);
     }
 }

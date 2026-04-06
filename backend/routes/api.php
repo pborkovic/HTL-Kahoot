@@ -53,6 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('users')->group(function () {
+            Route::get('me/preferences', [UserController::class, 'preferences']);
+            Route::put('me/preferences', [UserController::class, 'updatePreferences']);
             Route::get('classes', [UserController::class, 'classes']);
             Route::get('stats', [UserController::class, 'stats']);
             Route::post('bulk', [UserController::class, 'bulk']);

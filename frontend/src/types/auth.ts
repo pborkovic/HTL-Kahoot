@@ -1,3 +1,9 @@
+export interface UserPreferences {
+  theme?: string;
+  language?: string;
+  font_size?: string;
+}
+
 export interface Permission {
   id: string;
   name: string;
@@ -17,6 +23,7 @@ export interface User {
   display_name: string | null;
   avatar_url: string | null;
   class_name: string | null;
+  preferences: UserPreferences | null;
   auth_provider: string;
   is_active: boolean;
   last_login_at: string;

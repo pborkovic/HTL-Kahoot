@@ -11,6 +11,7 @@ import {
     Users,
     LogOut,
     Palette,
+    Settings,
     type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -136,6 +137,23 @@ export function MobileNav(): ReactNode {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-border/30 my-1.5" />
+
+                        {/* Settings */}
+                        <Link
+                            href="/settings"
+                            onClick={() => setShowMore(false)}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
+                                pathname === "/settings"
+                                    ? "bg-primary/10 text-primary font-medium"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                            }`}
+                        >
+                            <Settings className="size-4.5" />
+                            <span>Einstellungen</span>
+                        </Link>
 
                         {/* Divider */}
                         <div className="border-t border-border/30 my-1.5" />
