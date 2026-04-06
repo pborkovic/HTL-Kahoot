@@ -16,6 +16,7 @@ class UserResource extends JsonResource
             'display_name'  => $this->display_name,
             'avatar_url'    => $this->avatar_url,
             'class_name'    => $this->class_name,
+            'preferences'   => $this->preferences,
             'auth_provider' => $this->auth_provider,
             'is_active'     => $this->is_active,
             'totp_enabled'  => $this->totp_enabled,
