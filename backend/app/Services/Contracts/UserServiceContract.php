@@ -137,4 +137,23 @@ interface UserServiceContract extends BaseServiceContract
      * @return array
      */
     public function getQuizHistory(string $userId): array;
+
+    /**
+     * Get a user's preferences.
+     *
+     * @param User $user The user.
+     *
+     * @return array The preferences array.
+     */
+    public function getPreferences(User $user): array;
+
+    /**
+     * Merge and update a user's preferences.
+     *
+     * @param User  $user The user.
+     * @param array $data The preference fields to merge.
+     *
+     * @return array The updated preferences array.
+     */
+    public function updatePreferences(User $user, array $data): array;
 }
