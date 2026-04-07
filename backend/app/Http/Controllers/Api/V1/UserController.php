@@ -493,8 +493,10 @@ class UserController extends Controller
     )]
     public function preferences(Request $request): JsonResponse
     {
+        $data = $this->userService->getPreferences(user: $request->user());
+
         return response()->json(data: [
-            'data' => $request->user()->preferences ?? (object) [],
+            'data' => empty($data) ? (object) [] : $data,
         ]);
     }
 
@@ -522,14 +524,11 @@ class UserController extends Controller
     )]
     public function updatePreferences(UpdatePreferencesRequest $request): JsonResponse
     {
-        $user = $request->user();
-        $current = $user->preferences ?? [];
-        $user->update(attributes: [
-            'preferences' => array_merge($current, $request->validated()),
-        ]);
+        $data = $this->userService->updatePreferences(
+            user: $request->user(),
+            data: $request->validated(),
+        );
 
-        return response()->json(data: [
-            'data' => $user->fresh()->preferences,
-        ]);
+        return response()->json(data: ['data' => $data]);
     }
 }
