@@ -36,6 +36,10 @@ services:
       - "8888:8888"
       - "8333:8333"
 
+  ollama:
+    ports:
+      - "11434:11434"
+
   backend:
     environment:
       APP_ENV: local
