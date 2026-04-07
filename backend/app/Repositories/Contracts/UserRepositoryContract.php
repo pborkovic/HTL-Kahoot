@@ -201,4 +201,23 @@ interface UserRepositoryContract extends BaseRepositoryContract
      * @return Collection The session participants with relations loaded.
      */
     public function getFinishedParticipationsWithResponses(string $userId): Collection;
+
+    /**
+     * Get a user's preferences.
+     *
+     * @param User $user The user.
+     *
+     * @return array The preferences array.
+     */
+    public function getPreferences(User $user): array;
+
+    /**
+     * Merge and persist user preferences.
+     *
+     * @param User  $user The user.
+     * @param array $data The preference fields to merge.
+     *
+     * @return array The updated preferences array.
+     */
+    public function updatePreferences(User $user, array $data): array;
 }
