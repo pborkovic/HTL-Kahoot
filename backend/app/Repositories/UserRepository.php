@@ -329,4 +329,28 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             ])
             ->get();
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getPreferences(User $user): array
+    {
+        return $user->preferences ?? [];
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function updatePreferences(User $user, array $data): array
+    {
+        $merged = array_merge($user->preferences ?? [], $data);
+
+        $user->update(attributes: ['preferences' => $merged]);
+
+        return $user->fresh()->preferences;
+    }
 }
