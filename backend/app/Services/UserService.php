@@ -335,4 +335,27 @@ class UserService extends BaseService implements UserServiceContract
             ];
         })->all();
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function getPreferences(User $user): array
+    {
+        return $this->repository->getPreferences(user: $user);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function updatePreferences(User $user, array $data): array
+    {
+        return $this->repository->updatePreferences(
+            user: $user,
+            data: $data
+        );
+    }
 }
