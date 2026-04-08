@@ -340,4 +340,19 @@ interface SessionServiceContract extends BaseServiceContract
      * @param int    $scoreAwarded  The calculated score to award.
      */
     public function applyFreeTextEvaluation(string $responseId, string $participantId, bool $isCorrect, int $scoreAwarded): void;
+
+    /**
+     * Override the AI evaluation of a free-text response.
+     *
+     * The teacher can mark a response as correct or incorrect,
+     * adjusting the participant's total score accordingly.
+     *
+     * @param string $gamePin    The session game pin.
+     * @param string $responseId The response ID to override.
+     * @param bool   $isCorrect  The teacher's verdict.
+     * @param User   $teacher    The teacher performing the override.
+     *
+     * @return array{response_id: string, is_correct: bool, score_awarded: int, participant_total_score: int}
+     */
+    public function overrideAnswerEvaluation(string $gamePin, string $responseId, bool $isCorrect, User $teacher): array;
 }

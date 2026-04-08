@@ -692,6 +692,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
             $studentAnswers = $sq->responses->map(callback: function ($response) use ($questionType) {
                 $data = [
+                    'response_id'         => $response->id,
                     'participant_id'      => $response->participant_id,
                     'nickname'            => $response->participant->nickname,
                     'selected_option_ids' => $response->answer,
@@ -863,6 +864,79 @@ class SessionService extends BaseService implements SessionServiceContract
                     : 0,
             ]);
         });
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function overrideAnswerEvaluation(string $gamePin, string $responseId, bool $isCorrect, User $teacher): array
+    {
+        $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
+        $this->assertHost(session: $session, user: $teacher);
+
+        $response = $this->repository->findResponseById(responseId: $responseId);
+
+        if (!$response) {
+            throw new RuntimeException(message: 'Antwort nicht gefunden.');
+        }
+
+        $participant = $this->repository->findParticipantById(participantId: $response->participant_id);
+
+        if (!$participant) {
+            throw new RuntimeException(message: 'Teilnehmer nicht gefunden.');
+        }
+
+        $oldScore = $response->score_awarded ?? 0;
+        $newScore = 0;
+
+        if ($isCorrect) {
+            $sessionQuestion = $response->sessionQuestion;
+            $this->repository->loadSessionQuestionRelations(
+                sessionQuestion: $sessionQuestion,
+                relations: ['quizQuestion.questionVersion'],
+            );
+
+            $quizQuestion = $sessionQuestion->quizQuestion;
+            $questionVersion = $quizQuestion->questionVersion;
+            $basePoints = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
+            $timeLimit = $this->resolveTimeLimit(quizQuestion: $quizQuestion, questionVersion: $questionVersion);
+
+            $newScore = $this->calculateScore(
+                isCorrect: true,
+                quizQuestion: $quizQuestion,
+                questionVersion: $questionVersion,
+                timeTakenMs: $response->time_taken_ms ?? 0,
+                timeLimit: $timeLimit,
+            );
+        }
+
+        $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $oldScore, $newScore) {
+            $this->repository->updateResponse(response: $response, data: [
+                'is_correct'    => $isCorrect,
+                'score_awarded' => $newScore,
+            ]);
+
+            $scoreDiff = $newScore - $oldScore;
+
+            if ($scoreDiff > 0) {
+                $this->repository->incrementParticipantScore(participant: $participant, amount: $scoreDiff);
+            } elseif ($scoreDiff < 0) {
+                $this->repository->updateParticipant(participant: $participant, data: [
+                    'total_score' => max(0, $participant->total_score + $scoreDiff),
+                ]);
+            }
+        });
+
+        $participant->refresh();
+
+        return [
+            'response_id'            => $response->id,
+            'is_correct'             => $isCorrect,
+            'score_awarded'          => $newScore,
+            'participant_total_score' => $participant->total_score,
+        ];
     }
 
     public function getModelForPolicy(): string
