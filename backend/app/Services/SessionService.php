@@ -434,6 +434,15 @@ class SessionService extends BaseService implements SessionServiceContract
             });
         }
 
+        if ($isGamble) {
+            $this->repository->createGambleUse(data: [
+                'participant_id'      => $participant->id,
+                'session_question_id' => $sessionQuestion->id,
+                'multiplier'          => $gambleMultiplier,
+                'used_at'             => $submittedAt,
+            ]);
+        }
+
         broadcast(event: new AnswerReceived(
             gamePin: $gamePin,
             totalResponses: $this->repository->countResponses(sessionQuestion: $sessionQuestion),
