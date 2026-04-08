@@ -19,6 +19,7 @@ export default function StudentGame() {
     const [gameState, setGameState] = useState<GameState>("loading");
     const [question, setQuestion] = useState<CurrentQuestion | null>(null);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [freeTextAnswer, setFreeTextAnswer] = useState("");
     const [result, setResult] = useState<AnswerResult | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const lastQuestionIdx = useRef<number | null>(null);
@@ -32,6 +33,7 @@ export default function StudentGame() {
             );
             setQuestion(res.data);
             setSelectedIds([]);
+            setFreeTextAnswer("");
             setResult(null);
             setGameState("answering");
             lastQuestionIdx.current = res.data.question_index;
@@ -61,19 +63,27 @@ export default function StudentGame() {
     });
 
     const isMultiSelect = question?.question_type === "multiple_choice";
+    const isFreeText = question?.question_type === "free_text";
 
     const submitAnswer = useCallback(
-        async (answerIds: string[]) => {
-            if (submitting || gameState !== "answering" || answerIds.length === 0) return;
+        async (answerIds: string[], answerText?: string) => {
+            if (submitting || gameState !== "answering") return;
+            if (!isFreeText && answerIds.length === 0) return;
+            if (isFreeText && !answerText?.trim()) return;
 
             setSubmitting(true);
 
             try {
+                const payload: Record<string, unknown> = { answer: answerIds };
+                if (isFreeText && answerText) {
+                    payload.answer_text = answerText;
+                }
+
                 const res = await apiFetch<{ data: AnswerResult }>(
                     `/v1/sessions/${gameCode}/answer`,
                     {
                         method: "POST",
-                        body: JSON.stringify({ answer: answerIds }),
+                        body: JSON.stringify(payload),
                     },
                 );
                 setResult(res.data);
@@ -85,7 +95,7 @@ export default function StudentGame() {
                 setSubmitting(false);
             }
         },
-        [gameCode, submitting, gameState],
+        [gameCode, submitting, gameState, isFreeText],
     );
 
     const handleSelect = useCallback(
@@ -109,6 +119,10 @@ export default function StudentGame() {
     const handleConfirm = useCallback(() => {
         submitAnswer(selectedIds);
     }, [submitAnswer, selectedIds]);
+
+    const handleFreeTextSubmit = useCallback(() => {
+        submitAnswer([], freeTextAnswer);
+    }, [submitAnswer, freeTextAnswer]);
 
     const handleExpired = useCallback(() => {
         if (gameState === "answering") {
@@ -185,25 +199,61 @@ export default function StudentGame() {
                         </div>
 
                         {/* Answers */}
-                        <AnswerGrid
-                            options={question.answer_options}
-                            questionType={question.question_type}
-                            selectedIds={selectedIds}
-                            disabled={submitting}
-                            onSelect={handleSelect}
-                        />
+                        {isFreeText ? (
+                            <div className="flex flex-col gap-3">
+                                <p className="text-xs text-white/40 text-center uppercase tracking-wider">
+                                    Antwort eingeben
+                                </p>
+                                <textarea
+                                    value={freeTextAnswer}
+                                    onChange={(e) => setFreeTextAnswer(e.target.value)}
+                                    disabled={submitting}
+                                    placeholder="Deine Antwort..."
+                                    rows={3}
+                                    maxLength={2000}
+                                    className="w-full rounded-xl bg-white/10 border-2 border-white/20 px-5 py-4 text-white text-base placeholder:text-white/30 focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 resize-none transition-all disabled:opacity-60"
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleFreeTextSubmit();
+                                        }
+                                    }}
+                                />
+                                {freeTextAnswer.trim().length > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={handleFreeTextSubmit}
+                                        disabled={submitting}
+                                        className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                                    >
+                                        <Send className="size-4" />
+                                        Antwort absenden
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <AnswerGrid
+                                    options={question.answer_options}
+                                    questionType={question.question_type}
+                                    selectedIds={selectedIds}
+                                    disabled={submitting}
+                                    onSelect={handleSelect}
+                                />
 
-                        {/* Confirm button for multi-select */}
-                        {isMultiSelect && selectedIds.length > 0 && (
-                            <button
-                                type="button"
-                                onClick={handleConfirm}
-                                disabled={submitting}
-                                className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
-                            >
-                                <Send className="size-4" />
-                                Antwort absenden ({selectedIds.length} ausgewählt)
-                            </button>
+                                {/* Confirm button for multi-select */}
+                                {isMultiSelect && selectedIds.length > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={handleConfirm}
+                                        disabled={submitting}
+                                        className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                                    >
+                                        <Send className="size-4" />
+                                        Antwort absenden ({selectedIds.length} ausgewählt)
+                                    </button>
+                                )}
+                            </>
                         )}
                     </>
                 )}
