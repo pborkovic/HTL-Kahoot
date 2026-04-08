@@ -357,6 +357,19 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
      *
      * @author Philipp Borkovic
      */
+    public function hasPendingFreeTextEvaluations(Session $session): bool
+    {
+        return Response::whereHas(
+            relation: 'sessionQuestion',
+            callback: fn($q) => $q->where(column: 'session_id', operator: '=', value: $session->id)
+        )->whereNull(columns: 'is_correct')->exists();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function findResponseById(string $responseId): ?Response
     {
         return Response::find(id: $responseId);
