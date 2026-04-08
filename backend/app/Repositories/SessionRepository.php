@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\GambleUse;
 use App\Models\Response;
 use App\Models\Session;
 use App\Models\SessionParticipant;
@@ -350,6 +351,16 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
                 'responses.sessionQuestion.quizQuestion.questionVersion.answerOptions',
             ])
             ->get();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function createGambleUse(array $data): GambleUse
+    {
+        return GambleUse::create(attributes: $data);
     }
 
     /**

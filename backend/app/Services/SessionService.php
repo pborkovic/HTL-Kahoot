@@ -350,6 +350,8 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $questionType = $questionVersion->question->type ?? 'multiple_choice';
         $isFreeText = $questionType === 'free_text';
+        $isGamble = (bool) ($answerData['is_gamble'] ?? false);
+        $gambleMultiplier = $isGamble ? 2.00 : 1.00;
 
         if ($isFreeText) {
             $studentAnswer = $answerData['answer_text'] ?? $answerData['answer'][0] ?? '';
@@ -361,7 +363,7 @@ class SessionService extends BaseService implements SessionServiceContract
                 'is_correct'        => null,
                 'score_awarded'     => 0,
                 'time_taken_ms'     => $timeTakenMs,
-                'gamble_multiplier' => 1.00,
+                'gamble_multiplier' => $gambleMultiplier,
                 'submitted_at'      => $submittedAt,
             ]);
 
@@ -405,16 +407,16 @@ class SessionService extends BaseService implements SessionServiceContract
             $currentStreak = $participant->answer_streak ?? 0;
             $newStreak     = $isCorrect ? $currentStreak + 1 : 0;
             $streakBonus   = $isCorrect ? $this->calculateStreakBonus(streak: $newStreak) : 0;
-            $scoreAwarded  = $baseScore + $streakBonus;
+            $scoreAwarded  = (int) round(num: ($baseScore + $streakBonus) * $gambleMultiplier);
 
-            $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedAnswer, $isCorrect, $scoreAwarded, $timeTakenMs, $submittedAt, $newStreak): Response {
+            $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedAnswer, $isCorrect, $scoreAwarded, $timeTakenMs, $submittedAt, $newStreak, $gambleMultiplier): Response {
                 $response = $this->repository->createResponse(sessionQuestion: $sessionQuestion, data: [
                     'participant_id'    => $participant->id,
                     'answer'            => $submittedAnswer,
                     'is_correct'        => $isCorrect,
                     'score_awarded'     => $scoreAwarded,
                     'time_taken_ms'     => $timeTakenMs,
-                    'gamble_multiplier' => 1.00,
+                    'gamble_multiplier' => $gambleMultiplier,
                     'submitted_at'      => $submittedAt,
                 ]);
 
@@ -430,6 +432,15 @@ class SessionService extends BaseService implements SessionServiceContract
 
                 return $response;
             });
+        }
+
+        if ($isGamble) {
+            $this->repository->createGambleUse(data: [
+                'participant_id'      => $participant->id,
+                'session_question_id' => $sessionQuestion->id,
+                'multiplier'          => $gambleMultiplier,
+                'used_at'             => $submittedAt,
+            ]);
         }
 
         broadcast(event: new AnswerReceived(

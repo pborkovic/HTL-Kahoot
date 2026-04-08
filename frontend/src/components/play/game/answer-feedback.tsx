@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle, Flame, Loader2 } from "lucide-react";
+import { CheckCircle2, XCircle, Flame, Send } from "lucide-react";
 
 interface AnswerFeedbackProps {
     isCorrect: boolean | null;
@@ -11,8 +11,9 @@ export function AnswerFeedback({ isCorrect, scoreAwarded, answerStreak = 0 }: An
         <div className="flex flex-col items-center gap-4 py-8">
             {isCorrect === null ? (
                 <>
-                    <Loader2 className="size-16 text-amber-400 animate-spin" />
-                    <h2 className="text-2xl font-bold text-amber-400">Wird ausgewertet…</h2>
+                    <Send className="size-16 text-primary" />
+                    <h2 className="text-2xl font-bold text-primary">Antwort eingereicht</h2>
+                    <p className="text-white/40 text-sm">Wird nach der Frage ausgewertet</p>
                 </>
             ) : isCorrect ? (
                 <>
@@ -25,9 +26,11 @@ export function AnswerFeedback({ isCorrect, scoreAwarded, answerStreak = 0 }: An
                     <h2 className="text-2xl font-bold text-red-400">Falsch</h2>
                 </>
             )}
-            <p className="text-white/60 text-lg tabular-nums">
-                +{scoreAwarded} Punkte
-            </p>
+            {isCorrect !== null && (
+                <p className="text-white/60 text-lg tabular-nums">
+                    +{scoreAwarded} Punkte
+                </p>
+            )}
             {answerStreak >= 2 && (
                 <div className="flex items-center gap-1.5 text-amber-400 text-sm font-semibold">
                     <Flame className="size-4" />
