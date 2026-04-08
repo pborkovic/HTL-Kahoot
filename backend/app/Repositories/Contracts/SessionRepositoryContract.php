@@ -274,6 +274,15 @@ interface SessionRepositoryContract extends BaseRepositoryContract
     public function getParticipantsWithResponses(Session $session): Collection;
 
     /**
+     * Check if any free-text responses in this session are still pending AI evaluation.
+     *
+     * @param Session $session The session.
+     *
+     * @return bool True if any responses have is_correct = null.
+     */
+    public function hasPendingFreeTextEvaluations(Session $session): bool;
+
+    /**
      * Find a response by its ID.
      *
      * @param string $responseId The response ID.
