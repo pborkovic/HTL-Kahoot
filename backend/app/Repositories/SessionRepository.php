@@ -331,6 +331,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
             ->orderBy(column: 'display_order')
             ->with(relations: [
                 'quizQuestion.questionVersion.answerOptions',
+                'quizQuestion.questionVersion.question',
                 'responses.participant',
             ])
             ->get();
@@ -349,5 +350,48 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
                 'responses.sessionQuestion.quizQuestion.questionVersion.answerOptions',
             ])
             ->get();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function hasPendingFreeTextEvaluations(Session $session): bool
+    {
+        return Response::whereHas(
+            relation: 'sessionQuestion',
+            callback: fn($q) => $q->where(column: 'session_id', operator: '=', value: $session->id)
+        )->whereNull(columns: 'is_correct')->exists();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findResponseById(string $responseId): ?Response
+    {
+        return Response::find(id: $responseId);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function updateResponse(Response $response, array $data): void
+    {
+        $response->update(attributes: $data);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findParticipantById(string $participantId): ?SessionParticipant
+    {
+        return SessionParticipant::find(id: $participantId);
     }
 }

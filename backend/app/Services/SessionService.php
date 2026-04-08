@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\DTOs\CreateSessionDto;
 use App\Events\AnswerReceived;
+use App\Jobs\EvaluateFreeTextAnswer;
 use App\Events\GameFinished;
 use App\Events\GameStarted;
 use App\Events\ParticipantJoined;
@@ -20,6 +21,7 @@ use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Services\Base\BaseService;
 use App\Services\Contracts\SessionServiceContract;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use RuntimeException;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -292,7 +294,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         return [
             'question_text'   => $questionVersion->title,
-            'question_type'   => $questionVersion->type,
+            'question_type'   => $question->type,
             'question_media'  => $questionMedia,
             'answer_options'  => $answerOptions,
             'question_index'  => $session->current_question_idx,
@@ -324,7 +326,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $this->repository->loadSessionQuestionRelations(
             sessionQuestion: $sessionQuestion,
-            relations: 'quizQuestion.questionVersion.answerOptions',
+            relations: ['quizQuestion.questionVersion.answerOptions', 'quizQuestion.questionVersion.question'],
         );
 
         $quizQuestion = $sessionQuestion->quizQuestion;
@@ -345,53 +347,90 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $submittedAt = now();
         $timeTakenMs = (int) $sessionQuestion->opened_at->diffInMilliseconds(date: $submittedAt);
-        $submittedIds = $answerData['answer'];
-        $correctIds = $questionVersion->answerOptions
-            ->where(key: 'is_correct', operator: '=', value: true)
-            ->pluck(value: 'id')
-            ->all();
 
-        $isCorrect = $this->evaluateAnswer(
-            submittedIds: $submittedIds,
-            correctIds: $correctIds
-        );
+        $questionType = $questionVersion->question->type ?? 'multiple_choice';
+        $isFreeText = $questionType === 'free_text';
 
-        $baseScore = $this->calculateScore(
-            isCorrect: $isCorrect,
-            quizQuestion: $quizQuestion,
-            questionVersion: $questionVersion,
-            timeTakenMs: $timeTakenMs,
-            timeLimit: $timeLimit,
-        );
+        if ($isFreeText) {
+            $studentAnswer = $answerData['answer_text'] ?? $answerData['answer'][0] ?? '';
+            $submittedAnswer = [$studentAnswer];
 
-        $currentStreak = $participant->answer_streak ?? 0;
-        $newStreak     = $isCorrect ? $currentStreak + 1 : 0;
-        $streakBonus   = $isCorrect ? $this->calculateStreakBonus(streak: $newStreak) : 0;
-        $scoreAwarded  = $baseScore + $streakBonus;
-
-        $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedIds, $isCorrect, $scoreAwarded, $streakBonus, $timeTakenMs, $submittedAt, $newStreak): Response {
             $response = $this->repository->createResponse(sessionQuestion: $sessionQuestion, data: [
                 'participant_id'    => $participant->id,
-                'answer'            => $submittedIds,
-                'is_correct'        => $isCorrect,
-                'score_awarded'     => $scoreAwarded,
+                'answer'            => $submittedAnswer,
+                'is_correct'        => null,
+                'score_awarded'     => 0,
                 'time_taken_ms'     => $timeTakenMs,
                 'gamble_multiplier' => 1.00,
                 'submitted_at'      => $submittedAt,
             ]);
 
-            $this->repository->incrementParticipantScore(
-                participant: $participant,
-                amount: $scoreAwarded
+            $correctTexts = $questionVersion->answerOptions
+                ->pluck(value: 'text')
+                ->all();
+
+            $basePoints = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
+
+            EvaluateFreeTextAnswer::dispatch(
+                responseId: $response->id,
+                participantId: $participant->id,
+                studentAnswer: $studentAnswer,
+                questionTitle: $questionVersion->title,
+                explanation: $questionVersion->explanation,
+                correctAnswers: $correctTexts,
+                basePoints: $basePoints,
+                timeTakenMs: $timeTakenMs,
+                timeLimitSeconds: $timeLimit,
+            );
+        } else {
+            $submittedAnswer = $answerData['answer'];
+            $correctIds = $questionVersion->answerOptions
+                ->where(key: 'is_correct', operator: '=', value: true)
+                ->pluck(value: 'id')
+                ->all();
+
+            $isCorrect = $this->evaluateAnswer(
+                submittedIds: $submittedAnswer,
+                correctIds: $correctIds
             );
 
-            $this->repository->updateParticipant(
-                participant: $participant,
-                data: ['answer_streak' => $newStreak],
+            $baseScore = $this->calculateScore(
+                isCorrect: $isCorrect,
+                quizQuestion: $quizQuestion,
+                questionVersion: $questionVersion,
+                timeTakenMs: $timeTakenMs,
+                timeLimit: $timeLimit,
             );
 
-            return $response;
-        });
+            $currentStreak = $participant->answer_streak ?? 0;
+            $newStreak     = $isCorrect ? $currentStreak + 1 : 0;
+            $streakBonus   = $isCorrect ? $this->calculateStreakBonus(streak: $newStreak) : 0;
+            $scoreAwarded  = $baseScore + $streakBonus;
+
+            $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedAnswer, $isCorrect, $scoreAwarded, $timeTakenMs, $submittedAt, $newStreak): Response {
+                $response = $this->repository->createResponse(sessionQuestion: $sessionQuestion, data: [
+                    'participant_id'    => $participant->id,
+                    'answer'            => $submittedAnswer,
+                    'is_correct'        => $isCorrect,
+                    'score_awarded'     => $scoreAwarded,
+                    'time_taken_ms'     => $timeTakenMs,
+                    'gamble_multiplier' => 1.00,
+                    'submitted_at'      => $submittedAt,
+                ]);
+
+                $this->repository->incrementParticipantScore(
+                    participant: $participant,
+                    amount: $scoreAwarded
+                );
+
+                $this->repository->updateParticipant(
+                    participant: $participant,
+                    data: ['answer_streak' => $newStreak],
+                );
+
+                return $response;
+            });
+        }
 
         broadcast(event: new AnswerReceived(
             gamePin: $gamePin,
@@ -540,12 +579,15 @@ class SessionService extends BaseService implements SessionServiceContract
             relations: 'quiz'
         );
 
+        $hasPending = $this->repository->hasPendingFreeTextEvaluations(session: $session);
+
         return [
-            'session_id'         => $session->id,
-            'quiz_title'         => $session->quiz->title,
-            'total_questions'    => $this->repository->countSessionQuestions(session: $session),
-            'total_participants' => $this->repository->countParticipants(session: $session),
-            'leaderboard'        => $this->buildLeaderboard(session: $session),
+            'session_id'               => $session->id,
+            'quiz_title'               => $session->quiz->title,
+            'total_questions'          => $this->repository->countSessionQuestions(session: $session),
+            'total_participants'       => $this->repository->countParticipants(session: $session),
+            'leaderboard'              => $this->buildLeaderboard(session: $session),
+            'has_pending_evaluations'  => $hasPending,
         ];
     }
 
@@ -635,6 +677,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $questions = $sessionQuestions->map(callback: function (SessionQuestion $sq) {
             $questionVersion = $sq->quizQuestion->questionVersion;
+            $questionType = $questionVersion->question->type ?? 'multiple_choice';
 
             $answerOptions = $questionVersion->answerOptions
                 ->sortBy(callback: 'sort_order')
@@ -647,18 +690,28 @@ class SessionService extends BaseService implements SessionServiceContract
                 ])
                 ->all();
 
-            $studentAnswers = $sq->responses->map(callback: fn($response) => [
-                'participant_id'      => $response->participant_id,
-                'nickname'            => $response->participant->nickname,
-                'selected_option_ids' => $response->answer,
-                'is_correct'          => $response->is_correct,
-                'score_awarded'       => $response->score_awarded,
-                'time_taken_ms'       => $response->time_taken_ms,
-            ])->all();
+            $studentAnswers = $sq->responses->map(callback: function ($response) use ($questionType) {
+                $data = [
+                    'response_id'         => $response->id,
+                    'participant_id'      => $response->participant_id,
+                    'nickname'            => $response->participant->nickname,
+                    'selected_option_ids' => $response->answer,
+                    'is_correct'          => $response->is_correct,
+                    'score_awarded'       => $response->score_awarded,
+                    'time_taken_ms'       => $response->time_taken_ms,
+                ];
+
+                if ($questionType === 'free_text') {
+                    $data['answer_text'] = $response->answer[0] ?? '';
+                }
+
+                return $data;
+            })->all();
 
             return [
                 'question_index'  => $sq->display_order,
                 'question_text'   => $questionVersion->title,
+                'question_type'   => $questionType,
                 'answer_options'  => $answerOptions,
                 'student_answers' => $studentAnswers,
             ];
@@ -731,15 +784,24 @@ class SessionService extends BaseService implements SessionServiceContract
                     ])
                     ->all();
 
-                return [
+                $questionType = $questionVersion->question->type ?? 'multiple_choice';
+
+                $result = [
                     'question_index'      => $sq->display_order,
                     'question_text'       => $questionVersion->title,
+                    'question_type'       => $questionType,
                     'is_correct'          => $response?->is_correct,
                     'score_awarded'       => $response?->score_awarded ?? 0,
                     'time_taken_ms'       => $response?->time_taken_ms,
                     'answer_options'      => $answerOptions,
                     'selected_option_ids' => $response ? $response->answer : [],
                 ];
+
+                if ($questionType === 'free_text' && $response) {
+                    $result['answer_text'] = $response->answer[0] ?? '';
+                }
+
+                return $result;
             })->all();
 
             return [
@@ -764,6 +826,116 @@ class SessionService extends BaseService implements SessionServiceContract
             'started_at'         => $session->started_at?->toISOString(),
             'finished_at'        => $session->finished_at?->toISOString(),
             'participants'       => $participantData,
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function applyFreeTextEvaluation(string $responseId, string $participantId, bool $isCorrect, int $scoreAwarded): void
+    {
+        $response = $this->repository->findResponseById(responseId: $responseId);
+        $participant = $this->repository->findParticipantById(participantId: $participantId);
+
+        if (!$response || !$participant) {
+            Log::warning(message: 'applyFreeTextEvaluation: response or participant not found', context: [
+                'response_id'    => $responseId,
+                'participant_id' => $participantId,
+            ]);
+
+            return;
+        }
+
+        $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $scoreAwarded) {
+            $this->repository->updateResponse(response: $response, data: [
+                'is_correct'    => $isCorrect,
+                'score_awarded' => $scoreAwarded,
+            ]);
+
+            if ($scoreAwarded > 0) {
+                $this->repository->incrementParticipantScore(participant: $participant, amount: $scoreAwarded);
+            }
+
+            $this->repository->updateParticipant(participant: $participant, data: [
+                'answer_streak' => $isCorrect
+                    ? ($participant->answer_streak ?? 0) + 1
+                    : 0,
+            ]);
+        });
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function overrideAnswerEvaluation(string $gamePin, string $responseId, bool $isCorrect, User $teacher): array
+    {
+        $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
+        $this->assertHost(session: $session, user: $teacher);
+
+        $response = $this->repository->findResponseById(responseId: $responseId);
+
+        if (!$response) {
+            throw new RuntimeException(message: 'Antwort nicht gefunden.');
+        }
+
+        $participant = $this->repository->findParticipantById(participantId: $response->participant_id);
+
+        if (!$participant) {
+            throw new RuntimeException(message: 'Teilnehmer nicht gefunden.');
+        }
+
+        $oldScore = $response->score_awarded ?? 0;
+        $newScore = 0;
+
+        if ($isCorrect) {
+            $sessionQuestion = $response->sessionQuestion;
+            $this->repository->loadSessionQuestionRelations(
+                sessionQuestion: $sessionQuestion,
+                relations: ['quizQuestion.questionVersion'],
+            );
+
+            $quizQuestion = $sessionQuestion->quizQuestion;
+            $questionVersion = $quizQuestion->questionVersion;
+            $basePoints = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
+            $timeLimit = $this->resolveTimeLimit(quizQuestion: $quizQuestion, questionVersion: $questionVersion);
+
+            $newScore = $this->calculateScore(
+                isCorrect: true,
+                quizQuestion: $quizQuestion,
+                questionVersion: $questionVersion,
+                timeTakenMs: $response->time_taken_ms ?? 0,
+                timeLimit: $timeLimit,
+            );
+        }
+
+        $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $oldScore, $newScore) {
+            $this->repository->updateResponse(response: $response, data: [
+                'is_correct'    => $isCorrect,
+                'score_awarded' => $newScore,
+            ]);
+
+            $scoreDiff = $newScore - $oldScore;
+
+            if ($scoreDiff > 0) {
+                $this->repository->incrementParticipantScore(participant: $participant, amount: $scoreDiff);
+            } elseif ($scoreDiff < 0) {
+                $this->repository->updateParticipant(participant: $participant, data: [
+                    'total_score' => max(0, $participant->total_score + $scoreDiff),
+                ]);
+            }
+        });
+
+        $participant->refresh();
+
+        return [
+            'response_id'            => $response->id,
+            'is_correct'             => $isCorrect,
+            'score_awarded'          => $newScore,
+            'participant_total_score' => $participant->total_score,
         ];
     }
 

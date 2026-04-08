@@ -36,6 +36,16 @@ services:
       - "8888:8888"
       - "8333:8333"
 
+  worker:
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      LOG_LEVEL: debug
+    volumes:
+      - ./backend:/var/www/backend
+      - backend_vendor:/var/www/backend/vendor
+    command: php artisan queue:work redis --sleep=1 --tries=2 --timeout=120 --queue=default
+
   ollama:
     ports:
       - "11434:11434"

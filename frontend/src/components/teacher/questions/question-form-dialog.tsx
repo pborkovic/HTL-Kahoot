@@ -292,6 +292,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                     <SelectItem value="multiple_choice" className="cursor-pointer">Multiple Choice</SelectItem>
                                     <SelectItem value="true_false" className="cursor-pointer">Wahr / Falsch</SelectItem>
                                     <SelectItem value="single_choice" className="cursor-pointer">Single Choice</SelectItem>
+                                    <SelectItem value="free_text" className="cursor-pointer">Freitext</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

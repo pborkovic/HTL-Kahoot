@@ -8,11 +8,13 @@ export interface ReportAnswerOption {
 export interface ReportQuestion {
     question_index: number;
     question_text: string;
+    question_type?: string;
     is_correct: boolean | null;
     score_awarded: number;
     time_taken_ms: number | null;
     answer_options: ReportAnswerOption[];
     selected_option_ids: string[];
+    answer_text?: string;
 }
 
 export interface ReportParticipant {

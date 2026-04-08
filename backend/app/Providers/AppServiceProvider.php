@@ -26,7 +26,9 @@ use App\Repositories\QuestionRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\SessionRepository;
 use App\Repositories\UserRepository;
+use App\Services\AnswerEvaluationService;
 use App\Services\AuthService;
+use App\Services\Contracts\AnswerEvaluationServiceContract;
 use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
@@ -106,6 +108,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: MicrosoftGraphServiceContract::class,
             concrete: MicrosoftGraphService::class
+        );
+        $this->app->bind(
+            abstract: AnswerEvaluationServiceContract::class,
+            concrete: AnswerEvaluationService::class
         );
     }
 

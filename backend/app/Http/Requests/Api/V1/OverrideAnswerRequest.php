@@ -6,7 +6,7 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubmitAnswerRequest extends FormRequest
+class OverrideAnswerRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,9 +19,7 @@ class SubmitAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answer'   => ['present', 'array'],
-            'answer.*' => ['required', 'string'],
-            'answer_text' => ['nullable', 'string', 'max:2000'],
+            'is_correct' => ['required', 'boolean'],
         ];
     }
 }

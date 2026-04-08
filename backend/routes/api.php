@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('{gamePin}/close-question', [SessionController::class, 'closeQuestion']);
             Route::post('{gamePin}/next', [SessionController::class, 'next']);
             Route::post('{gamePin}/answer', [SessionController::class, 'answer']);
+            Route::patch('{gamePin}/responses/{responseId}/override', [SessionController::class, 'overrideAnswer']);
         });
 
         Route::prefix('users')->group(function () {
