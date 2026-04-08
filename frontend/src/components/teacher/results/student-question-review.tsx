@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Check, X, Loader2 } from "lucide-react";
+import { Check, X, Loader2, ThumbsUp, ThumbsDown } from "lucide-react";
 import { apiFetch } from "@/lib/api";
-import {StudentQuestionReviewProps, FullReviewResponse} from "@/types/review";
+import { StudentQuestionReviewProps, FullReviewResponse } from "@/types/review";
 
 export default function StudentQuestionReview({ studentId, gamePin }: StudentQuestionReviewProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fullReview, setFullReview] = useState<FullReviewResponse | null>(null);
+    const [overriding, setOverriding] = useState<string | null>(null);
     const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const hasPendingEvaluation = useCallback((data: FullReviewResponse | null): boolean => {
@@ -50,6 +51,21 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
         };
     }, [gamePin, fetchReview, hasPendingEvaluation]);
 
+    const handleOverride = useCallback(async (responseId: string, isCorrect: boolean) => {
+        setOverriding(responseId);
+        try {
+            await apiFetch(`/v1/sessions/${gamePin}/responses/${responseId}/override`, {
+                method: "PATCH",
+                body: JSON.stringify({ is_correct: isCorrect }),
+            });
+            await fetchReview();
+        } catch (err) {
+            console.error("Override failed:", err);
+        } finally {
+            setOverriding(null);
+        }
+    }, [gamePin, fetchReview]);
+
     if (isLoading) {
         return (
             <div className="flex justify-center p-8">
@@ -72,6 +88,7 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
 
                     const isQuestionCorrect = studentAnswer?.is_correct === true;
                     const isPending = question.question_type === "free_text" && studentAnswer?.is_correct === null;
+                    const isFreeText = question.question_type === "free_text";
 
                     return (
                         <div key={index} className="relative pl-4 border-l-2 border-border/50">
@@ -92,7 +109,7 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
                                 </span>
                             </div>
 
-                            {question.question_type === "free_text" ? (
+                            {isFreeText ? (
                                 <div className="space-y-2">
                                     <div className={`p-3 rounded-lg border text-sm ${
                                         isPending
@@ -102,7 +119,7 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
                                                 : "border-red-500/50 bg-red-500/10 text-red-700 ring-1 ring-red-500/20"
                                     }`}>
                                         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">
-                                            {isPending ? "Antwort — wird ausgewertet…" : "Antwort"}
+                                            {isPending ? "Antwort — wird ausgewertet\u2026" : "Antwort"}
                                         </p>
                                         <p className="font-medium">{studentAnswer?.answer_text ?? "Keine Antwort"}</p>
                                     </div>
@@ -110,6 +127,42 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
                                         <div className="p-3 rounded-lg border border-emerald-500/30 bg-transparent text-emerald-600/80 border-dashed text-sm">
                                             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Erwartete Antwort</p>
                                             <p>{question.answer_options.filter(o => o.is_correct).map(o => o.text).join(", ")}</p>
+                                        </div>
+                                    )}
+
+                                    {/* Teacher override buttons */}
+                                    {studentAnswer && !isPending && (
+                                        <div className="flex items-center gap-2 pt-1">
+                                            <span className="text-[10px] text-muted-foreground uppercase tracking-widest mr-1">Bewertung:</span>
+                                            <button
+                                                type="button"
+                                                disabled={overriding === studentAnswer.response_id}
+                                                onClick={() => handleOverride(studentAnswer.response_id, true)}
+                                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer disabled:opacity-50 ${
+                                                    isQuestionCorrect
+                                                        ? "bg-emerald-500 text-white"
+                                                        : "bg-muted text-muted-foreground hover:bg-emerald-500/20 hover:text-emerald-600"
+                                                }`}
+                                            >
+                                                <ThumbsUp className="size-3" />
+                                                Richtig
+                                            </button>
+                                            <button
+                                                type="button"
+                                                disabled={overriding === studentAnswer.response_id}
+                                                onClick={() => handleOverride(studentAnswer.response_id, false)}
+                                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer disabled:opacity-50 ${
+                                                    !isQuestionCorrect
+                                                        ? "bg-red-500 text-white"
+                                                        : "bg-muted text-muted-foreground hover:bg-red-500/20 hover:text-red-600"
+                                                }`}
+                                            >
+                                                <ThumbsDown className="size-3" />
+                                                Falsch
+                                            </button>
+                                            {overriding === studentAnswer.response_id && (
+                                                <Loader2 className="size-3 animate-spin text-muted-foreground" />
+                                            )}
                                         </div>
                                     )}
                                 </div>
