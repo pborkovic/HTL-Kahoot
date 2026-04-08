@@ -12,11 +12,13 @@ export type StudentAnswerDetails = {
     is_correct: boolean | null;
     score_awarded: number;
     time_taken_ms: number | null;
+    answer_text?: string;
 };
 
 export type QuestionReview = {
     question_index: number;
     question_text: string;
+    question_type?: string;
     answer_options: AnswerOption[];
     student_answers: StudentAnswerDetails[];
 };
