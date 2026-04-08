@@ -21,6 +21,7 @@ use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Services\Base\BaseService;
 use App\Services\Contracts\SessionServiceContract;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use RuntimeException;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -822,6 +823,43 @@ class SessionService extends BaseService implements SessionServiceContract
             'finished_at'        => $session->finished_at?->toISOString(),
             'participants'       => $participantData,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function applyFreeTextEvaluation(string $responseId, string $participantId, bool $isCorrect, int $scoreAwarded): void
+    {
+        $response = $this->repository->findResponseById(responseId: $responseId);
+        $participant = $this->repository->findParticipantById(participantId: $participantId);
+
+        if (!$response || !$participant) {
+            Log::warning(message: 'applyFreeTextEvaluation: response or participant not found', context: [
+                'response_id'    => $responseId,
+                'participant_id' => $participantId,
+            ]);
+
+            return;
+        }
+
+        $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $scoreAwarded) {
+            $this->repository->updateResponse(response: $response, data: [
+                'is_correct'    => $isCorrect,
+                'score_awarded' => $scoreAwarded,
+            ]);
+
+            if ($scoreAwarded > 0) {
+                $this->repository->incrementParticipantScore(participant: $participant, amount: $scoreAwarded);
+            }
+
+            $this->repository->updateParticipant(participant: $participant, data: [
+                'answer_streak' => $isCorrect
+                    ? ($participant->answer_streak ?? 0) + 1
+                    : 0,
+            ]);
+        });
     }
 
     public function getModelForPolicy(): string
