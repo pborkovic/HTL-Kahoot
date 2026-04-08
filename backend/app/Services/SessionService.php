@@ -579,12 +579,15 @@ class SessionService extends BaseService implements SessionServiceContract
             relations: 'quiz'
         );
 
+        $hasPending = $this->repository->hasPendingFreeTextEvaluations(session: $session);
+
         return [
-            'session_id'         => $session->id,
-            'quiz_title'         => $session->quiz->title,
-            'total_questions'    => $this->repository->countSessionQuestions(session: $session),
-            'total_participants' => $this->repository->countParticipants(session: $session),
-            'leaderboard'        => $this->buildLeaderboard(session: $session),
+            'session_id'               => $session->id,
+            'quiz_title'               => $session->quiz->title,
+            'total_questions'          => $this->repository->countSessionQuestions(session: $session),
+            'total_participants'       => $this->repository->countParticipants(session: $session),
+            'leaderboard'              => $this->buildLeaderboard(session: $session),
+            'has_pending_evaluations'  => $hasPending,
         ];
     }
 
