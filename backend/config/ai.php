@@ -55,6 +55,7 @@ return [
             'driver' => 'ollama',
             'key' => env('OLLAMA_API_KEY', ''),
             'url' => env('OLLAMA_HOST', 'http://ollama:11434'),
+            'model' => env('OLLAMA_MODEL', 'llama3.2:3b'),
         ],
 
     ],
