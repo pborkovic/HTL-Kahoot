@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { Trophy } from "lucide-react";
 import { apiFetch } from "@/lib/api";
@@ -10,13 +10,31 @@ export default function StudentResults() {
     const { gameCode } = useParams<{ gameCode: string }>();
     const [results, setResults] = useState<FinalResults | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const fetchResults = useCallback(() => {
+        return apiFetch<{ data: FinalResults }>(`/v1/sessions/${gameCode}/results`)
+            .then((res) => { setResults(res.data); return res.data; })
+            .catch((err) => { console.error("Failed to load results:", err); return null; });
+    }, [gameCode]);
 
     useEffect(() => {
-        apiFetch<{ data: FinalResults }>(`/v1/sessions/${gameCode}/results`)
-            .then((res) => setResults(res.data))
-            .catch((err) => console.error("Failed to load results:", err))
-            .finally(() => setIsLoading(false));
-    }, [gameCode]);
+        fetchResults()
+            .then((data) => {
+                setIsLoading(false);
+                if (data?.has_pending_evaluations) {
+                    pollRef.current = setTimeout(function poll() {
+                        fetchResults().then((updated) => {
+                            if (updated?.has_pending_evaluations) {
+                                pollRef.current = setTimeout(poll, 3000);
+                            }
+                        });
+                    }, 3000);
+                }
+            });
+
+        return () => { if (pollRef.current) clearTimeout(pollRef.current); };
+    }, [fetchResults]);
 
     useEffect(() => {
         const html = document.documentElement;
