@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Check, X, Loader2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import {StudentQuestionReviewProps, FullReviewResponse} from "@/types/review";
@@ -6,22 +6,49 @@ import {StudentQuestionReviewProps, FullReviewResponse} from "@/types/review";
 export default function StudentQuestionReview({ studentId, gamePin }: StudentQuestionReviewProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fullReview, setFullReview] = useState<FullReviewResponse | null>(null);
+    const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const hasPendingEvaluation = useCallback((data: FullReviewResponse | null): boolean => {
+        if (!data) return false;
+        return data.questions.some((q) =>
+            q.question_type === "free_text" &&
+            q.student_answers.some((sa) => sa.is_correct === null)
+        );
+    }, []);
+
+    const fetchReview = useCallback(() => {
+        return apiFetch<{ data: FullReviewResponse }>(`/v1/sessions/${gamePin}/full-review`)
+            .then((res) => {
+                setFullReview(res.data);
+                return res.data;
+            })
+            .catch((err) => {
+                console.error("Failed to load results:", err);
+                return null;
+            });
+    }, [gamePin]);
 
     useEffect(() => {
         if (!gamePin) return;
 
         setIsLoading(true);
-        apiFetch<{ data: FullReviewResponse }>(`/v1/sessions/${gamePin}/full-review`)
-            .then((res) => {
-                setFullReview(res.data);
-            })
-            .catch((err) => {
-                console.error("Failed to load results:", err);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [gamePin]);
+        fetchReview().then((data) => {
+            setIsLoading(false);
+            if (hasPendingEvaluation(data)) {
+                pollRef.current = setTimeout(function poll() {
+                    fetchReview().then((updated) => {
+                        if (hasPendingEvaluation(updated)) {
+                            pollRef.current = setTimeout(poll, 3000);
+                        }
+                    });
+                }, 3000);
+            }
+        });
+
+        return () => {
+            if (pollRef.current) clearTimeout(pollRef.current);
+        };
+    }, [gamePin, fetchReview, hasPendingEvaluation]);
 
     if (isLoading) {
         return (
@@ -44,13 +71,16 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
                     );
 
                     const isQuestionCorrect = studentAnswer?.is_correct === true;
+                    const isPending = question.question_type === "free_text" && studentAnswer?.is_correct === null;
 
                     return (
                         <div key={index} className="relative pl-4 border-l-2 border-border/50">
                             <div className={`absolute -left-2.25 top-0 size-4 rounded-full border-2 border-background flex items-center justify-center ${
+                                isPending ? "bg-amber-500 text-white" :
                                 isQuestionCorrect ? "bg-emerald-500 text-white" : "bg-red-500 text-white"
                             }`}>
-                                {isQuestionCorrect ? <Check className="size-2.5" /> : <X className="size-2.5" />}
+                                {isPending ? <Loader2 className="size-2.5 animate-spin" /> :
+                                isQuestionCorrect ? <Check className="size-2.5" /> : <X className="size-2.5" />}
                             </div>
 
                             <div className="mb-2">
@@ -65,11 +95,15 @@ export default function StudentQuestionReview({ studentId, gamePin }: StudentQue
                             {question.question_type === "free_text" ? (
                                 <div className="space-y-2">
                                     <div className={`p-3 rounded-lg border text-sm ${
-                                        isQuestionCorrect
-                                            ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20"
-                                            : "border-red-500/50 bg-red-500/10 text-red-700 ring-1 ring-red-500/20"
+                                        isPending
+                                            ? "border-amber-500/50 bg-amber-500/10 text-amber-700 ring-1 ring-amber-500/20"
+                                            : isQuestionCorrect
+                                                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20"
+                                                : "border-red-500/50 bg-red-500/10 text-red-700 ring-1 ring-red-500/20"
                                     }`}>
-                                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Antwort</p>
+                                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">
+                                            {isPending ? "Antwort — wird ausgewertet…" : "Antwort"}
+                                        </p>
                                         <p className="font-medium">{studentAnswer?.answer_text ?? "Keine Antwort"}</p>
                                     </div>
                                     {question.answer_options.filter(o => o.is_correct).length > 0 && (
