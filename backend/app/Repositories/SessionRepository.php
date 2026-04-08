@@ -351,4 +351,34 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
             ])
             ->get();
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findResponseById(string $responseId): ?Response
+    {
+        return Response::find(id: $responseId);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function updateResponse(Response $response, array $data): void
+    {
+        $response->update(attributes: $data);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
+    public function findParticipantById(string $participantId): ?SessionParticipant
+    {
+        return SessionParticipant::find(id: $participantId);
+    }
 }
