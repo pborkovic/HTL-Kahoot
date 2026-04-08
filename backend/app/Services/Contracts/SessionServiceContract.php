@@ -326,4 +326,18 @@ interface SessionServiceContract extends BaseServiceContract
      * }
      */
     public function getSessionReport(string $gamePin): array;
+
+    /**
+     * Apply the result of a free-text AI evaluation to a response and participant.
+     *
+     * Updates the response's is_correct and score_awarded, increments
+     * the participant's total_score, and adjusts their answer_streak.
+     * Runs within a database transaction.
+     *
+     * @param string $responseId    The response ID.
+     * @param string $participantId The participant ID.
+     * @param bool   $isCorrect     Whether the AI judged the answer correct.
+     * @param int    $scoreAwarded  The calculated score to award.
+     */
+    public function applyFreeTextEvaluation(string $responseId, string $participantId, bool $isCorrect, int $scoreAwarded): void;
 }
