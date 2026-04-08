@@ -90,7 +90,7 @@ export default function StudentGame() {
                 setGameState("submitted");
             } catch {
                 setGameState("submitted");
-                setResult({ is_correct: false, score_awarded: 0, time_taken_ms: 0, answer_streak: 0 });
+                setResult({ is_correct: null, score_awarded: 0, time_taken_ms: 0, answer_streak: 0 });
             } finally {
                 setSubmitting(false);
             }
