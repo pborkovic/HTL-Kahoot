@@ -6,6 +6,7 @@ export type AnswerOption = {
 };
 
 export type StudentAnswerDetails = {
+    response_id: string;
     participant_id: string;
     nickname: string;
     selected_option_ids: string[];
