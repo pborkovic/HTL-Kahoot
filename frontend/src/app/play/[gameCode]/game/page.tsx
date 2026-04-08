@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Send } from "lucide-react";
+import { Send, Dice5 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { useSessionChannel } from "@/hooks/use-session-channel";
 import { CountdownTimer } from "@/components/play/game/countdown-timer";
@@ -66,7 +66,7 @@ export default function StudentGame() {
     const isFreeText = question?.question_type === "free_text";
 
     const submitAnswer = useCallback(
-        async (answerIds: string[], answerText?: string) => {
+        async (answerIds: string[], answerText?: string, isGamble = false) => {
             if (submitting || gameState !== "answering") return;
             if (!isFreeText && answerIds.length === 0) return;
             if (isFreeText && !answerText?.trim()) return;
@@ -77,6 +77,9 @@ export default function StudentGame() {
                 const payload: Record<string, unknown> = { answer: answerIds };
                 if (isFreeText && answerText) {
                     payload.answer_text = answerText;
+                }
+                if (isGamble) {
+                    payload.is_gamble = true;
                 }
 
                 const res = await apiFetch<{ data: AnswerResult }>(
@@ -129,6 +132,25 @@ export default function StudentGame() {
             setGameState("waiting");
         }
     }, [gameState]);
+
+    const handleGamble = useCallback(() => {
+        if (!question || submitting || gameState !== "answering") return;
+
+        const options = question.answer_options;
+        if (options.length === 0) return;
+
+        if (isMultiSelect) {
+            const count = Math.floor(Math.random() * options.length) + 1;
+            const shuffled = [...options].sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, count).map((o) => o.id);
+            setSelectedIds(picked);
+            submitAnswer(picked, undefined, true);
+        } else {
+            const picked = options[Math.floor(Math.random() * options.length)];
+            setSelectedIds([picked.id]);
+            submitAnswer([picked.id], undefined, true);
+        }
+    }, [question, submitting, gameState, isMultiSelect, submitAnswer]);
 
     useEffect(() => {
         const html = document.documentElement;
@@ -241,18 +263,31 @@ export default function StudentGame() {
                                     onSelect={handleSelect}
                                 />
 
-                                {/* Confirm button for multi-select */}
-                                {isMultiSelect && selectedIds.length > 0 && (
+                                <div className="flex gap-3">
+                                    {/* Gamble button */}
                                     <button
                                         type="button"
-                                        onClick={handleConfirm}
+                                        onClick={handleGamble}
                                         disabled={submitting}
-                                        className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                                        className="flex-1 h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-amber-500/90 text-white hover:bg-amber-500 border-2 border-amber-400/30 transition-all disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed active:scale-95"
                                     >
-                                        <Send className="size-4" />
-                                        Antwort absenden ({selectedIds.length} ausgewählt)
+                                        <Dice5 className="size-4" />
+                                        Gamble!
                                     </button>
-                                )}
+
+                                    {/* Confirm button for multi-select */}
+                                    {isMultiSelect && selectedIds.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleConfirm}
+                                            disabled={submitting}
+                                            className="flex-1 h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                                        >
+                                            <Send className="size-4" />
+                                            Absenden ({selectedIds.length})
+                                        </button>
+                                    )}
+                                </div>
                             </>
                         )}
                     </>
