@@ -272,4 +272,30 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return Collection<int, SessionParticipant> The participants with responses and question data loaded.
      */
     public function getParticipantsWithResponses(Session $session): Collection;
+
+    /**
+     * Find a response by its ID.
+     *
+     * @param string $responseId The response ID.
+     *
+     * @return Response|null The response, or null if not found.
+     */
+    public function findResponseById(string $responseId): ?Response;
+
+    /**
+     * Update a response's attributes.
+     *
+     * @param Response             $response The response to update.
+     * @param array<string, mixed> $data     The attributes to update.
+     */
+    public function updateResponse(Response $response, array $data): void;
+
+    /**
+     * Find a session participant by its ID.
+     *
+     * @param string $participantId The participant ID.
+     *
+     * @return SessionParticipant|null The participant, or null if not found.
+     */
+    public function findParticipantById(string $participantId): ?SessionParticipant;
 }
