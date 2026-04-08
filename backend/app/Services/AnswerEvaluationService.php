@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Agents\AnswerEvaluationAgent;
@@ -32,16 +34,27 @@ class AnswerEvaluationService implements AnswerEvaluationServiceContract
                 prompt: "Student answer: {$studentAnswer}",
             );
 
+            $raw = trim(string: $response->text);
+            $parsed = strtoupper(string: $raw);
+            $isCorrect = str_starts_with(haystack: $parsed, needle: 'YES');
+
+            Log::info(message: 'AI evaluation response', context: [
+                'question'       => $questionTitle,
+                'student_answer' => $studentAnswer,
+                'raw_response'   => $raw,
+                'is_correct'     => $isCorrect,
+            ]);
+
             return [
-                'is_correct' => (bool) ($response->structured['is_correct'] ?? false),
-                'confidence' => (float) ($response->structured['confidence'] ?? 0.0),
-                'reasoning' => (string) ($response->structured['reasoning'] ?? ''),
+                'is_correct' => $isCorrect,
+                'confidence' => $isCorrect ? 1.0 : 0.0,
+                'reasoning'  => $raw,
             ];
         } catch (Throwable $e) {
             Log::error(message: 'AI answer evaluation failed', context: [
-                'question' => $questionTitle,
+                'question'       => $questionTitle,
                 'student_answer' => $studentAnswer,
-                'error' => $e->getMessage(),
+                'error'          => $e->getMessage(),
             ]);
 
             throw new RuntimeException(message: 'Answer evaluation failed: ' . $e->getMessage(), previous: $e);
