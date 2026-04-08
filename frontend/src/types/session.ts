@@ -33,7 +33,7 @@ export interface CurrentQuestion {
 }
 
 export interface AnswerResult {
-    is_correct: boolean;
+    is_correct: boolean | null;
     score_awarded: number;
     time_taken_ms: number;
     answer_streak: number;
@@ -66,4 +66,5 @@ export interface FinalResults {
     total_questions: number;
     total_participants: number;
     leaderboard: LeaderboardEntry[];
+    has_pending_evaluations?: boolean;
 }
