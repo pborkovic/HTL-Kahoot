@@ -274,6 +274,15 @@ interface SessionRepositoryContract extends BaseRepositoryContract
     public function getParticipantsWithResponses(Session $session): Collection;
 
     /**
+     * Record a gamble use for a participant on a session question.
+     *
+     * @param array<string, mixed> $data The gamble use attributes.
+     *
+     * @return \App\Models\GambleUse The created gamble use record.
+     */
+    public function createGambleUse(array $data): \App\Models\GambleUse;
+
+    /**
      * Check if any free-text responses in this session are still pending AI evaluation.
      *
      * @param Session $session The session.
