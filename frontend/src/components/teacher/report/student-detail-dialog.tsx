@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, X, Clock, Trophy } from "lucide-react";
+import { Check, X, Clock, Trophy, Loader2 } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -77,14 +77,18 @@ export function StudentDetailDialog({ participant, totalQuestions, onClose }: St
                         {participant.questions.map((question) => {
                             const isCorrect = question.is_correct === true;
                             const notAnswered = question.is_correct === null;
+                            const isPending = question.question_type === "free_text" && notAnswered;
 
                             return (
                                 <div key={question.question_index} className="relative pl-4 border-l-2 border-border/50">
                                     <div className={`absolute -left-2.25 top-0 size-4 rounded-full border-2 border-background flex items-center justify-center ${
+                                        isPending ? "bg-amber-500 text-white" :
                                         notAnswered ? "bg-muted text-muted-foreground" :
                                         isCorrect ? "bg-emerald-500 text-white" : "bg-red-500 text-white"
                                     }`}>
-                                        {notAnswered ? (
+                                        {isPending ? (
+                                            <Loader2 className="size-2.5 animate-spin" />
+                                        ) : notAnswered ? (
                                             <span className="text-[8px] font-bold">—</span>
                                         ) : isCorrect ? (
                                             <Check className="size-2.5" />
@@ -118,11 +122,15 @@ export function StudentDetailDialog({ participant, totalQuestions, onClose }: St
                                     {question.question_type === "free_text" ? (
                                         <div className="space-y-2">
                                             <div className={`p-3 rounded-lg border text-sm ${
-                                                isCorrect
-                                                    ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20"
-                                                    : "border-red-500/50 bg-red-500/10 text-red-700 ring-1 ring-red-500/20"
+                                                isPending
+                                                    ? "border-amber-500/50 bg-amber-500/10 text-amber-700 ring-1 ring-amber-500/20"
+                                                    : isCorrect
+                                                        ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20"
+                                                        : "border-red-500/50 bg-red-500/10 text-red-700 ring-1 ring-red-500/20"
                                             }`}>
-                                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Antwort</p>
+                                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">
+                                                    {isPending ? "Antwort — wird ausgewertet…" : "Antwort"}
+                                                </p>
                                                 <p className="font-medium">{question.answer_text || "Keine Antwort"}</p>
                                             </div>
                                             {question.answer_options.filter(o => o.is_correct).length > 0 && (
