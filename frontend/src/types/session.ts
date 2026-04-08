@@ -11,7 +11,7 @@ export interface AnswerOption {
     sort_order: number;
 }
 
-export type QuestionType = "single_choice" | "multiple_choice" | "true_false";
+export type QuestionType = "single_choice" | "multiple_choice" | "true_false" | "free_text";
 
 export interface QuestionMediaItem {
     id: string;
