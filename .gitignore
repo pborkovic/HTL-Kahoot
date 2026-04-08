@@ -28,6 +28,10 @@ docker-compose.override.yml
 *.sql
 backup.sql
 
+# Next.js build output
+backend/.next/
+frontend/.next/
+
 # Backend specific
 backend/.env
 backend/.env.local
