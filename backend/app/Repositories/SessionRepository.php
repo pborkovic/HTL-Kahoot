@@ -331,6 +331,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
             ->orderBy(column: 'display_order')
             ->with(relations: [
                 'quizQuestion.questionVersion.answerOptions',
+                'quizQuestion.questionVersion.question',
                 'responses.participant',
             ])
             ->get();
