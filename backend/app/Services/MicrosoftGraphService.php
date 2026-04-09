@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Services\Contracts\MediaServiceContract;
 use App\Services\Contracts\MicrosoftGraphServiceContract;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class MicrosoftGraphService implements MicrosoftGraphServiceContract
@@ -13,6 +13,10 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
     private const GRAPH_BASE = 'https://graph.microsoft.com/v1.0';
     private const PHOTO_SIZES = ['240x240', '120x120', '96x96'];
     private const PROFILE_SELECT = 'id,displayName,givenName,surname,mail,userPrincipalName,jobTitle,department,officeLocation,preferredLanguage,mobilePhone,businessPhones';
+
+    public function __construct(
+        private readonly MediaServiceContract $mediaService,
+    ) {}
 
     /**
      * {@inheritDoc}
@@ -107,12 +111,10 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
             };
             $path = "avatars/{$userId}.{$extension}";
 
-            Storage::disk(name: 's3')->put(
+            return $this->mediaService->storeBinary(
                 path: $path,
                 contents: $response->body(),
             );
-
-            return "/media/{$path}";
         } catch (Throwable $e) {
             Log::warning(message: "Graph API photo fetch failed: {$e->getMessage()}");
 
