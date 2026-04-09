@@ -22,6 +22,11 @@ class RoleService extends BaseService implements RoleServiceContract
         $this->repository = $repository;
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function getModelForPolicy(): string
     {
         return Role::class;

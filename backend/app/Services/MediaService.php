@@ -7,6 +7,15 @@ namespace App\Services;
 use App\Services\Contracts\MediaServiceContract;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Media Service Implementation.
+ *
+ * Persists binary media to the configured storage disk (SeaweedFS behind an
+ * S3-compatible driver) and exposes the public `/media/...` URL used by the
+ * frontend through the Nginx rewrite.
+ *
+ * @package App\Services
+ */
 class MediaService implements MediaServiceContract
 {
     private const DISK = 's3';

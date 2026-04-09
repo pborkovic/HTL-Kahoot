@@ -20,6 +20,11 @@ class PermissionService extends BaseService implements PermissionServiceContract
         $this->repository = $repository;
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function getModelForPolicy(): string
     {
         return Permission::class;

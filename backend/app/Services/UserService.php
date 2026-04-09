@@ -25,6 +25,11 @@ class UserService extends BaseService implements UserServiceContract
         $this->repository = $repository;
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function getModelForPolicy(): string
     {
         return User::class;

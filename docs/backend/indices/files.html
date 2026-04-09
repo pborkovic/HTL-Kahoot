@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>GamQuiz Backend API</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">GamQuiz Backend API</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -namespaces">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/app.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/app-agents.html" class="">Agents</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-broadcasting.html" class="">Broadcasting</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-dtos.html" class="">DTOs</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-events.html" class="">Events</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-filters.html" class="">Filters</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-http.html" class="">Http</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-jobs.html" class="">Jobs</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-models.html" class="">Models</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-openapi.html" class="">OpenApi</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-policies.html" class="">Policies</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-providers.html" class="">Providers</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-repositories.html" class="">Repositories</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-services.html" class="">Services</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/App.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/App-Repositories.html" class="">Repositories</a>
+                
+            </li>
+                    <li>
+                <a href="packages/App-Services.html" class="">Services</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                        <section>
+        
+        <h2 class="phpdocumentor-content__title">Files</h2>
+                                            <h3>A</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/models-activesession.html"><abbr title="Models/ActiveSession.php">ActiveSession.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-addpoolquestionsrequest.html"><abbr title="Http/Requests/Api/V1/AddPoolQuestionsRequest.php">AddPoolQuestionsRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-addquizquestionrequest.html"><abbr title="Http/Requests/Api/V1/AddQuizQuestionRequest.php">AddQuizQuestionRequest.php</abbr></a></li>
+                            <li><a href="files/agents-answerevaluationagent.html"><abbr title="Agents/AnswerEvaluationAgent.php">AnswerEvaluationAgent.php</abbr></a></li>
+                            <li><a href="files/services-answerevaluationservice.html"><abbr title="Services/AnswerEvaluationService.php">AnswerEvaluationService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-answerevaluationservicecontract.html"><abbr title="Services/Contracts/AnswerEvaluationServiceContract.php">AnswerEvaluationServiceContract.php</abbr></a></li>
+                            <li><a href="files/models-answeroption.html"><abbr title="Models/AnswerOption.php">AnswerOption.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-answeroptionresource.html"><abbr title="Http/Resources/Api/V1/AnswerOptionResource.php">AnswerOptionResource.php</abbr></a></li>
+                            <li><a href="files/events-answerreceived.html"><abbr title="Events/AnswerReceived.php">AnswerReceived.php</abbr></a></li>
+                            <li><a href="files/http-controllers-answerscontroller.html"><abbr title="Http/Controllers/AnswersController.php">AnswersController.php</abbr></a></li>
+                            <li><a href="files/providers-appserviceprovider.html"><abbr title="Providers/AppServiceProvider.php">AppServiceProvider.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-assignrolerequest.html"><abbr title="Http/Requests/Api/V1/AssignRoleRequest.php">AssignRoleRequest.php</abbr></a></li>
+                            <li><a href="files/models-auditlog.html"><abbr title="Models/AuditLog.php">AuditLog.php</abbr></a></li>
+                            <li><a href="files/dtos-authcallbackdto.html"><abbr title="DTOs/AuthCallbackDto.php">AuthCallbackDto.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-authcallbackrequest.html"><abbr title="Http/Requests/Api/V1/AuthCallbackRequest.php">AuthCallbackRequest.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-authcontroller.html"><abbr title="Http/Controllers/Api/V1/AuthController.php">AuthController.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-authresource.html"><abbr title="Http/Resources/Api/V1/AuthResource.php">AuthResource.php</abbr></a></li>
+                            <li><a href="files/services-authservice.html"><abbr title="Services/AuthService.php">AuthService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-authservicecontract.html"><abbr title="Services/Contracts/AuthServiceContract.php">AuthServiceContract.php</abbr></a></li>
+                        </ul>
+                                                        <h3>B</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/filters-basefilter.html"><abbr title="Filters/BaseFilter.php">BaseFilter.php</abbr></a></li>
+                            <li><a href="files/repositories-base-baserepository.html"><abbr title="Repositories/Base/BaseRepository.php">BaseRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-base-contracts-baserepositorycontract.html"><abbr title="Repositories/Base/Contracts/BaseRepositoryContract.php">BaseRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-baserepositorycontract.html"><abbr title="Repositories/Contracts/BaseRepositoryContract.php">BaseRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/services-base-baseservice.html"><abbr title="Services/Base/BaseService.php">BaseService.php</abbr></a></li>
+                            <li><a href="files/services-base-contracts-baseservicecontract.html"><abbr title="Services/Base/Contracts/BaseServiceContract.php">BaseServiceContract.php</abbr></a></li>
+                            <li><a href="files/events-basesessionevent.html"><abbr title="Events/BaseSessionEvent.php">BaseSessionEvent.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-bulkcreateusersrequest.html"><abbr title="Http/Requests/Api/V1/BulkCreateUsersRequest.php">BulkCreateUsersRequest.php</abbr></a></li>
+                        </ul>
+                                                        <h3>C</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-changepasswordrequest.html"><abbr title="Http/Requests/Api/V1/ChangePasswordRequest.php">ChangePasswordRequest.php</abbr></a></li>
+                            <li><a href="files/http-controllers-controller.html"><abbr title="Http/Controllers/Controller.php">Controller.php</abbr></a></li>
+                            <li><a href="files/models-conveyance.html"><abbr title="Models/Conveyance.php">Conveyance.php</abbr></a></li>
+                            <li><a href="files/http-controllers-conveyancecontroller.html"><abbr title="Http/Controllers/ConveyanceController.php">ConveyanceController.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createpermissionrequest.html"><abbr title="Http/Requests/Api/V1/CreatePermissionRequest.php">CreatePermissionRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createpoolrequest.html"><abbr title="Http/Requests/Api/V1/CreatePoolRequest.php">CreatePoolRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createquestionrequest.html"><abbr title="Http/Requests/Api/V1/CreateQuestionRequest.php">CreateQuestionRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createquizrequest.html"><abbr title="Http/Requests/Api/V1/CreateQuizRequest.php">CreateQuizRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createrolerequest.html"><abbr title="Http/Requests/Api/V1/CreateRoleRequest.php">CreateRoleRequest.php</abbr></a></li>
+                            <li><a href="files/dtos-createsessiondto.html"><abbr title="DTOs/CreateSessionDto.php">CreateSessionDto.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createsessionrequest.html"><abbr title="Http/Requests/Api/V1/CreateSessionRequest.php">CreateSessionRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-createuserrequest.html"><abbr title="Http/Requests/Api/V1/CreateUserRequest.php">CreateUserRequest.php</abbr></a></li>
+                        </ul>
+                                                                                        <h3>E</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-emailloginrequest.html"><abbr title="Http/Requests/Api/V1/EmailLoginRequest.php">EmailLoginRequest.php</abbr></a></li>
+                            <li><a href="files/dtos-entrauserdto.html"><abbr title="DTOs/EntraUserDto.php">EntraUserDto.php</abbr></a></li>
+                            <li><a href="files/jobs-evaluatefreetextanswer.html"><abbr title="Jobs/EvaluateFreeTextAnswer.php">EvaluateFreeTextAnswer.php</abbr></a></li>
+                        </ul>
+                                                        <h3>F</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/models-feedback.html"><abbr title="Models/Feedback.php">Feedback.php</abbr></a></li>
+                            <li><a href="files/http-controllers-feedbackcontroller.html"><abbr title="Http/Controllers/FeedbackController.php">FeedbackController.php</abbr></a></li>
+                        </ul>
+                                                        <h3>G</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/models-gambleuse.html"><abbr title="Models/GambleUse.php">GambleUse.php</abbr></a></li>
+                            <li><a href="files/events-gamefinished.html"><abbr title="Events/GameFinished.php">GameFinished.php</abbr></a></li>
+                            <li><a href="files/events-gamestarted.html"><abbr title="Events/GameStarted.php">GameStarted.php</abbr></a></li>
+                        </ul>
+                                                                                        <h3>I</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-importquestionsrequest.html"><abbr title="Http/Requests/Api/V1/ImportQuestionsRequest.php">ImportQuestionsRequest.php</abbr></a></li>
+                        </ul>
+                                                        <h3>J</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-joinsessionrequest.html"><abbr title="Http/Requests/Api/V1/JoinSessionRequest.php">JoinSessionRequest.php</abbr></a></li>
+                        </ul>
+                                                                                        <h3>L</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-listquestionsrequest.html"><abbr title="Http/Requests/Api/V1/ListQuestionsRequest.php">ListQuestionsRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-listquizzesrequest.html"><abbr title="Http/Requests/Api/V1/ListQuizzesRequest.php">ListQuizzesRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-listusersrequest.html"><abbr title="Http/Requests/Api/V1/ListUsersRequest.php">ListUsersRequest.php</abbr></a></li>
+                        </ul>
+                                                        <h3>M</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-controllers-api-v1-mediacontroller.html"><abbr title="Http/Controllers/Api/V1/MediaController.php">MediaController.php</abbr></a></li>
+                            <li><a href="files/services-mediaservice.html"><abbr title="Services/MediaService.php">MediaService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-mediaservicecontract.html"><abbr title="Services/Contracts/MediaServiceContract.php">MediaServiceContract.php</abbr></a></li>
+                            <li><a href="files/services-microsoftgraphservice.html"><abbr title="Services/MicrosoftGraphService.php">MicrosoftGraphService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-microsoftgraphservicecontract.html"><abbr title="Services/Contracts/MicrosoftGraphServiceContract.php">MicrosoftGraphServiceContract.php</abbr></a></li>
+                        </ul>
+                                                                                        <h3>O</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-overrideanswerrequest.html"><abbr title="Http/Requests/Api/V1/OverrideAnswerRequest.php">OverrideAnswerRequest.php</abbr></a></li>
+                        </ul>
+                                                        <h3>P</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/events-participantjoined.html"><abbr title="Events/ParticipantJoined.php">ParticipantJoined.php</abbr></a></li>
+                            <li><a href="files/models-permission.html"><abbr title="Models/Permission.php">Permission.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-permissioncontroller.html"><abbr title="Http/Controllers/Api/V1/PermissionController.php">PermissionController.php</abbr></a></li>
+                            <li><a href="files/http-controllers-permissioncontroller.html"><abbr title="Http/Controllers/PermissionController.php">PermissionController.php</abbr></a></li>
+                            <li><a href="files/policies-permissionpolicy.html"><abbr title="Policies/PermissionPolicy.php">PermissionPolicy.php</abbr></a></li>
+                            <li><a href="files/repositories-permissionrepository.html"><abbr title="Repositories/PermissionRepository.php">PermissionRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-permissionrepositorycontract.html"><abbr title="Repositories/Contracts/PermissionRepositoryContract.php">PermissionRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-permissionresource.html"><abbr title="Http/Resources/Api/V1/PermissionResource.php">PermissionResource.php</abbr></a></li>
+                            <li><a href="files/services-permissionservice.html"><abbr title="Services/PermissionService.php">PermissionService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-permissionservicecontract.html"><abbr title="Services/Contracts/PermissionServiceContract.php">PermissionServiceContract.php</abbr></a></li>
+                        </ul>
+                                                        <h3>Q</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/models-question.html"><abbr title="Models/Question.php">Question.php</abbr></a></li>
+                            <li><a href="files/events-questionclosed.html"><abbr title="Events/QuestionClosed.php">QuestionClosed.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-questioncollection.html"><abbr title="Http/Resources/Api/V1/QuestionCollection.php">QuestionCollection.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-questioncontroller.html"><abbr title="Http/Controllers/Api/V1/QuestionController.php">QuestionController.php</abbr></a></li>
+                            <li><a href="files/http-controllers-questioncontroller.html"><abbr title="Http/Controllers/QuestionController.php">QuestionController.php</abbr></a></li>
+                            <li><a href="files/filters-questionfilter.html"><abbr title="Filters/QuestionFilter.php">QuestionFilter.php</abbr></a></li>
+                            <li><a href="files/services-questionimportservice.html"><abbr title="Services/QuestionImportService.php">QuestionImportService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-questionimportservicecontract.html"><abbr title="Services/Contracts/QuestionImportServiceContract.php">QuestionImportServiceContract.php</abbr></a></li>
+                            <li><a href="files/models-questionmedia.html"><abbr title="Models/QuestionMedia.php">QuestionMedia.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-questionmediaresource.html"><abbr title="Http/Resources/Api/V1/QuestionMediaResource.php">QuestionMediaResource.php</abbr></a></li>
+                            <li><a href="files/events-questionopened.html"><abbr title="Events/QuestionOpened.php">QuestionOpened.php</abbr></a></li>
+                            <li><a href="files/policies-questionpolicy.html"><abbr title="Policies/QuestionPolicy.php">QuestionPolicy.php</abbr></a></li>
+                            <li><a href="files/models-questionpool.html"><abbr title="Models/QuestionPool.php">QuestionPool.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-questionpoolcollection.html"><abbr title="Http/Resources/Api/V1/QuestionPoolCollection.php">QuestionPoolCollection.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-questionpoolcontroller.html"><abbr title="Http/Controllers/Api/V1/QuestionPoolController.php">QuestionPoolController.php</abbr></a></li>
+                            <li><a href="files/policies-questionpoolpolicy.html"><abbr title="Policies/QuestionPoolPolicy.php">QuestionPoolPolicy.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-questionpoolresource.html"><abbr title="Http/Resources/Api/V1/QuestionPoolResource.php">QuestionPoolResource.php</abbr></a></li>
+                            <li><a href="files/repositories-questionrepository.html"><abbr title="Repositories/QuestionRepository.php">QuestionRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-questionrepositorycontract.html"><abbr title="Repositories/Contracts/QuestionRepositoryContract.php">QuestionRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-questionresource.html"><abbr title="Http/Resources/Api/V1/QuestionResource.php">QuestionResource.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-concerns-questionrules.html"><abbr title="Http/Requests/Api/V1/Concerns/QuestionRules.php">QuestionRules.php</abbr></a></li>
+                            <li><a href="files/services-questionservice.html"><abbr title="Services/QuestionService.php">QuestionService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-questionservicecontract.html"><abbr title="Services/Contracts/QuestionServiceContract.php">QuestionServiceContract.php</abbr></a></li>
+                            <li><a href="files/models-questionversion.html"><abbr title="Models/QuestionVersion.php">QuestionVersion.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-questionversionresource.html"><abbr title="Http/Resources/Api/V1/QuestionVersionResource.php">QuestionVersionResource.php</abbr></a></li>
+                            <li><a href="files/models-quiz.html"><abbr title="Models/Quiz.php">Quiz.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-quizcollection.html"><abbr title="Http/Resources/Api/V1/QuizCollection.php">QuizCollection.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-quizcontroller.html"><abbr title="Http/Controllers/Api/V1/QuizController.php">QuizController.php</abbr></a></li>
+                            <li><a href="files/http-controllers-quizcontroller.html"><abbr title="Http/Controllers/QuizController.php">QuizController.php</abbr></a></li>
+                            <li><a href="files/filters-quizfilter.html"><abbr title="Filters/QuizFilter.php">QuizFilter.php</abbr></a></li>
+                            <li><a href="files/policies-quizpolicy.html"><abbr title="Policies/QuizPolicy.php">QuizPolicy.php</abbr></a></li>
+                            <li><a href="files/models-quizquestion.html"><abbr title="Models/QuizQuestion.php">QuizQuestion.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-quizquestionresource.html"><abbr title="Http/Resources/Api/V1/QuizQuestionResource.php">QuizQuestionResource.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-quizresource.html"><abbr title="Http/Resources/Api/V1/QuizResource.php">QuizResource.php</abbr></a></li>
+                        </ul>
+                                                        <h3>R</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/models-response.html"><abbr title="Models/Response.php">Response.php</abbr></a></li>
+                            <li><a href="files/repositories-responserepository.html"><abbr title="Repositories/ResponseRepository.php">ResponseRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-responserepositorycontract.html"><abbr title="Repositories/Contracts/ResponseRepositoryContract.php">ResponseRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/services-responseservice.html"><abbr title="Services/ResponseService.php">ResponseService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-responseservicecontract.html"><abbr title="Services/Contracts/ResponseServiceContract.php">ResponseServiceContract.php</abbr></a></li>
+                            <li><a href="files/models-role.html"><abbr title="Models/Role.php">Role.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-rolecontroller.html"><abbr title="Http/Controllers/Api/V1/RoleController.php">RoleController.php</abbr></a></li>
+                            <li><a href="files/http-controllers-rolecontroller.html"><abbr title="Http/Controllers/RoleController.php">RoleController.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-rolepermissionrequest.html"><abbr title="Http/Requests/Api/V1/RolePermissionRequest.php">RolePermissionRequest.php</abbr></a></li>
+                            <li><a href="files/policies-rolepolicy.html"><abbr title="Policies/RolePolicy.php">RolePolicy.php</abbr></a></li>
+                            <li><a href="files/repositories-rolerepository.html"><abbr title="Repositories/RoleRepository.php">RoleRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-rolerepositorycontract.html"><abbr title="Repositories/Contracts/RoleRepositoryContract.php">RoleRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-roleresource.html"><abbr title="Http/Resources/Api/V1/RoleResource.php">RoleResource.php</abbr></a></li>
+                            <li><a href="files/services-roleservice.html"><abbr title="Services/RoleService.php">RoleService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-roleservicecontract.html"><abbr title="Services/Contracts/RoleServiceContract.php">RoleServiceContract.php</abbr></a></li>
+                        </ul>
+                                                        <h3>S</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/openapi-schemas.html"><abbr title="OpenApi/Schemas.php">Schemas.php</abbr></a></li>
+                            <li><a href="files/models-session.html"><abbr title="Models/Session.php">Session.php</abbr></a></li>
+                            <li><a href="files/broadcasting-sessionchannel.html"><abbr title="Broadcasting/SessionChannel.php">SessionChannel.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></li>
+                            <li><a href="files/models-sessionparticipant.html"><abbr title="Models/SessionParticipant.php">SessionParticipant.php</abbr></a></li>
+                            <li><a href="files/repositories-sessionparticipantrepository.html"><abbr title="Repositories/SessionParticipantRepository.php">SessionParticipantRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-sessionparticipantrepositorycontract.html"><abbr title="Repositories/Contracts/SessionParticipantRepositoryContract.php">SessionParticipantRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-sessionparticipantresource.html"><abbr title="Http/Resources/Api/V1/SessionParticipantResource.php">SessionParticipantResource.php</abbr></a></li>
+                            <li><a href="files/services-sessionparticipantservice.html"><abbr title="Services/SessionParticipantService.php">SessionParticipantService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-sessionparticipantservicecontract.html"><abbr title="Services/Contracts/SessionParticipantServiceContract.php">SessionParticipantServiceContract.php</abbr></a></li>
+                            <li><a href="files/policies-sessionpolicy.html"><abbr title="Policies/SessionPolicy.php">SessionPolicy.php</abbr></a></li>
+                            <li><a href="files/models-sessionquestion.html"><abbr title="Models/SessionQuestion.php">SessionQuestion.php</abbr></a></li>
+                            <li><a href="files/repositories-sessionquestionrepository.html"><abbr title="Repositories/SessionQuestionRepository.php">SessionQuestionRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-sessionquestionrepositorycontract.html"><abbr title="Repositories/Contracts/SessionQuestionRepositoryContract.php">SessionQuestionRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/services-sessionquestionservice.html"><abbr title="Services/SessionQuestionService.php">SessionQuestionService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-sessionquestionservicecontract.html"><abbr title="Services/Contracts/SessionQuestionServiceContract.php">SessionQuestionServiceContract.php</abbr></a></li>
+                            <li><a href="files/repositories-sessionrepository.html"><abbr title="Repositories/SessionRepository.php">SessionRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-sessionrepositorycontract.html"><abbr title="Repositories/Contracts/SessionRepositoryContract.php">SessionRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-sessionresource.html"><abbr title="Http/Resources/Api/V1/SessionResource.php">SessionResource.php</abbr></a></li>
+                            <li><a href="files/services-sessionservice.html"><abbr title="Services/SessionService.php">SessionService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-sessionservicecontract.html"><abbr title="Services/Contracts/SessionServiceContract.php">SessionServiceContract.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-submitanswerrequest.html"><abbr title="Http/Requests/Api/V1/SubmitAnswerRequest.php">SubmitAnswerRequest.php</abbr></a></li>
+                        </ul>
+                                                        <h3>T</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/models-tag.html"><abbr title="Models/Tag.php">Tag.php</abbr></a></li>
+                        </ul>
+                                                        <h3>U</h3>
+            <ul class="phpdocumentor-list">
+                            <li><a href="files/http-requests-api-v1-updatepoolrequest.html"><abbr title="Http/Requests/Api/V1/UpdatePoolRequest.php">UpdatePoolRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-updatepreferencesrequest.html"><abbr title="Http/Requests/Api/V1/UpdatePreferencesRequest.php">UpdatePreferencesRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-updatequestionrequest.html"><abbr title="Http/Requests/Api/V1/UpdateQuestionRequest.php">UpdateQuestionRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-updatequizquestionrequest.html"><abbr title="Http/Requests/Api/V1/UpdateQuizQuestionRequest.php">UpdateQuizQuestionRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-updatequizrequest.html"><abbr title="Http/Requests/Api/V1/UpdateQuizRequest.php">UpdateQuizRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-updateuserrequest.html"><abbr title="Http/Requests/Api/V1/UpdateUserRequest.php">UpdateUserRequest.php</abbr></a></li>
+                            <li><a href="files/http-requests-api-v1-uploadquestionmediarequest.html"><abbr title="Http/Requests/Api/V1/UploadQuestionMediaRequest.php">UploadQuestionMediaRequest.php</abbr></a></li>
+                            <li><a href="files/models-user.html"><abbr title="Models/User.php">User.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-usercollection.html"><abbr title="Http/Resources/Api/V1/UserCollection.php">UserCollection.php</abbr></a></li>
+                            <li><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></li>
+                            <li><a href="files/http-controllers-usercontroller.html"><abbr title="Http/Controllers/UserController.php">UserController.php</abbr></a></li>
+                            <li><a href="files/filters-userfilter.html"><abbr title="Filters/UserFilter.php">UserFilter.php</abbr></a></li>
+                            <li><a href="files/policies-userpolicy.html"><abbr title="Policies/UserPolicy.php">UserPolicy.php</abbr></a></li>
+                            <li><a href="files/repositories-userrepository.html"><abbr title="Repositories/UserRepository.php">UserRepository.php</abbr></a></li>
+                            <li><a href="files/repositories-contracts-userrepositorycontract.html"><abbr title="Repositories/Contracts/UserRepositoryContract.php">UserRepositoryContract.php</abbr></a></li>
+                            <li><a href="files/http-resources-api-v1-userresource.html"><abbr title="Http/Resources/Api/V1/UserResource.php">UserResource.php</abbr></a></li>
+                            <li><a href="files/services-userservice.html"><abbr title="Services/UserService.php">UserService.php</abbr></a></li>
+                            <li><a href="files/services-contracts-userservicecontract.html"><abbr title="Services/Contracts/UserServiceContract.php">UserServiceContract.php</abbr></a></li>
+                        </ul>
+                                                                                                                                                                                        </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="indices/files.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>

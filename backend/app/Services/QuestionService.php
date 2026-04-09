@@ -122,6 +122,11 @@ class QuestionService extends BaseService implements QuestionServiceContract
         return $question->load(relations: 'currentVersion');
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function getModelForPolicy(): string
     {
         return Question::class;

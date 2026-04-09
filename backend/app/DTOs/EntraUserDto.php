@@ -23,6 +23,17 @@ readonly class EntraUserDto
         public ?string $avatarUrl = null,
     ) {}
 
+    /**
+     * Build an EntraUserDto from a Socialite user returned by the Azure driver.
+     *
+     * Parses the raw Entra display name into the cleaned display name and
+     * optional class suffix; group and avatar data are filled in later via
+     * {@see self::withGraphData()}.
+     *
+     * @param SocialiteUser $socialiteUser The Socialite user from the Azure callback.
+     *
+     * @return self
+     */
     public static function fromSocialite(SocialiteUser $socialiteUser): self
     {
         $rawName = $socialiteUser->getName() ?? '';

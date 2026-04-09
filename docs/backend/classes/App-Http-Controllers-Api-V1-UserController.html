@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>GamQuiz Backend API</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">GamQuiz Backend API</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -namespaces">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/app.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/app-agents.html" class="">Agents</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-broadcasting.html" class="">Broadcasting</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-dtos.html" class="">DTOs</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-events.html" class="">Events</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-filters.html" class="">Filters</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-http.html" class="">Http</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-jobs.html" class="">Jobs</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-models.html" class="">Models</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-openapi.html" class="">OpenApi</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-policies.html" class="">Policies</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-providers.html" class="">Providers</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-repositories.html" class="">Repositories</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-services.html" class="">Services</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/App.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/App-Repositories.html" class="">Repositories</a>
+                
+            </li>
+                    <li>
+                <a href="packages/App-Services.html" class="">Services</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app.html">App</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http.html">Http</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http-controllers.html">Controllers</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http-controllers-api.html">Api</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http-controllers-api-v1.html">V1</a></li>
+    </ul>
+
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    UserController
+
+        <span class="phpdocumentor-element__extends">
+        extends <a href="classes/App-Http-Controllers-Controller.html"><abbr title="\App\Http\Controllers\Controller">Controller</abbr></a>
+    </span>
+    
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Application.html">Application</a></li>
+                            </ul>
+        </div>
+    
+    
+    </h2>
+
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">32</span>
+
+    </aside>
+
+        
+
+
+
+
+    
+    
+<h3 id="toc">
+    Table of Contents
+    <a href="classes/App-Http-Controllers-Api-V1-UserController.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h3>
+
+
+
+
+
+
+
+
+
+<h4 id="toc-properties">
+    Properties
+    <a href="classes/App-Http-Controllers-Api-V1-UserController.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#property_userService">$userService</a>
+    <span>
+                        &nbsp;: <a href="classes/App-Services-Contracts-UserServiceContract.html"><abbr title="\App\Services\Contracts\UserServiceContract">UserServiceContract</abbr></a>            </span>
+</dt>
+
+    </dl>
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/App-Http-Controllers-Api-V1-UserController.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method___construct">__construct()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_answerDistribution">answerDistribution()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_bulk">bulk()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_changePassword">changePassword()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_classes">classes()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_completedQuizzes">completedQuizzes()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_destroy">destroy()</a>
+    <span>
+                                &nbsp;: <a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a>|<abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_index">index()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\Resources\Json\ResourceCollection">ResourceCollection</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_preferences">preferences()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_quizHistory">quizHistory()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_restore">restore()</a>
+    <span>
+                                &nbsp;: <a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_show">show()</a>
+    <span>
+                                &nbsp;: <a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_stats">stats()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_store">store()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_update">update()</a>
+    <span>
+                                &nbsp;: <a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-UserController.html#method_updatePreferences">updatePreferences()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+    </dl>
+
+
+
+        
+
+        
+    <section class="phpdocumentor-properties">
+        <h3 class="phpdocumentor-elements__header" id="properties">
+            Properties
+            <a href="classes/App-Http-Controllers-Api-V1-UserController.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                -read-only                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_userService">
+        $userService
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#property_userService" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">35</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type"><a href="classes/App-Services-Contracts-UserServiceContract.html"><abbr title="\App\Services\Contracts\UserServiceContract">UserServiceContract</abbr></a></span>
+    <span class="phpdocumentor-signature__name">$userService</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+            </section>
+
+            <section class="phpdocumentor-methods">
+        <h3 class="phpdocumentor-elements__header" id="methods">
+            Methods
+            <a href="classes/App-Http-Controllers-Api-V1-UserController.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___construct">
+        __construct()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">34</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Services-Contracts-UserServiceContract.html"><abbr title="\App\Services\Contracts\UserServiceContract">UserServiceContract</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$userService</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$userService</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Services-Contracts-UserServiceContract.html"><abbr title="\App\Services\Contracts\UserServiceContract">UserServiceContract</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_answerDistribution">
+        answerDistribution()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_answerDistribution" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">433</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">answerDistribution</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_answerDistribution#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}/answer-distribution&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the correct/wrong/unanswered answer distribution and correct percentage across all completed quizzes.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get answer distribution&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Answer distribution&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_bulk">
+        bulk()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_bulk" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">140</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">bulk</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-BulkCreateUsersRequest.html"><abbr title="\App\Http\Requests\Api\V1\BulkCreateUsersRequest">BulkCreateUsersRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-BulkCreateUsersRequest.html"><abbr title="\App\Http\Requests\Api\V1\BulkCreateUsersRequest">BulkCreateUsersRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_bulk#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/bulk&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Imports multiple users at once. Skips existing emails and collects per-row errors. Admin and superadmin only.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Bulk import users&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(required: [&#039;users&#039;], properties: [new Property(property: &#039;users&#039;, type: &#039;array&#039;, items: new Items(required: [&#039;email&#039;, &#039;role&#039;], properties: [new Property(property: &#039;email&#039;, type: &#039;string&#039;, format: &#039;email&#039;), new Property(property: &#039;display_name&#039;, type: &#039;string&#039;, nullable: true), new Property(property: &#039;class_name&#039;, type: &#039;string&#039;, nullable: true), new Property(property: &#039;auth_provider&#039;, type: &#039;string&#039;, enum: [&#039;local&#039;, &#039;entra_id&#039;], nullable: true), new Property(property: &#039;role&#039;, type: &#039;string&#039;)], type: &#039;object&#039;), minItems: 1), new Property(property: &#039;default_auth_provider&#039;, type: &#039;string&#039;, enum: [&#039;local&#039;, &#039;entra_id&#039;], example: &#039;local&#039;)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Import summary&#039;, content: new JsonContent(ref: &#039;#/components/schemas/BulkResult&#039;)), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 422, description: &#039;Validation error&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_changePassword">
+        changePassword()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_changePassword" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">358</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">changePassword</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-ChangePasswordRequest.html"><abbr title="\App\Http\Requests\Api\V1\ChangePasswordRequest">ChangePasswordRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-ChangePasswordRequest.html"><abbr title="\App\Http\Requests\Api\V1\ChangePasswordRequest">ChangePasswordRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_changePassword#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Patch">Patch</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}/password&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Changes the password for a local-auth user. Users changing their own password must supply current_password. Admins/superadmins resetting another user\&#039;s password do not need current_password. Invalidates all active Sanctum tokens after a successful change.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Change password&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(required: [&#039;new_password&#039;], properties: [new Property(property: &#039;current_password&#039;, description: &#039;Required when changing own password&#039;, type: &#039;string&#039;), new Property(property: &#039;new_password&#039;, description: &#039;Must contain uppercase, lowercase and a number&#039;, type: &#039;string&#039;, minLength: 8)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Password changed&#039;, content: new JsonContent(properties: [new Property(property: &#039;message&#039;, type: &#039;string&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;), new Response(response: 422, description: &#039;Wrong current password or non-local provider&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_classes">
+        classes()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_classes" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">78</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">classes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_classes#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/classes&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns distinct class names with the number of students in each. Accessible by teachers, admins and superadmins.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;List classes with student counts&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Class list&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, type: &#039;array&#039;, items: new Items(ref: &#039;#/components/schemas/ClassEntry&#039;))])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_completedQuizzes">
+        completedQuizzes()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_completedQuizzes" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">408</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">completedQuizzes</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_completedQuizzes#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}/completed-quizzes&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the number of quizzes the user has completed.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get completed quizzes count&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Completed quizzes count&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_destroy">
+        destroy()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_destroy" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">300</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">destroy</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\Illuminate\Http\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a>|<abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\Illuminate\Http\Request">Request</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_destroy#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Delete">Delete</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Soft-deletes a user. Superadmin only. Cannot delete yourself or the last superadmin.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Soft-delete a user&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;User soft-deleted&#039;, content: new JsonContent(ref: UserResource::class)), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;), new Response(response: 422, description: &#039;Cannot delete yourself or last superadmin&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a>|<abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_index">
+        index()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_index" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">38</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">index</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-ListUsersRequest.html"><abbr title="\App\Http\Requests\Api\V1\ListUsersRequest">ListUsersRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\Resources\Json\ResourceCollection">ResourceCollection</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-ListUsersRequest.html"><abbr title="\App\Http\Requests\Api\V1\ListUsersRequest">ListUsersRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_index#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns a paginated, filterable list of users. Accessible by teachers, admins and superadmins.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;List users&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;role&#039;, description: &#039;Filter by role name (student, teacher, admin, superadmin)&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;)), new Parameter(name: &#039;class&#039;, description: &#039;Filter by exact class_name&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;)), new Parameter(name: &#039;class_prefix&#039;, description: &#039;Filter classes starting with this prefix (e.g. &quot;3&quot; matches 3a, 3b)&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;)), new Parameter(name: &#039;search&#039;, description: &#039;Case-insensitive search in email, username, display_name&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;)), new Parameter(name: &#039;is_active&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;boolean&#039;)), new Parameter(name: &#039;auth_provider&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;, enum: [&#039;local&#039;, &#039;entra_id&#039;])), new Parameter(name: &#039;created_after&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;, format: &#039;date&#039;)), new Parameter(name: &#039;created_before&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;, format: &#039;date&#039;)), new Parameter(name: &#039;sort&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;, enum: [&#039;email&#039;, &#039;created_at&#039;, &#039;display_name&#039;, &#039;class_name&#039;, &#039;last_login_at&#039;])), new Parameter(name: &#039;direction&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;string&#039;, enum: [&#039;asc&#039;, &#039;desc&#039;])), new Parameter(name: &#039;per_page&#039;, description: &#039;Items per page (default: 25)&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;integer&#039;, maximum: 100, minimum: 1)), new Parameter(name: &#039;page&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;integer&#039;, minimum: 1)), new Parameter(name: &#039;with_trashed&#039;, description: &#039;Include soft-deleted users (admin/superadmin only)&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;boolean&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Paginated user list&#039;, content: new JsonContent(ref: &#039;#/components/schemas/UserList&#039;)), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\Resources\Json\ResourceCollection">ResourceCollection</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_preferences">
+        preferences()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_preferences" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">492</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">preferences</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\Illuminate\Http\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\Illuminate\Http\Request">Request</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_preferences#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/me/preferences&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the authenticated user\&#039;s personal preferences (theme, language, font size).&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get own preferences&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;User preferences&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_quizHistory">
+        quizHistory()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_quizHistory" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">458</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">quizHistory</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\Illuminate\Http\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\Illuminate\Http\Request">Request</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_quizHistory#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}/quiz-history&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns a paginated list of completed quizzes with per-quiz breakdown of questions, correct/wrong answers, score, and completion time.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get quiz history&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;)), new Parameter(name: &#039;page&#039;, description: &#039;Page number (default: 1)&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;integer&#039;, minimum: 1)), new Parameter(name: &#039;per_page&#039;, description: &#039;Items per page (default: 10, max: 50)&#039;, in: &#039;query&#039;, required: false, schema: new Schema(type: &#039;integer&#039;, minimum: 1, maximum: 50))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Quiz history&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_restore">
+        restore()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_restore" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">333</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">restore</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_restore#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}/restore&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Restores a previously soft-deleted user. Superadmin only.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Restore a soft-deleted user&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Restored user&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, ref: &#039;#/components/schemas/User&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_show">
+        show()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_show" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">233</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">show</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_show#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns full user details. Admins and superadmins can view any user; other users can only view their own profile.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get a user&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;User detail&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, ref: &#039;#/components/schemas/User&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_stats">
+        stats()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_stats" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">111</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">stats</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_stats#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/stats&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns aggregated user counts. Admin and superadmin only.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;User statistics&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Statistics&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, ref: &#039;#/components/schemas/UserStats&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_store">
+        store()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_store" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">191</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">store</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-CreateUserRequest.html"><abbr title="\App\Http\Requests\Api\V1\CreateUserRequest">CreateUserRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-CreateUserRequest.html"><abbr title="\App\Http\Requests\Api\V1\CreateUserRequest">CreateUserRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_store#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Creates a new user and assigns a role. Admin and superadmin only.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Create a user&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(required: [&#039;email&#039;, &#039;auth_provider&#039;, &#039;role&#039;], properties: [new Property(property: &#039;email&#039;, type: &#039;string&#039;, format: &#039;email&#039;), new Property(property: &#039;username&#039;, type: &#039;string&#039;, maxLength: 100, nullable: true), new Property(property: &#039;display_name&#039;, type: &#039;string&#039;, maxLength: 255, nullable: true), new Property(property: &#039;password&#039;, description: &#039;Required when auth_provider is local. Must contain uppercase, lowercase and a number.&#039;, type: &#039;string&#039;, minLength: 8), new Property(property: &#039;auth_provider&#039;, type: &#039;string&#039;, enum: [&#039;local&#039;, &#039;entra_id&#039;]), new Property(property: &#039;class_name&#039;, type: &#039;string&#039;, maxLength: 20, nullable: true), new Property(property: &#039;role&#039;, description: &#039;Must exist in roles table&#039;, type: &#039;string&#039;), new Property(property: &#039;is_active&#039;, type: &#039;boolean&#039;, example: true)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 201, description: &#039;User created&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, ref: &#039;#/components/schemas/User&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 422, description: &#039;Validation error&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_update">
+        update()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_update" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">256</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">update</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-UpdateUserRequest.html"><abbr title="\App\Http\Requests\Api\V1\UpdateUserRequest">UpdateUserRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$user</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-UpdateUserRequest.html"><abbr title="\App\Http\Requests\Api\V1\UpdateUserRequest">UpdateUserRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$user</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Models-User.html"><abbr title="\App\Models\User">User</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_update#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Put">Put</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/{id}&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Updates user fields. Admins/superadmins can update all fields including role. Users can only update their own display_name and username. Setting is_active to false invalidates all active sessions.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Update a user&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(properties: [new Property(property: &#039;email&#039;, type: &#039;string&#039;, format: &#039;email&#039;), new Property(property: &#039;username&#039;, type: &#039;string&#039;, maxLength: 100, nullable: true), new Property(property: &#039;display_name&#039;, type: &#039;string&#039;, maxLength: 255, nullable: true), new Property(property: &#039;class_name&#039;, type: &#039;string&#039;, maxLength: 20, nullable: true), new Property(property: &#039;is_active&#039;, type: &#039;boolean&#039;), new Property(property: &#039;auth_provider&#039;, type: &#039;string&#039;, enum: [&#039;local&#039;, &#039;entra_id&#039;]), new Property(property: &#039;role&#039;, description: &#039;Admin only — replaces all current roles with this one&#039;, type: &#039;string&#039;)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;id&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Updated user&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, ref: &#039;#/components/schemas/User&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Forbidden&#039;), new Response(response: 404, description: &#039;Not found&#039;), new Response(response: 422, description: &#039;Validation error&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/App-Http-Resources-Api-V1-UserResource.html"><abbr title="\App\Http\Resources\Api\V1\UserResource">UserResource</abbr></a></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_updatePreferences">
+        updatePreferences()
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_updatePreferences" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/UserController.php"><a href="files/http-controllers-api-v1-usercontroller.html"><abbr title="Http/Controllers/Api/V1/UserController.php">UserController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">512</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">updatePreferences</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-UpdatePreferencesRequest.html"><abbr title="\App\Http\Requests\Api\V1\UpdatePreferencesRequest">UpdatePreferencesRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-UpdatePreferencesRequest.html"><abbr title="\App\Http\Requests\Api\V1\UpdatePreferencesRequest">UpdatePreferencesRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_updatePreferences#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Put">Put</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/users/me/preferences&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Updates the authenticated user\&#039;s personal preferences. Only provided fields are updated, others are preserved.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Update own preferences&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(properties: [new Property(property: &#039;theme&#039;, type: &#039;string&#039;, enum: [&#039;light&#039;, &#039;dark&#039;, &#039;high-contrast&#039;, &#039;dark-high-contrast&#039;, &#039;colorblind-friendly&#039;, &#039;dark-colorblind-friendly&#039;]), new Property(property: &#039;language&#039;, type: &#039;string&#039;, enum: [&#039;de&#039;, &#039;en&#039;]), new Property(property: &#039;font_size&#039;, type: &#039;string&#039;, enum: [&#039;small&#039;, &#039;medium&#039;, &#039;large&#039;])]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Users&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Updated preferences&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 422, description: &#039;Validation error&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+            </section>
+
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/Http/Controllers/Api/V1/UserController.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
+
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('GET', src, true);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+                            Prism.highlightElement(code);
+                            d=document.getElementsByClassName("line-numbers");
+                            d[0].scrollTop = d[0].children[1].offsetTop;
+                            return;
+                        }
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
+                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
+                    }
+                    modal.classList.add("phpdocumentor-modal__open");
+
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+
+    </article>
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                                            <li><a href="classes/App-Http-Controllers-Api-V1-UserController.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/App-Http-Controllers-Api-V1-UserController.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#property_userService">$userService</a></li>
+                                            </ul>
+                </li>
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_answerDistribution">answerDistribution()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_bulk">bulk()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_changePassword">changePassword()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_classes">classes()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_completedQuizzes">completedQuizzes()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_destroy">destroy()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_index">index()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_preferences">preferences()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_quizHistory">quizHistory()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_restore">restore()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_show">show()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_stats">stats()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_store">store()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_update">update()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-UserController.html#method_updatePreferences">updatePreferences()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="classes/App-Http-Controllers-Api-V1-UserController.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>

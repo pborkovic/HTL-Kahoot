@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace App\Services\Contracts;
 
+/**
+ * Media Service Contract.
+ *
+ * Abstracts the underlying storage disk and public URL scheme used for
+ * user-generated media (question attachments, user avatars, ...), so callers
+ * only deal with domain-relative paths.
+ *
+ * @package App\Services\Contracts
+ */
 interface MediaServiceContract
 {
     /**
