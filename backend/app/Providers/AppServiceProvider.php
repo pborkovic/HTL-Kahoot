@@ -42,12 +42,18 @@ use App\Services\Contracts\SessionServiceContract;
 use App\Services\Contracts\MicrosoftGraphServiceContract;
 use App\Services\Contracts\QuestionImportServiceContract;
 use App\Services\Contracts\QuestionServiceContract;
+use App\Services\Contracts\ResponseServiceContract;
+use App\Services\Contracts\SessionParticipantServiceContract;
+use App\Services\Contracts\SessionQuestionServiceContract;
 use App\Services\Contracts\UserServiceContract;
 use App\Services\MicrosoftGraphService;
 use App\Services\PermissionService;
 use App\Services\QuestionImportService;
 use App\Services\QuestionService;
+use App\Services\ResponseService;
 use App\Services\RoleService;
+use App\Services\SessionParticipantService;
+use App\Services\SessionQuestionService;
 use App\Services\SessionService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Event;
@@ -126,6 +132,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: MicrosoftGraphServiceContract::class,
             concrete: MicrosoftGraphService::class
+        );
+        $this->app->bind(
+            abstract: ResponseServiceContract::class,
+            concrete: ResponseService::class
+        );
+        $this->app->bind(
+            abstract: SessionParticipantServiceContract::class,
+            concrete: SessionParticipantService::class
+        );
+        $this->app->bind(
+            abstract: SessionQuestionServiceContract::class,
+            concrete: SessionQuestionService::class
         );
         $this->app->bind(
             abstract: AnswerEvaluationServiceContract::class,
