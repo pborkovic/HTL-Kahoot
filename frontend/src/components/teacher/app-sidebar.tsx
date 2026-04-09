@@ -69,6 +69,14 @@ const navItems = [
     },
 ];
 
+const studentItems = [
+    {
+        title: "Mein Dashboard",
+        href: "/student/dashboard",
+        icon: LayoutDashboard,
+    },
+];
+
 const adminItems = [
     {
         title: "Admin Dashboard",
@@ -90,6 +98,8 @@ export function AppSidebar(): ReactNode {
 
     const userRoles = user?.roles?.map(r => r.name) ?? [];
     const isAdmin = userRoles.some(r => r === "admin" || r === "superadmin");
+    const isTeacher = userRoles.some(r => r === "teacher");
+    const isStudent = userRoles.some(r => r === "student");
     const primaryRole = userRoles[0] ?? "Benutzer";
 
     const displayName = user?.username ?? user?.email ?? "Unbekannt";
@@ -105,13 +115,13 @@ export function AppSidebar(): ReactNode {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/teacher/dashboard">
+                            <Link href={isTeacher ? "/teacher/dashboard" : isStudent ? "/student/dashboard" : "/home"}>
                                 <div className="size-8 rounded-xl bg-primary/15 backdrop-blur-sm border border-primary/20 flex items-center justify-center shrink-0">
                                     <MonitorPlay className="size-4 text-primary" />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold text-sm">gamquiz</span>
-                                    <span className="text-[11px] text-muted-foreground">Lehrer</span>
+                                    <span className="text-[11px] text-muted-foreground capitalize">{primaryRole}</span>
                                 </div>
                             </Link>
                         </SidebarMenuButton>
@@ -120,6 +130,32 @@ export function AppSidebar(): ReactNode {
             </SidebarHeader>
 
             <SidebarContent>
+                {isStudent && (
+                    <SidebarGroup>
+                        <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">
+                            Schüler
+                        </SidebarGroupLabel>
+                        <SidebarMenu>
+                            {studentItems.map(item => (
+                                <SidebarMenuItem key={item.href}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname === item.href}
+                                        tooltip={item.title}
+                                        className="cursor-pointer"
+                                    >
+                                        <Link href={item.href}>
+                                            <item.icon className="size-4" />
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroup>
+                )}
+
+                {isTeacher && (
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">
                         Navigation
@@ -142,6 +178,7 @@ export function AppSidebar(): ReactNode {
                         ))}
                     </SidebarMenu>
                 </SidebarGroup>
+                )}
 
                 {isAdmin && (
                     <SidebarGroup>
