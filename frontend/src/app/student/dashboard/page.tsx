@@ -10,6 +10,8 @@ import {
     Loader2,
     LayoutDashboard,
     Target,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch, ApiError } from "@/lib/api";
@@ -59,6 +61,9 @@ export default function StudentDashboardPage() {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    const PAGE_SIZE = 5;
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     useEffect(() => {
         if (!user?.id) return;
@@ -110,6 +115,19 @@ export default function StudentDashboardPage() {
         () => history.reduce((sum, item) => sum + (item.total_score ?? 0), 0),
         [history],
     );
+
+    const totalPages = Math.max(1, Math.ceil(history.length / PAGE_SIZE));
+    const safePage = Math.min(currentPage, totalPages);
+    const paginatedHistory = useMemo(
+        () => history.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+        [history, safePage],
+    );
+
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
 
     const displayName = user?.display_name || user?.username || user?.email || "Student";
 
@@ -271,11 +289,74 @@ export default function StudentDashboardPage() {
                                 </p>
                             </div>
                         ) : (
-                            <ul className="space-y-2">
-                                {history.map((item) => (
-                                    <HistoryRow key={item.session_id} item={item} />
-                                ))}
-                            </ul>
+                            <>
+                                <ul className="space-y-2">
+                                    {paginatedHistory.map((item) => (
+                                        <HistoryRow key={item.session_id} item={item} />
+                                    ))}
+                                </ul>
+                                {totalPages > 1 && (
+                                    <nav
+                                        aria-label="Quiz-Historie Seiten"
+                                        className="mt-4 flex items-center justify-between gap-3"
+                                    >
+                                        <p className="text-xs text-muted-foreground tabular-nums">
+                                            Zeige{" "}
+                                            <span className="font-medium text-foreground">
+                                                {(safePage - 1) * PAGE_SIZE + 1}
+                                            </span>
+                                            {"–"}
+                                            <span className="font-medium text-foreground">
+                                                {Math.min(safePage * PAGE_SIZE, history.length)}
+                                            </span>{" "}
+                                            von{" "}
+                                            <span className="font-medium text-foreground">
+                                                {history.length}
+                                            </span>
+                                        </p>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setCurrentPage((p) => Math.max(1, p - 1))
+                                                }
+                                                disabled={safePage === 1}
+                                                className="cursor-pointer inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg border border-primary/15 bg-background/30 backdrop-blur-sm hover:bg-background/60 hover:border-primary/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-background/30 disabled:hover:border-primary/15"
+                                                aria-label="Vorherige Seite"
+                                            >
+                                                <ChevronLeft
+                                                    className="size-3.5"
+                                                    aria-hidden="true"
+                                                />
+                                                <span className="hidden sm:inline">Zurück</span>
+                                            </button>
+                                            <span
+                                                className="text-xs tabular-nums text-muted-foreground px-2"
+                                                aria-current="page"
+                                            >
+                                                {safePage} / {totalPages}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setCurrentPage((p) =>
+                                                        Math.min(totalPages, p + 1),
+                                                    )
+                                                }
+                                                disabled={safePage === totalPages}
+                                                className="cursor-pointer inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg border border-primary/15 bg-background/30 backdrop-blur-sm hover:bg-background/60 hover:border-primary/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-background/30 disabled:hover:border-primary/15"
+                                                aria-label="Nächste Seite"
+                                            >
+                                                <span className="hidden sm:inline">Weiter</span>
+                                                <ChevronRight
+                                                    className="size-3.5"
+                                                    aria-hidden="true"
+                                                />
+                                            </button>
+                                        </div>
+                                    </nav>
+                                )}
+                            </>
                         )}
                     </div>
                 </section>
