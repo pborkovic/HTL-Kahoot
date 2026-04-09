@@ -25,6 +25,14 @@ interface NavItem {
     match?: (pathname: string) => boolean;
 }
 
+const studentItems: NavItem[] = [
+    {
+        title: "Dashboard",
+        href: "/student/dashboard",
+        icon: LayoutDashboard,
+    },
+];
+
 const teacherItems: NavItem[] = [
     {
         title: "Dashboard",
@@ -70,8 +78,14 @@ export function MobileNav(): ReactNode {
 
     const userRoles = user.roles?.map((r) => r.name) ?? [];
     const isAdmin = userRoles.some((r) => r === "admin" || r === "superadmin");
+    const isTeacher = userRoles.some((r) => r === "teacher");
+    const isStudent = userRoles.some((r) => r === "student");
 
-    const items: NavItem[] = [...teacherItems, ...(isAdmin ? adminItems : [])];
+    const items: NavItem[] = [
+        ...(isStudent ? studentItems : []),
+        ...(isTeacher ? teacherItems : []),
+        ...(isAdmin ? adminItems : []),
+    ];
 
     const showMoreButton = items.length > 4;
     const visibleItems = showMoreButton ? items.slice(0, 4) : items;
