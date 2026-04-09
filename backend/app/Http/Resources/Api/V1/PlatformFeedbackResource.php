@@ -25,6 +25,7 @@ class PlatformFeedbackResource extends JsonResource
             'id'                => $this->id,
             'message'           => $this->message,
             'is_constructive'   => (bool) $this->is_constructive,
+            'moderation_status' => $this->moderation_status ?? 'pending',
             'moderation_reason' => $this->moderation_reason,
             'is_resolved'       => $this->resolved_at !== null,
             'resolved_at'       => $this->resolved_at,
