@@ -26,6 +26,7 @@ type AnswerDistributionData = {
     total_wrong: number;
     total_unanswered: number;
     correct_percentage: number;
+    total_score: number;
 };
 
 type QuizHistoryItem = {
@@ -39,6 +40,20 @@ type QuizHistoryItem = {
     total_score: number;
     finished_at: string | null;
 };
+
+type QuizHistoryMeta = {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+};
+
+type QuizHistoryResponse = {
+    data: QuizHistoryItem[];
+    meta: QuizHistoryMeta;
+};
+
+const HISTORY_PAGE_SIZE = 5;
 
 const formatDate = (value: string | null): string => {
     if (!value) return "—";
@@ -58,21 +73,22 @@ export default function StudentDashboardPage() {
     const [completedQuizzes, setCompletedQuizzes] = useState<number>(0);
     const [distribution, setDistribution] = useState<AnswerDistributionData | null>(null);
     const [history, setHistory] = useState<QuizHistoryItem[]>([]);
+    const [historyMeta, setHistoryMeta] = useState<QuizHistoryMeta | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isHistoryLoading, setIsHistoryLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const PAGE_SIZE = 5;
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     useEffect(() => {
         if (!user?.id) return;
 
-        const fetchAll = async () => {
+        const fetchSummary = async () => {
             setIsLoading(true);
             setError(null);
             try {
-                const [completedRes, distributionRes, historyRes] = await Promise.all([
+                const [completedRes, distributionRes] = await Promise.all([
                     apiFetch<{ data: CompletedQuizzesData }>(
                         `/v1/users/${user.id}/completed-quizzes`,
                         { method: "GET" },
@@ -81,15 +97,10 @@ export default function StudentDashboardPage() {
                         `/v1/users/${user.id}/answer-distribution`,
                         { method: "GET" },
                     ),
-                    apiFetch<{ data: QuizHistoryItem[] }>(
-                        `/v1/users/${user.id}/quiz-history`,
-                        { method: "GET" },
-                    ),
                 ]);
 
                 setCompletedQuizzes(completedRes.data?.completed_quizzes ?? 0);
                 setDistribution(distributionRes.data ?? null);
-                setHistory(historyRes.data ?? []);
             } catch (err) {
                 if (err instanceof ApiError && err.status === 401) {
                     setError("Du bist nicht angemeldet. Bitte melde dich erneut an.");
@@ -103,25 +114,47 @@ export default function StudentDashboardPage() {
             }
         };
 
-        fetchAll();
+        fetchSummary();
     }, [user?.id]);
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const fetchHistory = async () => {
+            setIsHistoryLoading(true);
+            try {
+                const historyRes = await apiFetch<QuizHistoryResponse>(
+                    `/v1/users/${user.id}/quiz-history?page=${currentPage}&per_page=${HISTORY_PAGE_SIZE}`,
+                    { method: "GET" },
+                );
+                setHistory(historyRes.data ?? []);
+                setHistoryMeta(historyRes.meta ?? null);
+            } catch (err) {
+                if (err instanceof ApiError && err.status === 401) {
+                    setError("Du bist nicht angemeldet. Bitte melde dich erneut an.");
+                } else if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("Die Historie konnte nicht geladen werden.");
+                }
+            } finally {
+                setIsHistoryLoading(false);
+            }
+        };
+
+        fetchHistory();
+    }, [user?.id, currentPage]);
 
     const totalAnswered = useMemo(
         () => (distribution ? distribution.total_correct + distribution.total_wrong : 0),
         [distribution],
     );
 
-    const totalScore = useMemo(
-        () => history.reduce((sum, item) => sum + (item.total_score ?? 0), 0),
-        [history],
-    );
+    const totalScore = distribution?.total_score ?? 0;
 
-    const totalPages = Math.max(1, Math.ceil(history.length / PAGE_SIZE));
+    const totalItems = historyMeta?.total ?? 0;
+    const totalPages = Math.max(1, historyMeta?.last_page ?? 1);
     const safePage = Math.min(currentPage, totalPages);
-    const paginatedHistory = useMemo(
-        () => history.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
-        [history, safePage],
-    );
 
     useEffect(() => {
         if (currentPage > totalPages) {
@@ -262,21 +295,21 @@ export default function StudentDashboardPage() {
                             <h2 className="text-sm font-semibold text-foreground">
                                 Quiz-Historie
                             </h2>
-                            {!isLoading && history.length > 0 && (
+                            {historyMeta && totalItems > 0 && (
                                 <span className="ml-auto text-xs tabular-nums text-muted-foreground backdrop-blur-sm bg-background/30 px-2.5 py-1 rounded-lg">
-                                    {history.length} {history.length === 1 ? "Quiz" : "Quizzes"}
+                                    {totalItems} {totalItems === 1 ? "Quiz" : "Quizzes"}
                                 </span>
                             )}
                         </div>
                     </div>
                     <div className="px-4 sm:px-6 pb-5 sm:pb-6">
-                        {isLoading ? (
+                        {isHistoryLoading && history.length === 0 ? (
                             <div className="space-y-2" aria-label="Lade Historie">
                                 {Array.from({ length: 3 }).map((_, i) => (
                                     <Skeleton key={i} className="h-16 w-full rounded-xl" />
                                 ))}
                             </div>
-                        ) : history.length === 0 ? (
+                        ) : totalItems === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center">
                                 <div className="size-12 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center mb-3">
                                     <Trophy className="size-5 text-primary" aria-hidden="true" />
@@ -290,8 +323,11 @@ export default function StudentDashboardPage() {
                             </div>
                         ) : (
                             <>
-                                <ul className="space-y-2">
-                                    {paginatedHistory.map((item) => (
+                                <ul
+                                    className={`space-y-2 transition-opacity duration-200 ${isHistoryLoading ? "opacity-50" : "opacity-100"}`}
+                                    aria-busy={isHistoryLoading}
+                                >
+                                    {history.map((item) => (
                                         <HistoryRow key={item.session_id} item={item} />
                                     ))}
                                 </ul>
@@ -303,15 +339,15 @@ export default function StudentDashboardPage() {
                                         <p className="text-xs text-muted-foreground tabular-nums">
                                             Zeige{" "}
                                             <span className="font-medium text-foreground">
-                                                {(safePage - 1) * PAGE_SIZE + 1}
+                                                {(safePage - 1) * HISTORY_PAGE_SIZE + 1}
                                             </span>
                                             {"–"}
                                             <span className="font-medium text-foreground">
-                                                {Math.min(safePage * PAGE_SIZE, history.length)}
+                                                {Math.min(safePage * HISTORY_PAGE_SIZE, totalItems)}
                                             </span>{" "}
                                             von{" "}
                                             <span className="font-medium text-foreground">
-                                                {history.length}
+                                                {totalItems}
                                             </span>
                                         </p>
                                         <div className="flex items-center gap-2">
@@ -320,7 +356,7 @@ export default function StudentDashboardPage() {
                                                 onClick={() =>
                                                     setCurrentPage((p) => Math.max(1, p - 1))
                                                 }
-                                                disabled={safePage === 1}
+                                                disabled={safePage === 1 || isHistoryLoading}
                                                 className="cursor-pointer inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg border border-primary/15 bg-background/30 backdrop-blur-sm hover:bg-background/60 hover:border-primary/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-background/30 disabled:hover:border-primary/15"
                                                 aria-label="Vorherige Seite"
                                             >
@@ -343,7 +379,7 @@ export default function StudentDashboardPage() {
                                                         Math.min(totalPages, p + 1),
                                                     )
                                                 }
-                                                disabled={safePage === totalPages}
+                                                disabled={safePage === totalPages || isHistoryLoading}
                                                 className="cursor-pointer inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg border border-primary/15 bg-background/30 backdrop-blur-sm hover:bg-background/60 hover:border-primary/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-background/30 disabled:hover:border-primary/15"
                                                 aria-label="Nächste Seite"
                                             >
