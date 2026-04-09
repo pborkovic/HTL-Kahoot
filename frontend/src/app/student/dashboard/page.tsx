@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Trophy, CheckCircle2, XCircle, MinusCircle, History, Loader2 } from "lucide-react";
+import {
+    Trophy,
+    CheckCircle2,
+    XCircle,
+    MinusCircle,
+    History,
+    Loader2,
+    LayoutDashboard,
+    Target,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch, ApiError } from "@/lib/api";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type CompletedQuizzesData = {
     completed_quizzes: number;
@@ -107,190 +115,280 @@ export default function StudentDashboardPage() {
 
     if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="flex flex-col items-center gap-2">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">Lade...</p>
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="flex flex-col items-center gap-3">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary motion-reduce:animate-none" />
+                    <p className="text-sm text-muted-foreground">Lade Dashboard...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-background text-foreground px-4 md:px-6 py-6 md:py-8">
-            <div className="max-w-6xl mx-auto space-y-6">
-                <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-                            Mein Dashboard
+        <div className="flex-1 relative overflow-hidden">
+            {/* Background orbs */}
+            <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
+                <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/15 blur-3xl animate-pulse" />
+                <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-primary/10 blur-3xl animate-pulse [animation-delay:3s]" />
+            </div>
+
+            <div className="relative flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 lg:p-8 mx-auto max-w-[1920px]">
+                {/* Header */}
+                <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                        <LayoutDashboard className="size-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h1 className="text-xl font-semibold tracking-tight text-foreground truncate">
+                            Hallo, {displayName}
                         </h1>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            Willkommen zurück, {displayName}
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            {user.class_name
+                                ? `Klasse ${user.class_name} • Übersicht deiner Quiz-Statistiken`
+                                : "Übersicht deiner Quiz-Statistiken"}
                         </p>
                     </div>
-                    {user.class_name && (
-                        <Badge variant="secondary" className="self-start md:self-auto">
-                            Klasse: {user.class_name}
-                        </Badge>
-                    )}
-                </header>
+                </div>
 
                 {error && (
-                    <Card className="border-destructive/40 bg-destructive/5">
-                        <CardContent className="pt-6">
-                            <p className="text-sm text-destructive">{error}</p>
-                        </CardContent>
-                    </Card>
+                    <div
+                        role="alert"
+                        className="backdrop-blur-xl bg-destructive/10 border border-destructive/30 rounded-2xl shadow-xl shadow-destructive/5 px-4 sm:px-6 py-4"
+                    >
+                        <p className="text-sm text-destructive font-medium">{error}</p>
+                    </div>
                 )}
 
-                <section className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">
-                                Absolvierte Quizzes
-                            </CardTitle>
-                            <Trophy className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold">
-                                {isLoading ? "..." : completedQuizzes}
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">
-                                Richtige Antworten
-                            </CardTitle>
-                            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-500">
-                                {isLoading || !distribution ? "..." : distribution.total_correct}
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">
-                                Falsche Antworten
-                            </CardTitle>
-                            <XCircle className="h-4 w-4 text-red-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold text-red-600 dark:text-red-500">
-                                {isLoading || !distribution ? "..." : distribution.total_wrong}
-                            </p>
-                        </CardContent>
-                    </Card>
+                {/* KPI cards */}
+                <section
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+                    aria-label="Statistiken"
+                >
+                    <StatCard
+                        label="Absolvierte Quizzes"
+                        value={completedQuizzes}
+                        icon={<Trophy className="size-3.5 text-primary" />}
+                        isLoading={isLoading}
+                    />
+                    <StatCard
+                        label="Gesamtpunkte"
+                        value={totalScore}
+                        icon={<Target className="size-3.5 text-primary" />}
+                        isLoading={isLoading}
+                    />
+                    <StatCard
+                        label="Richtige Antworten"
+                        value={distribution?.total_correct ?? 0}
+                        icon={<CheckCircle2 className="size-3.5 text-primary" />}
+                        isLoading={isLoading || !distribution}
+                        tone="success"
+                    />
+                    <StatCard
+                        label="Falsche Antworten"
+                        value={distribution?.total_wrong ?? 0}
+                        icon={<XCircle className="size-3.5 text-primary" />}
+                        isLoading={isLoading || !distribution}
+                        tone="danger"
+                    />
                 </section>
 
-                <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="md:col-span-2">
-                        <CardHeader>
-                            <CardTitle className="text-base">Antwortverteilung</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading || !distribution ? (
-                                <p className="text-sm text-muted-foreground">Lade...</p>
-                            ) : totalAnswered + distribution.total_unanswered === 0 ? (
-                                <p className="text-sm text-muted-foreground">
-                                    Noch keine Antworten vorhanden.
-                                </p>
-                            ) : (
-                                <DistributionBar
-                                    correct={distribution.total_correct}
-                                    wrong={distribution.total_wrong}
-                                    unanswered={distribution.total_unanswered}
-                                />
+                {/* Distribution panel */}
+                <section className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">
+                    <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
+                        <div className="flex items-center gap-2.5">
+                            <div className="size-7 rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                                <Target className="size-3.5 text-primary" />
+                            </div>
+                            <h2 className="text-sm font-semibold text-foreground">
+                                Antwortverteilung
+                            </h2>
+                            {distribution && !isLoading && (
+                                <span className="ml-auto text-xs tabular-nums text-muted-foreground backdrop-blur-sm bg-background/30 px-2.5 py-1 rounded-lg">
+                                    {totalAnswered + distribution.total_unanswered} Fragen gesamt
+                                </span>
                             )}
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">Gesamtpunkte</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-3xl font-bold">
-                                {isLoading ? "..." : totalScore.toLocaleString("de-DE")}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Aus allen Quizzes summiert
-                            </p>
-                        </CardContent>
-                    </Card>
-                </section>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center gap-2">
-                        <History className="h-5 w-5 text-muted-foreground" />
-                        <CardTitle className="text-base">Quiz-Historie</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {isLoading ? (
-                            <p className="text-sm text-muted-foreground">Lade Historie...</p>
-                        ) : history.length === 0 ? (
+                        </div>
+                    </div>
+                    <div className="px-4 sm:px-6 pb-5 sm:pb-6">
+                        {isLoading || !distribution ? (
+                            <div className="space-y-3">
+                                <Skeleton className="h-3 w-full rounded-full" />
+                                <div className="flex gap-4">
+                                    <Skeleton className="h-3 w-24" />
+                                    <Skeleton className="h-3 w-24" />
+                                    <Skeleton className="h-3 w-28" />
+                                </div>
+                            </div>
+                        ) : totalAnswered + distribution.total_unanswered === 0 ? (
                             <p className="text-sm text-muted-foreground">
-                                Noch keine Quizzes absolviert. Tritt einem Spiel bei, um loszulegen.
+                                Noch keine Antworten vorhanden.
                             </p>
                         ) : (
-                            <div className="space-y-3">
-                                {history.map((item) => {
-                                    const rate =
-                                        item.total_questions > 0
-                                            ? (item.correct_answers / item.total_questions) * 100
-                                            : 0;
-                                    return (
-                                        <div
-                                            key={item.session_id}
-                                            className="flex flex-col md:flex-row md:items-center justify-between gap-3 border border-border/60 rounded-lg px-4 py-3 bg-background/50"
-                                        >
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium truncate">
-                                                    {item.quiz_title}
-                                                </p>
-                                                <p className="text-xs text-muted-foreground mt-0.5">
-                                                    {formatDate(item.finished_at)}
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-wrap items-center gap-3 md:gap-4">
-                                                <div className="flex items-center gap-1 text-xs">
-                                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                                                    <span>{item.correct_answers}</span>
-                                                </div>
-                                                <div className="flex items-center gap-1 text-xs">
-                                                    <XCircle className="h-3.5 w-3.5 text-red-500" />
-                                                    <span>{item.wrong_answers}</span>
-                                                </div>
-                                                <div className="flex items-center gap-1 text-xs">
-                                                    <MinusCircle className="h-3.5 w-3.5 text-muted-foreground" />
-                                                    <span>{item.unanswered}</span>
-                                                </div>
-                                                <div className="w-24 md:w-32 h-2 bg-muted rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full bg-primary transition-all"
-                                                        style={{ width: `${rate}%` }}
-                                                    />
-                                                </div>
-                                                <p className="text-sm font-semibold w-12 text-right">
-                                                    {rate.toFixed(0)}%
-                                                </p>
-                                                <Badge variant="outline" className="font-mono">
-                                                    {item.total_score.toLocaleString("de-DE")} P
-                                                </Badge>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                            <DistributionBar
+                                correct={distribution.total_correct}
+                                wrong={distribution.total_wrong}
+                                unanswered={distribution.total_unanswered}
+                                percentage={distribution.correct_percentage}
+                            />
                         )}
-                    </CardContent>
-                </Card>
+                    </div>
+                </section>
+
+                {/* History panel */}
+                <section className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">
+                    <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
+                        <div className="flex items-center gap-2.5">
+                            <div className="size-7 rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                                <History className="size-3.5 text-primary" />
+                            </div>
+                            <h2 className="text-sm font-semibold text-foreground">
+                                Quiz-Historie
+                            </h2>
+                            {!isLoading && history.length > 0 && (
+                                <span className="ml-auto text-xs tabular-nums text-muted-foreground backdrop-blur-sm bg-background/30 px-2.5 py-1 rounded-lg">
+                                    {history.length} {history.length === 1 ? "Quiz" : "Quizzes"}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="px-4 sm:px-6 pb-5 sm:pb-6">
+                        {isLoading ? (
+                            <div className="space-y-2" aria-label="Lade Historie">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <Skeleton key={i} className="h-16 w-full rounded-xl" />
+                                ))}
+                            </div>
+                        ) : history.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-12 text-center">
+                                <div className="size-12 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center mb-3">
+                                    <Trophy className="size-5 text-primary" aria-hidden="true" />
+                                </div>
+                                <p className="text-sm font-medium text-foreground">
+                                    Noch keine Quizzes absolviert
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+                                    Tritt einem Spiel bei, um deine Statistiken zu sehen.
+                                </p>
+                            </div>
+                        ) : (
+                            <ul className="space-y-2">
+                                {history.map((item) => (
+                                    <HistoryRow key={item.session_id} item={item} />
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </section>
             </div>
         </div>
+    );
+}
+
+type StatCardProps = {
+    label: string;
+    value: number;
+    icon: React.ReactNode;
+    isLoading: boolean;
+    tone?: "default" | "success" | "danger";
+};
+
+function StatCard({ label, value, icon, isLoading, tone = "default" }: StatCardProps) {
+    const valueClasses = {
+        default: "text-foreground",
+        success: "text-emerald-600 dark:text-emerald-500",
+        danger: "text-red-600 dark:text-red-500",
+    }[tone];
+
+    return (
+        <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">
+            <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-4 sm:pb-5">
+                <div className="flex items-center gap-2.5 mb-3">
+                    <div className="size-7 rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                        {icon}
+                    </div>
+                    <h3 className="text-xs font-medium text-muted-foreground">{label}</h3>
+                </div>
+                {isLoading ? (
+                    <Skeleton className="h-8 w-20" />
+                ) : (
+                    <p
+                        className={`text-2xl sm:text-3xl font-semibold tabular-nums tracking-tight ${valueClasses}`}
+                    >
+                        {value.toLocaleString("de-DE")}
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function HistoryRow({ item }: { item: QuizHistoryItem }) {
+    const rate =
+        item.total_questions > 0
+            ? (item.correct_answers / item.total_questions) * 100
+            : 0;
+
+    return (
+        <li>
+            <div className="group flex flex-col md:flex-row md:items-center justify-between gap-3 border border-primary/15 bg-background/30 backdrop-blur-sm rounded-xl px-4 py-3 hover:bg-background/50 hover:border-primary/30 transition-colors duration-200">
+                <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-foreground truncate">
+                        {item.quiz_title}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                        {formatDate(item.finished_at)}
+                    </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 md:gap-4">
+                    <div
+                        className="flex items-center gap-1 text-xs tabular-nums"
+                        title={`${item.correct_answers} richtig`}
+                    >
+                        <CheckCircle2
+                            className="size-3.5 text-emerald-500"
+                            aria-hidden="true"
+                        />
+                        <span>{item.correct_answers}</span>
+                    </div>
+                    <div
+                        className="flex items-center gap-1 text-xs tabular-nums"
+                        title={`${item.wrong_answers} falsch`}
+                    >
+                        <XCircle className="size-3.5 text-red-500" aria-hidden="true" />
+                        <span>{item.wrong_answers}</span>
+                    </div>
+                    <div
+                        className="flex items-center gap-1 text-xs tabular-nums"
+                        title={`${item.unanswered} unbeantwortet`}
+                    >
+                        <MinusCircle
+                            className="size-3.5 text-muted-foreground"
+                            aria-hidden="true"
+                        />
+                        <span>{item.unanswered}</span>
+                    </div>
+                    <div
+                        className="w-24 md:w-32 h-1.5 bg-background/60 rounded-full overflow-hidden border border-primary/10"
+                        role="progressbar"
+                        aria-valuenow={Math.round(rate)}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`Erfolgsquote ${rate.toFixed(0)}%`}
+                    >
+                        <div
+                            className="h-full bg-primary transition-all duration-500 motion-reduce:transition-none"
+                            style={{ width: `${rate}%` }}
+                        />
+                    </div>
+                    <p className="text-xs font-semibold w-10 text-right tabular-nums text-foreground">
+                        {rate.toFixed(0)}%
+                    </p>
+                    <span className="text-xs tabular-nums text-muted-foreground backdrop-blur-sm bg-background/30 px-2.5 py-1 rounded-lg border border-primary/10">
+                        {item.total_score.toLocaleString("de-DE")} P
+                    </span>
+                </div>
+            </div>
+        </li>
     );
 }
 
@@ -298,10 +396,12 @@ function DistributionBar({
     correct,
     wrong,
     unanswered,
+    percentage,
 }: {
     correct: number;
     wrong: number;
     unanswered: number;
+    percentage: number;
 }) {
     const total = correct + wrong + unanswered;
     if (total === 0) return null;
@@ -311,44 +411,77 @@ function DistributionBar({
     const unansweredPct = (unanswered / total) * 100;
 
     return (
-        <div className="space-y-3">
-            <div className="flex h-3 w-full overflow-hidden rounded-full bg-muted">
+        <div className="space-y-4">
+            <div className="flex items-baseline gap-2">
+                <p className="text-3xl font-semibold tabular-nums tracking-tight text-foreground">
+                    {percentage.toFixed(0)}%
+                </p>
+                <p className="text-xs text-muted-foreground">Erfolgsquote</p>
+            </div>
+            <div
+                className="flex h-2 w-full overflow-hidden rounded-full bg-background/60 border border-primary/10"
+                role="img"
+                aria-label={`Richtig ${correct}, Falsch ${wrong}, Unbeantwortet ${unanswered}`}
+            >
                 <div
-                    className="bg-emerald-500 transition-all"
+                    className="bg-emerald-500 transition-all duration-500 motion-reduce:transition-none"
                     style={{ width: `${correctPct}%` }}
                     title={`Richtig: ${correct}`}
                 />
                 <div
-                    className="bg-red-500 transition-all"
+                    className="bg-red-500 transition-all duration-500 motion-reduce:transition-none"
                     style={{ width: `${wrongPct}%` }}
                     title={`Falsch: ${wrong}`}
                 />
                 <div
-                    className="bg-muted-foreground/40 transition-all"
+                    className="bg-muted-foreground/40 transition-all duration-500 motion-reduce:transition-none"
                     style={{ width: `${unansweredPct}%` }}
                     title={`Unbeantwortet: ${unanswered}`}
                 />
             </div>
-            <div className="flex flex-wrap gap-4 text-xs">
-                <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-muted-foreground">Richtig</span>
-                    <span className="font-medium">{correct}</span>
-                    <span className="text-muted-foreground">({correctPct.toFixed(0)}%)</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-red-500" />
-                    <span className="text-muted-foreground">Falsch</span>
-                    <span className="font-medium">{wrong}</span>
-                    <span className="text-muted-foreground">({wrongPct.toFixed(0)}%)</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-muted-foreground/40" />
-                    <span className="text-muted-foreground">Unbeantwortet</span>
-                    <span className="font-medium">{unanswered}</span>
-                    <span className="text-muted-foreground">({unansweredPct.toFixed(0)}%)</span>
-                </div>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs">
+                <LegendItem
+                    color="bg-emerald-500"
+                    label="Richtig"
+                    value={correct}
+                    pct={correctPct}
+                />
+                <LegendItem
+                    color="bg-red-500"
+                    label="Falsch"
+                    value={wrong}
+                    pct={wrongPct}
+                />
+                <LegendItem
+                    color="bg-muted-foreground/40"
+                    label="Unbeantwortet"
+                    value={unanswered}
+                    pct={unansweredPct}
+                />
             </div>
+        </div>
+    );
+}
+
+function LegendItem({
+    color,
+    label,
+    value,
+    pct,
+}: {
+    color: string;
+    label: string;
+    value: number;
+    pct: number;
+}) {
+    return (
+        <div className="flex items-center gap-1.5">
+            <span className={`h-2 w-2 rounded-full ${color}`} aria-hidden="true" />
+            <span className="text-muted-foreground">{label}</span>
+            <span className="font-medium tabular-nums text-foreground">{value}</span>
+            <span className="text-muted-foreground tabular-nums">
+                ({pct.toFixed(0)}%)
+            </span>
         </div>
     );
 }
