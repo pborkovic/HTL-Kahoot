@@ -35,7 +35,7 @@ class PlatformFeedbackRepository extends BaseRepository implements PlatformFeedb
     {
         $query = $this->model->newQuery()
             ->with(relations: ['author', 'resolver'])
-            ->where(column: 'is_constructive', operator: '=', value: true)
+            ->where(column: 'moderation_status', operator: '=', value: 'approved')
             ->orderBy(column: 'created_at', direction: 'desc');
 
         if ($status === 'open') {
