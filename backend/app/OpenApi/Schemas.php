@@ -292,4 +292,29 @@ use OpenApi\Attributes\Schema;
         new Property(property: 'created_at', type: 'string', format: 'date-time'),
     ]
 )]
+#[Schema(
+    schema: 'PlatformFeedback',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'message', type: 'string'),
+        new Property(property: 'is_constructive', type: 'boolean'),
+        new Property(property: 'moderation_reason', type: 'string', nullable: true),
+        new Property(property: 'is_resolved', type: 'boolean'),
+        new Property(property: 'resolved_at', type: 'string', format: 'date-time', nullable: true),
+        new Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new Property(property: 'author', type: 'object', nullable: true, properties: [
+            new Property(property: 'id', type: 'string', format: 'uuid'),
+            new Property(property: 'display_name', type: 'string', nullable: true),
+            new Property(property: 'email', type: 'string', format: 'email'),
+            new Property(property: 'class_name', type: 'string', nullable: true),
+        ]),
+        new Property(property: 'resolver', type: 'object', nullable: true, properties: [
+            new Property(property: 'id', type: 'string', format: 'uuid'),
+            new Property(property: 'display_name', type: 'string', nullable: true),
+            new Property(property: 'email', type: 'string', format: 'email'),
+        ]),
+    ]
+)]
 abstract class Schemas {}
