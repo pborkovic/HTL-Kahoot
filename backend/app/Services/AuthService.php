@@ -59,7 +59,13 @@ class AuthService implements AuthServiceContract
     {
         return Socialite::driver('azure')
             ->stateless()
-            ->scopes(scopes: ['User.Read'])
+            ->scopes(scopes: [
+                'openid',
+                'profile',
+                'email',
+                'offline_access',
+                'User.Read',
+            ])
             ->redirect()
             ->getTargetUrl();
     }
@@ -91,17 +97,17 @@ class AuthService implements AuthServiceContract
 
         $accessToken = $socialiteUser->token;
 
+        $profile = $this->graphService->getUserProfile(accessToken: $accessToken);
         $groups = $this->graphService->getUserGroups(accessToken: $accessToken);
-
+        $entraDto = $this->applyGraphProfile(entraDto: $entraDto, profile: $profile);
         $existingUser = $this->userRepository->findByExternalId(
             externalId: $entraDto->externalId
         );
-
+        $photoFileKey = $existingUser?->id ?? $entraDto->externalId;
         $avatarUrl = $this->graphService->getUserPhoto(
             accessToken: $accessToken,
-            userId: $existingUser?->id ?? $entraDto->externalId,
+            userId: $photoFileKey,
         );
-
         $enrichedDto = $entraDto->withGraphData(groups: $groups, avatarUrl: $avatarUrl);
 
         if ($existingUser) {
@@ -129,6 +135,51 @@ class AuthService implements AuthServiceContract
         }
 
         return $newUser;
+    }
+
+    /**
+     * Merge richer Graph /me profile data into the DTO.
+     *
+     * Socialite's Entra driver only gives us a loose displayName. With
+     * User.Read.All we can pull structured givenName / surname and
+     * reconstruct a clean display name when the raw value is empty or
+     * doesn't follow the "LASTNAME Firstname, CLASS" convention.
+     *
+     * @param EntraUserDto $entraDto
+     * @param array<string, mixed>|null $profile
+     *
+     * @return EntraUserDto
+     */
+    private function applyGraphProfile(EntraUserDto $entraDto, ?array $profile): EntraUserDto
+    {
+        if ($profile === null) {
+            return $entraDto;
+        }
+
+        $displayName = $entraDto->displayName;
+
+        if ($displayName === '') {
+            $given = trim(string: (string) ($profile['given_name'] ?? ''));
+            $surname = trim(string: (string) ($profile['surname'] ?? ''));
+            $composed = trim(string: $given . ' ' . $surname);
+
+            if ($composed !== '') {
+                $displayName = $composed;
+            } elseif (! empty($profile['display_name'])) {
+                $displayName = (string) $profile['display_name'];
+            }
+        }
+
+        $email = $entraDto->email ?: (string) ($profile['mail'] ?? $profile['user_principal_name'] ?? '');
+
+        return new EntraUserDto(
+            externalId: $entraDto->externalId,
+            email: $email,
+            displayName: $displayName,
+            className: $entraDto->className,
+            groups: $entraDto->groups,
+            avatarUrl: $entraDto->avatarUrl,
+        );
     }
 
     /**
