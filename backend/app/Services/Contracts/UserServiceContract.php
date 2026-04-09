@@ -124,19 +124,22 @@ interface UserServiceContract extends BaseServiceContract
      *     total_correct: int,
      *     total_wrong: int,
      *     total_unanswered: int,
-     *     correct_percentage: float
+     *     correct_percentage: float,
+     *     total_score: int
      * }
      */
     public function getAnswerDistribution(string $userId): array;
 
     /**
-     * Get the list of completed quizzes with per-quiz breakdown.
+     * Get a paginated list of completed quizzes with per-quiz breakdown.
      *
-     * @param string $userId The user ID.
+     * @param string $userId  The user ID.
+     * @param int    $page    The 1-based page number.
+     * @param int    $perPage Items per page.
      *
-     * @return array
+     * @return array{data: array, meta: array{current_page: int, per_page: int, total: int, last_page: int}}
      */
-    public function getQuizHistory(string $userId): array;
+    public function getQuizHistory(string $userId, int $page = 1, int $perPage = 10): array;
 
     /**
      * Get a user's preferences.
