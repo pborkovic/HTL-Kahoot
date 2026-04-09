@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Jobs\ModeratePlatformFeedbackJob;
 use App\Models\PlatformFeedback;
 use App\Models\User;
 use App\Repositories\Contracts\PlatformFeedbackRepositoryContract;
-use App\Services\Contracts\FeedbackModerationServiceContract;
 use App\Services\Contracts\PlatformFeedbackServiceContract;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -23,7 +23,6 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
 {
     public function __construct(
         private readonly PlatformFeedbackRepositoryContract $repository,
-        private readonly FeedbackModerationServiceContract $moderator,
     ) {}
 
     /**
@@ -34,14 +33,15 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
     public function submit(User $user, string $message): PlatformFeedback
     {
         try {
-            $verdict = $this->moderator->moderate(message: $message);
-
             $feedback = $this->repository->create(data: [
                 'user_id'           => $user->id,
                 'message'           => $message,
-                'is_constructive'   => $verdict['is_constructive'],
-                'moderation_reason' => $verdict['reason'],
+                'is_constructive'   => false,
+                'moderation_status' => 'pending',
+                'moderation_reason' => null,
             ]);
+
+            ModeratePlatformFeedbackJob::dispatch($feedback->id);
 
             return $feedback->fresh(with: ['author']) ?? $feedback;
         } catch (Exception $e) {
@@ -105,6 +105,57 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             return $feedback->fresh(with: ['author', 'resolver']) ?? $feedback;
         } catch (Exception $e) {
             Log::error(message: "Service error resolving platform feedback: {$e->getMessage()}", context: [
+                'service'     => self::class,
+                'feedback_id' => $feedback->id,
+                'trace'       => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function findById(string $id): ?PlatformFeedback
+    {
+        try {
+            $feedback = $this->repository->find(id: $id);
+
+            return $feedback;
+        } catch (Exception $e) {
+            Log::error(message: "Service error finding platform feedback: {$e->getMessage()}", context: [
+                'service'     => self::class,
+                'feedback_id' => $id,
+                'trace'       => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function applyModerationVerdict(
+        PlatformFeedback $feedback,
+        bool $isConstructive,
+        ?string $reason,
+    ): PlatformFeedback {
+        try {
+            $updated = $this->repository->update(id: $feedback->id, data: [
+                'is_constructive'   => $isConstructive,
+                'moderation_reason' => $reason,
+                'moderation_status' => $isConstructive ? 'approved' : 'rejected',
+            ]);
+
+            return $updated;
+        } catch (Exception $e) {
+            Log::error(message: "Service error applying moderation verdict: {$e->getMessage()}", context: [
                 'service'     => self::class,
                 'feedback_id' => $feedback->id,
                 'trace'       => $e->getTraceAsString(),
