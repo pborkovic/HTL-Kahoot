@@ -2,6 +2,13 @@
 
 Laravel 12 backend + Next.js 16 frontend, orchestrated via Docker Compose and Traefik.
 
+## Authors
+
+- Philipp Borkovic
+- Julius Ball
+- Benjamin Smetana
+- Anton Pfurtscheller
+
 ## Requirements
 
 - Docker + Docker Compose
@@ -58,10 +65,8 @@ This writes `backend/storage/api-docs/api-docs.json` (and `openapi.yaml`).
 Open the Swagger UI in the browser:
 
 ```
-http://gamquiz.localhost/api/documentation
+http://localhost:8081/api/docs
 ```
-
-The raw JSON spec is served at `http://gamquiz.localhost/docs`.
 
 ## Generated Code Docs
 
