@@ -15,10 +15,11 @@ class PlatformFeedback extends Model
     protected $table = 'platform_feedback';
     protected $guarded = [];
     protected $casts = [
-        'is_constructive' => 'bool',
-        'resolved_at'     => 'datetime',
-        'created_at'      => 'datetime',
-        'updated_at'      => 'datetime',
+        'is_constructive'   => 'bool',
+        'moderation_status' => 'string',
+        'resolved_at'       => 'datetime',
+        'created_at'        => 'datetime',
+        'updated_at'        => 'datetime',
     ];
 
     /**
