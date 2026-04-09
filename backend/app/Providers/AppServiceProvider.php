@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Permission;
+use App\Models\PlatformFeedback;
 use App\Models\Question;
 use App\Models\QuestionPool;
 use App\Models\Quiz;
@@ -10,6 +11,7 @@ use App\Models\Role;
 use App\Models\Session;
 use App\Models\User;
 use App\Policies\PermissionPolicy;
+use App\Policies\PlatformFeedbackPolicy;
 use App\Policies\QuestionPolicy;
 use App\Policies\QuestionPoolPolicy;
 use App\Policies\QuizPolicy;
@@ -17,6 +19,7 @@ use App\Policies\RolePolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\Contracts\PermissionRepositoryContract;
+use App\Repositories\Contracts\PlatformFeedbackRepositoryContract;
 use App\Repositories\Contracts\QuestionRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
 use App\Repositories\Contracts\ResponseRepositoryContract;
@@ -25,6 +28,7 @@ use App\Repositories\Contracts\SessionQuestionRepositoryContract;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Repositories\PermissionRepository;
+use App\Repositories\PlatformFeedbackRepository;
 use App\Repositories\QuestionRepository;
 use App\Repositories\ResponseRepository;
 use App\Repositories\RoleRepository;
@@ -36,7 +40,9 @@ use App\Services\AnswerEvaluationService;
 use App\Services\AuthService;
 use App\Services\Contracts\AnswerEvaluationServiceContract;
 use App\Services\Contracts\AuthServiceContract;
+use App\Services\Contracts\FeedbackModerationServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
+use App\Services\Contracts\PlatformFeedbackServiceContract;
 use App\Services\Contracts\RoleServiceContract;
 use App\Services\Contracts\SessionServiceContract;
 use App\Services\Contracts\MediaServiceContract;
@@ -47,9 +53,11 @@ use App\Services\Contracts\ResponseServiceContract;
 use App\Services\Contracts\SessionParticipantServiceContract;
 use App\Services\Contracts\SessionQuestionServiceContract;
 use App\Services\Contracts\UserServiceContract;
+use App\Services\FeedbackModerationService;
 use App\Services\MediaService;
 use App\Services\MicrosoftGraphService;
 use App\Services\PermissionService;
+use App\Services\PlatformFeedbackService;
 use App\Services\QuestionImportService;
 use App\Services\QuestionService;
 use App\Services\ResponseService;
@@ -100,6 +108,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: SessionQuestionRepositoryContract::class,
             concrete: SessionQuestionRepository::class
+        );
+        $this->app->bind(
+            abstract: PlatformFeedbackRepositoryContract::class,
+            concrete: PlatformFeedbackRepository::class
         );
 
         // Services
@@ -155,6 +167,14 @@ class AppServiceProvider extends ServiceProvider
             abstract: AnswerEvaluationServiceContract::class,
             concrete: AnswerEvaluationService::class
         );
+        $this->app->bind(
+            abstract: FeedbackModerationServiceContract::class,
+            concrete: FeedbackModerationService::class
+        );
+        $this->app->bind(
+            abstract: PlatformFeedbackServiceContract::class,
+            concrete: PlatformFeedbackService::class
+        );
     }
 
     public function boot(): void
@@ -191,6 +211,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(
             class: Permission::class,
             policy: PermissionPolicy::class
+        );
+        Gate::policy(
+            class: PlatformFeedback::class,
+            policy: PlatformFeedbackPolicy::class
         );
     }
 }
