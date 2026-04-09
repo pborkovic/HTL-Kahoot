@@ -299,6 +299,7 @@ use OpenApi\Attributes\Schema;
         new Property(property: 'id', type: 'string', format: 'uuid'),
         new Property(property: 'message', type: 'string'),
         new Property(property: 'is_constructive', type: 'boolean'),
+        new Property(property: 'moderation_status', type: 'string', enum: ['pending', 'approved', 'rejected'], example: 'pending'),
         new Property(property: 'moderation_reason', type: 'string', nullable: true),
         new Property(property: 'is_resolved', type: 'boolean'),
         new Property(property: 'resolved_at', type: 'string', format: 'date-time', nullable: true),
