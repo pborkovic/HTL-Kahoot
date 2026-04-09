@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -41,6 +42,40 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+function UserAvatar({
+    avatarUrl,
+    initials,
+    displayName,
+}: {
+    avatarUrl: string | null | undefined;
+    initials: string;
+    displayName: string;
+}): ReactNode {
+    const [hasError, setHasError] = useState<boolean>(false);
+
+    if (avatarUrl && !hasError) {
+        return (
+            <div className="size-8 rounded-xl overflow-hidden border border-primary/20 shrink-0 bg-primary/10">
+                <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    className="size-full object-cover"
+                    onError={() => setHasError(true)}
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className="size-8 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-xs font-semibold text-primary shrink-0"
+            aria-label={displayName}
+        >
+            {initials}
+        </div>
+    );
+}
 
 function ThemeIcon({ theme }: { theme: Theme }): ReactNode {
     if (theme === "dark")                    return <Moon className="size-4" />;
@@ -259,9 +294,11 @@ export function AppSidebar(): ReactNode {
                                     size="lg"
                                     className="data-[state=open]:bg-primary/10 cursor-pointer"
                                 >
-                                    <div className="size-8 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-xs font-semibold text-primary shrink-0">
-                                        {initials}
-                                    </div>
+                                    <UserAvatar
+                                        avatarUrl={user?.avatar_url}
+                                        initials={initials}
+                                        displayName={displayName}
+                                    />
                                     <div className="flex flex-col gap-0.5 leading-none min-w-0">
                                         <span className="text-sm font-medium truncate">{displayName}</span>
                                         <span className="text-[11px] text-muted-foreground capitalize">{primaryRole}</span>
