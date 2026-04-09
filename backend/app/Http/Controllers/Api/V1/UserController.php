@@ -457,12 +457,14 @@ class UserController extends Controller
 
     #[Get(
         path: '/api/v1/users/{id}/quiz-history',
-        description: 'Returns the list of completed quizzes with per-quiz breakdown of questions, correct/wrong answers, score, and completion time.',
+        description: 'Returns a paginated list of completed quizzes with per-quiz breakdown of questions, correct/wrong answers, score, and completion time.',
         summary: 'Get quiz history',
         security: [['sanctum' => []]],
         tags: ['Users'],
         parameters: [
             new Parameter(name: 'id', in: 'path', required: true, schema: new Schema(type: 'string', format: 'uuid')),
+            new Parameter(name: 'page', description: 'Page number (default: 1)', in: 'query', required: false, schema: new Schema(type: 'integer', minimum: 1)),
+            new Parameter(name: 'per_page', description: 'Items per page (default: 10, max: 50)', in: 'query', required: false, schema: new Schema(type: 'integer', minimum: 1, maximum: 50)),
         ],
         responses: [
             new Response(response: 200, description: 'Quiz history'),
@@ -471,13 +473,20 @@ class UserController extends Controller
             new Response(response: 404, description: 'Not found'),
         ]
     )]
-    public function quizHistory(User $user): JsonResponse
+    public function quizHistory(Request $request, User $user): JsonResponse
     {
         $this->authorize(ability: 'view', arguments: $user);
 
-        $data = $this->userService->getQuizHistory(userId: $user->id);
+        $page = max((int) $request->input(key: 'page', default: 1), 1);
+        $perPage = min(max((int) $request->input(key: 'per_page', default: 10), 1), 50);
 
-        return response()->json(data: ['data' => $data]);
+        $result = $this->userService->getQuizHistory(
+            userId: $user->id,
+            page: $page,
+            perPage: $perPage,
+        );
+
+        return response()->json(data: $result);
     }
 
     #[Get(
