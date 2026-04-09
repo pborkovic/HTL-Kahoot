@@ -15,6 +15,7 @@ export interface PlatformFeedback {
   id: string;
   message: string;
   is_constructive: boolean;
+  moderation_status: "pending" | "approved" | "rejected";
   moderation_reason: string | null;
   is_resolved: boolean;
   resolved_at: string | null;
