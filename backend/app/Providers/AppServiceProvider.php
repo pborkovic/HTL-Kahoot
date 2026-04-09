@@ -39,6 +39,7 @@ use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
 use App\Services\Contracts\SessionServiceContract;
+use App\Services\Contracts\MediaServiceContract;
 use App\Services\Contracts\MicrosoftGraphServiceContract;
 use App\Services\Contracts\QuestionImportServiceContract;
 use App\Services\Contracts\QuestionServiceContract;
@@ -46,6 +47,7 @@ use App\Services\Contracts\ResponseServiceContract;
 use App\Services\Contracts\SessionParticipantServiceContract;
 use App\Services\Contracts\SessionQuestionServiceContract;
 use App\Services\Contracts\UserServiceContract;
+use App\Services\MediaService;
 use App\Services\MicrosoftGraphService;
 use App\Services\PermissionService;
 use App\Services\QuestionImportService;
@@ -128,6 +130,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: QuestionImportServiceContract::class,
             concrete: QuestionImportService::class
+        );
+        $this->app->bind(
+            abstract: MediaServiceContract::class,
+            concrete: MediaService::class
         );
         $this->app->bind(
             abstract: MicrosoftGraphServiceContract::class,
