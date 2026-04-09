@@ -210,7 +210,15 @@ export default function FeedbackPage(): ReactNode {
 }
 
 function StatusBadge({ feedback }: { feedback: PlatformFeedback }): ReactNode {
-    if (!feedback.is_constructive) {
+    if (feedback.moderation_status === "pending") {
+        return (
+            <span className="rounded-full bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/30 px-2 py-0.5 inline-flex items-center gap-1">
+                <Loader2 className="size-3 animate-spin" />
+                KI-Prüfung läuft
+            </span>
+        );
+    }
+    if (feedback.moderation_status === "rejected") {
         return (
             <span className="rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 px-2 py-0.5">
                 Nicht freigegeben
@@ -226,7 +234,7 @@ function StatusBadge({ feedback }: { feedback: PlatformFeedback }): ReactNode {
     }
     return (
         <span className="rounded-full bg-primary/15 text-primary border border-primary/30 px-2 py-0.5">
-            In Prüfung
+            In Bearbeitung
         </span>
     );
 }
