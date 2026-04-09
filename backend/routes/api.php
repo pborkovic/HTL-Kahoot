@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\Api\V1\PlatformFeedbackController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -101,6 +102,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('{role}', [RoleController::class, 'destroy']);
             Route::post('{role}/permissions', [RoleController::class, 'addPermission']);
             Route::delete('{role}/permissions', [RoleController::class, 'removePermission']);
+        });
+
+        Route::prefix('feedback')->group(function () {
+            Route::get('/', [PlatformFeedbackController::class, 'index']);
+            Route::post('/', [PlatformFeedbackController::class, 'store']);
+            Route::get('me', [PlatformFeedbackController::class, 'mine']);
+            Route::patch('{feedback}/resolve', [PlatformFeedbackController::class, 'resolve']);
+            Route::patch('{feedback}/reopen', [PlatformFeedbackController::class, 'reopen']);
         });
 
         Route::prefix('permissions')->group(function () {
