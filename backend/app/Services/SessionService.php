@@ -957,6 +957,11 @@ class SessionService extends BaseService implements SessionServiceContract
         ];
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function getModelForPolicy(): string
     {
         return Session::class;
