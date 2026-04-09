@@ -20,6 +20,7 @@ import {
     Moon,
     Contrast,
     Eye,
+    MessageSquare,
 } from "lucide-react";
 import { useTheme, THEMES, type Theme } from "@/components/ThemeProvider";
 import { useAuth } from "@/context/AuthContext";
@@ -123,7 +124,18 @@ const adminItems = [
         href: "/admin/users",
         icon: Users,
     },
+    {
+        title: "Feedback",
+        href: "/admin/feedback",
+        icon: MessageSquare,
+    },
 ];
+
+const feedbackItem = {
+    title: "Feedback",
+    href: "/feedback",
+    icon: MessageSquare,
+};
 
 export function AppSidebar(): ReactNode {
     const pathname = usePathname();
@@ -186,6 +198,21 @@ export function AppSidebar(): ReactNode {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+                            {!isAdmin && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname === feedbackItem.href}
+                                        tooltip={feedbackItem.title}
+                                        className="cursor-pointer"
+                                    >
+                                        <Link href={feedbackItem.href}>
+                                            <feedbackItem.icon className="size-4" />
+                                            <span>{feedbackItem.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
                         </SidebarMenu>
                     </SidebarGroup>
                 )}
@@ -211,6 +238,21 @@ export function AppSidebar(): ReactNode {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         ))}
+                        {!isAdmin && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={pathname === feedbackItem.href}
+                                    tooltip={feedbackItem.title}
+                                    className="cursor-pointer"
+                                >
+                                    <Link href={feedbackItem.href}>
+                                        <feedbackItem.icon className="size-4" />
+                                        <span>{feedbackItem.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
                     </SidebarMenu>
                 </SidebarGroup>
                 )}
