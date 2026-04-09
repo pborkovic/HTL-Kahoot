@@ -19,6 +19,9 @@ use App\Models\SessionQuestion;
 use App\Models\User;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Services\Base\BaseService;
+use App\Services\Contracts\ResponseServiceContract;
+use App\Services\Contracts\SessionParticipantServiceContract;
+use App\Services\Contracts\SessionQuestionServiceContract;
 use App\Services\Contracts\SessionServiceContract;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -30,8 +33,12 @@ class SessionService extends BaseService implements SessionServiceContract
 {
     protected SessionRepositoryContract $repository;
 
-    public function __construct(SessionRepositoryContract $repository)
-    {
+    public function __construct(
+        SessionRepositoryContract $repository,
+        private readonly ResponseServiceContract $responseService,
+        private readonly SessionParticipantServiceContract $participantService,
+        private readonly SessionQuestionServiceContract $sessionQuestionService,
+    ) {
         $this->repository = $repository;
     }
 
@@ -84,7 +91,7 @@ class SessionService extends BaseService implements SessionServiceContract
             throw new RuntimeException(message: 'Dieses Spiel hat bereits begonnen oder ist beendet.');
         }
 
-        $existing = $this->repository->findParticipantByUserId(session: $session, userId: $user->id);
+        $existing = $this->participantService->findByUserId(session: $session, userId: $user->id);
 
         if ($existing) {
             return $existing;
@@ -92,7 +99,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $nickname = $user->display_name ?? $user->username ?? explode(separator: '@', string: $user->email)[0];
 
-        $participant = $this->repository->createParticipant(session: $session, data: [
+        $participant = $this->participantService->createForSession(session: $session, data: [
             'user_id'      => $user->id,
             'nickname'     => $nickname,
             'total_score'  => 0,
@@ -151,7 +158,7 @@ class SessionService extends BaseService implements SessionServiceContract
                 : $quizQuestions;
 
             foreach ($order as $index => $quizQuestion) {
-                $this->repository->createSessionQuestion(session: $session, data: [
+                $this->sessionQuestionService->createForSession(session: $session, data: [
                     'quiz_question_id' => $quizQuestion->id,
                     'display_order'    => $index,
                     'opened_at'        => $index === 0 ? now() : null,
@@ -172,7 +179,7 @@ class SessionService extends BaseService implements SessionServiceContract
             event: new GameStarted(gamePin: $gamePin)
         );
 
-        $totalQuestions = $this->repository->countSessionQuestions(session: $result);
+        $totalQuestions = $this->sessionQuestionService->countForSession(session: $result);
         broadcast(event: new QuestionOpened(
             gamePin: $gamePin,
             questionIndex: 0,
@@ -197,7 +204,7 @@ class SessionService extends BaseService implements SessionServiceContract
         $currentQuestion = $this->findCurrentSessionQuestion(session: $session);
 
         if (!$currentQuestion->closed_at) {
-            $this->repository->updateSessionQuestion(
+            $this->sessionQuestionService->updateSessionQuestion(
                 sessionQuestion: $currentQuestion,
                 data: ['closed_at' => now()],
             );
@@ -209,7 +216,7 @@ class SessionService extends BaseService implements SessionServiceContract
         }
 
         $nextIdx = $session->current_question_idx + 1;
-        $totalQuestions = $this->repository->countSessionQuestions(session: $session);
+        $totalQuestions = $this->sessionQuestionService->countForSession(session: $session);
 
         if ($nextIdx >= $totalQuestions) {
             $this->repository->updateSession(session: $session, data: [
@@ -220,12 +227,12 @@ class SessionService extends BaseService implements SessionServiceContract
 
             broadcast(event: new GameFinished(gamePin: $gamePin));
         } else {
-            $nextQuestion = $this->repository->findSessionQuestionByDisplayOrderOrFail(
+            $nextQuestion = $this->sessionQuestionService->findByDisplayOrderOrFail(
                 session: $session,
                 displayOrder: $nextIdx,
             );
 
-            $this->repository->updateSessionQuestion(
+            $this->sessionQuestionService->updateSessionQuestion(
                 sessionQuestion: $nextQuestion,
                 data: ['opened_at' => now()]
             );
@@ -256,7 +263,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
-        $this->repository->loadSessionQuestionRelations(
+        $this->sessionQuestionService->loadRelations(
             sessionQuestion: $sessionQuestion,
             relations: ['quizQuestion.questionVersion.answerOptions', 'quizQuestion.questionVersion.question.media'],
         );
@@ -271,7 +278,7 @@ class SessionService extends BaseService implements SessionServiceContract
             openedAt: $sessionQuestion->opened_at,
             timeLimit: $timeLimit
         );
-        $totalQuestions = $this->repository->countSessionQuestions(session: $session);
+        $totalQuestions = $this->sessionQuestionService->countForSession(session: $session);
 
         $sortedOptions = $questionVersion->answerOptions->sortBy(callback: 'sort_order')->values();
         $answerOptions = ($questionVersion->randomize_options ? $sortedOptions->shuffle()->values() : $sortedOptions)
@@ -324,7 +331,7 @@ class SessionService extends BaseService implements SessionServiceContract
         );
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
-        $this->repository->loadSessionQuestionRelations(
+        $this->sessionQuestionService->loadRelations(
             sessionQuestion: $sessionQuestion,
             relations: ['quizQuestion.questionVersion.answerOptions', 'quizQuestion.questionVersion.question'],
         );
@@ -357,7 +364,7 @@ class SessionService extends BaseService implements SessionServiceContract
             $studentAnswer = $answerData['answer_text'] ?? $answerData['answer'][0] ?? '';
             $submittedAnswer = [$studentAnswer];
 
-            $response = $this->repository->createResponse(sessionQuestion: $sessionQuestion, data: [
+            $response = $this->responseService->createForSessionQuestion(sessionQuestion: $sessionQuestion, data: [
                 'participant_id'    => $participant->id,
                 'answer'            => $submittedAnswer,
                 'is_correct'        => null,
@@ -410,7 +417,7 @@ class SessionService extends BaseService implements SessionServiceContract
             $scoreAwarded  = (int) round(num: ($baseScore + $streakBonus) * $gambleMultiplier);
 
             $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedAnswer, $isCorrect, $scoreAwarded, $timeTakenMs, $submittedAt, $newStreak, $gambleMultiplier): Response {
-                $response = $this->repository->createResponse(sessionQuestion: $sessionQuestion, data: [
+                $response = $this->responseService->createForSessionQuestion(sessionQuestion: $sessionQuestion, data: [
                     'participant_id'    => $participant->id,
                     'answer'            => $submittedAnswer,
                     'is_correct'        => $isCorrect,
@@ -420,12 +427,12 @@ class SessionService extends BaseService implements SessionServiceContract
                     'submitted_at'      => $submittedAt,
                 ]);
 
-                $this->repository->incrementParticipantScore(
+                $this->participantService->incrementScore(
                     participant: $participant,
                     amount: $scoreAwarded
                 );
 
-                $this->repository->updateParticipant(
+                $this->participantService->updateParticipant(
                     participant: $participant,
                     data: ['answer_streak' => $newStreak],
                 );
@@ -435,7 +442,7 @@ class SessionService extends BaseService implements SessionServiceContract
         }
 
         if ($isGamble) {
-            $this->repository->createGambleUse(data: [
+            $this->participantService->createGambleUse(data: [
                 'participant_id'      => $participant->id,
                 'session_question_id' => $sessionQuestion->id,
                 'multiplier'          => $gambleMultiplier,
@@ -445,8 +452,8 @@ class SessionService extends BaseService implements SessionServiceContract
 
         broadcast(event: new AnswerReceived(
             gamePin: $gamePin,
-            totalResponses: $this->repository->countResponses(sessionQuestion: $sessionQuestion),
-            totalParticipants: $this->repository->countParticipants(session: $session),
+            totalResponses: $this->responseService->countForSessionQuestion(sessionQuestion: $sessionQuestion),
+            totalParticipants: $this->participantService->countForSession(session: $session),
         ));
 
         return $response;
@@ -460,11 +467,11 @@ class SessionService extends BaseService implements SessionServiceContract
     public function getSessionStatus(string $gamePin): array
     {
         $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
-        $totalQuestions = $this->repository->countSessionQuestions(session: $session);
+        $totalQuestions = $this->sessionQuestionService->countForSession(session: $session);
         $isQuestionOpen = false;
 
         if ($session->status === 'active' && $session->current_question_idx !== null) {
-            $currentQuestion = $this->repository->findSessionQuestionByDisplayOrder(
+            $currentQuestion = $this->sessionQuestionService->findByDisplayOrder(
                 session: $session,
                 displayOrder: $session->current_question_idx,
             );
@@ -503,7 +510,7 @@ class SessionService extends BaseService implements SessionServiceContract
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
         if (!$sessionQuestion->closed_at) {
-            $this->repository->updateSessionQuestion(
+            $this->sessionQuestionService->updateSessionQuestion(
                 sessionQuestion: $sessionQuestion,
                 data: ['closed_at' => now()],
             );
@@ -526,7 +533,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
-        $this->repository->loadSessionQuestionRelations(
+        $this->sessionQuestionService->loadRelations(
             sessionQuestion: $sessionQuestion,
             relations: [
                 'responses',
@@ -536,7 +543,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $answerOptions = $sessionQuestion->quizQuestion->questionVersion->answerOptions;
         $responses = $sessionQuestion->responses;
-        $totalParticipants = $this->repository->countParticipants(session: $session);
+        $totalParticipants = $this->participantService->countForSession(session: $session);
 
         $distribution = $answerOptions
             ->sortBy(callback: 'sort_order')
@@ -590,13 +597,13 @@ class SessionService extends BaseService implements SessionServiceContract
             relations: 'quiz'
         );
 
-        $hasPending = $this->repository->hasPendingFreeTextEvaluations(session: $session);
+        $hasPending = $this->responseService->hasPendingEvaluations(session: $session);
 
         return [
             'session_id'               => $session->id,
             'quiz_title'               => $session->quiz->title,
-            'total_questions'          => $this->repository->countSessionQuestions(session: $session),
-            'total_participants'       => $this->repository->countParticipants(session: $session),
+            'total_questions'          => $this->sessionQuestionService->countForSession(session: $session),
+            'total_participants'       => $this->participantService->countForSession(session: $session),
             'leaderboard'              => $this->buildLeaderboard(session: $session),
             'has_pending_evaluations'  => $hasPending,
         ];
@@ -620,7 +627,7 @@ class SessionService extends BaseService implements SessionServiceContract
             user: $user
         );
 
-        $sessionQuestions = $this->repository->getSessionQuestionsWithParticipantResponses(
+        $sessionQuestions = $this->sessionQuestionService->getWithParticipantResponses(
             session: $session,
             participantId: $participant->id,
         );
@@ -674,7 +681,7 @@ class SessionService extends BaseService implements SessionServiceContract
             relations: ['quiz', 'participants']
         );
 
-        $sessionQuestions = $this->repository->getSessionQuestionsWithAllResponses(session: $session);
+        $sessionQuestions = $this->sessionQuestionService->getWithAllResponses(session: $session);
 
         $participants = $session->participants
             ->sortByDesc(callback: 'total_score')
@@ -749,9 +756,9 @@ class SessionService extends BaseService implements SessionServiceContract
             relations: 'quiz'
         );
 
-        $totalQuestions = $this->repository->countSessionQuestions(session: $session);
-        $sessionQuestions = $this->repository->getSessionQuestionsWithAllResponses(session: $session);
-        $participants = $this->repository->getParticipantsWithResponses(session: $session);
+        $totalQuestions = $this->sessionQuestionService->countForSession(session: $session);
+        $sessionQuestions = $this->sessionQuestionService->getWithAllResponses(session: $session);
+        $participants = $this->participantService->getWithResponses(session: $session);
 
         $rank = 0;
         $lastScore = null;
@@ -847,8 +854,8 @@ class SessionService extends BaseService implements SessionServiceContract
      */
     public function applyFreeTextEvaluation(string $responseId, string $participantId, bool $isCorrect, int $scoreAwarded): void
     {
-        $response = $this->repository->findResponseById(responseId: $responseId);
-        $participant = $this->repository->findParticipantById(participantId: $participantId);
+        $response = $this->responseService->findResponseById(responseId: $responseId);
+        $participant = $this->participantService->findParticipantById(participantId: $participantId);
 
         if (!$response || !$participant) {
             Log::warning(message: 'applyFreeTextEvaluation: response or participant not found', context: [
@@ -860,16 +867,16 @@ class SessionService extends BaseService implements SessionServiceContract
         }
 
         $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $scoreAwarded) {
-            $this->repository->updateResponse(response: $response, data: [
+            $this->responseService->updateResponse(response: $response, data: [
                 'is_correct'    => $isCorrect,
                 'score_awarded' => $scoreAwarded,
             ]);
 
             if ($scoreAwarded > 0) {
-                $this->repository->incrementParticipantScore(participant: $participant, amount: $scoreAwarded);
+                $this->participantService->incrementScore(participant: $participant, amount: $scoreAwarded);
             }
 
-            $this->repository->updateParticipant(participant: $participant, data: [
+            $this->participantService->updateParticipant(participant: $participant, data: [
                 'answer_streak' => $isCorrect
                     ? ($participant->answer_streak ?? 0) + 1
                     : 0,
@@ -887,13 +894,13 @@ class SessionService extends BaseService implements SessionServiceContract
         $session = $this->repository->findByGamePinOrFail(gamePin: $gamePin);
         $this->assertHost(session: $session, user: $teacher);
 
-        $response = $this->repository->findResponseById(responseId: $responseId);
+        $response = $this->responseService->findResponseById(responseId: $responseId);
 
         if (!$response) {
             throw new RuntimeException(message: 'Antwort nicht gefunden.');
         }
 
-        $participant = $this->repository->findParticipantById(participantId: $response->participant_id);
+        $participant = $this->participantService->findParticipantById(participantId: $response->participant_id);
 
         if (!$participant) {
             throw new RuntimeException(message: 'Teilnehmer nicht gefunden.');
@@ -904,7 +911,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         if ($isCorrect) {
             $sessionQuestion = $response->sessionQuestion;
-            $this->repository->loadSessionQuestionRelations(
+            $this->sessionQuestionService->loadRelations(
                 sessionQuestion: $sessionQuestion,
                 relations: ['quizQuestion.questionVersion'],
             );
@@ -924,7 +931,7 @@ class SessionService extends BaseService implements SessionServiceContract
         }
 
         $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $oldScore, $newScore) {
-            $this->repository->updateResponse(response: $response, data: [
+            $this->responseService->updateResponse(response: $response, data: [
                 'is_correct'    => $isCorrect,
                 'score_awarded' => $newScore,
             ]);
@@ -932,9 +939,9 @@ class SessionService extends BaseService implements SessionServiceContract
             $scoreDiff = $newScore - $oldScore;
 
             if ($scoreDiff > 0) {
-                $this->repository->incrementParticipantScore(participant: $participant, amount: $scoreDiff);
+                $this->participantService->incrementScore(participant: $participant, amount: $scoreDiff);
             } elseif ($scoreDiff < 0) {
-                $this->repository->updateParticipant(participant: $participant, data: [
+                $this->participantService->updateParticipant(participant: $participant, data: [
                     'total_score' => max(0, $participant->total_score + $scoreDiff),
                 ]);
             }
@@ -1008,7 +1015,7 @@ class SessionService extends BaseService implements SessionServiceContract
             throw new RuntimeException(message: 'Keine aktive Frage vorhanden.');
         }
 
-        return $this->repository->findSessionQuestionByDisplayOrderOrFail(
+        return $this->sessionQuestionService->findByDisplayOrderOrFail(
             session: $session,
             displayOrder: $session->current_question_idx,
         );
@@ -1028,7 +1035,7 @@ class SessionService extends BaseService implements SessionServiceContract
      */
     private function findParticipant(Session $session, User $user): SessionParticipant
     {
-        $participant = $this->repository->findParticipantByUserId(
+        $participant = $this->participantService->findByUserId(
             session: $session,
             userId: $user->id
         );
@@ -1118,7 +1125,7 @@ class SessionService extends BaseService implements SessionServiceContract
      */
     private function assertNotAlreadyAnswered(SessionQuestion $sessionQuestion, SessionParticipant $participant): void
     {
-        $exists = $this->repository->hasParticipantResponded(
+        $exists = $this->responseService->hasParticipantResponded(
             sessionQuestion: $sessionQuestion,
             participantId: $participant->id,
         );
@@ -1237,7 +1244,7 @@ class SessionService extends BaseService implements SessionServiceContract
      */
     private function buildLeaderboard(Session $session): array
     {
-        $participants = $this->repository->getParticipantsOrderedByScore(session: $session);
+        $participants = $this->participantService->getOrderedByScore(session: $session);
 
         return $participants->values()->map(callback: fn($p, $i) => [
             'rank'           => $i + 1,
