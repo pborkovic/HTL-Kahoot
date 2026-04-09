@@ -285,6 +285,7 @@ class UserService extends BaseService implements UserServiceContract
         $totalCorrect = 0;
         $totalWrong = 0;
         $totalUnanswered = 0;
+        $totalScore = 0;
 
         foreach ($participants as $participant) {
             $questionCount = $participant->session->sessionQuestions->count();
@@ -293,6 +294,7 @@ class UserService extends BaseService implements UserServiceContract
             $totalCorrect += $responses->where(key: 'is_correct', operator: '=', value: true)->count();
             $totalWrong += $responses->where(key: 'is_correct', operator: '=', value: false)->count();
             $totalUnanswered += $questionCount - $responses->count();
+            $totalScore += (int) $participant->total_score;
         }
 
         $totalAnswered = $totalCorrect + $totalWrong;
@@ -305,6 +307,7 @@ class UserService extends BaseService implements UserServiceContract
             'total_wrong'        => $totalWrong,
             'total_unanswered'   => $totalUnanswered,
             'correct_percentage' => $correctPercentage,
+            'total_score'        => $totalScore,
         ];
     }
 
@@ -313,11 +316,15 @@ class UserService extends BaseService implements UserServiceContract
      *
      * @author Philipp Borkovic
      */
-    public function getQuizHistory(string $userId): array
+    public function getQuizHistory(string $userId, int $page = 1, int $perPage = 10): array
     {
-        $participants = $this->repository->getFinishedParticipationsWithResponses(userId: $userId);
+        $paginator = $this->repository->paginateFinishedParticipationsWithResponses(
+            userId: $userId,
+            page: $page,
+            perPage: $perPage,
+        );
 
-        return $participants->map(callback: function (SessionParticipant $participant) {
+        $items = $paginator->getCollection()->map(callback: function (SessionParticipant $participant) {
             $session = $participant->session;
             $questionCount = $session->sessionQuestions->count();
             $responses = $participant->responses;
@@ -334,6 +341,16 @@ class UserService extends BaseService implements UserServiceContract
                 'finished_at'      => $session->finished_at,
             ];
         })->all();
+
+        return [
+            'data' => $items,
+            'meta' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'last_page'    => $paginator->lastPage(),
+            ],
+        ];
     }
 
     /**
