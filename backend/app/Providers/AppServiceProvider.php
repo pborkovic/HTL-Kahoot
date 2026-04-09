@@ -19,11 +19,17 @@ use App\Policies\UserPolicy;
 use App\Repositories\Contracts\PermissionRepositoryContract;
 use App\Repositories\Contracts\QuestionRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
+use App\Repositories\Contracts\ResponseRepositoryContract;
+use App\Repositories\Contracts\SessionParticipantRepositoryContract;
+use App\Repositories\Contracts\SessionQuestionRepositoryContract;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Repositories\PermissionRepository;
 use App\Repositories\QuestionRepository;
+use App\Repositories\ResponseRepository;
 use App\Repositories\RoleRepository;
+use App\Repositories\SessionParticipantRepository;
+use App\Repositories\SessionQuestionRepository;
 use App\Repositories\SessionRepository;
 use App\Repositories\UserRepository;
 use App\Services\AnswerEvaluationService;
@@ -74,6 +80,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: QuestionRepositoryContract::class,
             concrete: QuestionRepository::class
+        );
+        $this->app->bind(
+            abstract: ResponseRepositoryContract::class,
+            concrete: ResponseRepository::class
+        );
+        $this->app->bind(
+            abstract: SessionParticipantRepositoryContract::class,
+            concrete: SessionParticipantRepository::class
+        );
+        $this->app->bind(
+            abstract: SessionQuestionRepositoryContract::class,
+            concrete: SessionQuestionRepository::class
         );
 
         // Services
