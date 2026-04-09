@@ -489,7 +489,7 @@ class QuestionImportService implements QuestionImportServiceContract
     private function parseGiftMatching(string $answerContent, string $title): array
     {
         preg_match_all(
-            pattern: '/=\s*(.+?)\s*->\s*(.+?)(?=\s*=|\s*$)/s',
+            pattern: '/=\s*(.+?)\s*->\s*(.+?)(?=\s*(?:=|$))/s',
             subject: $answerContent,
             matches: $matches,
             flags: PREG_SET_ORDER,
@@ -587,7 +587,7 @@ class QuestionImportService implements QuestionImportServiceContract
         $options = [];
 
         preg_match_all(
-            pattern: '/([~=])\s*(%[-\d]+%)?\s*(.+?)(?=\s*(?:[~=](?:\s*%[-\d]+%)?)| $)/s',
+            pattern: '/([~=])\s*(%[-\d]+%)?\s*(.+?)(?=\s*(?:[~=](?:\s*%[-\d]+%)?|$))/s',
             subject: $content,
             matches: $matches,
             flags: PREG_SET_ORDER,
