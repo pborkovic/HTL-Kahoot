@@ -12,6 +12,7 @@ import {
     LogOut,
     Palette,
     Settings,
+    MessageSquare,
     type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -64,7 +65,19 @@ const adminItems: NavItem[] = [
         icon: Users,
         match: (p) => p.startsWith("/admin/users"),
     },
+    {
+        title: "Feedback",
+        href: "/admin/feedback",
+        icon: MessageSquare,
+        match: (p) => p.startsWith("/admin/feedback"),
+    },
 ];
+
+const selfFeedbackItem: NavItem = {
+    title: "Feedback",
+    href: "/feedback",
+    icon: MessageSquare,
+};
 
 export function MobileNav(): ReactNode {
     const pathname = usePathname();
@@ -85,6 +98,7 @@ export function MobileNav(): ReactNode {
         ...(isStudent ? studentItems : []),
         ...(isTeacher ? teacherItems : []),
         ...(isAdmin ? adminItems : []),
+        ...(!isAdmin && (isStudent || isTeacher) ? [selfFeedbackItem] : []),
     ];
 
     const showMoreButton = items.length > 4;
