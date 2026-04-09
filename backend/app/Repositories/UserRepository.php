@@ -335,6 +335,32 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
      *
      * @author Philipp Borkovic
      */
+    public function paginateFinishedParticipationsWithResponses(
+        string $userId,
+        int $page,
+        int $perPage,
+    ): LengthAwarePaginator {
+        return SessionParticipant::query()
+            ->where(column: 'session_participants.user_id', operator: '=', value: $userId)
+            ->whereHas(relation: 'session', callback: fn($q) => $q
+                ->where(column: 'status', operator: '=', value: 'finished')
+            )
+            ->with(relations: [
+                'session.quiz',
+                'session.sessionQuestions',
+                'responses',
+            ])
+            ->join(table: 'sessions', first: 'sessions.id', operator: '=', second: 'session_participants.session_id')
+            ->orderBy(column: 'sessions.finished_at', direction: 'desc')
+            ->select(columns: ['session_participants.*'])
+            ->paginate(perPage: $perPage, page: $page);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @author Philipp Borkovic
+     */
     public function getPreferences(User $user): array
     {
         return $user->preferences ?? [];
