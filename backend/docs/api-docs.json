@@ -6,6 +6,860 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/auth/redirect": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get Azure OAuth2 redirect URL",
+                "description": "Returns the Azure AD OAuth2 authorization URL that the client should redirect to for authentication.",
+                "operationId": "6d7ff4842696010e0572195f83778db8",
+                "responses": {
+                    "200": {
+                        "description": "Redirect URL retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "url": {
+                                            "type": "string",
+                                            "example": "https://login.microsoftonline.com/..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Handle OAuth2 callback (GET)",
+                "description": "Handles the OAuth2 callback from Azure AD via GET. Exchanges the authorization code for a user and returns a Sanctum token.",
+                "operationId": "d90d06f60299459be3ee03144c57ab62",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "The authorization code received from Azure AD",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authentication successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "user@example.com"
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                },
+                                                "display_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                },
+                                                "class_name": {
+                                                    "type": "string",
+                                                    "example": "3AHITN",
+                                                    "nullable": true
+                                                },
+                                                "auth_provider": {
+                                                    "type": "string",
+                                                    "example": "azure"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "totp_enabled": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "last_login_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "deleted_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "student"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abc123tokenvalue"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Authentication failed"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid authorization code"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The code field is required."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The code field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Handle OAuth2 callback (POST)",
+                "description": "Handles the OAuth2 callback from Azure AD via POST. Exchanges the authorization code for a user and returns a Sanctum token.",
+                "operationId": "8dc3a3956e1c0d7d8b1198bef6031cb0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "description": "The authorization code received from Azure AD",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentication successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "user@example.com"
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                },
+                                                "display_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                },
+                                                "class_name": {
+                                                    "type": "string",
+                                                    "example": "3AHITN",
+                                                    "nullable": true
+                                                },
+                                                "auth_provider": {
+                                                    "type": "string",
+                                                    "example": "azure"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "totp_enabled": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "last_login_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "deleted_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "student"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abc123tokenvalue"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Authentication failed"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid authorization code"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The code field is required."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The code field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login with email and password",
+                "description": "Authenticates an admin user with email and password credentials. Returns a Sanctum token.",
+                "operationId": "ae47a06efc73e3633104e1c05c454e87",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentication successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abc123tokenvalue"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get authenticated user",
+                "description": "Returns the currently authenticated user with their roles.",
+                "operationId": "5806c83357bad83ac1acf1c85e344017",
+                "responses": {
+                    "200": {
+                        "description": "Authenticated user retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "user@example.com"
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                },
+                                                "display_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                },
+                                                "class_name": {
+                                                    "type": "string",
+                                                    "example": "3AHITN",
+                                                    "nullable": true
+                                                },
+                                                "auth_provider": {
+                                                    "type": "string",
+                                                    "example": "azure"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "totp_enabled": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "last_login_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "deleted_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "student"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "description": "Revokes the current user's authentication token.",
+                "operationId": "27275bf89a63f0655982adc39f1b8535",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/questions/{questionId}/media": {
+            "post": {
+                "tags": [
+                    "Question Media"
+                ],
+                "summary": "Upload media for a question",
+                "description": "Uploads an image or video file and attaches it to the question.",
+                "operationId": "321871b507257e4001c8b6369259e435",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "image",
+                                            "video",
+                                            "code_snippet"
+                                        ]
+                                    },
+                                    "alt_text": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Media uploaded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QuestionMedia"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/questions/{questionId}/media/{mediaId}": {
+            "delete": {
+                "tags": [
+                    "Question Media"
+                ],
+                "summary": "Delete question media",
+                "description": "Deletes a media file from the question and from storage.",
+                "operationId": "17d6a8c5ef1d3253c0283fe28fe530b2",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "mediaId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/permissions": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "List all permissions",
+                "description": "Returns all available permissions. Admin and superadmin only.",
+                "operationId": "c8e60e1cdfb99866cdca9b2d3737f847",
+                "responses": {
+                    "200": {
+                        "description": "Permission list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Permission"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Create a permission",
+                "description": "Creates a new permission. Superadmin only.",
+                "operationId": "7c0560f85b8e5d3b488f6027f524f9e5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Unique permission name",
+                                        "type": "string",
+                                        "maxLength": 100
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Permission created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Permission"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/permissions/{id}": {
+            "delete": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Delete a permission",
+                "description": "Deletes a permission and detaches it from all roles. Superadmin only.",
+                "operationId": "3138dd38d34ebdb8155d39ece9a23fcb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted (no content)"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/questions": {
             "get": {
                 "tags": [
@@ -600,6 +1454,93 @@
                     },
                     "404": {
                         "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/questions/import": {
+            "post": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Import questions from file",
+                "description": "Imports questions from a JSON or Moodle GIFT format file. Creates questions and their first versions atomically. Accessible by teachers, admins and superadmins.",
+                "operationId": "86555c5e4820ee6d206a5fcce7cbb047",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "format"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "The import file (JSON or GIFT)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "format": {
+                                        "description": "The file format",
+                                        "type": "string",
+                                        "enum": [
+                                            "json",
+                                            "gift"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Import results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "imported": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "failed": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Question"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -1560,6 +2501,222 @@
                 ]
             }
         },
+        "/api/v1/quizzes/{id}/sessions": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "List sessions for a quiz",
+                "description": "Returns all game sessions for a quiz, ordered by most recent first. Includes participant counts and scores.",
+                "operationId": "3720affde95eb9290a12c33bb3f8ad23",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session list"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/quizzes/{id}/participants": {
+            "put": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Sync quiz participants",
+                "description": "Replaces all quiz participants with the given user IDs. Owner or admin/superadmin only.",
+                "operationId": "674621426359444fe72c0643ff0eb89a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_ids"
+                                ],
+                                "properties": {
+                                    "user_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Participants synced",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Quiz"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/quizzes/{id}/questions/sync": {
+            "put": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Sync all quiz questions",
+                "description": "Replaces all quiz questions atomically. Deletes existing and creates new entries in a single transaction.",
+                "operationId": "182f68d76ef13d716418bb809bcbe70d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "questions"
+                                ],
+                                "properties": {
+                                    "questions": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_version_id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "points_override": {
+                                                    "type": "integer",
+                                                    "minimum": 0,
+                                                    "nullable": true
+                                                },
+                                                "time_limit_override": {
+                                                    "type": "integer",
+                                                    "minimum": 1,
+                                                    "nullable": true
+                                                },
+                                                "weight": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Questions synced",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Quiz"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/quizzes/{id}/questions": {
             "post": {
                 "tags": [
@@ -1782,6 +2939,1364 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "List all roles",
+                "description": "Returns all roles with their assigned permissions. Admin and superadmin only.",
+                "operationId": "c1294bb85dfc016a8f9c0d3f0907293f",
+                "responses": {
+                    "200": {
+                        "description": "Role list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Role"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Create a role",
+                "description": "Creates a new role. Superadmin only.",
+                "operationId": "c7f58f49125e9b60da0f0db6890a4f22",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Unique role name",
+                                        "type": "string",
+                                        "maxLength": 50
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Role created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Role"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles/{id}": {
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Delete a role",
+                "description": "Deletes a role and detaches all associated users and permissions. Superadmin only.",
+                "operationId": "6bc525095ab83caa6eff5e63447cf7f5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted (no content)"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{id}/roles": {
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Assign a role to a user",
+                "description": "Assigns an existing role to a user. Admin and superadmin only.",
+                "operationId": "5f1db066879882f67d70f283b430da6b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "role_id"
+                                ],
+                                "properties": {
+                                    "role_id": {
+                                        "description": "The role ID to assign",
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Role assigned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "User already has this role"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Remove a role from a user",
+                "description": "Removes a role from a user. Admin and superadmin only.",
+                "operationId": "ae160733f9fdbf47761536a57c00d4bb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "role_id"
+                                ],
+                                "properties": {
+                                    "role_id": {
+                                        "description": "The role ID to remove",
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Role removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles/{id}/permissions": {
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Add a permission to a role",
+                "description": "Attaches a permission to a role. Superadmin only.",
+                "operationId": "ba46c679ff1b4e4fbb8e632b77b618a7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "permission_id"
+                                ],
+                                "properties": {
+                                    "permission_id": {
+                                        "description": "The permission ID to add",
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permission added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Role"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Role already has this permission"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Remove a permission from a role",
+                "description": "Detaches a permission from a role. Superadmin only.",
+                "operationId": "cdfc8b9a26f8a3ef7911778392fa2315",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "permission_id"
+                                ],
+                                "properties": {
+                                    "permission_id": {
+                                        "description": "The permission ID to remove",
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permission removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Role"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get a session by game pin",
+                "description": "Returns session details including QR code and participants list. The host of the session can access this endpoint.",
+                "operationId": "067ba224928936c3ac5852f9d28a4261",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SessionResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/participants": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get session participants",
+                "description": "Returns the list of participants for a session. Used for polling in the lobby.",
+                "operationId": "278847776266f34468ec6b9d643b7e8d",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Participants list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SessionParticipant"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Create a new game session",
+                "description": "Creates a new game session for a quiz. Generates a unique 8-digit game pin and a QR code for players to join. The authenticated user becomes the host. Requires teacher, admin, or superadmin role.",
+                "operationId": "9cc41a4a8e734c44c83827632537a2c8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quiz_id"
+                                ],
+                                "properties": {
+                                    "quiz_id": {
+                                        "description": "The UUID of the quiz to create a game session for",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Game session created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "session": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                },
+                                                "quiz_id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                },
+                                                "host_id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                                },
+                                                "game_pin": {
+                                                    "type": "string",
+                                                    "example": "48291037"
+                                                },
+                                                "qr_code_url": {
+                                                    "type": "string",
+                                                    "example": "data:image/svg+xml;base64,..."
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "lobby"
+                                                },
+                                                "current_question_idx": {
+                                                    "type": "integer",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "started_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "finished_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-02-23T12:00:00.000000Z"
+                                                },
+                                                "quiz": {
+                                                    "type": "object"
+                                                },
+                                                "host": {
+                                                    "type": "object"
+                                                },
+                                                "participants": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You must be a teacher or admin to create a game session."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The quiz id field is required."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "quiz_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The quiz id field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to create game session"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/join": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Join a game session by game pin",
+                "description": "Join an existing game session using an 8-digit game pin. The authenticated user's display name is used as the participant nickname.",
+                "operationId": "977dba7fc2e19d0f83918281e769913e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "game_pin"
+                                ],
+                                "properties": {
+                                    "game_pin": {
+                                        "description": "The 8-digit game pin",
+                                        "type": "string",
+                                        "example": "48291037"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully joined the session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "participant_id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "session_id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "game_pin": {
+                                            "type": "string",
+                                            "example": "48291037"
+                                        },
+                                        "nickname": {
+                                            "type": "string",
+                                            "example": "Max M."
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "lobby"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game pin not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Kein Spiel mit diesem Code gefunden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Session not in lobby state",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Dieses Spiel hat bereits begonnen oder ist beendet."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/start": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Start a game session",
+                "description": "Starts the game session, creating session questions and opening the first question. Only the host can start the game.",
+                "operationId": "8cf8b5b5272dcc6eae9605b64b084600",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Game started"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "409": {
+                        "description": "Invalid session state"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/next": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Advance to the next question",
+                "description": "Closes the current question and opens the next one. If no more questions, finishes the game.",
+                "operationId": "c400f8f463dcca0c77f25b8374f45544",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Advanced to next question or finished"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "409": {
+                        "description": "Invalid session state"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/current-question": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get the current question",
+                "description": "Returns the current question with answer options (without correct answers) and timing information.",
+                "operationId": "172d37fed7acbdc2ef66c4eeacb9dd58",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current question data"
+                    },
+                    "409": {
+                        "description": "No active question"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/close-question": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Close the current question",
+                "description": "Closes the current question without advancing to the next one. Only the host can close a question.",
+                "operationId": "af7ada7a21399d13c4aef577af07140b",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Question closed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "409": {
+                        "description": "Invalid session state"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/answer": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Submit an answer",
+                "description": "Submit an answer for the current question. The answer must be submitted before the time limit expires.",
+                "operationId": "e2e81fe394bf8be78b7b6049908a3751",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "answer"
+                                ],
+                                "properties": {
+                                    "answer": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Answer submitted"
+                    },
+                    "409": {
+                        "description": "Time expired or already answered"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/status": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get session status",
+                "description": "Returns the current session status, question index, and whether a question is currently open. Used for polling.",
+                "operationId": "4e7924659618b9ee460bfa2ff7485000",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session status"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/question-results": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get question results",
+                "description": "Returns the answer distribution for the current question. Teacher-facing endpoint.",
+                "operationId": "7bb92a02fb3586ae56c6d151255e016e",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Question results with answer distribution"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/leaderboard": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get the leaderboard",
+                "description": "Returns participants ranked by total score.",
+                "operationId": "365e713d2c1587221a5ca54a64c05ea0",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leaderboard"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/review": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get student review of all questions",
+                "description": "Returns all questions in the session with the correct answers and the authenticated student's chosen answers, along with scoring details.",
+                "operationId": "906c58fcee95fd05d59e796a4a4cdef0",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student review with all questions and answers"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "409": {
+                        "description": "Not a participant"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/full-review": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get full review with all students' answers",
+                "description": "Returns all questions with correct answers and every student's chosen answers. Teacher-facing endpoint.",
+                "operationId": "a5732159d0700fbde74c098030b4db10",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Full review with all students and answers"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/results": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get final game results",
+                "description": "Returns the final game results including leaderboard and quiz metadata.",
+                "operationId": "92c8a78149e0e8ca3399b22a440480c8",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Final results"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/report": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get session report",
+                "description": "Returns a participant-centric session report with per-student statistics including accuracy percentage, average response time, and detailed per-question answers.",
+                "operationId": "e81f837d2bb8437e73a300a7aa7098e4",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session report with participant statistics"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sessions/{gamePin}/responses/{responseId}/override": {
+            "patch": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Override AI answer evaluation",
+                "description": "Allows the session host to override the AI evaluation of a free-text answer, marking it as correct or incorrect.",
+                "operationId": "b0182f3251f6badc8bb1d9f74dbb7c21",
+                "parameters": [
+                    {
+                        "name": "gamePin",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "48291037"
+                        }
+                    },
+                    {
+                        "name": "responseId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "is_correct": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Override applied"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Not the session host"
                     },
                     "404": {
                         "description": "Not found"
@@ -2396,8 +4911,15 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Deleted (no content)"
+                    "200": {
+                        "description": "User soft-deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "App\\Http\\Resources\\Api\\V1\\UserResource"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2550,194 +5072,207 @@
                 ]
             }
         },
-        "/api/auth/redirect": {
+        "/api/v1/users/{id}/completed-quizzes": {
             "get": {
                 "tags": [
-                    "Auth"
+                    "Users"
                 ],
-                "summary": "Get Azure OAuth2 redirect URL",
-                "description": "Returns the Azure AD OAuth2 authorization URL that the client should redirect to for authentication.",
-                "operationId": "f6c676ef4259696d2f06a6fd5a936f6b",
-                "responses": {
-                    "200": {
-                        "description": "Redirect URL retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "url": {
-                                            "type": "string",
-                                            "example": "https://login.microsoftonline.com/..."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/auth/callback": {
-            "get": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Handle OAuth2 callback",
-                "description": "Handles the OAuth2 callback from Azure AD. Exchanges the authorization code for a user and returns a Sanctum token.",
-                "operationId": "9e77cef6c23d0c1e57c30a916d124651",
+                "summary": "Get completed quizzes count",
+                "description": "Returns the number of quizzes the user has completed.",
+                "operationId": "36ccd8b88b1579f0cd089220b2ddbadd",
                 "parameters": [
                     {
-                        "name": "code",
-                        "in": "query",
-                        "description": "The authorization code received from Azure AD",
+                        "name": "id",
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Authentication successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "entra_id": {
-                                                    "type": "string",
-                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "example": "user@example.com"
-                                                },
-                                                "display_name": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "first_name": {
-                                                    "type": "string",
-                                                    "example": "John"
-                                                },
-                                                "last_name": {
-                                                    "type": "string",
-                                                    "example": "Doe"
-                                                },
-                                                "avatar_url": {
-                                                    "type": "string",
-                                                    "example": null,
-                                                    "nullable": true
-                                                },
-                                                "last_login_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2026-02-23T12:00:00.000000Z"
-                                                },
-                                                "roles": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "student"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "token": {
-                                            "type": "string",
-                                            "example": "1|abc123tokenvalue"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Completed quizzes count"
                     },
                     "401": {
-                        "description": "Authentication failed",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Authentication failed"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Invalid authorization code"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Unauthenticated"
                     },
-                    "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The code field is required."
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "code": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The code field is required."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{id}/answer-distribution": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get answer distribution",
+                "description": "Returns the correct/wrong/unanswered answer distribution and correct percentage across all completed quizzes.",
+                "operationId": "27df51653d95a91a3ef42a6471c5687b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Auth"
                 ],
-                "summary": "Handle OAuth2 callback (POST)",
-                "description": "Handles the OAuth2 callback from Azure AD via POST. Exchanges the authorization code for a user and returns a Sanctum token.",
-                "operationId": "a336f240cd85ddea5e1b6411612125d9",
+                "responses": {
+                    "200": {
+                        "description": "Answer distribution"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{id}/quiz-history": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get quiz history",
+                "description": "Returns a paginated list of completed quizzes with per-quiz breakdown of questions, correct/wrong answers, score, and completion time.",
+                "operationId": "b1d84467059c0439759f9f8f97e50f49",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number (default: 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page (default: 10, max: 50)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 50,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quiz history"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/me/preferences": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get own preferences",
+                "description": "Returns the authenticated user's personal preferences (theme, language, font size).",
+                "operationId": "c27752a0a0f123b17f50e7cb3147471f",
+                "responses": {
+                    "200": {
+                        "description": "User preferences"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update own preferences",
+                "description": "Updates the authenticated user's personal preferences. Only provided fields are updated, others are preserved.",
+                "operationId": "d514e6e14f74f2d71f625f0e8c95891d",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "code"
-                                ],
                                 "properties": {
-                                    "code": {
-                                        "description": "The authorization code received from Azure AD",
-                                        "type": "string"
+                                    "theme": {
+                                        "type": "string",
+                                        "enum": [
+                                            "light",
+                                            "dark",
+                                            "high-contrast",
+                                            "dark-high-contrast",
+                                            "colorblind-friendly",
+                                            "dark-colorblind-friendly"
+                                        ]
+                                    },
+                                    "language": {
+                                        "type": "string",
+                                        "enum": [
+                                            "de",
+                                            "en"
+                                        ]
+                                    },
+                                    "font_size": {
+                                        "type": "string",
+                                        "enum": [
+                                            "small",
+                                            "medium",
+                                            "large"
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -2747,338 +5282,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Authentication successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "type": "object"
-                                        },
-                                        "token": {
-                                            "type": "string",
-                                            "example": "1|abc123tokenvalue"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Updated preferences"
                     },
                     "401": {
-                        "description": "Authentication failed"
+                        "description": "Unauthenticated"
                     },
                     "422": {
                         "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/api/auth/user": {
-            "get": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Get authenticated user",
-                "description": "Returns the currently authenticated user with their roles.",
-                "operationId": "e23e5f9b32cba7953a224624a2a16544",
-                "responses": {
-                    "200": {
-                        "description": "Authenticated user retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "entra_id": {
-                                                    "type": "string",
-                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "example": "user@example.com"
-                                                },
-                                                "display_name": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "first_name": {
-                                                    "type": "string",
-                                                    "example": "John"
-                                                },
-                                                "last_name": {
-                                                    "type": "string",
-                                                    "example": "Doe"
-                                                },
-                                                "avatar_url": {
-                                                    "type": "string",
-                                                    "example": null,
-                                                    "nullable": true
-                                                },
-                                                "last_login_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2026-02-23T12:00:00.000000Z"
-                                                },
-                                                "roles": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "student"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
-        "/api/auth/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Logout user",
-                "description": "Revokes the current user's authentication token.",
-                "operationId": "69281b12abb272c76871f19cb17ca563",
-                "responses": {
-                    "200": {
-                        "description": "Logged out successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Logged out successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
-        "/api/sessions": {
-            "post": {
-                "tags": [
-                    "Sessions"
-                ],
-                "summary": "Create a new game session",
-                "description": "Creates a new game session for a quiz. Generates a unique 8-digit game pin and a QR code for players to join. The authenticated user becomes the host.",
-                "operationId": "8a6e7c46885a454b4a77edc4c0735fe0",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "quiz_id"
-                                ],
-                                "properties": {
-                                    "quiz_id": {
-                                        "description": "The UUID of the quiz to create a game session for",
-                                        "type": "string",
-                                        "format": "uuid",
-                                        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Game session created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "session": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "format": "uuid",
-                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                                },
-                                                "quiz_id": {
-                                                    "type": "string",
-                                                    "format": "uuid",
-                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                                },
-                                                "host_id": {
-                                                    "type": "string",
-                                                    "format": "uuid",
-                                                    "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                                                },
-                                                "game_pin": {
-                                                    "type": "string",
-                                                    "example": "48291037"
-                                                },
-                                                "qr_code_url": {
-                                                    "type": "string",
-                                                    "example": "data:image/svg+xml;base64,..."
-                                                },
-                                                "status": {
-                                                    "type": "string",
-                                                    "example": "lobby"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2026-02-23T12:00:00.000000Z"
-                                                },
-                                                "quiz": {
-                                                    "type": "object"
-                                                },
-                                                "host": {
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "game_pin": {
-                                            "type": "string",
-                                            "example": "48291037"
-                                        },
-                                        "qr_code": {
-                                            "type": "string",
-                                            "example": "data:image/svg+xml;base64,..."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The quiz id field is required."
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "quiz_id": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The quiz id field is required."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Failed to create game session"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Something went wrong"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
                     }
                 },
                 "security": [
@@ -3594,6 +5804,167 @@
                     }
                 },
                 "type": "object"
+            },
+            "Permission": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "quizzes.create"
+                    }
+                },
+                "type": "object"
+            },
+            "Role": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "teacher"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Permission"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "SessionParticipant": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "example": "student42"
+                    },
+                    "is_connected": {
+                        "type": "boolean"
+                    },
+                    "joined_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "SessionResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "quiz_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "host_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "game_pin": {
+                        "type": "string",
+                        "example": "123456"
+                    },
+                    "qr_code_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "lobby",
+                            "active",
+                            "paused",
+                            "finished"
+                        ]
+                    },
+                    "current_question_idx": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "finished_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "quiz": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Quiz"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "host": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "participants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SessionParticipant"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "QuestionMedia": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "question_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "image",
+                            "video",
+                            "code_snippet"
+                        ]
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "alt_text": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "sort_order": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -3607,6 +5978,18 @@
     },
     "tags": [
         {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Question Media",
+            "description": "Question Media"
+        },
+        {
+            "name": "Permissions",
+            "description": "Permissions"
+        },
+        {
             "name": "Questions",
             "description": "Questions"
         },
@@ -3619,16 +6002,16 @@
             "description": "Quizzes"
         },
         {
-            "name": "Users",
-            "description": "Users"
-        },
-        {
-            "name": "Auth",
-            "description": "Auth"
+            "name": "Roles",
+            "description": "Roles"
         },
         {
             "name": "Sessions",
             "description": "Sessions"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         }
     ]
 }
