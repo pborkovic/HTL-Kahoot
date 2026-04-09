@@ -6256,6 +6256,15 @@
                     "is_constructive": {
                         "type": "boolean"
                     },
+                    "moderation_status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                        ],
+                        "example": "pending"
+                    },
                     "moderation_reason": {
                         "type": "string",
                         "nullable": true
