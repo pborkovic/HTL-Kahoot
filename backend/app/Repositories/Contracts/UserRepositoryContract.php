@@ -203,6 +203,21 @@ interface UserRepositoryContract extends BaseRepositoryContract
     public function getFinishedParticipationsWithResponses(string $userId): Collection;
 
     /**
+     * Get a paginated list of finished session participations for a user, most recent first.
+     *
+     * @param string $userId  The user ID.
+     * @param int    $page    The 1-based page number.
+     * @param int    $perPage Items per page.
+     *
+     * @return LengthAwarePaginator Paginator of session participants with relations loaded.
+     */
+    public function paginateFinishedParticipationsWithResponses(
+        string $userId,
+        int $page,
+        int $perPage,
+    ): LengthAwarePaginator;
+
+    /**
      * Get a user's preferences.
      *
      * @param User $user The user.
