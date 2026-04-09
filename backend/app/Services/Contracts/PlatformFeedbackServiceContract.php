@@ -60,6 +60,30 @@ interface PlatformFeedbackServiceContract
     public function markResolved(PlatformFeedback $feedback, User $admin): PlatformFeedback;
 
     /**
+     * Find a feedback record by its UUID.
+     *
+     * @param string $id The feedback UUID.
+     *
+     * @return PlatformFeedback|null
+     */
+    public function findById(string $id): ?PlatformFeedback;
+
+    /**
+     * Persist the result of the AI moderation run for a feedback record.
+     *
+     * @param PlatformFeedback $feedback        The feedback being moderated.
+     * @param bool             $isConstructive  Whether the moderator classified the message as constructive.
+     * @param string|null      $reason          Optional moderator reason.
+     *
+     * @return PlatformFeedback The refreshed record.
+     */
+    public function applyModerationVerdict(
+        PlatformFeedback $feedback,
+        bool $isConstructive,
+        ?string $reason,
+    ): PlatformFeedback;
+
+    /**
      * Reopen a previously resolved piece of feedback.
      *
      * @param PlatformFeedback $feedback The feedback to reopen.
