@@ -24,7 +24,8 @@ class MediaController extends Controller
 {
     public function __construct(
         private readonly MediaServiceContract $mediaService,
-    ) {}
+    ) {
+    }
 
     #[Post(
         path: '/api/v1/questions/{questionId}/media',

@@ -26,7 +26,8 @@ class AuthController extends Controller
 {
     public function __construct(
         private readonly AuthServiceContract $authService
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/auth/redirect',

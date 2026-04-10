@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Quiz extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids;
+    use SoftDeletes;
 
     protected $guarded = [];
 

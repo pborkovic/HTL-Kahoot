@@ -33,7 +33,8 @@ class QuestionController extends Controller
     public function __construct(
         private readonly QuestionServiceContract $questionService,
         private readonly QuestionImportServiceContract $importService,
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/questions',

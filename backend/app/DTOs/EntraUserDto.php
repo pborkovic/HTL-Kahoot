@@ -21,7 +21,8 @@ readonly class EntraUserDto
         public ?string $className,
         public array $groups = [],
         public ?string $avatarUrl = null,
-    ) {}
+    ) {
+    }
 
     /**
      * Build an EntraUserDto from a Socialite user returned by the Azure driver.

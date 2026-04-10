@@ -21,7 +21,8 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
 {
     public function __construct(
         private readonly PlatformFeedbackRepositoryContract $repository,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritDoc}

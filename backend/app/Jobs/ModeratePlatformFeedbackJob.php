@@ -23,7 +23,10 @@ use Throwable;
  */
 class ModeratePlatformFeedbackJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public int $tries = 2;
 
@@ -31,7 +34,8 @@ class ModeratePlatformFeedbackJob implements ShouldQueue
 
     public function __construct(
         private readonly string $feedbackId,
-    ) {}
+    ) {
+    }
 
     /**
      * Execute the job.

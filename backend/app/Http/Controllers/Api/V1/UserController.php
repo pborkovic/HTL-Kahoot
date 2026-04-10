@@ -33,7 +33,8 @@ class UserController extends Controller
 {
     public function __construct(
         private readonly UserServiceContract $userService
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/users',

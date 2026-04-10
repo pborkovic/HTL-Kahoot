@@ -25,7 +25,8 @@ class PermissionController extends Controller
 {
     public function __construct(
         private readonly PermissionServiceContract $permissionService,
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/permissions',

@@ -318,4 +318,6 @@ use OpenApi\Attributes\Schema;
         ]),
     ]
 )]
-abstract class Schemas {}
+abstract class Schemas
+{
+}

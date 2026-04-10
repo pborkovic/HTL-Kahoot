@@ -30,7 +30,8 @@ class AnswerEvaluationAgent implements Agent
         private readonly string $questionTitle,
         private readonly ?string $explanation,
         private readonly array $correctAnswers,
-    ) {}
+    ) {
+    }
 
     /**
      * Build the system instructions for the evaluation.

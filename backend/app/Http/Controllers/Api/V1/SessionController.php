@@ -33,7 +33,8 @@ class SessionController extends Controller
 {
     public function __construct(
         private readonly SessionServiceContract $sessionService
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/sessions/{gamePin}',

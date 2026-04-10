@@ -104,7 +104,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             $query->withTrashed();
         }
 
-        (new UserFilter)->apply(query: $query, filters: $filters);
+        (new UserFilter())->apply(query: $query, filters: $filters);
 
         return $query->paginate(perPage: $perPage);
     }
@@ -342,7 +342,9 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     ): LengthAwarePaginator {
         return SessionParticipant::query()
             ->where(column: 'session_participants.user_id', operator: '=', value: $userId)
-            ->whereHas(relation: 'session', callback: fn ($q) => $q
+            ->whereHas(
+                relation: 'session',
+                callback: fn ($q) => $q
                 ->where(column: 'status', operator: '=', value: 'finished')
             )
             ->with(relations: [

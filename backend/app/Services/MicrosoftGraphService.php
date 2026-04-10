@@ -18,7 +18,8 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
 
     public function __construct(
         private readonly MediaServiceContract $mediaService,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritDoc}

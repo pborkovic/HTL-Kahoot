@@ -17,7 +17,8 @@ class QuestionImportService implements QuestionImportServiceContract
 {
     public function __construct(
         private readonly QuestionRepositoryContract $questionRepository,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritDoc}
@@ -314,7 +315,8 @@ class QuestionImportService implements QuestionImportServiceContract
         if (preg_match(pattern: '/^(TRUE|FALSE|T|F)\s*(#.*)?$/i', subject: $answerContent, matches: $matches)) {
             $correct = in_array(
                 needle: strtoupper(
-                    string: $matches[1]),
+                    string: $matches[1]
+                ),
                 haystack: ['TRUE', 'T'],
                 strict: true
             );

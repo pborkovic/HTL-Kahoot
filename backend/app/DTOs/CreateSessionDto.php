@@ -16,7 +16,8 @@ readonly class CreateSessionDto
      */
     public function __construct(
         public string $quizId,
-    ) {}
+    ) {
+    }
 
     /**
      * Create a new instance from a validated session creation request.

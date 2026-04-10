@@ -16,7 +16,8 @@ readonly class AuthCallbackDto
      */
     public function __construct(
         public string $code,
-    ) {}
+    ) {
+    }
 
     /**
      * Create a new instance from a validated auth callback request.

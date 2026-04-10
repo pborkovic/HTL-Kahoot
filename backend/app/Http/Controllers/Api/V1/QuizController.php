@@ -68,7 +68,7 @@ class QuizController extends Controller
             $query->withTrashed();
         }
 
-        $filter = new QuizFilter;
+        $filter = new QuizFilter();
         $filter->apply($query, $request->validated());
 
         $perPage = $request->integer('per_page', 20);

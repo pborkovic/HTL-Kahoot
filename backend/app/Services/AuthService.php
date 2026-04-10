@@ -19,7 +19,8 @@ class AuthService implements AuthServiceContract
     public function __construct(
         private readonly UserRepositoryContract $userRepository,
         private readonly MicrosoftGraphServiceContract $graphService,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritDoc}

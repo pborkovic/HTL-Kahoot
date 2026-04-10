@@ -18,7 +18,8 @@ abstract class BaseSessionEvent implements ShouldBroadcastNow
 
     public function __construct(
         protected readonly string $gamePin,
-    ) {}
+    ) {
+    }
 
     /**
      * @return array<int, PresenceChannel>

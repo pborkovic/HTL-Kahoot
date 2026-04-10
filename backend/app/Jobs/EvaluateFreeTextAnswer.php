@@ -22,7 +22,10 @@ use Throwable;
  */
 class EvaluateFreeTextAnswer implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public int $tries = 2;
 
@@ -51,7 +54,8 @@ class EvaluateFreeTextAnswer implements ShouldQueue
         private readonly int $basePoints,
         private readonly int $timeTakenMs,
         private readonly int $timeLimitSeconds,
-    ) {}
+    ) {
+    }
 
     /**
      * Execute the job.

@@ -29,7 +29,8 @@ class RoleController extends Controller
 {
     public function __construct(
         private readonly RoleServiceContract $roleService,
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/roles',

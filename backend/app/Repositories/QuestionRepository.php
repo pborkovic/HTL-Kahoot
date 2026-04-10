@@ -140,7 +140,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
         $query->with(relations: ['currentVersion', 'media']);
 
-        $filter = new QuestionFilter;
+        $filter = new QuestionFilter();
         $filter->apply(query: $query, filters: $filters);
 
         return $query->paginate(perPage: $perPage);

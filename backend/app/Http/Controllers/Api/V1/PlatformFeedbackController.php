@@ -29,7 +29,8 @@ class PlatformFeedbackController extends Controller
 {
     public function __construct(
         private readonly PlatformFeedbackServiceContract $feedbackService,
-    ) {}
+    ) {
+    }
 
     #[Post(
         path: '/api/v1/feedback',

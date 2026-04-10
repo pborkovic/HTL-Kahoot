@@ -11,7 +11,8 @@ readonly class SessionChannel
 {
     public function __construct(
         private SessionRepositoryContract $repository,
-    ) {}
+    ) {
+    }
 
     /**
      * Authorize the user to join the session presence channel.
