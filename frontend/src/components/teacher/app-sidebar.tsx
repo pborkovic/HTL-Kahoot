@@ -162,7 +162,7 @@ export function AppSidebar(): ReactNode {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={isTeacher ? "/teacher/dashboard" : isStudent ? "/student/dashboard" : "/home"}>
+                            <Link href={isTeacher ? "/frontend/src/app/(session)/teacher/dashboard" : isStudent ? "/student/dashboard" : "/home"}>
                                 <div className="size-8 rounded-xl bg-primary/15 backdrop-blur-sm border border-primary/20 flex items-center justify-center shrink-0">
                                     <MonitorPlay className="size-4 text-primary" />
                                 </div>
