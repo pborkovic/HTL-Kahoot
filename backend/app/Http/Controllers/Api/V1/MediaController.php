@@ -64,7 +64,7 @@ class MediaController extends Controller
 
         $file = $request->file(key: 'file');
         $extension = $file->getClientOriginalExtension();
-        $filename = Str::uuid() . '.' . $extension;
+        $filename = Str::uuid().'.'.$extension;
         $path = "questions/{$question->id}/{$filename}";
 
         $this->mediaService->storeFileContents(
@@ -73,9 +73,9 @@ class MediaController extends Controller
         );
 
         $media = $question->media()->create(attributes: [
-            'type'       => $request->validated(key: 'type'),
-            'url'        => $path,
-            'alt_text'   => $request->validated(key: 'alt_text'),
+            'type' => $request->validated(key: 'type'),
+            'url' => $path,
+            'alt_text' => $request->validated(key: 'alt_text'),
             'sort_order' => $request->validated(key: 'sort_order', default: 0),
             'created_at' => now(),
         ]);

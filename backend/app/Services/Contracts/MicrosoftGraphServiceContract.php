@@ -7,8 +7,7 @@ interface MicrosoftGraphServiceContract
     /**
      * Fetch the display names of all groups the user is a member of.
      *
-     * @param string $accessToken The OAuth2 access token with GroupMember.Read.All scope.
-     *
+     * @param  string  $accessToken  The OAuth2 access token with GroupMember.Read.All scope.
      * @return string[] List of group display names.
      */
     public function getUserGroups(string $accessToken): array;
@@ -19,9 +18,8 @@ interface MicrosoftGraphServiceContract
      * Tries several thumbnail sizes first and falls back to the raw full-size
      * photo. Requires the delegated User.Read scope.
      *
-     * @param string $accessToken The OAuth2 access token.
-     * @param string $userId      The local user UUID, used as the file name.
-     *
+     * @param  string  $accessToken  The OAuth2 access token.
+     * @param  string  $userId  The local user UUID, used as the file name.
      * @return string|null The public URL of the stored photo, or null if none exists.
      */
     public function getUserPhoto(string $accessToken, string $userId): ?string;
@@ -32,8 +30,7 @@ interface MicrosoftGraphServiceContract
      * Returns a normalized snake_case array of common fields. Requires the
      * delegated User.Read scope.
      *
-     * @param string $accessToken The OAuth2 access token.
-     *
+     * @param  string  $accessToken  The OAuth2 access token.
      * @return array{
      *     id: string|null,
      *     display_name: string|null,

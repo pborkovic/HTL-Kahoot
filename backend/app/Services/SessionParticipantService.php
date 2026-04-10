@@ -22,7 +22,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -32,7 +32,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -42,7 +42,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -55,7 +55,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -65,7 +65,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -75,7 +75,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -88,7 +88,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -101,7 +101,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -111,7 +111,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -121,7 +121,7 @@ class SessionParticipantService extends BaseService implements SessionParticipan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

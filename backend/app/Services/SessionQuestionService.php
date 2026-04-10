@@ -21,7 +21,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -34,7 +34,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -44,7 +44,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -57,7 +57,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -70,7 +70,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -83,7 +83,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -96,7 +96,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -109,7 +109,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -119,7 +119,7 @@ class SessionQuestionService extends BaseService implements SessionQuestionServi
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

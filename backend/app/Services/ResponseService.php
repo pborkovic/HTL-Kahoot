@@ -21,7 +21,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -34,7 +34,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -44,7 +44,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -57,7 +57,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -67,7 +67,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -80,7 +80,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -90,7 +90,7 @@ class ResponseService extends BaseService implements ResponseServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

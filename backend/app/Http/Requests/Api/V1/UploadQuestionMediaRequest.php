@@ -14,8 +14,6 @@ use Illuminate\Validation\Rule;
  * images are capped at `media.image_max_kb` and videos at `media.video_max_kb`.
  * The application-layer cap must stay below PHP's `upload_max_filesize` /
  * `post_max_size` (configured in the backend Dockerfile).
- *
- * @package App\Http\Requests\Api\V1
  */
 class UploadQuestionMediaRequest extends FormRequest
 {
@@ -26,11 +24,11 @@ class UploadQuestionMediaRequest extends FormRequest
 
     public function rules(): array
     {
-        $type         = (string) $this->input(key: 'type', default: '');
-        $imageMaxKb   = (int) config(key: 'media.image_max_kb');
-        $videoMaxKb   = (int) config(key: 'media.video_max_kb');
-        $imageMimes   = (array) config(key: 'media.image_mimes');
-        $videoMimes   = (array) config(key: 'media.video_mimes');
+        $type = (string) $this->input(key: 'type', default: '');
+        $imageMaxKb = (int) config(key: 'media.image_max_kb');
+        $videoMaxKb = (int) config(key: 'media.video_max_kb');
+        $imageMimes = (array) config(key: 'media.image_mimes');
+        $videoMimes = (array) config(key: 'media.video_mimes');
 
         if ($type === 'video') {
             $maxKb = $videoMaxKb;
@@ -41,14 +39,14 @@ class UploadQuestionMediaRequest extends FormRequest
         }
 
         return [
-            'type'       => ['required', 'string', Rule::in(values: ['image', 'video', 'code_snippet'])],
-            'file'       => [
+            'type' => ['required', 'string', Rule::in(values: ['image', 'video', 'code_snippet'])],
+            'file' => [
                 'required',
                 'file',
-                'max:' . $maxKb,
-                'mimes:' . implode(separator: ',', array: $mimes),
+                'max:'.$maxKb,
+                'mimes:'.implode(separator: ',', array: $mimes),
             ],
-            'alt_text'   => ['nullable', 'string', 'max:500'],
+            'alt_text' => ['nullable', 'string', 'max:500'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }

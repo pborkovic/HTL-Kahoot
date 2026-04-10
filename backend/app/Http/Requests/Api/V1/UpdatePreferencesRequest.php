@@ -19,8 +19,8 @@ class UpdatePreferencesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'theme'     => ['sometimes', 'string', 'in:light,dark,high-contrast,dark-high-contrast,colorblind-friendly,dark-colorblind-friendly'],
-            'language'  => ['sometimes', 'string', 'in:de,en'],
+            'theme' => ['sometimes', 'string', 'in:light,dark,high-contrast,dark-high-contrast,colorblind-friendly,dark-colorblind-friendly'],
+            'language' => ['sometimes', 'string', 'in:de,en'],
             'font_size' => ['sometimes', 'string', 'in:small,medium,large'],
         ];
     }

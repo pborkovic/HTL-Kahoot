@@ -19,7 +19,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -31,9 +31,9 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
                 ->first();
         } catch (Exception $e) {
             Log::error(message: "Error finding session by game pin: {$e->getMessage()}", context: [
-                'model'    => get_class(object: $this->model),
+                'model' => get_class(object: $this->model),
                 'game_pin' => $gamePin,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return null;
@@ -41,7 +41,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -54,7 +54,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -66,7 +66,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -75,14 +75,14 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
         return $this->model
             ->where(column: 'game_pin', operator: '=', value: $gamePin)
             ->with(relations: [
-                'quiz.quizQuestions' => fn($q) => $q->orderBy(column: 'sort_order'),
+                'quiz.quizQuestions' => fn ($q) => $q->orderBy(column: 'sort_order'),
                 'quiz.quizQuestions.questionVersion.answerOptions',
             ])
             ->firstOrFail();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -101,7 +101,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -111,7 +111,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -121,7 +121,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -131,7 +131,7 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

@@ -21,7 +21,7 @@ class PermissionService extends BaseService implements PermissionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -42,9 +42,9 @@ class PermissionService extends BaseService implements PermissionServiceContract
             $this->repository->delete(id: $permission->id);
         } catch (Exception $e) {
             Log::error(message: "Service error deleting permission with relations: {$e->getMessage()}", context: [
-                'service'       => get_class($this),
+                'service' => get_class($this),
                 'permission_id' => $permission->id,
-                'trace'         => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;

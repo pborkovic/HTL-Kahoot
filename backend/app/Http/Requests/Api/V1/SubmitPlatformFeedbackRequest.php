@@ -8,8 +8,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Validates a new platform-feedback submission.
- *
- * @package App\Http\Requests\Api\V1
  */
 class SubmitPlatformFeedbackRequest extends FormRequest
 {

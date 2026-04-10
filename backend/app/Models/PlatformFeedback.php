@@ -13,13 +13,15 @@ class PlatformFeedback extends Model
     use HasUuids;
 
     protected $table = 'platform_feedback';
+
     protected $guarded = [];
+
     protected $casts = [
-        'is_constructive'   => 'bool',
+        'is_constructive' => 'bool',
         'moderation_status' => 'string',
-        'resolved_at'       => 'datetime',
-        'created_at'        => 'datetime',
-        'updated_at'        => 'datetime',
+        'resolved_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

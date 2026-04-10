@@ -15,9 +15,8 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Create a session question for a session.
      *
-     * @param Session              $session The session.
-     * @param array<string, mixed> $data    The session question attributes.
-     *
+     * @param  Session  $session  The session.
+     * @param  array<string, mixed>  $data  The session question attributes.
      * @return SessionQuestion The newly created session question.
      */
     public function createForSession(Session $session, array $data): SessionQuestion;
@@ -25,8 +24,7 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Count the session questions in a session.
      *
-     * @param Session $session The session.
-     *
+     * @param  Session  $session  The session.
      * @return int The question count.
      */
     public function countForSession(Session $session): int;
@@ -34,9 +32,8 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Find a session question by its display order.
      *
-     * @param Session $session      The session.
-     * @param int     $displayOrder The display order index.
-     *
+     * @param  Session  $session  The session.
+     * @param  int  $displayOrder  The display order index.
      * @return SessionQuestion|null The session question, or null if not found.
      */
     public function findByDisplayOrder(Session $session, int $displayOrder): ?SessionQuestion;
@@ -44,9 +41,8 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Find a session question by its display order, or fail.
      *
-     * @param Session $session      The session.
-     * @param int     $displayOrder The display order index.
-     *
+     * @param  Session  $session  The session.
+     * @param  int  $displayOrder  The display order index.
      * @return SessionQuestion The session question.
      *
      * @throws ModelNotFoundException If not found.
@@ -56,17 +52,16 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Update a session question's attributes.
      *
-     * @param SessionQuestion      $sessionQuestion The session question.
-     * @param array<string, mixed> $data            The attributes to update.
+     * @param  SessionQuestion  $sessionQuestion  The session question.
+     * @param  array<string, mixed>  $data  The attributes to update.
      */
     public function updateSessionQuestion(SessionQuestion $sessionQuestion, array $data): void;
 
     /**
      * Eager-load relations on a session question.
      *
-     * @param SessionQuestion      $sessionQuestion The session question.
-     * @param string|array<string> $relations       The relations to load.
-     *
+     * @param  SessionQuestion  $sessionQuestion  The session question.
+     * @param  string|array<string>  $relations  The relations to load.
      * @return SessionQuestion The session question with relations loaded.
      */
     public function loadRelations(SessionQuestion $sessionQuestion, string|array $relations): SessionQuestion;
@@ -74,9 +69,8 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Get all session questions with responses for a specific participant.
      *
-     * @param Session $session       The session.
-     * @param string  $participantId The participant ID to filter responses by.
-     *
+     * @param  Session  $session  The session.
+     * @param  string  $participantId  The participant ID to filter responses by.
      * @return Collection<int, SessionQuestion> The session questions with relations loaded.
      */
     public function getWithParticipantResponses(Session $session, string $participantId): Collection;
@@ -84,8 +78,7 @@ interface SessionQuestionServiceContract extends BaseServiceContract
     /**
      * Get all session questions with all participant responses.
      *
-     * @param Session $session The session.
-     *
+     * @param  Session  $session  The session.
      * @return Collection<int, SessionQuestion> The session questions with relations loaded.
      */
     public function getWithAllResponses(Session $session): Collection;

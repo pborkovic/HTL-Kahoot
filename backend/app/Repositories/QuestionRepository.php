@@ -20,7 +20,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -28,26 +28,26 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     {
         return DB::transaction(function () use ($data, $userId): Question {
             $question = $this->model->newInstance()->create(attributes: [
-                'created_by'   => $userId,
-                'type'         => $data['type'],
+                'created_by' => $userId,
+                'type' => $data['type'],
                 'is_published' => false,
             ]);
 
             $version = $question->versions()->create(attributes: [
-                'version'            => 1,
-                'title'              => $data['title'],
-                'explanation'        => $data['explanation'] ?? null,
-                'difficulty'         => $data['difficulty'] ?? null,
-                'default_points'     => $data['default_points'] ?? 1000,
+                'version' => 1,
+                'title' => $data['title'],
+                'explanation' => $data['explanation'] ?? null,
+                'difficulty' => $data['difficulty'] ?? null,
+                'default_points' => $data['default_points'] ?? 1000,
                 'default_time_limit' => $data['default_time_limit'] ?? null,
-                'randomize_options'  => $data['randomize_options'] ?? true,
-                'config'             => $data['config'] ?? [],
-                'created_by'         => $userId,
+                'randomize_options' => $data['randomize_options'] ?? true,
+                'config' => $data['config'] ?? [],
+                'created_by' => $userId,
             ]);
 
             foreach ($data['answer_options'] ?? [] as $i => $option) {
                 $version->answerOptions()->create(attributes: [
-                    'text'       => $option['text'],
+                    'text' => $option['text'],
                     'is_correct' => $option['is_correct'] ?? false,
                     'sort_order' => $option['sort_order'] ?? $i,
                 ]);
@@ -60,35 +60,35 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function updateWithNewVersion(Question $question, array $data, string $userId): Question
     {
         return DB::transaction(function () use ($question, $data, $userId): Question {
-            if (!empty($data['type'])) {
+            if (! empty($data['type'])) {
                 $question->update(attributes: ['type' => $data['type']]);
             }
 
             $currentVersion = $question->currentVersion;
-            $nextVersion    = $question->versions()->max(column: 'version') + 1;
+            $nextVersion = $question->versions()->max(column: 'version') + 1;
 
             $version = $question->versions()->create(attributes: [
-                'version'            => $nextVersion,
-                'title'              => $data['title'] ?? $currentVersion->title,
-                'explanation'        => array_key_exists(key: 'explanation', array: $data) ? $data['explanation'] : $currentVersion->explanation,
-                'difficulty'         => array_key_exists(key: 'difficulty', array: $data) ? $data['difficulty'] : $currentVersion->difficulty,
-                'default_points'     => $data['default_points'] ?? $currentVersion->default_points,
+                'version' => $nextVersion,
+                'title' => $data['title'] ?? $currentVersion->title,
+                'explanation' => array_key_exists(key: 'explanation', array: $data) ? $data['explanation'] : $currentVersion->explanation,
+                'difficulty' => array_key_exists(key: 'difficulty', array: $data) ? $data['difficulty'] : $currentVersion->difficulty,
+                'default_points' => $data['default_points'] ?? $currentVersion->default_points,
                 'default_time_limit' => array_key_exists(key: 'default_time_limit', array: $data) ? $data['default_time_limit'] : $currentVersion->default_time_limit,
-                'randomize_options'  => $data['randomize_options'] ?? $currentVersion->randomize_options,
-                'config'             => $data['config'] ?? $currentVersion->config,
-                'created_by'         => $userId,
+                'randomize_options' => $data['randomize_options'] ?? $currentVersion->randomize_options,
+                'config' => $data['config'] ?? $currentVersion->config,
+                'created_by' => $userId,
             ]);
 
             foreach ($data['answer_options'] ?? [] as $i => $option) {
                 $version->answerOptions()->create(attributes: [
-                    'text'       => $option['text'],
+                    'text' => $option['text'],
                     'is_correct' => $option['is_correct'] ?? false,
                     'sort_order' => $option['sort_order'] ?? $i,
                 ]);
@@ -101,7 +101,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -113,7 +113,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -126,7 +126,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -140,7 +140,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
         $query->with(relations: ['currentVersion', 'media']);
 
-        $filter = new QuestionFilter();
+        $filter = new QuestionFilter;
         $filter->apply(query: $query, filters: $filters);
 
         return $query->paginate(perPage: $perPage);

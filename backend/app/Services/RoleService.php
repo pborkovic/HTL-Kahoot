@@ -23,7 +23,7 @@ class RoleService extends BaseService implements RoleServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -44,7 +44,7 @@ class RoleService extends BaseService implements RoleServiceContract
         } catch (Exception $e) {
             Log::error(message: "Service error fetching roles with permissions: {$e->getMessage()}", context: [
                 'service' => get_class($this),
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -66,7 +66,7 @@ class RoleService extends BaseService implements RoleServiceContract
             Log::error(message: "Service error deleting role with relations: {$e->getMessage()}", context: [
                 'service' => get_class($this),
                 'role_id' => $role->id,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -96,7 +96,7 @@ class RoleService extends BaseService implements RoleServiceContract
                 'service' => get_class($this),
                 'user_id' => $user->id,
                 'role_id' => $roleId,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -117,7 +117,7 @@ class RoleService extends BaseService implements RoleServiceContract
                 'service' => get_class($this),
                 'user_id' => $user->id,
                 'role_id' => $roleId,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -141,10 +141,10 @@ class RoleService extends BaseService implements RoleServiceContract
             return true;
         } catch (Exception $e) {
             Log::error(message: "Service error adding permission to role: {$e->getMessage()}", context: [
-                'service'       => get_class($this),
-                'role_id'       => $role->id,
+                'service' => get_class($this),
+                'role_id' => $role->id,
                 'permission_id' => $permissionId,
-                'trace'         => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -162,10 +162,10 @@ class RoleService extends BaseService implements RoleServiceContract
             $role->permissions()->detach(ids: $permissionId);
         } catch (Exception $e) {
             Log::error(message: "Service error removing permission from role: {$e->getMessage()}", context: [
-                'service'       => get_class($this),
-                'role_id'       => $role->id,
+                'service' => get_class($this),
+                'role_id' => $role->id,
                 'permission_id' => $permissionId,
-                'trace'         => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;

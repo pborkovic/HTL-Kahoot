@@ -22,7 +22,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -36,7 +36,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -49,7 +49,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -63,7 +63,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -77,7 +77,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -87,7 +87,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -101,7 +101,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -111,19 +111,19 @@ class QuestionService extends BaseService implements QuestionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function togglePublish(Question $question): Question
     {
-        $question->update(attributes: ['is_published' => !$question->is_published]);
+        $question->update(attributes: ['is_published' => ! $question->is_published]);
 
         return $question->load(relations: 'currentVersion');
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

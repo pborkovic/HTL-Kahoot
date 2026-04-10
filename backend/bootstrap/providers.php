@@ -1,7 +1,11 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\PolicyServiceProvider;
+use App\Providers\RepositoryServiceProvider;
+
 return [
-    App\Providers\RepositoryServiceProvider::class,
-    App\Providers\AppServiceProvider::class,
-    App\Providers\PolicyServiceProvider::class,
+    RepositoryServiceProvider::class,
+    AppServiceProvider::class,
+    PolicyServiceProvider::class,
 ];

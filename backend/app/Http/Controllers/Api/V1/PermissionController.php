@@ -86,7 +86,7 @@ class PermissionController extends Controller
 
         $validated = $request->validated();
         $permission = $this->permissionService->create(data: [
-            'key'   => $validated['name'],
+            'key' => $validated['name'],
             'group' => 'custom',
         ]);
 

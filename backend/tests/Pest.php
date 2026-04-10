@@ -3,8 +3,9 @@
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-pest()->extend(Tests\TestCase::class)
+pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Feature');
 
@@ -23,7 +24,7 @@ function createRole(string $name): Role
 function createUserWithRole(string $role, array $attributes = []): User
 {
     $roleModel = createRole($role);
-    $user      = User::factory()->create($attributes);
+    $user = User::factory()->create($attributes);
 
     $user->roles()->attach($roleModel->id, ['assigned_at' => now()]);
 

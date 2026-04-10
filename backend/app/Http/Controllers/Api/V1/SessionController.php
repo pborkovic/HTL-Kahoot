@@ -15,12 +15,11 @@ use App\Http\Resources\Api\V1\SessionResource;
 use App\Models\Session;
 use App\Services\Contracts\SessionServiceContract;
 use Exception;
-use InvalidArgumentException;
-use RuntimeException;
 use Illuminate\Http\JsonResponse;
+use InvalidArgumentException;
 use OpenApi\Attributes\Get;
-use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Items;
+use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Parameter;
 use OpenApi\Attributes\Patch;
 use OpenApi\Attributes\Post;
@@ -28,6 +27,7 @@ use OpenApi\Attributes\Property;
 use OpenApi\Attributes\RequestBody;
 use OpenApi\Attributes\Response;
 use OpenApi\Attributes\Schema;
+use RuntimeException;
 
 class SessionController extends Controller
 {
@@ -479,7 +479,7 @@ class SessionController extends Controller
 
             return response()->json(data: [
                 'data' => [
-                    'is_correct'    => $response->is_correct,
+                    'is_correct' => $response->is_correct,
                     'score_awarded' => $response->score_awarded,
                     'time_taken_ms' => $response->time_taken_ms,
                     'answer_streak' => $response->participant->answer_streak ?? 0,

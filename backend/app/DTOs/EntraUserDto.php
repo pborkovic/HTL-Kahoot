@@ -7,19 +7,19 @@ use Laravel\Socialite\Contracts\User as SocialiteUser;
 readonly class EntraUserDto
 {
     /**
-     * @param string        $externalId  Azure AD object ID.
-     * @param string        $email       User principal name / email.
-     * @param string        $displayName Cleaned display name (without class suffix).
-     * @param string|null   $className   Class parsed from display name (e.g. 3AHITN).
-     * @param string[]      $groups      Azure AD group display names the user belongs to.
-     * @param string|null   $avatarUrl   URL to the stored profile photo, set after upload.
+     * @param  string  $externalId  Azure AD object ID.
+     * @param  string  $email  User principal name / email.
+     * @param  string  $displayName  Cleaned display name (without class suffix).
+     * @param  string|null  $className  Class parsed from display name (e.g. 3AHITN).
+     * @param  string[]  $groups  Azure AD group display names the user belongs to.
+     * @param  string|null  $avatarUrl  URL to the stored profile photo, set after upload.
      */
     public function __construct(
-        public string  $externalId,
-        public string  $email,
-        public string  $displayName,
+        public string $externalId,
+        public string $email,
+        public string $displayName,
         public ?string $className,
-        public array   $groups = [],
+        public array $groups = [],
         public ?string $avatarUrl = null,
     ) {}
 
@@ -30,9 +30,7 @@ readonly class EntraUserDto
      * optional class suffix; group and avatar data are filled in later via
      * {@see self::withGraphData()}.
      *
-     * @param SocialiteUser $socialiteUser The Socialite user from the Azure callback.
-     *
-     * @return self
+     * @param  SocialiteUser  $socialiteUser  The Socialite user from the Azure callback.
      */
     public static function fromSocialite(SocialiteUser $socialiteUser): self
     {
@@ -51,10 +49,8 @@ readonly class EntraUserDto
     /**
      * Return a new instance with group and avatar data merged in.
      *
-     * @param string[] $groups   Azure AD group display names.
-     * @param string|null $avatarUrl Stored avatar URL.
-     *
-     * @return self
+     * @param  string[]  $groups  Azure AD group display names.
+     * @param  string|null  $avatarUrl  Stored avatar URL.
      */
     public function withGraphData(array $groups, ?string $avatarUrl): self
     {
@@ -76,8 +72,7 @@ readonly class EntraUserDto
      * Matches group names like "3AHITN", "5BHITM", "1AHINF" — a 1-2 digit
      * year followed by 2+ uppercase letters.
      *
-     * @param string[] $groups Group display names.
-     *
+     * @param  string[]  $groups  Group display names.
      * @return string|null The first matching class name, or null.
      */
     private static function resolveClassFromGroups(array $groups): ?string
@@ -98,8 +93,7 @@ readonly class EntraUserDto
      * Expected format: "LASTNAME Firstname, 5BHITM"
      * The class segment is a 1-2 digit year followed by uppercase letters (e.g. 5BHITM, 3AHIF, 1AHINF).
      *
-     * @param string $rawName The raw display name from Entra ID.
-     *
+     * @param  string  $rawName  The raw display name from Entra ID.
      * @return array{0: string, 1: string|null} [displayName, className]
      */
     private static function parseDisplayName(string $rawName): array

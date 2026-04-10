@@ -14,9 +14,9 @@ class QuizCollection extends ResourceCollection
         return [
             'meta' => [
                 'current_page' => $paginated['current_page'],
-                'last_page'    => $paginated['last_page'],
-                'per_page'     => $paginated['per_page'],
-                'total'        => $paginated['total'],
+                'last_page' => $paginated['last_page'],
+                'per_page' => $paginated['per_page'],
+                'total' => $paginated['total'],
             ],
         ];
     }

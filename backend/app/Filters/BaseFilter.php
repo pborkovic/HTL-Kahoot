@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 abstract class BaseFilter
 {
     protected array $allowedSorts = [];
+
     protected string $defaultSort = 'created_at';
 
     abstract public function apply(Builder $query, array $filters): Builder;
@@ -16,9 +17,8 @@ abstract class BaseFilter
     /**
      * Apply sorting to the query based on filter parameters.
      *
-     * @param Builder              $query   The query builder.
-     * @param array<string, mixed> $filters The filter parameters.
-     *
+     * @param  Builder  $query  The query builder.
+     * @param  array<string, mixed>  $filters  The filter parameters.
      * @return Builder The query with sorting applied.
      *
      * @author Philipp Borkovic
@@ -34,10 +34,9 @@ abstract class BaseFilter
     /**
      * Apply a boolean filter if the key exists and is not null.
      *
-     * @param Builder              $query   The query builder.
-     * @param array<string, mixed> $filters The filter parameters.
-     * @param string               $field   The database column name.
-     *
+     * @param  Builder  $query  The query builder.
+     * @param  array<string, mixed>  $filters  The filter parameters.
+     * @param  string  $field  The database column name.
      * @return Builder The query with the boolean filter applied.
      *
      * @author Philipp Borkovic

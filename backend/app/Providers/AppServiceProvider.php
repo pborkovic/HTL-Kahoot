@@ -45,8 +45,6 @@ use SocialiteProviders\Manager\SocialiteWasCalled;
  *
  * Repository bindings live in {@see RepositoryServiceProvider} and policy
  * gates in {@see PolicyServiceProvider}.
- *
- * @package App\Providers
  */
 class AppServiceProvider extends ServiceProvider
 {
@@ -118,7 +116,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Event::listen(
             events: SocialiteWasCalled::class,
-            listener: AzureExtendSocialite::class . '@handle'
+            listener: AzureExtendSocialite::class.'@handle'
         );
     }
 }

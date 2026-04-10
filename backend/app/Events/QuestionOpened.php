@@ -25,7 +25,7 @@ class QuestionOpened extends BaseSessionEvent
     public function broadcastWith(): array
     {
         return [
-            'question_index'  => $this->questionIndex,
+            'question_index' => $this->questionIndex,
             'total_questions' => $this->totalQuestions,
         ];
     }

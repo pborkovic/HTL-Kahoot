@@ -15,7 +15,9 @@ use App\Http\Resources\Api\V1\QuizResource;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes\Delete;
 use OpenApi\Attributes\Get;
 use OpenApi\Attributes\Items;
@@ -60,13 +62,13 @@ class QuizController extends Controller
 
         $query = Quiz::query()
             ->withCount(['quizQuestions', 'sessions', 'participants'])
-            ->with(['sessions' => fn($q) => $q->latest('created_at')->limit(1)]);
+            ->with(['sessions' => fn ($q) => $q->latest('created_at')->limit(1)]);
 
         if ($request->boolean('with_trashed') && $request->user()->hasAnyRole(['admin', 'superadmin'])) {
             $query->withTrashed();
         }
 
-        $filter = new QuizFilter();
+        $filter = new QuizFilter;
         $filter->apply($query, $request->validated());
 
         $perPage = $request->integer('per_page', 20);
@@ -261,7 +263,7 @@ class QuizController extends Controller
     {
         $this->authorize('publish', $quiz);
 
-        $quiz->update(['is_published' => !$quiz->is_published]);
+        $quiz->update(['is_published' => ! $quiz->is_published]);
 
         return response()->json(new QuizResource($quiz));
     }
@@ -288,20 +290,20 @@ class QuizController extends Controller
 
         $sessions = $quiz->sessions()
             ->withCount('participants')
-            ->with(['participants' => fn($q) => $q->orderByDesc('total_score')->limit(3)])
+            ->with(['participants' => fn ($q) => $q->orderByDesc('total_score')->limit(3)])
             ->orderByDesc('created_at')
             ->get();
 
-        $data = $sessions->map(fn($session) => [
-            'id'                  => $session->id,
-            'game_pin'            => $session->game_pin,
-            'status'              => $session->status,
-            'participants_count'  => $session->participants_count,
-            'started_at'          => $session->started_at,
-            'finished_at'         => $session->finished_at,
-            'created_at'          => $session->created_at,
-            'top_participants'    => $session->participants->map(fn($p) => [
-                'nickname'    => $p->nickname,
+        $data = $sessions->map(fn ($session) => [
+            'id' => $session->id,
+            'game_pin' => $session->game_pin,
+            'status' => $session->status,
+            'participants_count' => $session->participants_count,
+            'started_at' => $session->started_at,
+            'finished_at' => $session->finished_at,
+            'created_at' => $session->created_at,
+            'top_participants' => $session->participants->map(fn ($p) => [
+                'nickname' => $p->nickname,
                 'total_score' => $p->total_score,
             ])->all(),
         ]);
@@ -335,12 +337,12 @@ class QuizController extends Controller
             new Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function syncParticipants(\Illuminate\Http\Request $request, Quiz $quiz): JsonResponse
+    public function syncParticipants(Request $request, Quiz $quiz): JsonResponse
     {
         $this->authorize('update', $quiz);
 
         $validated = $request->validate([
-            'user_ids'   => ['required', 'array'],
+            'user_ids' => ['required', 'array'],
             'user_ids.*' => ['uuid', 'exists:users,id'],
         ]);
 
@@ -388,20 +390,20 @@ class QuizController extends Controller
             new Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function syncQuestions(\Illuminate\Http\Request $request, Quiz $quiz): JsonResponse
+    public function syncQuestions(Request $request, Quiz $quiz): JsonResponse
     {
         $this->authorize('update', $quiz);
 
         $validated = $request->validate([
-            'questions'                        => ['required', 'array'],
-            'questions.*.question_version_id'  => ['required', 'uuid', 'exists:question_versions,id'],
-            'questions.*.sort_order'           => ['required', 'integer', 'min:0'],
-            'questions.*.points_override'      => ['nullable', 'integer', 'min:0'],
-            'questions.*.time_limit_override'  => ['nullable', 'integer', 'min:1'],
-            'questions.*.weight'               => ['nullable', 'numeric', 'min:0'],
+            'questions' => ['required', 'array'],
+            'questions.*.question_version_id' => ['required', 'uuid', 'exists:question_versions,id'],
+            'questions.*.sort_order' => ['required', 'integer', 'min:0'],
+            'questions.*.points_override' => ['nullable', 'integer', 'min:0'],
+            'questions.*.time_limit_override' => ['nullable', 'integer', 'min:1'],
+            'questions.*.weight' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($quiz, $validated) {
+        DB::transaction(function () use ($quiz, $validated) {
             $quiz->quizQuestions()->delete();
 
             foreach ($validated['questions'] as $entry) {

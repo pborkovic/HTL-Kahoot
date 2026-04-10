@@ -12,8 +12,6 @@ use Throwable;
 /**
  * Default {@see FeedbackModerationServiceContract} implementation backed by
  * the local Ollama AI model via {@see FeedbackModerationAgent}.
- *
- * @package App\Services
  */
 class FeedbackModerationService implements FeedbackModerationServiceContract
 {
@@ -37,12 +35,12 @@ class FeedbackModerationService implements FeedbackModerationServiceContract
         } catch (Throwable $e) {
             Log::error(message: 'AI feedback moderation failed', context: [
                 'service' => self::class,
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return [
                 'is_constructive' => true,
-                'reason'          => 'AI moderation unavailable; admitted by default.',
+                'reason' => 'AI moderation unavailable; admitted by default.',
             ];
         }
     }
@@ -50,8 +48,7 @@ class FeedbackModerationService implements FeedbackModerationServiceContract
     /**
      * Parse the raw two-line VERDICT/REASON response from the agent.
      *
-     * @param string $raw The raw model output.
-     *
+     * @param  string  $raw  The raw model output.
      * @return array{is_constructive: bool, reason: string}
      *
      * @author Philipp Borkovic
@@ -62,8 +59,8 @@ class FeedbackModerationService implements FeedbackModerationServiceContract
         $isConstructive = str_contains(haystack: $upper, needle: 'VERDICT: CONSTRUCTIVE')
             || (
                 str_contains(haystack: $upper, needle: 'CONSTRUCTIVE')
-                && !str_contains(haystack: $upper, needle: 'NOT_CONSTRUCTIVE')
-                && !str_contains(haystack: $upper, needle: 'NOT CONSTRUCTIVE')
+                && ! str_contains(haystack: $upper, needle: 'NOT_CONSTRUCTIVE')
+                && ! str_contains(haystack: $upper, needle: 'NOT CONSTRUCTIVE')
             );
 
         $reason = '';
@@ -80,7 +77,7 @@ class FeedbackModerationService implements FeedbackModerationServiceContract
 
         return [
             'is_constructive' => $isConstructive,
-            'reason'          => $reason,
+            'reason' => $reason,
         ];
     }
 }

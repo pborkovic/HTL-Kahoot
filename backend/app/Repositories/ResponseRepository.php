@@ -18,7 +18,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -28,7 +28,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -38,7 +38,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -50,7 +50,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -60,7 +60,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -70,7 +70,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -79,7 +79,7 @@ class ResponseRepository extends BaseRepository implements ResponseRepositoryCon
         return $this->model->newQuery()
             ->whereHas(
                 relation: 'sessionQuestion',
-                callback: fn($q) => $q->where(column: 'session_id', operator: '=', value: $session->id)
+                callback: fn ($q) => $q->where(column: 'session_id', operator: '=', value: $session->id)
             )
             ->whereNull(columns: 'is_correct')
             ->exists();

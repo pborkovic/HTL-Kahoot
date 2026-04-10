@@ -6,6 +6,7 @@ namespace App\Services\Contracts;
 
 use App\Models\Permission;
 use App\Services\Base\Contracts\BaseServiceContract;
+use Illuminate\Database\QueryException;
 
 interface PermissionServiceContract extends BaseServiceContract
 {
@@ -16,9 +17,9 @@ interface PermissionServiceContract extends BaseServiceContract
      * before deleting the permission itself. This ensures no orphaned pivot
      * records remain after deletion.
      *
-     * @param Permission $permission The permission instance to delete
+     * @param  Permission  $permission  The permission instance to delete
      *
-     * @throws \Illuminate\Database\QueryException If a database constraint prevents deletion
+     * @throws QueryException If a database constraint prevents deletion
      *
      * @see delete() For deleting by ID without relation cleanup
      */

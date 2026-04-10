@@ -12,10 +12,10 @@ class SessionParticipantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'           => $this->id,
-            'nickname'     => $this->nickname,
+            'id' => $this->id,
+            'nickname' => $this->nickname,
             'is_connected' => $this->is_connected,
-            'joined_at'    => $this->joined_at,
+            'joined_at' => $this->joined_at,
         ];
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Contracts;
 
+use App\Models\Role;
 use Illuminate\Support\Collection;
 
 interface RoleRepositoryContract extends BaseRepositoryContract
@@ -15,8 +16,8 @@ interface RoleRepositoryContract extends BaseRepositoryContract
      * via a single additional query using Eloquent's `with()`. This avoids the
      * N+1 query problem when iterating over roles and accessing their permissions.
      *
-     * @return Collection<int, \App\Models\Role> Collection of Role models, each with
-     *                                           its `permissions` relationship loaded
+     * @return Collection<int, Role> Collection of Role models, each with
+     *                               its `permissions` relationship loaded
      *
      * @see all() For retrieving roles without eager-loaded permissions
      */

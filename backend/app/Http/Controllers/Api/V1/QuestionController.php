@@ -351,8 +351,8 @@ class QuestionController extends Controller
     {
         $this->authorize(ability: 'create', arguments: Question::class);
 
-        $file    = $request->file(key: 'file');
-        $format  = $request->validated(key: 'format');
+        $file = $request->file(key: 'file');
+        $format = $request->validated(key: 'format');
         $content = $file->get();
 
         $result = $this->importService->import(
@@ -362,9 +362,9 @@ class QuestionController extends Controller
         );
 
         return response()->json(data: [
-            'imported'  => $result['imported'],
-            'failed'    => $result['failed'],
-            'errors'    => $result['errors'],
+            'imported' => $result['imported'],
+            'failed' => $result['failed'],
+            'errors' => $result['errors'],
             'questions' => QuestionResource::collection(resource: $result['questions']),
         ]);
     }

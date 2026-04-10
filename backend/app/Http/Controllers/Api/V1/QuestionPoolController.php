@@ -82,7 +82,7 @@ class QuestionPoolController extends Controller
     {
         $this->authorize('create', QuestionPool::class);
 
-        $data               = $request->validated();
+        $data = $request->validated();
         $data['created_by'] = $request->user()->id;
 
         $pool = QuestionPool::create($data);
@@ -210,7 +210,7 @@ class QuestionPoolController extends Controller
         $this->authorize('manageQuestions', $pool);
 
         $questionIds = $request->validated()['question_ids'];
-        $now         = now();
+        $now = now();
 
         $syncData = array_fill_keys($questionIds, ['added_at' => $now]);
         $pool->questions()->syncWithoutDetaching($syncData);

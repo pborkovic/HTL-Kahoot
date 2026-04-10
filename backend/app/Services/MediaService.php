@@ -13,12 +13,11 @@ use Illuminate\Support\Facades\Storage;
  * Persists binary media to the configured storage disk (SeaweedFS behind an
  * S3-compatible driver) and exposes the public `/media/...` URL used by the
  * frontend through the Nginx rewrite.
- *
- * @package App\Services
  */
 class MediaService implements MediaServiceContract
 {
     private const DISK = 's3';
+
     private const PUBLIC_PREFIX = '/media';
 
     /**
@@ -63,6 +62,6 @@ class MediaService implements MediaServiceContract
      */
     public function publicUrl(string $path): string
     {
-        return self::PUBLIC_PREFIX . '/' . ltrim(string: $path, characters: '/');
+        return self::PUBLIC_PREFIX.'/'.ltrim(string: $path, characters: '/');
     }
 }

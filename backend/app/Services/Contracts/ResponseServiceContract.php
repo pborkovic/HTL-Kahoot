@@ -14,9 +14,8 @@ interface ResponseServiceContract extends BaseServiceContract
     /**
      * Create a response for a session question.
      *
-     * @param SessionQuestion      $sessionQuestion The session question.
-     * @param array<string, mixed> $data            The response attributes.
-     *
+     * @param  SessionQuestion  $sessionQuestion  The session question.
+     * @param  array<string, mixed>  $data  The response attributes.
      * @return Response The newly created response.
      */
     public function createForSessionQuestion(SessionQuestion $sessionQuestion, array $data): Response;
@@ -24,8 +23,7 @@ interface ResponseServiceContract extends BaseServiceContract
     /**
      * Count the responses for a session question.
      *
-     * @param SessionQuestion $sessionQuestion The session question.
-     *
+     * @param  SessionQuestion  $sessionQuestion  The session question.
      * @return int The response count.
      */
     public function countForSessionQuestion(SessionQuestion $sessionQuestion): int;
@@ -33,9 +31,8 @@ interface ResponseServiceContract extends BaseServiceContract
     /**
      * Check whether a participant has already responded to a session question.
      *
-     * @param SessionQuestion $sessionQuestion The session question.
-     * @param string          $participantId   The participant ID.
-     *
+     * @param  SessionQuestion  $sessionQuestion  The session question.
+     * @param  string  $participantId  The participant ID.
      * @return bool True if a response exists.
      */
     public function hasParticipantResponded(SessionQuestion $sessionQuestion, string $participantId): bool;
@@ -43,8 +40,7 @@ interface ResponseServiceContract extends BaseServiceContract
     /**
      * Find a response by its ID.
      *
-     * @param string $responseId The response ID.
-     *
+     * @param  string  $responseId  The response ID.
      * @return Response|null The response, or null if not found.
      */
     public function findResponseById(string $responseId): ?Response;
@@ -52,16 +48,15 @@ interface ResponseServiceContract extends BaseServiceContract
     /**
      * Update a response's attributes.
      *
-     * @param Response             $response The response to update.
-     * @param array<string, mixed> $data     The attributes to update.
+     * @param  Response  $response  The response to update.
+     * @param  array<string, mixed>  $data  The attributes to update.
      */
     public function updateResponse(Response $response, array $data): void;
 
     /**
      * Check if any responses in this session are still pending AI evaluation.
      *
-     * @param Session $session The session.
-     *
+     * @param  Session  $session  The session.
      * @return bool True if any responses have is_correct = null.
      */
     public function hasPendingEvaluations(Session $session): bool;

@@ -13,8 +13,6 @@ use Laravel\Socialite\Facades\Socialite;
 
 /**
  * Authentication Service Implementation
- *
- * @package App\Services
  */
 class AuthService implements AuthServiceContract
 {
@@ -22,7 +20,6 @@ class AuthService implements AuthServiceContract
         private readonly UserRepositoryContract $userRepository,
         private readonly MicrosoftGraphServiceContract $graphService,
     ) {}
-
 
     /**
      * {@inheritDoc}
@@ -145,10 +142,7 @@ class AuthService implements AuthServiceContract
      * reconstruct a clean display name when the raw value is empty or
      * doesn't follow the "LASTNAME Firstname, CLASS" convention.
      *
-     * @param EntraUserDto $entraDto
-     * @param array<string, mixed>|null $profile
-     *
-     * @return EntraUserDto
+     * @param  array<string, mixed>|null  $profile
      */
     private function applyGraphProfile(EntraUserDto $entraDto, ?array $profile): EntraUserDto
     {
@@ -161,7 +155,7 @@ class AuthService implements AuthServiceContract
         if ($displayName === '') {
             $given = trim(string: (string) ($profile['given_name'] ?? ''));
             $surname = trim(string: (string) ($profile['surname'] ?? ''));
-            $composed = trim(string: $given . ' ' . $surname);
+            $composed = trim(string: $given.' '.$surname);
 
             if ($composed !== '') {
                 $displayName = $composed;

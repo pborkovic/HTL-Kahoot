@@ -19,9 +19,8 @@ readonly class SessionChannel
      * Returns user metadata for presence data if authorized,
      * or false if the user is neither the host nor a participant.
      *
-     * @param User   $user    The authenticated user.
-     * @param string $gamePin The game pin from the channel name.
-     *
+     * @param  User  $user  The authenticated user.
+     * @param  string  $gamePin  The game pin from the channel name.
      * @return array{id: string, name: string}|false
      *
      * @author Philipp Borkovic
@@ -30,7 +29,7 @@ readonly class SessionChannel
     {
         $session = $this->repository->findByGamePin(gamePin: $gamePin);
 
-        if (!$session) {
+        if (! $session) {
             return false;
         }
 
@@ -41,7 +40,7 @@ readonly class SessionChannel
 
         if ($isHost || $isParticipant) {
             return [
-                'id'   => $user->id,
+                'id' => $user->id,
                 'name' => $user->display_name ?? $user->username ?? $user->email,
             ];
         }

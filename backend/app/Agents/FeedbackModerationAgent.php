@@ -35,7 +35,7 @@ class FeedbackModerationAgent implements Agent
      */
     public function instructions(): Stringable|string
     {
-        return <<<INSTRUCTIONS
+        return <<<'INSTRUCTIONS'
         You are a feedback moderator for an educational quiz platform.
 
         Classify the user's feedback message as CONSTRUCTIVE or NOT_CONSTRUCTIVE.

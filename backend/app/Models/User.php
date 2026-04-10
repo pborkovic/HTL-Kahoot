@@ -19,11 +19,11 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'totp_enabled'  => 'boolean',
-            'is_active'     => 'boolean',
+            'totp_enabled' => 'boolean',
+            'is_active' => 'boolean',
             'last_login_at' => 'datetime',
-            'totp_secret'   => 'encrypted',
-            'preferences'   => 'array',
+            'totp_secret' => 'encrypted',
+            'preferences' => 'array',
         ];
     }
 

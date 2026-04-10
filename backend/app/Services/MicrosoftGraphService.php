@@ -11,7 +11,9 @@ use Throwable;
 class MicrosoftGraphService implements MicrosoftGraphServiceContract
 {
     private const GRAPH_BASE = 'https://graph.microsoft.com/v1.0';
+
     private const PHOTO_SIZES = ['240x240', '120x120', '96x96'];
+
     private const PROFILE_SELECT = 'id,displayName,givenName,surname,mail,userPrincipalName,jobTitle,department,officeLocation,preferredLanguage,mobilePhone,businessPhones';
 
     public function __construct(
@@ -27,12 +29,12 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
     {
         try {
             $response = Http::withToken(token: $accessToken)
-                ->get(url: self::GRAPH_BASE . '/me/memberOf');
+                ->get(url: self::GRAPH_BASE.'/me/memberOf');
 
             if (! $response->successful()) {
                 Log::warning(message: 'Graph API /me/memberOf failed', context: [
                     'status' => $response->status(),
-                    'body'   => $response->body(),
+                    'body' => $response->body(),
                 ]);
 
                 return [];
@@ -68,7 +70,7 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
 
             foreach (self::PHOTO_SIZES as $size) {
                 $sized = Http::withToken(token: $accessToken)
-                    ->get(url: self::GRAPH_BASE . "/me/photos/{$size}/\$value");
+                    ->get(url: self::GRAPH_BASE."/me/photos/{$size}/\$value");
 
                 if ($sized->successful()) {
                     $response = $sized;
@@ -78,7 +80,7 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
 
                 if ($sized->status() !== 404) {
                     Log::info(message: 'Graph API sized photo unavailable', context: [
-                        'size'   => $size,
+                        'size' => $size,
                         'status' => $sized->status(),
                     ]);
                 }
@@ -86,13 +88,13 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
 
             if ($response === null) {
                 $fallback = Http::withToken(token: $accessToken)
-                    ->get(url: self::GRAPH_BASE . '/me/photo/$value');
+                    ->get(url: self::GRAPH_BASE.'/me/photo/$value');
 
                 if (! $fallback->successful()) {
                     if ($fallback->status() !== 404) {
                         Log::warning(message: 'Graph API /me/photo failed', context: [
                             'status' => $fallback->status(),
-                            'body'   => $fallback->body(),
+                            'body' => $fallback->body(),
                         ]);
                     }
 
@@ -104,10 +106,10 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
 
             $contentType = $response->header(header: 'Content-Type');
             $extension = match (true) {
-                str_contains(haystack: $contentType, needle: 'png')  => 'png',
-                str_contains(haystack: $contentType, needle: 'gif')  => 'gif',
+                str_contains(haystack: $contentType, needle: 'png') => 'png',
+                str_contains(haystack: $contentType, needle: 'gif') => 'gif',
                 str_contains(haystack: $contentType, needle: 'webp') => 'webp',
-                default                                              => 'jpg',
+                default => 'jpg',
             };
             $path = "avatars/{$userId}.{$extension}";
 
@@ -131,14 +133,14 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
     {
         try {
             $response = Http::withToken(token: $accessToken)
-                ->get(url: self::GRAPH_BASE . '/me', query: [
+                ->get(url: self::GRAPH_BASE.'/me', query: [
                     '$select' => self::PROFILE_SELECT,
                 ]);
 
             if (! $response->successful()) {
                 Log::warning(message: 'Graph API /me failed', context: [
                     'status' => $response->status(),
-                    'body'   => $response->body(),
+                    'body' => $response->body(),
                 ]);
 
                 return null;
@@ -147,18 +149,18 @@ class MicrosoftGraphService implements MicrosoftGraphServiceContract
             $data = $response->json() ?? [];
 
             return [
-                'id'                 => $data['id'] ?? null,
-                'display_name'       => $data['displayName'] ?? null,
-                'given_name'         => $data['givenName'] ?? null,
-                'surname'            => $data['surname'] ?? null,
-                'mail'               => $data['mail'] ?? null,
-                'user_principal_name'=> $data['userPrincipalName'] ?? null,
-                'job_title'          => $data['jobTitle'] ?? null,
-                'department'         => $data['department'] ?? null,
-                'office_location'    => $data['officeLocation'] ?? null,
+                'id' => $data['id'] ?? null,
+                'display_name' => $data['displayName'] ?? null,
+                'given_name' => $data['givenName'] ?? null,
+                'surname' => $data['surname'] ?? null,
+                'mail' => $data['mail'] ?? null,
+                'user_principal_name' => $data['userPrincipalName'] ?? null,
+                'job_title' => $data['jobTitle'] ?? null,
+                'department' => $data['department'] ?? null,
+                'office_location' => $data['officeLocation'] ?? null,
                 'preferred_language' => $data['preferredLanguage'] ?? null,
-                'mobile_phone'       => $data['mobilePhone'] ?? null,
-                'business_phones'    => $data['businessPhones'] ?? [],
+                'mobile_phone' => $data['mobilePhone'] ?? null,
+                'business_phones' => $data['businessPhones'] ?? [],
             ];
         } catch (Throwable $e) {
             Log::warning(message: "Graph API profile fetch failed: {$e->getMessage()}");

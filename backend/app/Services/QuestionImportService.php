@@ -20,7 +20,7 @@ class QuestionImportService implements QuestionImportServiceContract
     ) {}
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -38,7 +38,6 @@ class QuestionImportService implements QuestionImportServiceContract
         );
     }
 
-
     /**
      * Parse a JSON string into a normalised question array.
      *
@@ -46,8 +45,7 @@ class QuestionImportService implements QuestionImportServiceContract
      * `questions` key. Items missing `type` or `title` are skipped with
      * a warning log entry.
      *
-     * @param string $content Raw JSON string.
-     *
+     * @param  string  $content  Raw JSON string.
      * @return array<int, array{
      *     type: string,
      *     title: string,
@@ -73,30 +71,30 @@ class QuestionImportService implements QuestionImportServiceContract
         if (isset($data['questions']) && is_array($data['questions'])) {
             $data = $data['questions'];
         }
-        if (!is_array($data) || !array_is_list(array: $data)) {
+        if (! is_array($data) || ! array_is_list(array: $data)) {
             throw new InvalidArgumentException('JSON must be an array of questions or an object with a "questions" key.');
         }
 
         $questions = [];
         foreach ($data as $i => $item) {
-            if (!isset($item['type'], $item['title'])) {
+            if (! isset($item['type'], $item['title'])) {
                 Log::warning(message: "Question import: JSON item {$i} missing type or title, skipping.");
 
                 continue;
             }
 
             $questions[] = [
-                'type'              => $item['type'],
-                'title'             => $item['title'],
-                'explanation'       => $item['explanation'] ?? null,
-                'difficulty'        => $item['difficulty'] ?? null,
-                'default_points'    => $item['default_points'] ?? 1000,
+                'type' => $item['type'],
+                'title' => $item['title'],
+                'explanation' => $item['explanation'] ?? null,
+                'difficulty' => $item['difficulty'] ?? null,
+                'default_points' => $item['default_points'] ?? 1000,
                 'default_time_limit' => $item['default_time_limit'] ?? null,
                 'randomize_options' => $item['randomize_options'] ?? true,
-                'config'            => $item['config'] ?? [],
-                'answer_options'    => array_values(array_map(
-                    static fn(int $idx, array $opt): array => [
-                        'text'       => $opt['text'] ?? '',
+                'config' => $item['config'] ?? [],
+                'answer_options' => array_values(array_map(
+                    static fn (int $idx, array $opt): array => [
+                        'text' => $opt['text'] ?? '',
                         'is_correct' => $opt['is_correct'] ?? false,
                         'sort_order' => $opt['sort_order'] ?? $idx,
                     ],
@@ -109,7 +107,6 @@ class QuestionImportService implements QuestionImportServiceContract
         return $questions;
     }
 
-
     /**
      * Parse Moodle GIFT format text into a normalised question array.
      *
@@ -117,8 +114,7 @@ class QuestionImportService implements QuestionImportServiceContract
      * block individually, and returns all successfully parsed questions.
      * Supports: Single/Multiple Choice, True/False, Short Answer, Matching, Numerical.
      *
-     * @param string $content Raw GIFT format content.
-     *
+     * @param  string  $content  Raw GIFT format content.
      * @return array<int, array{
      *     type: string,
      *     title: string,
@@ -131,7 +127,7 @@ class QuestionImportService implements QuestionImportServiceContract
      */
     private function parseGift(string $content): array
     {
-        $lines  = preg_split(
+        $lines = preg_split(
             pattern: '/\r\n|\r|\n/',
             subject: $content
         );
@@ -155,15 +151,14 @@ class QuestionImportService implements QuestionImportServiceContract
      * Comment lines (starting with //) are stripped. Continuation lines
      * consisting of a single backslash insert a newline into the current block.
      *
-     * @param array<int, string> $lines The raw lines from the GIFT file.
-     *
+     * @param  array<int, string>  $lines  The raw lines from the GIFT file.
      * @return array<int, string> Each element is a trimmed, single-string question block.
      *
      * @author Philipp Borkovic
      */
     private function splitIntoBlocks(array $lines): array
     {
-        $blocks  = [];
+        $blocks = [];
         $current = '';
 
         foreach ($lines as $line) {
@@ -176,7 +171,7 @@ class QuestionImportService implements QuestionImportServiceContract
             if ($trimmed === '') {
                 if (trim(string: $current) !== '') {
                     $blocks[] = trim(string: $current);
-                    $current  = '';
+                    $current = '';
                 }
 
                 continue;
@@ -188,7 +183,7 @@ class QuestionImportService implements QuestionImportServiceContract
                 continue;
             }
 
-            $current .= ($current !== '' ? ' ' : '') . $trimmed;
+            $current .= ($current !== '' ? ' ' : '').$trimmed;
         }
 
         if (trim(string: $current) !== '') {
@@ -206,8 +201,7 @@ class QuestionImportService implements QuestionImportServiceContract
      * and delegates to parseGiftAnswerBlock for type detection and answer extraction.
      * Default version fields (explanation, difficulty, etc.) are appended.
      *
-     * @param string $block The raw question block text.
-     *
+     * @param  string  $block  The raw question block text.
      * @return array{
      *     type: string,
      *     title: string,
@@ -232,7 +226,7 @@ class QuestionImportService implements QuestionImportServiceContract
 
         $name = null;
         if (preg_match(pattern: '/^::(.+?)::(.*)/s', subject: $block, matches: $matches)) {
-            $name  = trim(string: $this->unescape(text: $matches[1]));
+            $name = trim(string: $this->unescape(text: $matches[1]));
             $block = trim(string: $matches[2]);
         }
 
@@ -252,7 +246,7 @@ class QuestionImportService implements QuestionImportServiceContract
             return null;
         }
 
-        $questionText  = trim(
+        $questionText = trim(
             string: substr(
                 string: $block,
                 offset: 0,
@@ -264,19 +258,19 @@ class QuestionImportService implements QuestionImportServiceContract
             offset: $answerStart + 1,
             length: $answerEnd - $answerStart - 1
         );
-        $afterAnswer   = trim(
+        $afterAnswer = trim(
             string: substr(
                 string: $block,
                 offset: $answerEnd + 1
             )
         );
 
-        $title = trim(string: $questionText . ($afterAnswer !== '' ? ' _____ ' . $afterAnswer : ''));
+        $title = trim(string: $questionText.($afterAnswer !== '' ? ' _____ '.$afterAnswer : ''));
         if ($title === '') {
             $title = $name ?? 'Imported Question';
         }
 
-        $title         = $this->unescape(text: $title);
+        $title = $this->unescape(text: $title);
         $answerContent = trim(string: $answerContent);
 
         $result = $this->parseGiftAnswerBlock(
@@ -284,12 +278,12 @@ class QuestionImportService implements QuestionImportServiceContract
             title: $title
         );
 
-        $result['explanation']       = null;
-        $result['difficulty']        = null;
-        $result['default_points']    = 1000;
+        $result['explanation'] = null;
+        $result['difficulty'] = null;
+        $result['default_points'] = 1000;
         $result['default_time_limit'] = null;
         $result['randomize_options'] = true;
-        $result['config']            = [];
+        $result['config'] = [];
 
         return $result;
     }
@@ -301,9 +295,8 @@ class QuestionImportService implements QuestionImportServiceContract
      * True/False, Matching, Numerical, Short Answer, or Multiple Choice,
      * then delegates to the appropriate specialised parser.
      *
-     * @param string $answerContent The raw text between { and }.
-     * @param string $title         The already-extracted question title.
-     *
+     * @param  string  $answerContent  The raw text between { and }.
+     * @param  string  $title  The already-extracted question title.
      * @return array{
      *     type: string,
      *     title: string,
@@ -325,12 +318,13 @@ class QuestionImportService implements QuestionImportServiceContract
                 haystack: ['TRUE', 'T'],
                 strict: true
             );
+
             return [
-                'type'           => 'true_false',
-                'title'          => $title,
+                'type' => 'true_false',
+                'title' => $title,
                 'answer_options' => [
                     ['text' => 'Wahr', 'is_correct' => $correct, 'sort_order' => 0],
-                    ['text' => 'Falsch', 'is_correct' => !$correct, 'sort_order' => 1],
+                    ['text' => 'Falsch', 'is_correct' => ! $correct, 'sort_order' => 1],
                 ],
             ];
         }
@@ -349,7 +343,7 @@ class QuestionImportService implements QuestionImportServiceContract
             );
         }
 
-        if (str_contains(haystack: $answerContent, needle: '=') && !str_contains(haystack: $answerContent, needle: '~')) {
+        if (str_contains(haystack: $answerContent, needle: '=') && ! str_contains(haystack: $answerContent, needle: '~')) {
             return $this->parseGiftShortAnswer(
                 answerContent: $answerContent,
                 title: $title
@@ -369,9 +363,8 @@ class QuestionImportService implements QuestionImportServiceContract
      * percentage weightings (%nn%), and classifies the result as
      * 'multiple_choice' or 'single_choice' based on the number of correct answers.
      *
-     * @param string $answerContent The raw answer choices text.
-     * @param string $title         The question title.
-     *
+     * @param  string  $answerContent  The raw answer choices text.
+     * @param  string  $title  The question title.
      * @return array{
      *     type: string,
      *     title: string,
@@ -386,23 +379,23 @@ class QuestionImportService implements QuestionImportServiceContract
      */
     private function parseGiftMultipleChoice(string $answerContent, string $title): array
     {
-        $options        = $this->extractGiftOptions(content: $answerContent);
+        $options = $this->extractGiftOptions(content: $answerContent);
         $hasPercentages = false;
-        $answers        = [];
-        $sortOrder      = 0;
+        $answers = [];
+        $sortOrder = 0;
 
         foreach ($options as $option) {
-            $text       = $option['text'];
-            $isCorrect  = $option['is_correct'];
+            $text = $option['text'];
+            $isCorrect = $option['is_correct'];
             $percentage = $option['percentage'];
 
             if ($percentage !== null) {
                 $hasPercentages = true;
-                $isCorrect      = $percentage > 0;
+                $isCorrect = $percentage > 0;
             }
 
             $answers[] = [
-                'text'       => $this->unescape(text: $text),
+                'text' => $this->unescape(text: $text),
                 'is_correct' => $isCorrect,
                 'sort_order' => $sortOrder++,
             ];
@@ -411,15 +404,15 @@ class QuestionImportService implements QuestionImportServiceContract
         $correctCount = count(
             value: array_filter(
                 array: $answers,
-                callback: fn(array $a): bool => $a['is_correct']
+                callback: fn (array $a): bool => $a['is_correct']
             )
         );
 
         $type = $correctCount > 1 || $hasPercentages ? 'multiple_choice' : 'single_choice';
 
         return [
-            'type'           => $type,
-            'title'          => $title,
+            'type' => $type,
+            'title' => $title,
             'answer_options' => $answers,
         ];
     }
@@ -429,9 +422,8 @@ class QuestionImportService implements QuestionImportServiceContract
      *
      * All options marked with = are treated as accepted correct answers.
      *
-     * @param string $answerContent The raw answer choices text.
-     * @param string $title         The question title.
-     *
+     * @param  string  $answerContent  The raw answer choices text.
+     * @param  string  $title  The question title.
      * @return array{
      *     type: string,
      *     title: string,
@@ -446,21 +438,21 @@ class QuestionImportService implements QuestionImportServiceContract
      */
     private function parseGiftShortAnswer(string $answerContent, string $title): array
     {
-        $options   = $this->extractGiftOptions(content: $answerContent);
-        $answers   = [];
+        $options = $this->extractGiftOptions(content: $answerContent);
+        $answers = [];
         $sortOrder = 0;
 
         foreach ($options as $option) {
             $answers[] = [
-                'text'       => $this->unescape(text: $option['text']),
+                'text' => $this->unescape(text: $option['text']),
                 'is_correct' => true,
                 'sort_order' => $sortOrder++,
             ];
         }
 
         return [
-            'type'           => 'short_answer',
-            'title'          => $title,
+            'type' => 'short_answer',
+            'title' => $title,
             'answer_options' => $answers,
         ];
     }
@@ -471,9 +463,8 @@ class QuestionImportService implements QuestionImportServiceContract
      * Extracts pairs in the format =subquestion -> subanswer and stores
      * each pair as a single answer option with an arrow separator.
      *
-     * @param string $answerContent The raw answer choices text.
-     * @param string $title         The question title.
-     *
+     * @param  string  $answerContent  The raw answer choices text.
+     * @param  string  $title  The question title.
      * @return array{
      *     type: string,
      *     title: string,
@@ -495,7 +486,7 @@ class QuestionImportService implements QuestionImportServiceContract
             flags: PREG_SET_ORDER,
         );
 
-        $answers   = [];
+        $answers = [];
         $sortOrder = 0;
 
         foreach ($matches as $match) {
@@ -504,22 +495,22 @@ class QuestionImportService implements QuestionImportServiceContract
                     string: $match[1]
                 )
             );
-            $subAnswer   = $this->unescape(
+            $subAnswer = $this->unescape(
                 text: trim(
                     string: $match[2]
                 )
             );
 
             $answers[] = [
-                'text'       => $subQuestion . ' → ' . $subAnswer,
+                'text' => $subQuestion.' → '.$subAnswer,
                 'is_correct' => true,
                 'sort_order' => $sortOrder++,
             ];
         }
 
         return [
-            'type'           => 'matching',
-            'title'          => $title,
+            'type' => 'matching',
+            'title' => $title,
             'answer_options' => $answers,
         ];
     }
@@ -530,9 +521,8 @@ class QuestionImportService implements QuestionImportServiceContract
      * Supports three formats: range (min..max), tolerance (number:tolerance),
      * and exact number. The answer text is stored in a human-readable form.
      *
-     * @param string $answerContent The raw answer text (leading # already present).
-     * @param string $title         The question title.
-     *
+     * @param  string  $answerContent  The raw answer text (leading # already present).
+     * @param  string  $title  The question title.
      * @return array{
      *     type: string,
      *     title: string,
@@ -551,16 +541,16 @@ class QuestionImportService implements QuestionImportServiceContract
         $answers = [];
 
         if (preg_match(pattern: '/^([\d.]+)\.\.([\d.]+)/', subject: $content, matches: $match)) {
-            $answers[] = ['text' => $match[1] . '..' . $match[2], 'is_correct' => true, 'sort_order' => 0];
+            $answers[] = ['text' => $match[1].'..'.$match[2], 'is_correct' => true, 'sort_order' => 0];
         } elseif (preg_match(pattern: '/^([\d.]+):([\d.]+)/', subject: $content, matches: $match)) {
-            $answers[] = ['text' => $match[1] . ' (±' . $match[2] . ')', 'is_correct' => true, 'sort_order' => 0];
+            $answers[] = ['text' => $match[1].' (±'.$match[2].')', 'is_correct' => true, 'sort_order' => 0];
         } elseif (preg_match(pattern: '/^([\d.]+)/', subject: $content, matches: $match)) {
             $answers[] = ['text' => $match[1], 'is_correct' => true, 'sort_order' => 0];
         }
 
         return [
-            'type'           => 'numerical',
-            'title'          => $title,
+            'type' => 'numerical',
+            'title' => $title,
             'answer_options' => $answers,
         ];
     }
@@ -572,8 +562,7 @@ class QuestionImportService implements QuestionImportServiceContract
      * optional percentage weightings (%nn%), and strips inline feedback
      * after unescaped # characters.
      *
-     * @param string $content The raw answer choices text inside braces.
-     *
+     * @param  string  $content  The raw answer choices text inside braces.
      * @return array<int, array{
      *     text: string,
      *     is_correct: bool,
@@ -594,9 +583,9 @@ class QuestionImportService implements QuestionImportServiceContract
         );
 
         foreach ($matches as $match) {
-            $marker     = $match[1];
+            $marker = $match[1];
             $percentStr = $match[2] ?? '';
-            $text       = trim(string: $match[3]);
+            $text = trim(string: $match[3]);
 
             $feedbackPos = $this->findUnescapedChar(text: $text, char: '#');
             if ($feedbackPos !== false) {
@@ -619,7 +608,7 @@ class QuestionImportService implements QuestionImportServiceContract
 
             if ($text !== '') {
                 $options[] = [
-                    'text'       => $text,
+                    'text' => $text,
                     'is_correct' => $marker === '=',
                     'percentage' => $percentage,
                 ];
@@ -629,15 +618,13 @@ class QuestionImportService implements QuestionImportServiceContract
         return $options;
     }
 
-
     /**
      * Find the position of the first unescaped occurrence of a character.
      *
      * Skips characters preceded by a backslash (GIFT escape sequences).
      *
-     * @param string $text The text to search.
-     * @param string $char The single character to find.
-     *
+     * @param  string  $text  The text to search.
+     * @param  string  $char  The single character to find.
      * @return int|false The zero-based position, or false if not found.
      *
      * @author Philipp Borkovic
@@ -665,9 +652,8 @@ class QuestionImportService implements QuestionImportServiceContract
      * Tracks brace depth to correctly handle nested braces and skips
      * escaped braces (preceded by a backslash).
      *
-     * @param string $text  The full text containing braces.
-     * @param int    $start The position of the opening brace.
-     *
+     * @param  string  $text  The full text containing braces.
+     * @param  int  $start  The position of the opening brace.
      * @return int|false The position of the matching closing brace, or false if unmatched.
      *
      * @author Philipp Borkovic
@@ -675,7 +661,7 @@ class QuestionImportService implements QuestionImportServiceContract
     private function findMatchingBrace(string $text, int $start): int|false
     {
         $depth = 0;
-        $len   = strlen(string: $text);
+        $len = strlen(string: $text);
 
         for ($i = $start; $i < $len; $i++) {
             if ($text[$i] === '\\') {
@@ -702,8 +688,7 @@ class QuestionImportService implements QuestionImportServiceContract
      * Replaces escaped sequences (\~, \=, \#, \{, \}, \\) with their
      * literal character equivalents.
      *
-     * @param string $text The escaped GIFT text.
-     *
+     * @param  string  $text  The escaped GIFT text.
      * @return string The unescaped text.
      *
      * @author Philipp Borkovic
@@ -729,8 +714,7 @@ class QuestionImportService implements QuestionImportServiceContract
      *     title: string,
      *     answer_options: array
      * }> $questions Normalised question data.
-     * @param User $user The authenticated user performing the import.
-     *
+     * @param  User  $user  The authenticated user performing the import.
      * @return array{
      *     imported: int,
      *     failed: int,
@@ -742,10 +726,10 @@ class QuestionImportService implements QuestionImportServiceContract
      */
     private function persistQuestions(array $questions, User $user): array
     {
-        $imported         = 0;
-        $failed           = 0;
-        $errors           = [];
-        $createdQuestions  = [];
+        $imported = 0;
+        $failed = 0;
+        $errors = [];
+        $createdQuestions = [];
 
         foreach ($questions as $i => $data) {
             try {
@@ -762,15 +746,15 @@ class QuestionImportService implements QuestionImportServiceContract
                 $errors[] = "Question \"{$label}\": {$e->getMessage()}";
                 Log::warning(message: "Question import failed for item {$i}", context: [
                     'error' => $e->getMessage(),
-                    'data'  => $data,
+                    'data' => $data,
                 ]);
             }
         }
 
         return [
-            'imported'  => $imported,
-            'failed'    => $failed,
-            'errors'    => $errors,
+            'imported' => $imported,
+            'failed' => $failed,
+            'errors' => $errors,
             'questions' => $createdQuestions,
         ];
     }

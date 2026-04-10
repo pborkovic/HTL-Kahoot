@@ -13,7 +13,7 @@ use Throwable;
 class AnswerEvaluationService implements AnswerEvaluationServiceContract
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -39,25 +39,25 @@ class AnswerEvaluationService implements AnswerEvaluationServiceContract
             $isCorrect = str_starts_with(haystack: $parsed, needle: 'YES');
 
             Log::info(message: 'AI evaluation response', context: [
-                'question'       => $questionTitle,
+                'question' => $questionTitle,
                 'student_answer' => $studentAnswer,
-                'raw_response'   => $raw,
-                'is_correct'     => $isCorrect,
+                'raw_response' => $raw,
+                'is_correct' => $isCorrect,
             ]);
 
             return [
                 'is_correct' => $isCorrect,
                 'confidence' => $isCorrect ? 1.0 : 0.0,
-                'reasoning'  => $raw,
+                'reasoning' => $raw,
             ];
         } catch (Throwable $e) {
             Log::error(message: 'AI answer evaluation failed', context: [
-                'question'       => $questionTitle,
+                'question' => $questionTitle,
                 'student_answer' => $studentAnswer,
-                'error'          => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
-            throw new RuntimeException(message: 'Answer evaluation failed: ' . $e->getMessage(), previous: $e);
+            throw new RuntimeException(message: 'Answer evaluation failed: '.$e->getMessage(), previous: $e);
         }
     }
 }

@@ -10,8 +10,8 @@ class AnswerOptionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'text'       => $this->text,
+            'id' => $this->id,
+            'text' => $this->text,
             'is_correct' => $this->is_correct,
             'sort_order' => $this->sort_order,
         ];

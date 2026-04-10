@@ -10,22 +10,22 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'            => $this->id,
-            'email'         => $this->email,
-            'username'      => $this->username,
-            'display_name'  => $this->display_name,
-            'avatar_url'    => $this->avatar_url,
-            'class_name'    => $this->class_name,
-            'preferences'   => $this->preferences,
+            'id' => $this->id,
+            'email' => $this->email,
+            'username' => $this->username,
+            'display_name' => $this->display_name,
+            'avatar_url' => $this->avatar_url,
+            'class_name' => $this->class_name,
+            'preferences' => $this->preferences,
             'auth_provider' => $this->auth_provider,
-            'is_active'     => $this->is_active,
-            'totp_enabled'  => $this->totp_enabled,
+            'is_active' => $this->is_active,
+            'totp_enabled' => $this->totp_enabled,
             'last_login_at' => $this->last_login_at,
-            'created_at'    => $this->created_at,
-            'updated_at'    => $this->updated_at,
-            'deleted_at'    => $this->deleted_at,
-            'roles'         => $this->whenLoaded('roles', fn() => $this->roles->map(fn($r) => [
-                'id'   => $r->id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
+            'roles' => $this->whenLoaded('roles', fn () => $this->roles->map(fn ($r) => [
+                'id' => $r->id,
                 'name' => $r->name,
             ])),
         ];

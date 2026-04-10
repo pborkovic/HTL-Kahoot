@@ -11,8 +11,6 @@ use Illuminate\Support\Collection;
 
 /**
  * Contract for the platform feedback service layer.
- *
- * @package App\Services\Contracts
  */
 interface PlatformFeedbackServiceContract
 {
@@ -22,9 +20,8 @@ interface PlatformFeedbackServiceContract
      * The implementation must run the AI moderator before persisting and
      * store both the verdict and the reason on the resulting record.
      *
-     * @param User   $user    The submitting user.
-     * @param string $message The feedback text.
-     *
+     * @param  User  $user  The submitting user.
+     * @param  string  $message  The feedback text.
      * @return PlatformFeedback The persisted feedback record.
      */
     public function submit(User $user, string $message): PlatformFeedback;
@@ -32,8 +29,7 @@ interface PlatformFeedbackServiceContract
     /**
      * List all feedback submitted by the given user, newest first.
      *
-     * @param User $user The user whose feedback to fetch.
-     *
+     * @param  User  $user  The user whose feedback to fetch.
      * @return Collection<int, PlatformFeedback>
      */
     public function listForUser(User $user): Collection;
@@ -41,20 +37,17 @@ interface PlatformFeedbackServiceContract
     /**
      * Paginate constructive feedback for the admin dashboard.
      *
-     * @param string|null $status  One of "open", "solved", or null for all.
-     * @param int         $page    The 1-indexed page number.
-     * @param int         $perPage The page size.
-     *
-     * @return LengthAwarePaginator
+     * @param  string|null  $status  One of "open", "solved", or null for all.
+     * @param  int  $page  The 1-indexed page number.
+     * @param  int  $perPage  The page size.
      */
     public function paginateForAdmin(?string $status, int $page, int $perPage): LengthAwarePaginator;
 
     /**
      * Mark a piece of feedback as resolved by the given admin user.
      *
-     * @param PlatformFeedback $feedback The feedback to resolve.
-     * @param User             $admin    The admin user resolving it.
-     *
+     * @param  PlatformFeedback  $feedback  The feedback to resolve.
+     * @param  User  $admin  The admin user resolving it.
      * @return PlatformFeedback The refreshed record.
      */
     public function markResolved(PlatformFeedback $feedback, User $admin): PlatformFeedback;
@@ -62,19 +55,16 @@ interface PlatformFeedbackServiceContract
     /**
      * Find a feedback record by its UUID.
      *
-     * @param string $id The feedback UUID.
-     *
-     * @return PlatformFeedback|null
+     * @param  string  $id  The feedback UUID.
      */
     public function findById(string $id): ?PlatformFeedback;
 
     /**
      * Persist the result of the AI moderation run for a feedback record.
      *
-     * @param PlatformFeedback $feedback        The feedback being moderated.
-     * @param bool             $isConstructive  Whether the moderator classified the message as constructive.
-     * @param string|null      $reason          Optional moderator reason.
-     *
+     * @param  PlatformFeedback  $feedback  The feedback being moderated.
+     * @param  bool  $isConstructive  Whether the moderator classified the message as constructive.
+     * @param  string|null  $reason  Optional moderator reason.
      * @return PlatformFeedback The refreshed record.
      */
     public function applyModerationVerdict(
@@ -86,8 +76,7 @@ interface PlatformFeedbackServiceContract
     /**
      * Reopen a previously resolved piece of feedback.
      *
-     * @param PlatformFeedback $feedback The feedback to reopen.
-     *
+     * @param  PlatformFeedback  $feedback  The feedback to reopen.
      * @return PlatformFeedback The refreshed record.
      */
     public function reopen(PlatformFeedback $feedback): PlatformFeedback;

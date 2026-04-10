@@ -19,8 +19,7 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Find a session by game pin with participants loaded.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return Session The session with participants relation loaded.
      *
      * @throws ModelNotFoundException If no session found.
@@ -30,9 +29,8 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Create a new game session with a unique game pin and QR code.
      *
-     * @param CreateSessionDto $dto  The session creation data containing the quiz ID.
-     * @param User             $host The authenticated user who will host the session.
-     *
+     * @param  CreateSessionDto  $dto  The session creation data containing the quiz ID.
+     * @param  User  $host  The authenticated user who will host the session.
      * @return Session The created session with quiz and host relations loaded.
      */
     public function createGame(CreateSessionDto $dto, User $host): Session;
@@ -40,21 +38,19 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Join an existing game session by its game pin.
      *
-     * @param string $gamePin The 8-digit game pin of the session to join.
-     * @param User   $user    The authenticated user joining the session.
-     *
+     * @param  string  $gamePin  The 8-digit game pin of the session to join.
+     * @param  User  $user  The authenticated user joining the session.
      * @return SessionParticipant The created or existing participant record.
      *
      * @throws InvalidArgumentException If no session with the given game pin exists.
-     * @throws RuntimeException         If the session is not in 'lobby' status.
+     * @throws RuntimeException If the session is not in 'lobby' status.
      */
     public function joinSession(string $gamePin, User $user): SessionParticipant;
 
     /**
      * Generate a base64-encoded SVG QR code data URI for the given game pin.
      *
-     * @param string $gamePin The 8-digit game pin to encode in the QR code.
-     *
+     * @param  string  $gamePin  The 8-digit game pin to encode in the QR code.
      * @return string The QR code as a data:image/svg+xml;base64 URI.
      */
     public function generateQrCodeDataUri(string $gamePin): string;
@@ -65,9 +61,8 @@ interface SessionServiceContract extends BaseServiceContract
      * Creates SessionQuestion records from the quiz, sets the session to active,
      * and opens the first question.
      *
-     * @param string $gamePin The 8-digit game pin.
-     * @param User   $host    The authenticated host user.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
+     * @param  User  $host  The authenticated host user.
      * @return Session The updated session.
      *
      * @throws RuntimeException If the session is not in lobby status or the user is not the host.
@@ -80,9 +75,8 @@ interface SessionServiceContract extends BaseServiceContract
      * Closes the current question and either opens the next one
      * or finishes the session if all questions have been shown.
      *
-     * @param string $gamePin The 8-digit game pin.
-     * @param User   $host    The authenticated host user.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
+     * @param  User  $host  The authenticated host user.
      * @return Session The updated session.
      *
      * @throws RuntimeException If the session is not active or the user is not the host.
@@ -95,8 +89,7 @@ interface SessionServiceContract extends BaseServiceContract
      * Returns question text, answer options (without is_correct),
      * timing information, and position within the quiz.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array{
      *     question_text: string,
      *     answer_options: array<int, array{
@@ -121,12 +114,11 @@ interface SessionServiceContract extends BaseServiceContract
      * Validates timing, calculates correctness and score, creates the Response
      * record, and updates the participant's total score.
      *
-     * @param string $gamePin The 8-digit game pin.
-     * @param User   $user    The authenticated student user.
+     * @param  string  $gamePin  The 8-digit game pin.
+     * @param  User  $user  The authenticated student user.
      * @param array{
      *     answer: array<int, string>
      * } $answerData The submitted answer option UUIDs.
-     *
      * @return Response The created response record.
      *
      * @throws RuntimeException If the session is not active, time has expired, or already answered.
@@ -136,8 +128,7 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Get the current status of a session.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array{
      *     status: string,
      *     current_question_idx: int|null,
@@ -150,10 +141,8 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Close the current question without advancing to the next one.
      *
-     * @param string $gamePin The 8-digit game pin.
-     * @param User   $host    The authenticated host user.
-     *
-     * @return void
+     * @param  string  $gamePin  The 8-digit game pin.
+     * @param  User  $host  The authenticated host user.
      *
      * @throws RuntimeException If the session is not active or the user is not the host.
      */
@@ -162,8 +151,7 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Get answer distribution for the current question.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array{
      *     answer_distribution: array<int, array{
      *         option_id: string,
@@ -181,8 +169,7 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Get the current leaderboard.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array<int, array{
      *     rank: int,
      *     participant_id: string,
@@ -195,8 +182,7 @@ interface SessionServiceContract extends BaseServiceContract
     /**
      * Get final game results.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array{
      *     session_id: string,
      *     quiz_title: string,
@@ -218,9 +204,8 @@ interface SessionServiceContract extends BaseServiceContract
      * Returns every question with the correct answer options and
      * the answer options the student chose, along with scoring details.
      *
-     * @param string $gamePin The 8-digit game pin.
-     * @param User   $user    The authenticated student user.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
+     * @param  User  $user  The authenticated student user.
      * @return array{
      *     session_id: string,
      *     quiz_title: string,
@@ -251,8 +236,7 @@ interface SessionServiceContract extends BaseServiceContract
      * Returns every question with the correct answer options and each
      * participant's chosen answers with scoring details. Teacher-facing endpoint.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array{
      *     session_id: string,
      *     quiz_title: string,
@@ -289,8 +273,7 @@ interface SessionServiceContract extends BaseServiceContract
      * Returns each participant's total score, rank, accuracy percentage,
      * average response time, and detailed per-question answers.
      *
-     * @param string $gamePin The 8-digit game pin.
-     *
+     * @param  string  $gamePin  The 8-digit game pin.
      * @return array{
      *     session_id: string,
      *     quiz_title: string,
@@ -334,10 +317,10 @@ interface SessionServiceContract extends BaseServiceContract
      * the participant's total_score, and adjusts their answer_streak.
      * Runs within a database transaction.
      *
-     * @param string $responseId    The response ID.
-     * @param string $participantId The participant ID.
-     * @param bool   $isCorrect     Whether the AI judged the answer correct.
-     * @param int    $scoreAwarded  The calculated score to award.
+     * @param  string  $responseId  The response ID.
+     * @param  string  $participantId  The participant ID.
+     * @param  bool  $isCorrect  Whether the AI judged the answer correct.
+     * @param  int  $scoreAwarded  The calculated score to award.
      */
     public function applyFreeTextEvaluation(string $responseId, string $participantId, bool $isCorrect, int $scoreAwarded): void;
 
@@ -347,11 +330,10 @@ interface SessionServiceContract extends BaseServiceContract
      * The teacher can mark a response as correct or incorrect,
      * adjusting the participant's total score accordingly.
      *
-     * @param string $gamePin    The session game pin.
-     * @param string $responseId The response ID to override.
-     * @param bool   $isCorrect  The teacher's verdict.
-     * @param User   $teacher    The teacher performing the override.
-     *
+     * @param  string  $gamePin  The session game pin.
+     * @param  string  $responseId  The response ID to override.
+     * @param  bool  $isCorrect  The teacher's verdict.
+     * @param  User  $teacher  The teacher performing the override.
      * @return array{response_id: string, is_correct: bool, score_awarded: int, participant_total_score: int}
      */
     public function overrideAnswerEvaluation(string $gamePin, string $responseId, bool $isCorrect, User $teacher): array;

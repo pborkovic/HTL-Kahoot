@@ -10,10 +10,10 @@ class RoleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'          => $this->id,
-            'name'        => $this->name,
-            'permissions' => $this->whenLoaded(relationship: 'permissions', value: fn() => $this->permissions->map(fn($p) => [
-                'id'   => $p->id,
+            'id' => $this->id,
+            'name' => $this->name,
+            'permissions' => $this->whenLoaded(relationship: 'permissions', value: fn () => $this->permissions->map(fn ($p) => [
+                'id' => $p->id,
                 'name' => $p->key,
             ])),
         ];

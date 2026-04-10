@@ -17,8 +17,8 @@ class Response extends Model
     protected function casts(): array
     {
         return [
-            'answer'       => 'array',
-            'is_correct'   => 'boolean',
+            'answer' => 'array',
+            'is_correct' => 'boolean',
             'submitted_at' => 'datetime',
         ];
     }

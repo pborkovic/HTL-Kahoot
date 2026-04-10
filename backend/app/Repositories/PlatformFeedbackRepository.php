@@ -16,8 +16,6 @@ use Illuminate\Support\Collection;
 
 /**
  * Repository for {@see PlatformFeedback}.
- *
- * @package App\Repositories
  */
 class PlatformFeedbackRepository extends BaseRepository implements PlatformFeedbackRepositoryContract
 {

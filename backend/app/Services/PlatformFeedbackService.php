@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Default {@see PlatformFeedbackServiceContract} implementation.
- *
- * @package App\Services
  */
 class PlatformFeedbackService implements PlatformFeedbackServiceContract
 {
@@ -34,9 +32,9 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
     {
         try {
             $feedback = $this->repository->create(data: [
-                'user_id'           => $user->id,
-                'message'           => $message,
-                'is_constructive'   => false,
+                'user_id' => $user->id,
+                'message' => $message,
+                'is_constructive' => false,
                 'moderation_status' => 'pending',
                 'moderation_reason' => null,
             ]);
@@ -48,7 +46,7 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             Log::error(message: "Service error submitting platform feedback: {$e->getMessage()}", context: [
                 'service' => self::class,
                 'user_id' => $user->id,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -68,7 +66,7 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             Log::error(message: "Service error listing platform feedback for user: {$e->getMessage()}", context: [
                 'service' => self::class,
                 'user_id' => $user->id,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -105,9 +103,9 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             return $feedback->fresh(with: ['author', 'resolver']) ?? $feedback;
         } catch (Exception $e) {
             Log::error(message: "Service error resolving platform feedback: {$e->getMessage()}", context: [
-                'service'     => self::class,
+                'service' => self::class,
                 'feedback_id' => $feedback->id,
-                'trace'       => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -127,9 +125,9 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             return $feedback;
         } catch (Exception $e) {
             Log::error(message: "Service error finding platform feedback: {$e->getMessage()}", context: [
-                'service'     => self::class,
+                'service' => self::class,
                 'feedback_id' => $id,
-                'trace'       => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -148,7 +146,7 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
     ): PlatformFeedback {
         try {
             $updated = $this->repository->update(id: $feedback->id, data: [
-                'is_constructive'   => $isConstructive,
+                'is_constructive' => $isConstructive,
                 'moderation_reason' => $reason,
                 'moderation_status' => $isConstructive ? 'approved' : 'rejected',
             ]);
@@ -156,9 +154,9 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             return $updated;
         } catch (Exception $e) {
             Log::error(message: "Service error applying moderation verdict: {$e->getMessage()}", context: [
-                'service'     => self::class,
+                'service' => self::class,
                 'feedback_id' => $feedback->id,
-                'trace'       => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -181,9 +179,9 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             return $feedback->fresh(with: ['author', 'resolver']) ?? $feedback;
         } catch (Exception $e) {
             Log::error(message: "Service error reopening platform feedback: {$e->getMessage()}", context: [
-                'service'     => self::class,
+                'service' => self::class,
                 'feedback_id' => $feedback->id,
-                'trace'       => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;

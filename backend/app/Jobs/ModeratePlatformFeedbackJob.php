@@ -20,14 +20,13 @@ use Throwable;
  *
  * Dispatched right after submission so the submitting user gets an instant
  * response while the AI analysis runs in the background on the Ollama worker.
- *
- * @package App\Jobs
  */
 class ModeratePlatformFeedbackJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 2;
+
     public int $timeout = 120;
 
     public function __construct(
@@ -42,8 +41,8 @@ class ModeratePlatformFeedbackJob implements ShouldQueue
      * deleted in the meantime the job is a no-op. Any exception from the
      * moderator is caught and the record is admitted by default.
      *
-     * @param FeedbackModerationServiceContract $moderator       The AI moderator.
-     * @param PlatformFeedbackServiceContract   $feedbackService Service used to read and update the record.
+     * @param  FeedbackModerationServiceContract  $moderator  The AI moderator.
+     * @param  PlatformFeedbackServiceContract  $feedbackService  Service used to read and update the record.
      *
      * @author Philipp Borkovic
      */
@@ -72,7 +71,7 @@ class ModeratePlatformFeedbackJob implements ShouldQueue
         } catch (Throwable $e) {
             Log::error(message: 'ModeratePlatformFeedbackJob: moderation failed, admitting by default', context: [
                 'feedback_id' => $this->feedbackId,
-                'error'       => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             $feedbackService->applyModerationVerdict(

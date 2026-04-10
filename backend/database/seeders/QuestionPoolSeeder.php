@@ -14,24 +14,24 @@ class QuestionPoolSeeder extends Seeder
 
         $pools = [
             [
-                'name'        => 'Informatik',
+                'name' => 'Informatik',
                 'description' => 'Fragen zu Grundlagen der Informatik, Algorithmen und Datenstrukturen',
-                'is_shared'   => true,
+                'is_shared' => true,
             ],
             [
-                'name'        => 'Mathematik',
+                'name' => 'Mathematik',
                 'description' => 'Fragen zu Analysis, Algebra und Geometrie',
-                'is_shared'   => true,
+                'is_shared' => true,
             ],
             [
-                'name'        => 'Allgemeinwissen',
+                'name' => 'Allgemeinwissen',
                 'description' => 'Allgemeine Wissensfragen für gemischte Quiz-Runden',
-                'is_shared'   => true,
+                'is_shared' => true,
             ],
             [
-                'name'        => 'Netzwerktechnik',
+                'name' => 'Netzwerktechnik',
                 'description' => 'Fragen zu TCP/IP, OSI-Modell und Netzwerkprotokollen',
-                'is_shared'   => false,
+                'is_shared' => false,
             ],
         ];
 

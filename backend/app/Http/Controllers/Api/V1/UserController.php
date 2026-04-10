@@ -397,8 +397,7 @@ class UserController extends Controller
                 ? 'current_password'
                 : 'message';
 
-            return response()->json(data: [$key === 'current_password' ? 'errors' : 'message' =>
-                $key === 'current_password' ? ['current_password' => [$e->getMessage()]] : $e->getMessage()
+            return response()->json(data: [$key === 'current_password' ? 'errors' : 'message' => $key === 'current_password' ? ['current_password' => [$e->getMessage()]] : $e->getMessage(),
             ], status: 422);
         }
 

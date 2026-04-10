@@ -19,7 +19,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -31,7 +31,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -41,7 +41,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -51,7 +51,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -61,7 +61,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -73,7 +73,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -83,7 +83,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -93,7 +93,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -108,7 +108,7 @@ class SessionParticipantRepository extends BaseRepository implements SessionPart
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

@@ -25,7 +25,7 @@ class AnswerReceived extends BaseSessionEvent
     public function broadcastWith(): array
     {
         return [
-            'total_responses'    => $this->totalResponses,
+            'total_responses' => $this->totalResponses,
             'total_participants' => $this->totalParticipants,
         ];
     }

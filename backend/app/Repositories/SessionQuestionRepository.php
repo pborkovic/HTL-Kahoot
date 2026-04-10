@@ -18,7 +18,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -28,7 +28,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -38,7 +38,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -50,7 +50,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -62,7 +62,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -72,7 +72,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -82,7 +82,7 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -92,13 +92,13 @@ class SessionQuestionRepository extends BaseRepository implements SessionQuestio
             ->orderBy(column: 'display_order')
             ->with(relations: [
                 'quizQuestion.questionVersion.answerOptions',
-                'responses' => fn($q) => $q->where(column: 'participant_id', operator: '=', value: $participantId),
+                'responses' => fn ($q) => $q->where(column: 'participant_id', operator: '=', value: $participantId),
             ])
             ->get();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

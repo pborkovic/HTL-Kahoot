@@ -19,8 +19,8 @@ class SessionParticipant extends Model
     {
         return [
             'is_connected' => 'boolean',
-            'joined_at'    => 'datetime',
-            'left_at'      => 'datetime',
+            'joined_at' => 'datetime',
+            'left_at' => 'datetime',
         ];
     }
 

@@ -53,7 +53,7 @@ class AuthController extends Controller
     {
         return response()->json(
             data: [
-                'url' => $this->authService->getRedirectUrl()
+                'url' => $this->authService->getRedirectUrl(),
             ]
         );
     }
@@ -300,14 +300,14 @@ class AuthController extends Controller
 
             return response()->json(
                 data: [
-                    'user'  => new UserResource($user),
+                    'user' => new UserResource($user),
                     'token' => $token,
                 ]
             );
         } catch (AuthenticationException $e) {
             return response()->json(
                 data: [
-                    'error'   => 'Authentication failed',
+                    'error' => 'Authentication failed',
                     'message' => $e->getMessage(),
                 ],
                 status: 401

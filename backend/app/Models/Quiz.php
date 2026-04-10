@@ -19,9 +19,9 @@ class Quiz extends Model
     protected function casts(): array
     {
         return [
-            'speed_scoring'        => 'boolean',
-            'randomize_questions'  => 'boolean',
-            'is_published'         => 'boolean',
+            'speed_scoring' => 'boolean',
+            'randomize_questions' => 'boolean',
+            'is_published' => 'boolean',
         ];
     }
 

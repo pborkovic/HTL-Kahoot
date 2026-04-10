@@ -13,8 +13,6 @@ use App\Models\User;
  * - Any authenticated user (student, teacher, admin, superadmin) may submit
  *   and view their own feedback.
  * - Only admins and superadmins may list every feedback or change its status.
- *
- * @package App\Policies
  */
 class PlatformFeedbackPolicy
 {

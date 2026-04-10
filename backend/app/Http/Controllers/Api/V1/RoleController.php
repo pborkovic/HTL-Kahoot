@@ -149,14 +149,14 @@ class RoleController extends Controller
     {
         $this->authorize(ability: 'assignRole', arguments: Role::class);
 
-        $data     = $request->validated();
+        $data = $request->validated();
         $assigned = $this->roleService->assignRoleToUser(
-            user:       $user,
-            roleId:     $data['role_id'],
+            user: $user,
+            roleId: $data['role_id'],
             assignedBy: $request->user()->id,
         );
 
-        if (!$assigned) {
+        if (! $assigned) {
             return response()->json(data: ['message' => 'User already has this role.'], status: 422);
         }
 
@@ -236,10 +236,10 @@ class RoleController extends Controller
     {
         $this->authorize(ability: 'managePermissions', arguments: Role::class);
 
-        $data  = $request->validated();
+        $data = $request->validated();
         $added = $this->roleService->addPermissionToRole(role: $role, permissionId: $data['permission_id']);
 
-        if (!$added) {
+        if (! $added) {
             return response()->json(data: ['message' => 'Role already has this permission.'], status: 422);
         }
 

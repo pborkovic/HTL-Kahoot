@@ -6,12 +6,14 @@ namespace App\Services;
 
 use App\DTOs\CreateSessionDto;
 use App\Events\AnswerReceived;
-use App\Jobs\EvaluateFreeTextAnswer;
 use App\Events\GameFinished;
 use App\Events\GameStarted;
 use App\Events\ParticipantJoined;
 use App\Events\QuestionClosed;
 use App\Events\QuestionOpened;
+use App\Jobs\EvaluateFreeTextAnswer;
+use App\Models\QuestionVersion;
+use App\Models\QuizQuestion;
 use App\Models\Response;
 use App\Models\Session;
 use App\Models\SessionParticipant;
@@ -43,7 +45,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -53,7 +55,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -64,18 +66,18 @@ class SessionService extends BaseService implements SessionServiceContract
         $qrCodeDataUri = $this->generateQrCodeDataUri(gamePin: $gamePin);
 
         $session = $this->repository->create(data: [
-            'quiz_id'      => $dto->quizId,
-            'host_id'      => $host->id,
-            'game_pin'     => $gamePin,
-            'qr_code_url'  => $qrCodeDataUri,
-            'status'       => 'lobby',
+            'quiz_id' => $dto->quizId,
+            'host_id' => $host->id,
+            'game_pin' => $gamePin,
+            'qr_code_url' => $qrCodeDataUri,
+            'status' => 'lobby',
         ]);
 
         return $this->repository->loadSessionRelations(session: $session, relations: ['quiz', 'host']);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -83,7 +85,7 @@ class SessionService extends BaseService implements SessionServiceContract
     {
         $session = $this->repository->findByGamePin(gamePin: $gamePin);
 
-        if (!$session) {
+        if (! $session) {
             throw new InvalidArgumentException(message: 'Kein Spiel mit diesem Code gefunden.');
         }
 
@@ -100,11 +102,11 @@ class SessionService extends BaseService implements SessionServiceContract
         $nickname = $user->display_name ?? $user->username ?? explode(separator: '@', string: $user->email)[0];
 
         $participant = $this->participantService->createForSession(session: $session, data: [
-            'user_id'      => $user->id,
-            'nickname'     => $nickname,
-            'total_score'  => 0,
+            'user_id' => $user->id,
+            'nickname' => $nickname,
+            'total_score' => 0,
             'is_connected' => true,
-            'joined_at'    => now(),
+            'joined_at' => now(),
         ]);
 
         broadcast(event: new ParticipantJoined(
@@ -118,24 +120,24 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function generateQrCodeDataUri(string $gamePin): string
     {
-        $joinUrl = config(key: 'app.frontend_url', default: config(key: 'app.url')) . '/join/' . $gamePin;
+        $joinUrl = config(key: 'app.frontend_url', default: config(key: 'app.url')).'/join/'.$gamePin;
 
         $qrCode = QrCode::format(format: 'svg')
             ->size(pixels: 300)
             ->margin(margin: 1)
             ->generate(text: $joinUrl);
 
-        return 'data:image/svg+xml;base64,' . base64_encode(string: (string) $qrCode);
+        return 'data:image/svg+xml;base64,'.base64_encode(string: (string) $qrCode);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -160,16 +162,16 @@ class SessionService extends BaseService implements SessionServiceContract
             foreach ($order as $index => $quizQuestion) {
                 $this->sessionQuestionService->createForSession(session: $session, data: [
                     'quiz_question_id' => $quizQuestion->id,
-                    'display_order'    => $index,
-                    'opened_at'        => $index === 0 ? now() : null,
-                    'closed_at'        => null,
+                    'display_order' => $index,
+                    'opened_at' => $index === 0 ? now() : null,
+                    'closed_at' => null,
                 ]);
             }
 
             $this->repository->updateSession(session: $session, data: [
-                'status'               => 'active',
+                'status' => 'active',
                 'current_question_idx' => 0,
-                'started_at'           => now(),
+                'started_at' => now(),
             ]);
 
             return $this->repository->refreshSession(session: $session);
@@ -190,7 +192,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -203,7 +205,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $currentQuestion = $this->findCurrentSessionQuestion(session: $session);
 
-        if (!$currentQuestion->closed_at) {
+        if (! $currentQuestion->closed_at) {
             $this->sessionQuestionService->updateSessionQuestion(
                 sessionQuestion: $currentQuestion,
                 data: ['closed_at' => now()],
@@ -220,9 +222,9 @@ class SessionService extends BaseService implements SessionServiceContract
 
         if ($nextIdx >= $totalQuestions) {
             $this->repository->updateSession(session: $session, data: [
-                'status'               => 'finished',
+                'status' => 'finished',
                 'current_question_idx' => $nextIdx - 1,
-                'finished_at'          => now(),
+                'finished_at' => now(),
             ]);
 
             broadcast(event: new GameFinished(gamePin: $gamePin));
@@ -252,7 +254,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -282,38 +284,38 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $sortedOptions = $questionVersion->answerOptions->sortBy(callback: 'sort_order')->values();
         $answerOptions = ($questionVersion->randomize_options ? $sortedOptions->shuffle()->values() : $sortedOptions)
-            ->map(callback: fn($opt) => [
-                'id'         => $opt->id,
-                'text'       => $opt->text,
+            ->map(callback: fn ($opt) => [
+                'id' => $opt->id,
+                'text' => $opt->text,
                 'sort_order' => $opt->sort_order,
             ])
             ->all();
 
         $question = $questionVersion->question;
         $questionMedia = $question->relationLoaded(key: 'media')
-            ? $question->media->map(callback: fn($m) => [
-                'id'       => $m->id,
-                'type'     => $m->type,
-                'url'      => $m->url,
+            ? $question->media->map(callback: fn ($m) => [
+                'id' => $m->id,
+                'type' => $m->type,
+                'url' => $m->url,
                 'alt_text' => $m->alt_text,
             ])->all()
             : [];
 
         return [
-            'question_text'   => $questionVersion->title,
-            'question_type'   => $question->type,
-            'question_media'  => $questionMedia,
-            'answer_options'  => $answerOptions,
-            'question_index'  => $session->current_question_idx,
+            'question_text' => $questionVersion->title,
+            'question_type' => $question->type,
+            'question_media' => $questionMedia,
+            'answer_options' => $answerOptions,
+            'question_index' => $session->current_question_idx,
             'total_questions' => $totalQuestions,
-            'time_limit'      => $timeLimit,
-            'time_remaining'  => $timeRemaining,
-            'opened_at'       => $sessionQuestion->opened_at->toIso8601String(),
+            'time_limit' => $timeLimit,
+            'time_remaining' => $timeRemaining,
+            'opened_at' => $sessionQuestion->opened_at->toIso8601String(),
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -365,13 +367,13 @@ class SessionService extends BaseService implements SessionServiceContract
             $submittedAnswer = [$studentAnswer];
 
             $response = $this->responseService->createForSessionQuestion(sessionQuestion: $sessionQuestion, data: [
-                'participant_id'    => $participant->id,
-                'answer'            => $submittedAnswer,
-                'is_correct'        => null,
-                'score_awarded'     => 0,
-                'time_taken_ms'     => $timeTakenMs,
+                'participant_id' => $participant->id,
+                'answer' => $submittedAnswer,
+                'is_correct' => null,
+                'score_awarded' => 0,
+                'time_taken_ms' => $timeTakenMs,
                 'gamble_multiplier' => $gambleMultiplier,
-                'submitted_at'      => $submittedAt,
+                'submitted_at' => $submittedAt,
             ]);
 
             $correctTexts = $questionVersion->answerOptions
@@ -412,19 +414,19 @@ class SessionService extends BaseService implements SessionServiceContract
             );
 
             $currentStreak = $participant->answer_streak ?? 0;
-            $newStreak     = $isCorrect ? $currentStreak + 1 : 0;
-            $streakBonus   = $isCorrect ? $this->calculateStreakBonus(streak: $newStreak) : 0;
-            $scoreAwarded  = (int) round(num: ($baseScore + $streakBonus) * $gambleMultiplier);
+            $newStreak = $isCorrect ? $currentStreak + 1 : 0;
+            $streakBonus = $isCorrect ? $this->calculateStreakBonus(streak: $newStreak) : 0;
+            $scoreAwarded = (int) round(num: ($baseScore + $streakBonus) * $gambleMultiplier);
 
             $response = $this->repository->wrapInTransaction(callback: function () use ($sessionQuestion, $participant, $submittedAnswer, $isCorrect, $scoreAwarded, $timeTakenMs, $submittedAt, $newStreak, $gambleMultiplier): Response {
                 $response = $this->responseService->createForSessionQuestion(sessionQuestion: $sessionQuestion, data: [
-                    'participant_id'    => $participant->id,
-                    'answer'            => $submittedAnswer,
-                    'is_correct'        => $isCorrect,
-                    'score_awarded'     => $scoreAwarded,
-                    'time_taken_ms'     => $timeTakenMs,
+                    'participant_id' => $participant->id,
+                    'answer' => $submittedAnswer,
+                    'is_correct' => $isCorrect,
+                    'score_awarded' => $scoreAwarded,
+                    'time_taken_ms' => $timeTakenMs,
                     'gamble_multiplier' => $gambleMultiplier,
-                    'submitted_at'      => $submittedAt,
+                    'submitted_at' => $submittedAt,
                 ]);
 
                 $this->participantService->incrementScore(
@@ -443,10 +445,10 @@ class SessionService extends BaseService implements SessionServiceContract
 
         if ($isGamble) {
             $this->participantService->createGambleUse(data: [
-                'participant_id'      => $participant->id,
+                'participant_id' => $participant->id,
                 'session_question_id' => $sessionQuestion->id,
-                'multiplier'          => $gambleMultiplier,
-                'used_at'             => $submittedAt,
+                'multiplier' => $gambleMultiplier,
+                'used_at' => $submittedAt,
             ]);
         }
 
@@ -460,7 +462,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -482,15 +484,15 @@ class SessionService extends BaseService implements SessionServiceContract
         }
 
         return [
-            'status'               => $session->status,
+            'status' => $session->status,
             'current_question_idx' => $session->current_question_idx,
-            'is_question_open'     => $isQuestionOpen,
-            'total_questions'      => $totalQuestions,
+            'is_question_open' => $isQuestionOpen,
+            'total_questions' => $totalQuestions,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -509,7 +511,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $sessionQuestion = $this->findCurrentSessionQuestion(session: $session);
 
-        if (!$sessionQuestion->closed_at) {
+        if (! $sessionQuestion->closed_at) {
             $this->sessionQuestionService->updateSessionQuestion(
                 sessionQuestion: $sessionQuestion,
                 data: ['closed_at' => now()],
@@ -523,7 +525,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -550,13 +552,13 @@ class SessionService extends BaseService implements SessionServiceContract
             ->values()
             ->map(callback: function ($option) use ($responses) {
                 $count = $responses->filter(
-                    callback: fn($r) => in_array(needle: $option->id, haystack: $r->answer, strict: true)
+                    callback: fn ($r) => in_array(needle: $option->id, haystack: $r->answer, strict: true)
                 )->count();
 
                 return [
-                    'option_id'  => $option->id,
+                    'option_id' => $option->id,
                     'option_text' => $option->text,
-                    'count'      => $count,
+                    'count' => $count,
                     'is_correct' => $option->is_correct,
                 ];
             })
@@ -566,14 +568,14 @@ class SessionService extends BaseService implements SessionServiceContract
 
         return [
             'answer_distribution' => $distribution,
-            'total_responses'     => $responses->count(),
-            'correct_count'       => $correctCount,
-            'total_participants'  => $totalParticipants,
+            'total_responses' => $responses->count(),
+            'correct_count' => $correctCount,
+            'total_participants' => $totalParticipants,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -585,7 +587,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -600,17 +602,17 @@ class SessionService extends BaseService implements SessionServiceContract
         $hasPending = $this->responseService->hasPendingEvaluations(session: $session);
 
         return [
-            'session_id'               => $session->id,
-            'quiz_title'               => $session->quiz->title,
-            'total_questions'          => $this->sessionQuestionService->countForSession(session: $session),
-            'total_participants'       => $this->participantService->countForSession(session: $session),
-            'leaderboard'              => $this->buildLeaderboard(session: $session),
-            'has_pending_evaluations'  => $hasPending,
+            'session_id' => $session->id,
+            'quiz_title' => $session->quiz->title,
+            'total_questions' => $this->sessionQuestionService->countForSession(session: $session),
+            'total_participants' => $this->participantService->countForSession(session: $session),
+            'leaderboard' => $this->buildLeaderboard(session: $session),
+            'has_pending_evaluations' => $hasPending,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -641,35 +643,35 @@ class SessionService extends BaseService implements SessionServiceContract
             $answerOptions = $questionVersion->answerOptions
                 ->sortBy(callback: 'sort_order')
                 ->values()
-                ->map(callback: fn($opt) => [
-                    'id'           => $opt->id,
-                    'text'         => $opt->text,
-                    'is_correct'   => $opt->is_correct,
+                ->map(callback: fn ($opt) => [
+                    'id' => $opt->id,
+                    'text' => $opt->text,
+                    'is_correct' => $opt->is_correct,
                     'was_selected' => in_array(needle: $opt->id, haystack: $selectedIds, strict: true),
-                    'sort_order'   => $opt->sort_order,
+                    'sort_order' => $opt->sort_order,
                 ])
                 ->all();
 
             return [
                 'question_index' => $sq->display_order,
-                'question_text'  => $questionVersion->title,
+                'question_text' => $questionVersion->title,
                 'answer_options' => $answerOptions,
-                'is_correct'     => $response?->is_correct,
-                'score_awarded'  => $response?->score_awarded ?? 0,
-                'time_taken_ms'  => $response?->time_taken_ms,
+                'is_correct' => $response?->is_correct,
+                'score_awarded' => $response?->score_awarded ?? 0,
+                'time_taken_ms' => $response?->time_taken_ms,
             ];
         })->all();
 
         return [
-            'session_id'  => $session->id,
-            'quiz_title'  => $session->quiz->title,
+            'session_id' => $session->id,
+            'quiz_title' => $session->quiz->title,
             'total_score' => $participant->total_score,
-            'questions'   => $questions,
+            'questions' => $questions,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -686,10 +688,10 @@ class SessionService extends BaseService implements SessionServiceContract
         $participants = $session->participants
             ->sortByDesc(callback: 'total_score')
             ->values()
-            ->map(callback: fn($p) => [
+            ->map(callback: fn ($p) => [
                 'participant_id' => $p->id,
-                'nickname'       => $p->nickname,
-                'total_score'    => $p->total_score,
+                'nickname' => $p->nickname,
+                'total_score' => $p->total_score,
             ])
             ->all();
 
@@ -700,9 +702,9 @@ class SessionService extends BaseService implements SessionServiceContract
             $answerOptions = $questionVersion->answerOptions
                 ->sortBy(callback: 'sort_order')
                 ->values()
-                ->map(callback: fn($opt) => [
-                    'id'         => $opt->id,
-                    'text'       => $opt->text,
+                ->map(callback: fn ($opt) => [
+                    'id' => $opt->id,
+                    'text' => $opt->text,
                     'is_correct' => $opt->is_correct,
                     'sort_order' => $opt->sort_order,
                 ])
@@ -710,13 +712,13 @@ class SessionService extends BaseService implements SessionServiceContract
 
             $studentAnswers = $sq->responses->map(callback: function ($response) use ($questionType) {
                 $data = [
-                    'response_id'         => $response->id,
-                    'participant_id'      => $response->participant_id,
-                    'nickname'            => $response->participant->nickname,
+                    'response_id' => $response->id,
+                    'participant_id' => $response->participant_id,
+                    'nickname' => $response->participant->nickname,
                     'selected_option_ids' => $response->answer,
-                    'is_correct'          => $response->is_correct,
-                    'score_awarded'       => $response->score_awarded,
-                    'time_taken_ms'       => $response->time_taken_ms,
+                    'is_correct' => $response->is_correct,
+                    'score_awarded' => $response->score_awarded,
+                    'time_taken_ms' => $response->time_taken_ms,
                 ];
 
                 if ($questionType === 'free_text') {
@@ -727,24 +729,24 @@ class SessionService extends BaseService implements SessionServiceContract
             })->all();
 
             return [
-                'question_index'  => $sq->display_order,
-                'question_text'   => $questionVersion->title,
-                'question_type'   => $questionType,
-                'answer_options'  => $answerOptions,
+                'question_index' => $sq->display_order,
+                'question_text' => $questionVersion->title,
+                'question_type' => $questionType,
+                'answer_options' => $answerOptions,
                 'student_answers' => $studentAnswers,
             ];
         })->all();
 
         return [
-            'session_id'   => $session->id,
-            'quiz_title'   => $session->quiz->title,
+            'session_id' => $session->id,
+            'quiz_title' => $session->quiz->title,
             'participants' => $participants,
-            'questions'    => $questions,
+            'questions' => $questions,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -794,9 +796,9 @@ class SessionService extends BaseService implements SessionServiceContract
                 $answerOptions = $questionVersion->answerOptions
                     ->sortBy(callback: 'sort_order')
                     ->values()
-                    ->map(callback: fn($opt) => [
-                        'id'         => $opt->id,
-                        'text'       => $opt->text,
+                    ->map(callback: fn ($opt) => [
+                        'id' => $opt->id,
+                        'text' => $opt->text,
                         'is_correct' => $opt->is_correct,
                         'sort_order' => $opt->sort_order,
                     ])
@@ -805,13 +807,13 @@ class SessionService extends BaseService implements SessionServiceContract
                 $questionType = $questionVersion->question->type ?? 'multiple_choice';
 
                 $result = [
-                    'question_index'      => $sq->display_order,
-                    'question_text'       => $questionVersion->title,
-                    'question_type'       => $questionType,
-                    'is_correct'          => $response?->is_correct,
-                    'score_awarded'       => $response?->score_awarded ?? 0,
-                    'time_taken_ms'       => $response?->time_taken_ms,
-                    'answer_options'      => $answerOptions,
+                    'question_index' => $sq->display_order,
+                    'question_text' => $questionVersion->title,
+                    'question_type' => $questionType,
+                    'is_correct' => $response?->is_correct,
+                    'score_awarded' => $response?->score_awarded ?? 0,
+                    'time_taken_ms' => $response?->time_taken_ms,
+                    'answer_options' => $answerOptions,
                     'selected_option_ids' => $response ? $response->answer : [],
                 ];
 
@@ -824,31 +826,31 @@ class SessionService extends BaseService implements SessionServiceContract
 
             return [
                 'participant_id' => $participant->id,
-                'user_id'        => $participant->user_id,
-                'nickname'       => $participant->nickname,
-                'total_score'    => $participant->total_score,
-                'rank'           => $rank,
-                'correct_count'  => $correctCount,
+                'user_id' => $participant->user_id,
+                'nickname' => $participant->nickname,
+                'total_score' => $participant->total_score,
+                'rank' => $rank,
+                'correct_count' => $correctCount,
                 'total_answered' => $totalAnswered,
-                'accuracy'       => $totalQuestions > 0 ? round(num: ($correctCount / $totalQuestions) * 100, precision: 1) : 0.0,
-                'avg_time_ms'    => $timeCount > 0 ? (int) round(num: $totalTimeMs / $timeCount) : null,
-                'questions'      => $questions,
+                'accuracy' => $totalQuestions > 0 ? round(num: ($correctCount / $totalQuestions) * 100, precision: 1) : 0.0,
+                'avg_time_ms' => $timeCount > 0 ? (int) round(num: $totalTimeMs / $timeCount) : null,
+                'questions' => $questions,
             ];
         })->all();
 
         return [
-            'session_id'         => $session->id,
-            'quiz_title'         => $session->quiz->title,
-            'total_questions'    => $totalQuestions,
+            'session_id' => $session->id,
+            'quiz_title' => $session->quiz->title,
+            'total_questions' => $totalQuestions,
             'total_participants' => $participants->count(),
-            'started_at'         => $session->started_at?->toISOString(),
-            'finished_at'        => $session->finished_at?->toISOString(),
-            'participants'       => $participantData,
+            'started_at' => $session->started_at?->toISOString(),
+            'finished_at' => $session->finished_at?->toISOString(),
+            'participants' => $participantData,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -857,9 +859,9 @@ class SessionService extends BaseService implements SessionServiceContract
         $response = $this->responseService->findResponseById(responseId: $responseId);
         $participant = $this->participantService->findParticipantById(participantId: $participantId);
 
-        if (!$response || !$participant) {
+        if (! $response || ! $participant) {
             Log::warning(message: 'applyFreeTextEvaluation: response or participant not found', context: [
-                'response_id'    => $responseId,
+                'response_id' => $responseId,
                 'participant_id' => $participantId,
             ]);
 
@@ -868,7 +870,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $scoreAwarded) {
             $this->responseService->updateResponse(response: $response, data: [
-                'is_correct'    => $isCorrect,
+                'is_correct' => $isCorrect,
                 'score_awarded' => $scoreAwarded,
             ]);
 
@@ -885,7 +887,7 @@ class SessionService extends BaseService implements SessionServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -896,13 +898,13 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $response = $this->responseService->findResponseById(responseId: $responseId);
 
-        if (!$response) {
+        if (! $response) {
             throw new RuntimeException(message: 'Antwort nicht gefunden.');
         }
 
         $participant = $this->participantService->findParticipantById(participantId: $response->participant_id);
 
-        if (!$participant) {
+        if (! $participant) {
             throw new RuntimeException(message: 'Teilnehmer nicht gefunden.');
         }
 
@@ -932,7 +934,7 @@ class SessionService extends BaseService implements SessionServiceContract
 
         $this->repository->wrapInTransaction(callback: function () use ($response, $participant, $isCorrect, $oldScore, $newScore) {
             $this->responseService->updateResponse(response: $response, data: [
-                'is_correct'    => $isCorrect,
+                'is_correct' => $isCorrect,
                 'score_awarded' => $newScore,
             ]);
 
@@ -950,15 +952,15 @@ class SessionService extends BaseService implements SessionServiceContract
         $participant->refresh();
 
         return [
-            'response_id'            => $response->id,
-            'is_correct'             => $isCorrect,
-            'score_awarded'          => $newScore,
+            'response_id' => $response->id,
+            'is_correct' => $isCorrect,
+            'score_awarded' => $newScore,
             'participant_total_score' => $participant->total_score,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -970,8 +972,8 @@ class SessionService extends BaseService implements SessionServiceContract
     /**
      * Assert that the given user is the session host.
      *
-     * @param Session $session The session to check.
-     * @param User    $user    The user to verify.
+     * @param  Session  $session  The session to check.
+     * @param  User  $user  The user to verify.
      *
      * @throws RuntimeException If the user is not the host.
      *
@@ -987,8 +989,8 @@ class SessionService extends BaseService implements SessionServiceContract
     /**
      * Assert that the session has the expected status.
      *
-     * @param Session $session  The session to check.
-     * @param string  $expected The expected status value.
+     * @param  Session  $session  The session to check.
+     * @param  string  $expected  The expected status value.
      *
      * @throws RuntimeException If the session status does not match.
      *
@@ -1006,8 +1008,7 @@ class SessionService extends BaseService implements SessionServiceContract
     /**
      * Find the currently active SessionQuestion for a session.
      *
-     * @param Session $session The session to query.
-     *
+     * @param  Session  $session  The session to query.
      * @return SessionQuestion The current session question.
      *
      * @throws RuntimeException If no current question is set.
@@ -1029,9 +1030,8 @@ class SessionService extends BaseService implements SessionServiceContract
     /**
      * Find the participant record for a user in a session.
      *
-     * @param Session $session The session.
-     * @param User    $user    The user.
-     *
+     * @param  Session  $session  The session.
+     * @param  User  $user  The user.
      * @return SessionParticipant The participant record.
      *
      * @throws RuntimeException If the user is not a participant.
@@ -1045,7 +1045,7 @@ class SessionService extends BaseService implements SessionServiceContract
             userId: $user->id
         );
 
-        if (!$participant) {
+        if (! $participant) {
             throw new RuntimeException(message: 'Du bist kein Teilnehmer dieser Session.');
         }
 
@@ -1058,9 +1058,8 @@ class SessionService extends BaseService implements SessionServiceContract
      * Uses the quiz question override, falls back to the version default,
      * then to 30 seconds as an ultimate fallback.
      *
-     * @param \App\Models\QuizQuestion    $quizQuestion    The quiz question.
-     * @param \App\Models\QuestionVersion $questionVersion The question version.
-     *
+     * @param  QuizQuestion  $quizQuestion  The quiz question.
+     * @param  QuestionVersion  $questionVersion  The question version.
      * @return int The time limit in seconds.
      *
      * @author Philipp Borkovic
@@ -1075,9 +1074,8 @@ class SessionService extends BaseService implements SessionServiceContract
     /**
      * Calculate remaining time for an open question.
      *
-     * @param Carbon $openedAt  When the question was opened.
-     * @param int    $timeLimit The time limit in seconds.
-     *
+     * @param  Carbon  $openedAt  When the question was opened.
+     * @param  int  $timeLimit  The time limit in seconds.
      * @return float Remaining seconds (minimum 0).
      *
      * @author Philipp Borkovic
@@ -1095,8 +1093,8 @@ class SessionService extends BaseService implements SessionServiceContract
      * A question is open if it has not been closed and the time limit
      * has not been exceeded.
      *
-     * @param SessionQuestion $sessionQuestion The session question.
-     * @param int             $timeLimit       The time limit in seconds.
+     * @param  SessionQuestion  $sessionQuestion  The session question.
+     * @param  int  $timeLimit  The time limit in seconds.
      *
      * @throws RuntimeException If the question is closed or time has expired.
      *
@@ -1121,8 +1119,8 @@ class SessionService extends BaseService implements SessionServiceContract
     /**
      * Assert that the participant has not already answered the question.
      *
-     * @param SessionQuestion    $sessionQuestion The session question.
-     * @param SessionParticipant $participant     The participant.
+     * @param  SessionQuestion  $sessionQuestion  The session question.
+     * @param  SessionParticipant  $participant  The participant.
      *
      * @throws RuntimeException If the participant already submitted an answer.
      *
@@ -1146,9 +1144,8 @@ class SessionService extends BaseService implements SessionServiceContract
      * Compares submitted option IDs against the correct option IDs.
      * The answer is correct only if both sets match exactly.
      *
-     * @param array<int, string> $submittedIds The submitted answer option UUIDs.
-     * @param array<int, string> $correctIds   The correct answer option UUIDs.
-     *
+     * @param  array<int, string>  $submittedIds  The submitted answer option UUIDs.
+     * @param  array<int, string>  $correctIds  The correct answer option UUIDs.
      * @return bool Whether the answer is correct.
      *
      * @author Philipp Borkovic
@@ -1156,7 +1153,7 @@ class SessionService extends BaseService implements SessionServiceContract
     private function evaluateAnswer(array $submittedIds, array $correctIds): bool
     {
         $submitted = collect(value: $submittedIds)->sort()->values()->all();
-        $correct   = collect(value: $correctIds)->sort()->values()->all();
+        $correct = collect(value: $correctIds)->sort()->values()->all();
 
         return $submitted === $correct;
     }
@@ -1173,12 +1170,11 @@ class SessionService extends BaseService implements SessionServiceContract
      *  - 30 s timer → ≈ 17 pts/s lost
      *  - 20 s timer → ≈ 25 pts/s lost
      *
-     * @param bool                        $isCorrect       Whether the answer is correct.
-     * @param \App\Models\QuizQuestion    $quizQuestion    The quiz question (for points override).
-     * @param \App\Models\QuestionVersion $questionVersion The question version (for default points).
-     * @param int                         $timeTakenMs     Time taken in milliseconds.
-     * @param int                         $timeLimit       The time limit in seconds.
-     *
+     * @param  bool  $isCorrect  Whether the answer is correct.
+     * @param  QuizQuestion  $quizQuestion  The quiz question (for points override).
+     * @param  QuestionVersion  $questionVersion  The question version (for default points).
+     * @param  int  $timeTakenMs  Time taken in milliseconds.
+     * @param  int  $timeLimit  The time limit in seconds.
      * @return int The base score to award (0 if incorrect), before streak bonus.
      *
      * @author Philipp Borkovic
@@ -1190,11 +1186,11 @@ class SessionService extends BaseService implements SessionServiceContract
         int $timeTakenMs,
         int $timeLimit,
     ): int {
-        if (!$isCorrect) {
+        if (! $isCorrect) {
             return 0;
         }
 
-        $basePoints  = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
+        $basePoints = $quizQuestion->points_override ?? $questionVersion->default_points ?? 1000;
         $timeLimitMs = $timeLimit * 1000;
 
         if ($timeTakenMs <= 500) {
@@ -1216,8 +1212,7 @@ class SessionService extends BaseService implements SessionServiceContract
      *  - 4 in a row → +300
      *  - 5+ in a row → +500
      *
-     * @param int $streak The current answer streak (after this answer).
-     *
+     * @param  int  $streak  The current answer streak (after this answer).
      * @return int The bonus points to add.
      *
      * @author Philipp Borkovic
@@ -1229,15 +1224,14 @@ class SessionService extends BaseService implements SessionServiceContract
             $streak === 4 => 300,
             $streak === 3 => 200,
             $streak === 2 => 100,
-            default       => 0,
+            default => 0,
         };
     }
 
     /**
      * Build a ranked leaderboard from session participants.
      *
-     * @param Session $session The session.
-     *
+     * @param  Session  $session  The session.
      * @return array<int, array{
      *     rank: int,
      *     participant_id: string,
@@ -1251,11 +1245,11 @@ class SessionService extends BaseService implements SessionServiceContract
     {
         $participants = $this->participantService->getOrderedByScore(session: $session);
 
-        return $participants->values()->map(callback: fn($p, $i) => [
-            'rank'           => $i + 1,
+        return $participants->values()->map(callback: fn ($p, $i) => [
+            'rank' => $i + 1,
             'participant_id' => $p->id,
-            'nickname'       => $p->nickname,
-            'total_score'    => $p->total_score,
+            'nickname' => $p->nickname,
+            'total_score' => $p->total_score,
         ])->all();
     }
 }

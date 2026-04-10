@@ -26,7 +26,7 @@ abstract class BaseSessionEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PresenceChannel(name: 'session.' . $this->gamePin),
+            new PresenceChannel(name: 'session.'.$this->gamePin),
         ];
     }
 

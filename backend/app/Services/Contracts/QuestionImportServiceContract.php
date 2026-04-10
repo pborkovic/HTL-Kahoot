@@ -17,10 +17,9 @@ interface QuestionImportServiceContract
      * structure, and persists each question with its first version and answer
      * options inside a database transaction.
      *
-     * @param string $content Raw file content (JSON string or GIFT text).
-     * @param string $format  The import format: 'json' or 'gift'.
-     * @param User   $user    The authenticated user performing the import.
-     *
+     * @param  string  $content  Raw file content (JSON string or GIFT text).
+     * @param  string  $format  The import format: 'json' or 'gift'.
+     * @param  User  $user  The authenticated user performing the import.
      * @return array{
      *     imported: int,
      *     failed: int,

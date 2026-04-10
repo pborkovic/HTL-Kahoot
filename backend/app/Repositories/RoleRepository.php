@@ -30,7 +30,7 @@ class RoleRepository extends BaseRepository implements RoleRepositoryContract
         } catch (Exception $e) {
             Log::error(message: "Repository error fetching roles with permissions: {$e->getMessage()}", context: [
                 'repository' => get_class($this),
-                'trace'      => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -38,7 +38,7 @@ class RoleRepository extends BaseRepository implements RoleRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */

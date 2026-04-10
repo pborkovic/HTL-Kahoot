@@ -26,8 +26,6 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Binds every repository contract to its concrete implementation.
- *
- * @package App\Providers
  */
 class RepositoryServiceProvider extends ServiceProvider
 {

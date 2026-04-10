@@ -25,8 +25,6 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Registers all model-to-policy mappings used for authorisation gates.
- *
- * @package App\Providers
  */
 class PolicyServiceProvider extends ServiceProvider
 {
@@ -36,13 +34,13 @@ class PolicyServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        User::class             => UserPolicy::class,
-        Question::class         => QuestionPolicy::class,
-        Quiz::class             => QuizPolicy::class,
-        QuestionPool::class     => QuestionPoolPolicy::class,
-        Session::class          => SessionPolicy::class,
-        Role::class             => RolePolicy::class,
-        Permission::class       => PermissionPolicy::class,
+        User::class => UserPolicy::class,
+        Question::class => QuestionPolicy::class,
+        Quiz::class => QuizPolicy::class,
+        QuestionPool::class => QuestionPoolPolicy::class,
+        Session::class => SessionPolicy::class,
+        Role::class => RolePolicy::class,
+        Permission::class => PermissionPolicy::class,
         PlatformFeedback::class => PlatformFeedbackPolicy::class,
     ];
 

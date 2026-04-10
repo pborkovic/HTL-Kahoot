@@ -14,13 +14,13 @@ class ChangePasswordRequest extends FormRequest
 
     public function rules(): array
     {
-        $authUser   = $this->user();
+        $authUser = $this->user();
         $targetUser = $this->route('user');
-        $isSelf     = $authUser && $targetUser && $authUser->id === $targetUser->id;
+        $isSelf = $authUser && $targetUser && $authUser->id === $targetUser->id;
 
         return [
             'current_password' => [$isSelf ? 'required' : 'nullable', 'string'],
-            'new_password'     => ['required', 'string', Password::min(8)->mixedCase()->numbers()],
+            'new_password' => ['required', 'string', Password::min(8)->mixedCase()->numbers()],
         ];
     }
 }

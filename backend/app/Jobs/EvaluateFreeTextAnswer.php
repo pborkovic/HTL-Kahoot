@@ -25,20 +25,21 @@ class EvaluateFreeTextAnswer implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 2;
+
     public int $timeout = 120;
 
     /**
      * Create a new job instance.
      *
-     * @param string      $responseId       The UUID of the response record to update.
-     * @param string      $participantId    The UUID of the session participant.
-     * @param string      $studentAnswer    The student's free-text answer.
-     * @param string      $questionTitle    The question title (used as AI context).
-     * @param string|null $explanation       The question explanation (used as AI context).
-     * @param array       $correctAnswers   The expected correct answer texts.
-     * @param int         $basePoints       The base points for this question.
-     * @param int         $timeTakenMs      Time the student took to answer in milliseconds.
-     * @param int         $timeLimitSeconds The question's time limit in seconds.
+     * @param  string  $responseId  The UUID of the response record to update.
+     * @param  string  $participantId  The UUID of the session participant.
+     * @param  string  $studentAnswer  The student's free-text answer.
+     * @param  string  $questionTitle  The question title (used as AI context).
+     * @param  string|null  $explanation  The question explanation (used as AI context).
+     * @param  array  $correctAnswers  The expected correct answer texts.
+     * @param  int  $basePoints  The base points for this question.
+     * @param  int  $timeTakenMs  Time the student took to answer in milliseconds.
+     * @param  int  $timeLimitSeconds  The question's time limit in seconds.
      */
     public function __construct(
         private readonly string $responseId,
@@ -59,8 +60,8 @@ class EvaluateFreeTextAnswer implements ShouldQueue
      * and delegates the database updates to the session service.
      * If AI evaluation fails, the answer is marked as incorrect.
      *
-     * @param AnswerEvaluationServiceContract $evaluationService The AI evaluation service.
-     * @param SessionServiceContract          $sessionService    The session service for persistence.
+     * @param  AnswerEvaluationServiceContract  $evaluationService  The AI evaluation service.
+     * @param  SessionServiceContract  $sessionService  The session service for persistence.
      *
      * @author Philipp Borkovic
      */
@@ -80,7 +81,7 @@ class EvaluateFreeTextAnswer implements ShouldQueue
         } catch (Throwable $e) {
             Log::error(message: 'EvaluateFreeTextAnswer: AI evaluation failed, marking as incorrect', context: [
                 'response_id' => $this->responseId,
-                'error'       => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             $isCorrect = false;
@@ -105,15 +106,14 @@ class EvaluateFreeTextAnswer implements ShouldQueue
      *  - At the time limit the score is half the base points.
      *  - The speed factor is clamped between 0.5 and 1.0.
      *
-     * @param bool $isCorrect Whether the AI judged the answer as correct.
-     *
+     * @param  bool  $isCorrect  Whether the AI judged the answer as correct.
      * @return int The calculated score (excluding streak bonus).
      *
      * @author Philipp Borkovic
      */
     private function calculateScore(bool $isCorrect): int
     {
-        if (!$isCorrect) {
+        if (! $isCorrect) {
             return 0;
         }
 

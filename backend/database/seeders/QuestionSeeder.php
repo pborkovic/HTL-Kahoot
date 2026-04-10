@@ -13,49 +13,49 @@ class QuestionSeeder extends Seeder
     public function run(): void
     {
         $teacher = User::where('email', 'teacher@gamquiz.test')->firstOrFail();
-        $admin   = User::where('email', 'admin@gamquiz.test')->firstOrFail();
+        $admin = User::where('email', 'admin@gamquiz.test')->firstOrFail();
 
-        $poolIT   = QuestionPool::where('name', 'Informatik')->first();
+        $poolIT = QuestionPool::where('name', 'Informatik')->first();
         $poolMath = QuestionPool::where('name', 'Mathematik')->first();
-        $poolGen  = QuestionPool::where('name', 'Allgemeinwissen')->first();
-        $poolNet  = QuestionPool::where('name', 'Netzwerktechnik')->first();
+        $poolGen = QuestionPool::where('name', 'Allgemeinwissen')->first();
+        $poolNet = QuestionPool::where('name', 'Netzwerktechnik')->first();
 
         $questions = [
             // ── Informatik ─────────────────────────────────────────
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolIT,
+                'pool' => $poolIT,
                 'version' => [
-                    'title'             => 'Wofür steht das Akronym HTML?',
-                    'explanation'       => 'HTML ist die Grundsprache jeder Webseite und beschreibt die Struktur von Inhalten.',
-                    'difficulty'        => 1,
-                    'default_points'    => 500,
-                    'default_time_limit'=> 15,
+                    'title' => 'Wofür steht das Akronym HTML?',
+                    'explanation' => 'HTML ist die Grundsprache jeder Webseite und beschreibt die Struktur von Inhalten.',
+                    'difficulty' => 1,
+                    'default_points' => 500,
+                    'default_time_limit' => 15,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'HyperText Markup Language', 'is_correct' => true,  'sort_order' => 0],
                     ['text' => 'High Transfer Markup Language', 'is_correct' => false, 'sort_order' => 1],
                     ['text' => 'HyperText Multi Language',   'is_correct' => false, 'sort_order' => 2],
-                    ['text' => 'Hyperlink Text Markup Logic','is_correct' => false, 'sort_order' => 3],
+                    ['text' => 'Hyperlink Text Markup Logic', 'is_correct' => false, 'sort_order' => 3],
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolIT,
+                'pool' => $poolIT,
                 'version' => [
-                    'title'             => 'Welche Datenstruktur arbeitet nach dem LIFO-Prinzip?',
-                    'explanation'       => 'LIFO = Last In, First Out. Ein Stack (Stapel) entnimmt immer das zuletzt eingefügte Element zuerst.',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'Welche Datenstruktur arbeitet nach dem LIFO-Prinzip?',
+                    'explanation' => 'LIFO = Last In, First Out. Ein Stack (Stapel) entnimmt immer das zuletzt eingefügte Element zuerst.',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'Stack',  'is_correct' => true,  'sort_order' => 0],
@@ -65,39 +65,39 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolIT,
+                'pool' => $poolIT,
                 'version' => [
-                    'title'             => 'Welcher Sortieralgorithmus hat im Durchschnitt eine Komplexität von O(n log n)?',
-                    'explanation'       => 'Merge Sort und Quick Sort erreichen im Durchschnitt O(n log n). Bubble Sort liegt bei O(n²).',
-                    'difficulty'        => 3,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 25,
+                    'title' => 'Welcher Sortieralgorithmus hat im Durchschnitt eine Komplexität von O(n log n)?',
+                    'explanation' => 'Merge Sort und Quick Sort erreichen im Durchschnitt O(n log n). Bubble Sort liegt bei O(n²).',
+                    'difficulty' => 3,
+                    'default_points' => 1000,
+                    'default_time_limit' => 25,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'Merge Sort',   'is_correct' => true,  'sort_order' => 0],
                     ['text' => 'Bubble Sort',  'is_correct' => false, 'sort_order' => 1],
-                    ['text' => 'Insertion Sort','is_correct' => false,'sort_order' => 2],
-                    ['text' => 'Selection Sort','is_correct' => false,'sort_order' => 3],
+                    ['text' => 'Insertion Sort', 'is_correct' => false, 'sort_order' => 2],
+                    ['text' => 'Selection Sort', 'is_correct' => false, 'sort_order' => 3],
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolIT,
+                'pool' => $poolIT,
                 'version' => [
-                    'title'             => 'Was ist der Dezimalwert von der Binärzahl 1010?',
-                    'explanation'       => '1010₂ = 1×8 + 0×4 + 1×2 + 0×1 = 10₁₀',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'Was ist der Dezimalwert von der Binärzahl 1010?',
+                    'explanation' => '1010₂ = 1×8 + 0×4 + 1×2 + 0×1 = 10₁₀',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => '10', 'is_correct' => true,  'sort_order' => 0],
@@ -107,17 +107,17 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolIT,
+                'pool' => $poolIT,
                 'version' => [
-                    'title'             => 'Welches Schlüsselwort erstellt in Python eine Funktion?',
-                    'difficulty'        => 1,
-                    'default_points'    => 500,
-                    'default_time_limit'=> 15,
+                    'title' => 'Welches Schlüsselwort erstellt in Python eine Funktion?',
+                    'difficulty' => 1,
+                    'default_points' => 500,
+                    'default_time_limit' => 15,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'def',      'is_correct' => true,  'sort_order' => 0],
@@ -127,39 +127,39 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $admin->id,
-                'type'         => 'true_false',
+                'created_by' => $admin->id,
+                'type' => 'true_false',
                 'is_published' => true,
-                'pool'         => $poolIT,
+                'pool' => $poolIT,
                 'version' => [
-                    'title'             => 'Ein Compiler übersetzt Quellcode direkt in Maschinencode.',
-                    'explanation'       => 'Korrekt. Ein Compiler übersetzt den gesamten Quellcode vor der Ausführung in Maschinencode, während ein Interpreter ihn Zeile für Zeile ausführt.',
-                    'difficulty'        => 2,
-                    'default_points'    => 750,
-                    'default_time_limit'=> 15,
+                    'title' => 'Ein Compiler übersetzt Quellcode direkt in Maschinencode.',
+                    'explanation' => 'Korrekt. Ein Compiler übersetzt den gesamten Quellcode vor der Ausführung in Maschinencode, während ein Interpreter ihn Zeile für Zeile ausführt.',
+                    'difficulty' => 2,
+                    'default_points' => 750,
+                    'default_time_limit' => 15,
                     'randomize_options' => false,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'Wahr',  'is_correct' => true,  'sort_order' => 0],
-                    ['text' => 'Falsch','is_correct' => false, 'sort_order' => 1],
+                    ['text' => 'Falsch', 'is_correct' => false, 'sort_order' => 1],
                 ],
             ],
 
             // ── Mathematik ─────────────────────────────────────────
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolMath,
+                'pool' => $poolMath,
                 'version' => [
-                    'title'             => 'Was ist die Ableitung von f(x) = x²?',
-                    'explanation'       => 'Die Potenzregel besagt: d/dx(xⁿ) = n·xⁿ⁻¹. Für n=2 ergibt sich f\'(x) = 2x.',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'Was ist die Ableitung von f(x) = x²?',
+                    'explanation' => 'Die Potenzregel besagt: d/dx(xⁿ) = n·xⁿ⁻¹. Für n=2 ergibt sich f\'(x) = 2x.',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => '2x',  'is_correct' => true,  'sort_order' => 0],
@@ -169,17 +169,17 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolMath,
+                'pool' => $poolMath,
                 'version' => [
-                    'title'             => 'Wie viele Grad hat ein rechter Winkel?',
-                    'difficulty'        => 1,
-                    'default_points'    => 500,
-                    'default_time_limit'=> 10,
+                    'title' => 'Wie viele Grad hat ein rechter Winkel?',
+                    'difficulty' => 1,
+                    'default_points' => 500,
+                    'default_time_limit' => 10,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => '90°',  'is_correct' => true,  'sort_order' => 0],
@@ -189,18 +189,18 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolMath,
+                'pool' => $poolMath,
                 'version' => [
-                    'title'             => 'Was ist 15 % von 200?',
-                    'explanation'       => '15 % von 200 = 200 × 0,15 = 30',
-                    'difficulty'        => 1,
-                    'default_points'    => 500,
-                    'default_time_limit'=> 15,
+                    'title' => 'Was ist 15 % von 200?',
+                    'explanation' => '15 % von 200 = 200 × 0,15 = 30',
+                    'difficulty' => 1,
+                    'default_points' => 500,
+                    'default_time_limit' => 15,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => '30', 'is_correct' => true,  'sort_order' => 0],
@@ -210,18 +210,18 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => false,
-                'pool'         => $poolMath,
+                'pool' => $poolMath,
                 'version' => [
-                    'title'             => 'Was ist der Satz des Pythagoras?',
-                    'explanation'       => 'In einem rechtwinkligen Dreieck gilt: a² + b² = c², wobei c die Hypotenuse ist.',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'Was ist der Satz des Pythagoras?',
+                    'explanation' => 'In einem rechtwinkligen Dreieck gilt: a² + b² = c², wobei c die Hypotenuse ist.',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'a² + b² = c²', 'is_correct' => true,  'sort_order' => 0],
@@ -233,55 +233,55 @@ class QuestionSeeder extends Seeder
 
             // ── Allgemeinwissen ────────────────────────────────────
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'true_false',
+                'created_by' => $teacher->id,
+                'type' => 'true_false',
                 'is_published' => true,
-                'pool'         => $poolGen,
+                'pool' => $poolGen,
                 'version' => [
-                    'title'             => 'Wien ist die Hauptstadt von Österreich.',
-                    'difficulty'        => 1,
-                    'default_points'    => 500,
-                    'default_time_limit'=> 10,
+                    'title' => 'Wien ist die Hauptstadt von Österreich.',
+                    'difficulty' => 1,
+                    'default_points' => 500,
+                    'default_time_limit' => 10,
                     'randomize_options' => false,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'Wahr',  'is_correct' => true,  'sort_order' => 0],
-                    ['text' => 'Falsch','is_correct' => false, 'sort_order' => 1],
+                    ['text' => 'Falsch', 'is_correct' => false, 'sort_order' => 1],
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'true_false',
+                'created_by' => $teacher->id,
+                'type' => 'true_false',
                 'is_published' => true,
-                'pool'         => $poolGen,
+                'pool' => $poolGen,
                 'version' => [
-                    'title'             => 'Die Sonne ist ein Planet.',
-                    'explanation'       => 'Die Sonne ist ein Stern, kein Planet. Sie ist der Zentralkörper unseres Sonnensystems.',
-                    'difficulty'        => 1,
-                    'default_points'    => 500,
-                    'default_time_limit'=> 10,
+                    'title' => 'Die Sonne ist ein Planet.',
+                    'explanation' => 'Die Sonne ist ein Stern, kein Planet. Sie ist der Zentralkörper unseres Sonnensystems.',
+                    'difficulty' => 1,
+                    'default_points' => 500,
+                    'default_time_limit' => 10,
                     'randomize_options' => false,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'Wahr',  'is_correct' => false, 'sort_order' => 0],
-                    ['text' => 'Falsch','is_correct' => true,  'sort_order' => 1],
+                    ['text' => 'Falsch', 'is_correct' => true,  'sort_order' => 1],
                 ],
             ],
             [
-                'created_by'   => $admin->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $admin->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolGen,
+                'pool' => $poolGen,
                 'version' => [
-                    'title'             => 'In welchem Jahr fand die Mondlandung der Apollo 11 statt?',
-                    'explanation'       => 'Am 20. Juli 1969 landeten Neil Armstrong und Buzz Aldrin als erste Menschen auf dem Mond.',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'In welchem Jahr fand die Mondlandung der Apollo 11 statt?',
+                    'explanation' => 'Am 20. Juli 1969 landeten Neil Armstrong und Buzz Aldrin als erste Menschen auf dem Mond.',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => '1969', 'is_correct' => true,  'sort_order' => 0],
@@ -293,18 +293,18 @@ class QuestionSeeder extends Seeder
 
             // ── Netzwerktechnik ────────────────────────────────────
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolNet,
+                'pool' => $poolNet,
                 'version' => [
-                    'title'             => 'Wie viele Schichten hat das OSI-Referenzmodell?',
-                    'explanation'       => 'Das OSI-Modell besteht aus 7 Schichten: Physikalisch, Sicherung, Netzwerk, Transport, Sitzung, Darstellung, Anwendung.',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'Wie viele Schichten hat das OSI-Referenzmodell?',
+                    'explanation' => 'Das OSI-Modell besteht aus 7 Schichten: Physikalisch, Sicherung, Netzwerk, Transport, Sitzung, Darstellung, Anwendung.',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => '7', 'is_correct' => true,  'sort_order' => 0],
@@ -314,18 +314,18 @@ class QuestionSeeder extends Seeder
                 ],
             ],
             [
-                'created_by'   => $teacher->id,
-                'type'         => 'multiple_choice',
+                'created_by' => $teacher->id,
+                'type' => 'multiple_choice',
                 'is_published' => true,
-                'pool'         => $poolNet,
+                'pool' => $poolNet,
                 'version' => [
-                    'title'             => 'Welches Protokoll wird verwendet, um IP-Adressen automatisch zuzuweisen?',
-                    'explanation'       => 'DHCP (Dynamic Host Configuration Protocol) vergibt IP-Adressen, Subnetzmasken, Gateway und DNS automatisch.',
-                    'difficulty'        => 2,
-                    'default_points'    => 1000,
-                    'default_time_limit'=> 20,
+                    'title' => 'Welches Protokoll wird verwendet, um IP-Adressen automatisch zuzuweisen?',
+                    'explanation' => 'DHCP (Dynamic Host Configuration Protocol) vergibt IP-Adressen, Subnetzmasken, Gateway und DNS automatisch.',
+                    'difficulty' => 2,
+                    'default_points' => 1000,
+                    'default_time_limit' => 20,
                     'randomize_options' => true,
-                    'config'            => [],
+                    'config' => [],
                 ],
                 'options' => [
                     ['text' => 'DHCP', 'is_correct' => true,  'sort_order' => 0],
@@ -337,16 +337,16 @@ class QuestionSeeder extends Seeder
         ];
 
         foreach ($questions as $data) {
-            DB::transaction(function () use ($data, $teacher) {
+            DB::transaction(function () use ($data) {
                 $question = Question::create([
-                    'created_by'   => $data['created_by'],
-                    'type'         => $data['type'],
+                    'created_by' => $data['created_by'],
+                    'type' => $data['type'],
                     'is_published' => $data['is_published'],
                 ]);
 
-                $versionData              = $data['version'];
+                $versionData = $data['version'];
                 $versionData['created_by'] = $data['created_by'];
-                $versionData['version']    = 1;
+                $versionData['version'] = 1;
 
                 $version = $question->versions()->create($versionData);
 

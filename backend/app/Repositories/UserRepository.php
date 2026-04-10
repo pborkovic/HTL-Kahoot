@@ -20,7 +20,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -32,7 +32,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -44,17 +44,17 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function updateFromEntra(User $user, EntraUserDto $entraDto): User
     {
         $attributes = [
-            'email'         => $entraDto->email,
-            'username'      => $entraDto->displayName,
-            'display_name'  => $entraDto->displayName,
-            'class_name'    => $entraDto->className,
+            'email' => $entraDto->email,
+            'username' => $entraDto->displayName,
+            'display_name' => $entraDto->displayName,
+            'class_name' => $entraDto->className,
             'last_login_at' => now(),
         ];
 
@@ -68,18 +68,18 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function createFromEntra(EntraUserDto $entraDto): User
     {
         $attributes = [
-            'external_id'   => $entraDto->externalId,
-            'email'         => $entraDto->email,
-            'username'      => $entraDto->displayName,
-            'display_name'  => $entraDto->displayName,
-            'class_name'    => $entraDto->className,
+            'external_id' => $entraDto->externalId,
+            'email' => $entraDto->email,
+            'username' => $entraDto->displayName,
+            'display_name' => $entraDto->displayName,
+            'class_name' => $entraDto->className,
             'auth_provider' => 'azure',
             'last_login_at' => now(),
         ];
@@ -92,7 +92,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -104,20 +104,20 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             $query->withTrashed();
         }
 
-        (new UserFilter())->apply(query: $query, filters: $filters);
+        (new UserFilter)->apply(query: $query, filters: $filters);
 
         return $query->paginate(perPage: $perPage);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function getClassesWithStudentCounts(): Collection
     {
         return $this->model->query()
-            ->whereHas(relation: 'roles', callback: fn($q) => $q->where(column: 'name', operator: '=', value: 'student'))
+            ->whereHas(relation: 'roles', callback: fn ($q) => $q->where(column: 'name', operator: '=', value: 'student'))
             ->whereNotNull(columns: 'class_name')
             ->selectRaw(expression: 'class_name, COUNT(*) as student_count')
             ->groupBy(groups: 'class_name')
@@ -126,7 +126,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -138,15 +138,15 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
             ->pluck(value: 'count', key: 'auth_provider');
 
         return [
-            'total_users'        => $this->model->count(),
-            'active_users'       => $this->model->where(column: 'is_active', operator: '=', value: true)->count(),
-            'by_auth_provider'   => $byAuthProvider,
+            'total_users' => $this->model->count(),
+            'active_users' => $this->model->where(column: 'is_active', operator: '=', value: true)->count(),
+            'by_auth_provider' => $byAuthProvider,
             'recent_signups_30d' => $this->model->where(column: 'created_at', operator: '>=', value: now()->subDays(value: 30))->count(),
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -165,7 +165,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -175,7 +175,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -188,7 +188,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -199,7 +199,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -209,13 +209,13 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function updateUser(User $user, array $data): User
     {
-        if (!empty($data)) {
+        if (! empty($data)) {
             $user->update(attributes: $data);
         }
 
@@ -223,7 +223,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -236,7 +236,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -246,7 +246,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -256,7 +256,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -269,19 +269,19 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function countSuperadmins(): int
     {
         return $this->model
-            ->whereHas(relation: 'roles', callback: fn($q) => $q->where(column: 'name', operator: '=', value: 'superadmin'))
+            ->whereHas(relation: 'roles', callback: fn ($q) => $q->where(column: 'name', operator: '=', value: 'superadmin'))
             ->count();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -291,7 +291,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -302,26 +302,26 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function countFinishedParticipations(string $userId): int
     {
         return SessionParticipant::where(column: 'user_id', operator: '=', value: $userId)
-            ->whereHas(relation: 'session', callback: fn($q) => $q->where(column: 'status', operator: '=', value: 'finished'))
+            ->whereHas(relation: 'session', callback: fn ($q) => $q->where(column: 'status', operator: '=', value: 'finished'))
             ->count();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
     public function getFinishedParticipationsWithResponses(string $userId): Collection
     {
         return SessionParticipant::where(column: 'user_id', operator: '=', value: $userId)
-            ->whereHas(relation: 'session', callback: fn($q) => $q->where(column: 'status', operator: '=', value: 'finished'))
+            ->whereHas(relation: 'session', callback: fn ($q) => $q->where(column: 'status', operator: '=', value: 'finished'))
             ->with(relations: [
                 'session.quiz',
                 'session.sessionQuestions',
@@ -331,7 +331,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -342,7 +342,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     ): LengthAwarePaginator {
         return SessionParticipant::query()
             ->where(column: 'session_participants.user_id', operator: '=', value: $userId)
-            ->whereHas(relation: 'session', callback: fn($q) => $q
+            ->whereHas(relation: 'session', callback: fn ($q) => $q
                 ->where(column: 'status', operator: '=', value: 'finished')
             )
             ->with(relations: [
@@ -357,7 +357,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -367,7 +367,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
