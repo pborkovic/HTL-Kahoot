@@ -5,6 +5,7 @@ const PUBLIC_PATHS: string[] = [
   "/login",
   "/auth/callback",
   "/play",
+  "/join",
 ];
 
 const ADMIN_PREFIX = "/admin";
@@ -19,6 +20,11 @@ export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const token: string | undefined = request.cookies.get("auth_token")?.value;
   const isAuthenticated: boolean = !!token;
+
+  if (pathname === "/") {
+    const target = isAuthenticated ? "/home" : "/login";
+    return NextResponse.redirect(new URL(target, request.url));
+  }
 
   if (isAuthenticated && pathname === "/login") {
     return NextResponse.redirect(new URL("/home", request.url));
