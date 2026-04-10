@@ -15,9 +15,7 @@ class SessionPolicy
      *
      * Only teachers, admins, and superadmins are allowed.
      *
-     * @param User $user The authenticated user.
-     *
-     * @return Response
+     * @param  User  $user  The authenticated user.
      *
      * @author Philipp Borkovic
      */

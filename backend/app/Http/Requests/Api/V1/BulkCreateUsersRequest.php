@@ -14,10 +14,10 @@ class BulkCreateUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'users'                  => ['required', 'array', 'min:1'],
-            'users.*.email'          => ['required', 'email'],
-            'default_auth_provider'  => ['nullable', 'string', 'in:local,entra_id'],
-            'send_welcome_email'     => ['nullable', 'boolean'],
+            'users' => ['required', 'array', 'min:1'],
+            'users.*.email' => ['required', 'email'],
+            'default_auth_provider' => ['nullable', 'string', 'in:local,entra_id'],
+            'send_welcome_email' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -3,11 +3,21 @@
 import type { ReactNode } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function HomePage(): ReactNode {
   const { user, logout } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    const roleNames = user.roles?.map((r) => r.name) ?? [];
+    if (roleNames.includes("student")) {
+      router.replace("/student/dashboard");
+    }
+  }, [user, router]);
 
   const handleLogout = useCallback(async (): Promise<void> => {
     await logout();

@@ -13,26 +13,26 @@ class UserFilter extends BaseFilter
         'created_at',
         'display_name',
         'class_name',
-        'last_login_at'
+        'last_login_at',
     ];
 
     public function apply(Builder $query, array $filters): Builder
     {
-        if (!empty($filters['role'])) {
-            $query->whereHas('roles', fn($q) => $q->where('name', $filters['role']));
+        if (! empty($filters['role'])) {
+            $query->whereHas('roles', fn ($q) => $q->where('name', $filters['role']));
         }
-        if (!empty($filters['class'])) {
+        if (! empty($filters['class'])) {
             $query->where('class_name', $filters['class']);
         }
-        if (!empty($filters['class_prefix'])) {
-            $query->whereRaw('LOWER(class_name) LIKE ?', [strtolower($filters['class_prefix']) . '%']);
+        if (! empty($filters['class_prefix'])) {
+            $query->whereRaw('LOWER(class_name) LIKE ?', [strtolower($filters['class_prefix']).'%']);
         }
-        if (!empty($filters['search'])) {
-            $term = '%' . strtolower($filters['search']) . '%';
+        if (! empty($filters['search'])) {
+            $term = '%'.strtolower($filters['search']).'%';
             $query->where(function (Builder $q) use ($term) {
                 $q->whereRaw('LOWER(email) LIKE ?', [$term])
-                  ->orWhereRaw('LOWER(username) LIKE ?', [$term])
-                  ->orWhereRaw('LOWER(display_name) LIKE ?', [$term]);
+                    ->orWhereRaw('LOWER(username) LIKE ?', [$term])
+                    ->orWhereRaw('LOWER(display_name) LIKE ?', [$term]);
             });
         }
 
@@ -42,14 +42,14 @@ class UserFilter extends BaseFilter
             field: 'is_active'
         );
 
-        if (!empty($filters['auth_provider'])) {
+        if (! empty($filters['auth_provider'])) {
             $query->where('auth_provider', $filters['auth_provider']);
         }
-        if (!empty($filters['created_after'])) {
+        if (! empty($filters['created_after'])) {
             $query->where('created_at', '>=', $filters['created_after']);
         }
-        if (!empty($filters['created_before'])) {
-            $query->where('created_at', '<=', $filters['created_before'] . ' 23:59:59');
+        if (! empty($filters['created_before'])) {
+            $query->where('created_at', '<=', $filters['created_before'].' 23:59:59');
         }
 
         return $this->applySorting(

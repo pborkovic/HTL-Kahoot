@@ -12,8 +12,7 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Find a user by email address.
      *
-     * @param string $email The email address to search for.
-     *
+     * @param  string  $email  The email address to search for.
      * @return User|null The user, or null if not found.
      */
     public function findByEmail(string $email): ?User;
@@ -21,8 +20,7 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Find a user by their external OAuth provider ID.
      *
-     * @param string $externalId The external ID from the OAuth provider.
-     *
+     * @param  string  $externalId  The external ID from the OAuth provider.
      * @return User|null The user, or null if not found.
      */
     public function findByExternalId(string $externalId): ?User;
@@ -30,9 +28,8 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Update an existing user from Entra ID (Azure AD) data.
      *
-     * @param User         $user     The user to update.
-     * @param EntraUserDto $entraDto The Entra user data.
-     *
+     * @param  User  $user  The user to update.
+     * @param  EntraUserDto  $entraDto  The Entra user data.
      * @return User The updated user.
      */
     public function updateFromEntra(User $user, EntraUserDto $entraDto): User;
@@ -40,8 +37,7 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Create a new user from Entra ID (Azure AD) data.
      *
-     * @param EntraUserDto $entraDto The Entra user data.
-     *
+     * @param  EntraUserDto  $entraDto  The Entra user data.
      * @return User The newly created user.
      */
     public function createFromEntra(EntraUserDto $entraDto): User;
@@ -49,10 +45,9 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Get a paginated, filtered list of users with roles.
      *
-     * @param array $filters     The validated filter parameters.
-     * @param int   $perPage     Items per page.
-     * @param bool  $withTrashed Whether to include soft-deleted users.
-     *
+     * @param  array  $filters  The validated filter parameters.
+     * @param  int  $perPage  Items per page.
+     * @param  bool  $withTrashed  Whether to include soft-deleted users.
      * @return LengthAwarePaginator The paginated users.
      */
     public function getFilteredUsers(array $filters, int $perPage, bool $withTrashed = false): LengthAwarePaginator;
@@ -74,10 +69,9 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Create a user and attach a role by ID.
      *
-     * @param array  $userData   The user attributes.
-     * @param string $roleId     The role UUID to assign.
-     * @param string $assignedBy The ID of the user assigning the role.
-     *
+     * @param  array  $userData  The user attributes.
+     * @param  string  $roleId  The role UUID to assign.
+     * @param  string  $assignedBy  The ID of the user assigning the role.
      * @return User The created user with roles loaded.
      */
     public function createWithRole(array $userData, string $roleId, string $assignedBy): User;
@@ -85,8 +79,7 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Create a single user record.
      *
-     * @param array $data The user attributes.
-     *
+     * @param  array  $data  The user attributes.
      * @return User The created user.
      */
     public function createUser(array $data): User;
@@ -94,26 +87,23 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Attach a role to a user by role ID.
      *
-     * @param User   $user       The user.
-     * @param string $roleId     The role UUID.
-     * @param string $assignedBy The ID of the user assigning the role.
+     * @param  User  $user  The user.
+     * @param  string  $roleId  The role UUID.
+     * @param  string  $assignedBy  The ID of the user assigning the role.
      */
     public function attachRole(User $user, string $roleId, string $assignedBy): void;
 
     /**
      * Check if a user exists by email.
      *
-     * @param string $email The email to check.
-     *
-     * @return bool
+     * @param  string  $email  The email to check.
      */
     public function emailExists(string $email): bool;
 
     /**
      * Execute a callback within a database transaction.
      *
-     * @param callable $callback The callback.
-     *
+     * @param  callable  $callback  The callback.
      * @return mixed The callback return value.
      */
     public function wrapInTransaction(callable $callback): mixed;
@@ -121,9 +111,8 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Update a user's attributes.
      *
-     * @param User  $user The user to update.
-     * @param array $data The attributes to update.
-     *
+     * @param  User  $user  The user to update.
+     * @param  array  $data  The attributes to update.
      * @return User The refreshed user.
      */
     public function updateUser(User $user, array $data): User;
@@ -131,55 +120,51 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Sync a user's role by role ID (replace all roles).
      *
-     * @param User   $user       The user.
-     * @param string $roleId     The role UUID.
-     * @param string $assignedBy The ID of the user assigning the role.
+     * @param  User  $user  The user.
+     * @param  string  $roleId  The role UUID.
+     * @param  string  $assignedBy  The ID of the user assigning the role.
      */
     public function syncRole(User $user, string $roleId, string $assignedBy): void;
 
     /**
      * Invalidate all active tokens for a user.
      *
-     * @param User $user The user.
+     * @param  User  $user  The user.
      */
     public function deleteTokens(User $user): void;
 
     /**
      * Soft-delete a user.
      *
-     * @param User $user The user.
+     * @param  User  $user  The user.
      */
     public function softDelete(User $user): void;
 
     /**
      * Restore a soft-deleted user.
      *
-     * @param User $user The user.
-     *
+     * @param  User  $user  The user.
      * @return User The restored user with roles.
      */
     public function restoreUser(User $user): User;
 
     /**
      * Count superadmin users.
-     *
-     * @return int
      */
     public function countSuperadmins(): int;
 
     /**
      * Update password hash for a user.
      *
-     * @param User   $user         The user.
-     * @param string $passwordHash The new hashed password.
+     * @param  User  $user  The user.
+     * @param  string  $passwordHash  The new hashed password.
      */
     public function updatePasswordHash(User $user, string $passwordHash): void;
 
     /**
      * Find a user by ID with roles loaded.
      *
-     * @param string $userId The user ID.
-     *
+     * @param  string  $userId  The user ID.
      * @return User The user with roles.
      */
     public function findWithRoles(string $userId): User;
@@ -187,8 +172,7 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Count finished session participations for a user.
      *
-     * @param string $userId The user ID.
-     *
+     * @param  string  $userId  The user ID.
      * @return int The number of finished participations.
      */
     public function countFinishedParticipations(string $userId): int;
@@ -196,9 +180,39 @@ interface UserRepositoryContract extends BaseRepositoryContract
     /**
      * Get all finished session participations for a user with quiz, session questions, and responses.
      *
-     * @param string $userId The user ID.
-     *
+     * @param  string  $userId  The user ID.
      * @return Collection The session participants with relations loaded.
      */
     public function getFinishedParticipationsWithResponses(string $userId): Collection;
+
+    /**
+     * Get a paginated list of finished session participations for a user, most recent first.
+     *
+     * @param  string  $userId  The user ID.
+     * @param  int  $page  The 1-based page number.
+     * @param  int  $perPage  Items per page.
+     * @return LengthAwarePaginator Paginator of session participants with relations loaded.
+     */
+    public function paginateFinishedParticipationsWithResponses(
+        string $userId,
+        int $page,
+        int $perPage,
+    ): LengthAwarePaginator;
+
+    /**
+     * Get a user's preferences.
+     *
+     * @param  User  $user  The user.
+     * @return array The preferences array.
+     */
+    public function getPreferences(User $user): array;
+
+    /**
+     * Merge and persist user preferences.
+     *
+     * @param  User  $user  The user.
+     * @param  array  $data  The preference fields to merge.
+     * @return array The updated preferences array.
+     */
+    public function updatePreferences(User $user, array $data): array;
 }

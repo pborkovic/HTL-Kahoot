@@ -225,4 +225,99 @@ use OpenApi\Attributes\Schema;
         ),
     ]
 )]
-abstract class Schemas {}
+#[Schema(
+    schema: 'Permission',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'name', type: 'string', example: 'quizzes.create'),
+    ]
+)]
+#[Schema(
+    schema: 'Role',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'name', type: 'string', example: 'teacher'),
+        new Property(
+            property: 'permissions',
+            type: 'array',
+            items: new Items(ref: '#/components/schemas/Permission')
+        ),
+    ]
+)]
+#[Schema(
+    schema: 'SessionParticipant',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'nickname', type: 'string', example: 'student42'),
+        new Property(property: 'is_connected', type: 'boolean'),
+        new Property(property: 'joined_at', type: 'string', format: 'date-time'),
+    ]
+)]
+#[Schema(
+    schema: 'SessionResource',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'quiz_id', type: 'string', format: 'uuid'),
+        new Property(property: 'host_id', type: 'string', format: 'uuid'),
+        new Property(property: 'game_pin', type: 'string', example: '123456'),
+        new Property(property: 'qr_code_url', type: 'string', nullable: true),
+        new Property(property: 'status', type: 'string', enum: ['lobby', 'active', 'paused', 'finished']),
+        new Property(property: 'current_question_idx', type: 'integer', nullable: true),
+        new Property(property: 'started_at', type: 'string', format: 'date-time', nullable: true),
+        new Property(property: 'finished_at', type: 'string', format: 'date-time', nullable: true),
+        new Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new Property(property: 'quiz', ref: '#/components/schemas/Quiz', nullable: true),
+        new Property(property: 'host', ref: '#/components/schemas/User', nullable: true),
+        new Property(
+            property: 'participants',
+            type: 'array',
+            items: new Items(ref: '#/components/schemas/SessionParticipant')
+        ),
+    ]
+)]
+#[Schema(
+    schema: 'QuestionMedia',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'question_id', type: 'string', format: 'uuid'),
+        new Property(property: 'type', type: 'string', enum: ['image', 'video', 'code_snippet']),
+        new Property(property: 'url', type: 'string'),
+        new Property(property: 'alt_text', type: 'string', nullable: true),
+        new Property(property: 'sort_order', type: 'integer'),
+        new Property(property: 'created_at', type: 'string', format: 'date-time'),
+    ]
+)]
+#[Schema(
+    schema: 'PlatformFeedback',
+    type: 'object',
+    properties: [
+        new Property(property: 'id', type: 'string', format: 'uuid'),
+        new Property(property: 'message', type: 'string'),
+        new Property(property: 'is_constructive', type: 'boolean'),
+        new Property(property: 'moderation_status', type: 'string', enum: ['pending', 'approved', 'rejected'], example: 'pending'),
+        new Property(property: 'moderation_reason', type: 'string', nullable: true),
+        new Property(property: 'is_resolved', type: 'boolean'),
+        new Property(property: 'resolved_at', type: 'string', format: 'date-time', nullable: true),
+        new Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new Property(property: 'author', type: 'object', nullable: true, properties: [
+            new Property(property: 'id', type: 'string', format: 'uuid'),
+            new Property(property: 'display_name', type: 'string', nullable: true),
+            new Property(property: 'email', type: 'string', format: 'email'),
+            new Property(property: 'class_name', type: 'string', nullable: true),
+        ]),
+        new Property(property: 'resolver', type: 'object', nullable: true, properties: [
+            new Property(property: 'id', type: 'string', format: 'uuid'),
+            new Property(property: 'display_name', type: 'string', nullable: true),
+            new Property(property: 'email', type: 'string', format: 'email'),
+        ]),
+    ]
+)]
+abstract class Schemas
+{
+}

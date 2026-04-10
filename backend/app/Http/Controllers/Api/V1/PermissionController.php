@@ -25,7 +25,8 @@ class PermissionController extends Controller
 {
     public function __construct(
         private readonly PermissionServiceContract $permissionService,
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/permissions',
@@ -84,7 +85,11 @@ class PermissionController extends Controller
     {
         $this->authorize(ability: 'create', arguments: Permission::class);
 
-        $permission = $this->permissionService->create(data: $request->validated());
+        $validated = $request->validated();
+        $permission = $this->permissionService->create(data: [
+            'key' => $validated['name'],
+            'group' => 'custom',
+        ]);
 
         return (
             new PermissionResource(resource: $permission)

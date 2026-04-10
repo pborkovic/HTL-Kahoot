@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>GamQuiz Backend API</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">GamQuiz Backend API</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -namespaces">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/app.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/app-agents.html" class="">Agents</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-broadcasting.html" class="">Broadcasting</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-dtos.html" class="">DTOs</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-events.html" class="">Events</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-filters.html" class="">Filters</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-http.html" class="">Http</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-jobs.html" class="">Jobs</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-models.html" class="">Models</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-openapi.html" class="">OpenApi</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-policies.html" class="">Policies</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-providers.html" class="">Providers</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-repositories.html" class="">Repositories</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-services.html" class="">Services</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/App.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/App-Repositories.html" class="">Repositories</a>
+                
+            </li>
+                    <li>
+                <a href="packages/App-Services.html" class="">Services</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app.html">App</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http.html">Http</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http-controllers.html">Controllers</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http-controllers-api.html">Api</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-http-controllers-api-v1.html">V1</a></li>
+    </ul>
+
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    SessionController
+
+        <span class="phpdocumentor-element__extends">
+        extends <a href="classes/App-Http-Controllers-Controller.html"><abbr title="\App\Http\Controllers\Controller">Controller</abbr></a>
+    </span>
+    
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Application.html">Application</a></li>
+                            </ul>
+        </div>
+    
+    
+    </h2>
+
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">32</span>
+
+    </aside>
+
+        
+
+
+
+
+    
+    
+<h3 id="toc">
+    Table of Contents
+    <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h3>
+
+
+
+
+
+
+
+
+
+<h4 id="toc-properties">
+    Properties
+    <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#property_sessionService">$sessionService</a>
+    <span>
+                        &nbsp;: <a href="classes/App-Services-Contracts-SessionServiceContract.html"><abbr title="\App\Services\Contracts\SessionServiceContract">SessionServiceContract</abbr></a>            </span>
+</dt>
+
+    </dl>
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method___construct">__construct()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_answer">answer()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_closeQuestion">closeQuestion()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_currentQuestion">currentQuestion()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_fullReview">fullReview()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_join">join()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_leaderboard">leaderboard()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_next">next()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_overrideAnswer">overrideAnswer()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_participants">participants()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_questionResults">questionResults()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_report">report()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_results">results()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_review">review()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_show">show()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_start">start()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_status">status()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_store">store()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr>    </span>
+</dt>
+
+    </dl>
+
+
+
+        
+
+        
+    <section class="phpdocumentor-properties">
+        <h3 class="phpdocumentor-elements__header" id="properties">
+            Properties
+            <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                -read-only                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_sessionService">
+        $sessionService
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#property_sessionService" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">35</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type"><a href="classes/App-Services-Contracts-SessionServiceContract.html"><abbr title="\App\Services\Contracts\SessionServiceContract">SessionServiceContract</abbr></a></span>
+    <span class="phpdocumentor-signature__name">$sessionService</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+            </section>
+
+            <section class="phpdocumentor-methods">
+        <h3 class="phpdocumentor-elements__header" id="methods">
+            Methods
+            <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___construct">
+        __construct()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">34</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Services-Contracts-SessionServiceContract.html"><abbr title="\App\Services\Contracts\SessionServiceContract">SessionServiceContract</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sessionService</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$sessionService</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Services-Contracts-SessionServiceContract.html"><abbr title="\App\Services\Contracts\SessionServiceContract">SessionServiceContract</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_answer">
+        answer()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_answer" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">447</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">answer</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-SubmitAnswerRequest.html"><abbr title="\App\Http\Requests\Api\V1\SubmitAnswerRequest">SubmitAnswerRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-SubmitAnswerRequest.html"><abbr title="\App\Http\Requests\Api\V1\SubmitAnswerRequest">SubmitAnswerRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_answer#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/answer&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Submit an answer for the current question. The answer must be submitted before the time limit expires.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Submit an answer&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(required: [&#039;answer&#039;], properties: [new Property(property: &#039;answer&#039;, type: &#039;array&#039;, items: new Items(type: &#039;string&#039;, format: &#039;uuid&#039;))]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Answer submitted&#039;), new Response(response: 409, description: &#039;Time expired or already answered&#039;), new Response(response: 422, description: &#039;Validation error&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_closeQuestion">
+        closeQuestion()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_closeQuestion" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">413</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">closeQuestion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_closeQuestion#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/close-question&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Closes the current question without advancing to the next one. Only the host can close a question.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Close the current question&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Question closed&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 409, description: &#039;Invalid session state&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_currentQuestion">
+        currentQuestion()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_currentQuestion" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">385</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">currentQuestion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_currentQuestion#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/current-question&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the current question with answer options (without correct answers) and timing information.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get the current question&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Current question data&#039;), new Response(response: 409, description: &#039;No active question&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_fullReview">
+        fullReview()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_fullReview" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">596</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">fullReview</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_fullReview#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/full-review&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns all questions with correct answers and every student\&#039;s chosen answers. Teacher-facing endpoint.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get full review with all students\&#039; answers&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Full review with all students and answers&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_join">
+        join()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_join" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">220</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">join</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-JoinSessionRequest.html"><abbr title="\App\Http\Requests\Api\V1\JoinSessionRequest">JoinSessionRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-JoinSessionRequest.html"><abbr title="\App\Http\Requests\Api\V1\JoinSessionRequest">JoinSessionRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_join#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/join&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Join an existing game session using an 8-digit game pin. The authenticated user\&#039;s display name is used as the participant nickname.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Join a game session by game pin&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(required: [&#039;game_pin&#039;], properties: [new Property(property: &#039;game_pin&#039;, description: &#039;The 8-digit game pin&#039;, type: &#039;string&#039;, example: &#039;48291037&#039;)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Successfully joined the session&#039;, content: new JsonContent(properties: [new Property(property: &#039;participant_id&#039;, type: &#039;string&#039;, format: &#039;uuid&#039;), new Property(property: &#039;session_id&#039;, type: &#039;string&#039;, format: &#039;uuid&#039;), new Property(property: &#039;game_pin&#039;, type: &#039;string&#039;, example: &#039;48291037&#039;), new Property(property: &#039;nickname&#039;, type: &#039;string&#039;, example: &#039;Max M.&#039;), new Property(property: &#039;status&#039;, type: &#039;string&#039;, example: &#039;lobby&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;, content: new JsonContent(properties: [new Property(property: &#039;message&#039;, type: &#039;string&#039;, example: &#039;Unauthenticated.&#039;)])), new Response(response: 404, description: &#039;Game pin not found&#039;, content: new JsonContent(properties: [new Property(property: &#039;error&#039;, type: &#039;string&#039;, example: &#039;Kein Spiel mit diesem Code gefunden.&#039;)])), new Response(response: 409, description: &#039;Session not in lobby state&#039;, content: new JsonContent(properties: [new Property(property: &#039;error&#039;, type: &#039;string&#039;, example: &#039;Dieses Spiel hat bereits begonnen oder ist beendet.&#039;)])), new Response(response: 422, description: &#039;Validation error&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_leaderboard">
+        leaderboard()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_leaderboard" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">543</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">leaderboard</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_leaderboard#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/leaderboard&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns participants ranked by total score.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get the leaderboard&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Leaderboard&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_next">
+        next()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_next" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">351</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">next</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_next#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/next&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Closes the current question and opens the next one. If no more questions, finishes the game.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Advance to the next question&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Advanced to next question or finished&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 409, description: &#039;Invalid session state&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_overrideAnswer">
+        overrideAnswer()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_overrideAnswer" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">660</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">overrideAnswer</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-OverrideAnswerRequest.html"><abbr title="\App\Http\Requests\Api\V1\OverrideAnswerRequest">OverrideAnswerRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$responseId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-OverrideAnswerRequest.html"><abbr title="\App\Http\Requests\Api\V1\OverrideAnswerRequest">OverrideAnswerRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$responseId</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_overrideAnswer#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Patch">Patch</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/responses/{responseId}/override&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Allows the session host to override the AI evaluation of a free-text answer, marking it as correct or incorrect.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Override AI answer evaluation&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(properties: [new Property(property: &#039;is_correct&#039;, type: &#039;boolean&#039;, example: true)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;)), new Parameter(name: &#039;responseId&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, format: &#039;uuid&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Override applied&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 403, description: &#039;Not the session host&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_participants">
+        participants()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_participants" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">62</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">participants</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_participants#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/participants&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the list of participants for a session. Used for polling in the lobby.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get session participants&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Participants list&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, type: &#039;array&#039;, items: new Items(ref: &#039;#/components/schemas/SessionParticipant&#039;))])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_questionResults">
+        questionResults()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_questionResults" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">516</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">questionResults</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_questionResults#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/question-results&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the answer distribution for the current question. Teacher-facing endpoint.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get question results&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Question results with answer distribution&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_report">
+        report()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_report" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">638</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">report</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_report#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/report&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns a participant-centric session report with per-student statistics including accuracy percentage, average response time, and detailed per-question answers.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get session report&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Session report with participant statistics&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_results">
+        results()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_results" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">618</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">results</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_results#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/results&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the final game results including leaderboard and quiz metadata.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get final game results&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Final results&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_review">
+        review()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_review" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">563</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">review</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_review#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/review&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns all questions in the session with the correct answers and the authenticated student\&#039;s chosen answers, along with scoring details.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get student review of all questions&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Student review with all questions and answers&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 404, description: &#039;Not found&#039;), new Response(response: 409, description: &#039;Not a participant&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_show">
+        show()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_show" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">38</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">show</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_show#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns session details including QR code and participants list. The host of the session can access this endpoint.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get a session by game pin&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Session details&#039;, content: new JsonContent(properties: [new Property(property: &#039;data&#039;, ref: &#039;#/components/schemas/SessionResource&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 404, description: &#039;Not found&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_start">
+        start()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_start" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">317</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">start</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_start#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/start&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Starts the game session, creating session questions and opening the first question. Only the host can start the game.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Start a game session&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Game started&#039;), new Response(response: 401, description: &#039;Unauthenticated&#039;), new Response(response: 409, description: &#039;Invalid session state&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_status">
+        status()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_status" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">496</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">status</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$gamePin</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$gamePin</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_status#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Get">Get</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions/{gamePin}/status&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Returns the current session status, question index, and whether a question is currently open. Used for polling.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Get session status&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $parameters: [new Parameter(name: &#039;gamePin&#039;, in: &#039;path&#039;, required: true, schema: new Schema(type: &#039;string&#039;, example: &#039;48291037&#039;))]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 200, description: &#039;Session status&#039;)]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_store">
+        store()
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_store" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Http/Controllers/Api/V1/SessionController.php"><a href="files/http-controllers-api-v1-sessioncontroller.html"><abbr title="Http/Controllers/Api/V1/SessionController.php">SessionController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">88</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">store</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Http-Requests-Api-V1-CreateSessionRequest.html"><abbr title="\App\Http\Requests\Api\V1\CreateSessionRequest">CreateSessionRequest</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$request</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Http-Requests-Api-V1-CreateSessionRequest.html"><abbr title="\App\Http\Requests\Api\V1\CreateSessionRequest">CreateSessionRequest</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+            <section class="phpdocumentor-attributes">
+            <h5 class="phpdocumentor-elements__header" id="attributes">
+                Attributes <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_store#attributes" class="headerlink"><i class="fas fa-link"></i></a>
+
+            </h5>
+                            <dl class="phpdocumentor-argument-list">
+    <dt class="phpdocumentor-argument-list__entry">
+        #[<abbr title="\OpenApi\Attributes\Post">Post</abbr>]
+    </dt>
+        <dd class="phpdocumentor-argument-list__entry">
+        $path: &#039;/api/v1/sessions&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $description: &#039;Creates a new game session for a quiz. Generates a unique 8-digit game pin and a QR code for players to join. The authenticated user becomes the host. Requires teacher, admin, or superadmin role.&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $summary: &#039;Create a new game session&#039;
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $security: [[&#039;sanctum&#039; =&gt; []]]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $requestBody: new RequestBody(required: true, content: new JsonContent(required: [&#039;quiz_id&#039;], properties: [new Property(property: &#039;quiz_id&#039;, description: &#039;The UUID of the quiz to create a game session for&#039;, type: &#039;string&#039;, format: &#039;uuid&#039;, example: &#039;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&#039;)]))
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $tags: [&#039;Sessions&#039;]
+    </dd>
+        <dd class="phpdocumentor-argument-list__entry">
+        $responses: [new Response(response: 201, description: &#039;Game session created successfully&#039;, content: new JsonContent(properties: [new Property(property: &#039;session&#039;, properties: [new Property(property: &#039;id&#039;, type: &#039;string&#039;, format: &#039;uuid&#039;, example: &#039;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&#039;), new Property(property: &#039;quiz_id&#039;, type: &#039;string&#039;, format: &#039;uuid&#039;, example: &#039;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&#039;), new Property(property: &#039;host_id&#039;, type: &#039;string&#039;, format: &#039;uuid&#039;, example: &#039;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&#039;), new Property(property: &#039;game_pin&#039;, type: &#039;string&#039;, example: &#039;48291037&#039;), new Property(property: &#039;qr_code_url&#039;, type: &#039;string&#039;, example: &#039;data:image/svg+xml;base64,...&#039;), new Property(property: &#039;status&#039;, type: &#039;string&#039;, example: &#039;lobby&#039;), new Property(property: &#039;current_question_idx&#039;, type: &#039;integer&#039;, example: null, nullable: true), new Property(property: &#039;started_at&#039;, type: &#039;string&#039;, format: &#039;date-time&#039;, example: null, nullable: true), new Property(property: &#039;finished_at&#039;, type: &#039;string&#039;, format: &#039;date-time&#039;, example: null, nullable: true), new Property(property: &#039;created_at&#039;, type: &#039;string&#039;, format: &#039;date-time&#039;, example: &#039;2026-02-23T12:00:00.000000Z&#039;), new Property(property: &#039;quiz&#039;, type: &#039;object&#039;), new Property(property: &#039;host&#039;, type: &#039;object&#039;), new Property(property: &#039;participants&#039;, type: &#039;array&#039;, items: new Items(type: &#039;object&#039;))], type: &#039;object&#039;)])), new Response(response: 401, description: &#039;Unauthenticated&#039;, content: new JsonContent(properties: [new Property(property: &#039;message&#039;, type: &#039;string&#039;, example: &#039;Unauthenticated.&#039;)])), new Response(response: 403, description: &#039;Unauthorized&#039;, content: new JsonContent(properties: [new Property(property: &#039;message&#039;, type: &#039;string&#039;, example: &#039;You must be a teacher or admin to create a game session.&#039;)])), new Response(response: 422, description: &#039;Validation error&#039;, content: new JsonContent(properties: [new Property(property: &#039;message&#039;, type: &#039;string&#039;, example: &#039;The quiz id field is required.&#039;), new Property(property: &#039;errors&#039;, properties: [new Property(property: &#039;quiz_id&#039;, type: &#039;array&#039;, items: new Items(type: &#039;string&#039;, example: &#039;The quiz id field is required.&#039;))], type: &#039;object&#039;)])), new Response(response: 500, description: &#039;Server error&#039;, content: new JsonContent(properties: [new Property(property: &#039;error&#039;, type: &#039;string&#039;, example: &#039;Failed to create game session&#039;), new Property(property: &#039;message&#039;, type: &#039;string&#039;, example: &#039;Something went wrong&#039;)]))]
+    </dd>
+    </dl>
+                    </section>
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\JsonResponse">JsonResponse</abbr></span>
+            </section>
+
+</article>
+            </section>
+
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/Http/Controllers/Api/V1/SessionController.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
+
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('GET', src, true);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+                            Prism.highlightElement(code);
+                            d=document.getElementsByClassName("line-numbers");
+                            d[0].scrollTop = d[0].children[1].offsetTop;
+                            return;
+                        }
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
+                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
+                    }
+                    modal.classList.add("phpdocumentor-modal__open");
+
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+
+    </article>
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                                            <li><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#property_sessionService">$sessionService</a></li>
+                                            </ul>
+                </li>
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_answer">answer()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_closeQuestion">closeQuestion()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_currentQuestion">currentQuestion()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_fullReview">fullReview()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_join">join()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_leaderboard">leaderboard()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_next">next()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_overrideAnswer">overrideAnswer()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_participants">participants()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_questionResults">questionResults()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_report">report()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_results">results()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_review">review()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_show">show()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_start">start()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_status">status()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-Api-V1-SessionController.html#method_store">store()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="classes/App-Http-Controllers-Api-V1-SessionController.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>

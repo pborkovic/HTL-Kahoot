@@ -18,7 +18,7 @@ class QuestionVersion extends Model
     protected function casts(): array
     {
         return [
-            'config'           => 'array',
+            'config' => 'array',
             'randomize_options' => 'boolean',
         ];
     }

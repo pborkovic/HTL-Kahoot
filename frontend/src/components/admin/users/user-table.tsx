@@ -1,6 +1,7 @@
 "use client";
 
-import { MoreHorizontal, ShieldCheck, ShieldX, UserX } from "lucide-react";
+import { useState } from "react";
+import { MoreHorizontal, ShieldCheck, ShieldX, Trash2, UserX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuSub,
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
@@ -27,6 +29,7 @@ interface UserTableProps {
     roles: Role[];
     onAssignRole: (userId: string, roleId: string) => Promise<void>;
     onRemoveRole: (userId: string, roleId: string) => Promise<void>;
+    onDeleteUser: (userId: string) => Promise<void>;
 }
 
 const ROLE_COLORS: Record<string, string> = {
@@ -40,20 +43,18 @@ function getRoleColor(name: string): string {
     return ROLE_COLORS[name] ?? "bg-muted text-muted-foreground hover:bg-muted border border-border/40";
 }
 
-function UserActions({ user, roles, onAssignRole, onRemoveRole }: {
+function UserActions({ user, roles, onAssignRole, onRemoveRole, onDeleteUser }: {
     user: User;
     roles: Role[];
     onAssignRole: (userId: string, roleId: string) => Promise<void>;
     onRemoveRole: (userId: string, roleId: string) => Promise<void>;
+    onDeleteUser: (userId: string) => Promise<void>;
 }) {
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const availableRoles = roles.filter(r => !user.roles.some(ur => ur.id === r.id));
 
-    if (availableRoles.length === 0 && user.roles.length === 0) {
-        return null;
-    }
-
     return (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={(open) => { if (!open) setConfirmDelete(false); }}>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="size-7 p-0 rounded-lg hover:bg-primary/10 cursor-pointer">
                     <MoreHorizontal className="size-3.5" />
@@ -98,17 +99,36 @@ function UserActions({ user, roles, onAssignRole, onRemoveRole }: {
                         </DropdownMenuSubContent>
                     </DropdownMenuSub>
                 )}
+                <DropdownMenuSeparator className="bg-border/30" />
+                {confirmDelete ? (
+                    <DropdownMenuItem
+                        className="text-xs text-destructive cursor-pointer font-semibold"
+                        onClick={() => onDeleteUser(user.id)}
+                    >
+                        <Trash2 className="size-3.5 mr-2" />
+                        Wirklich löschen?
+                    </DropdownMenuItem>
+                ) : (
+                    <DropdownMenuItem
+                        className="text-xs text-destructive cursor-pointer"
+                        onClick={(e) => { e.preventDefault(); setConfirmDelete(true); }}
+                    >
+                        <Trash2 className="size-3.5 mr-2" />
+                        Benutzer löschen
+                    </DropdownMenuItem>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
 }
 
 /* ── Mobile card view ── */
-function UserCard({ user, roles, onAssignRole, onRemoveRole }: {
+function UserCard({ user, roles, onAssignRole, onRemoveRole, onDeleteUser }: {
     user: User;
     roles: Role[];
     onAssignRole: (userId: string, roleId: string) => Promise<void>;
     onRemoveRole: (userId: string, roleId: string) => Promise<void>;
+    onDeleteUser: (userId: string) => Promise<void>;
 }) {
     return (
         <div className="backdrop-blur-sm bg-background/40 dark:bg-background/20 border border-border/30 rounded-xl p-3.5 space-y-2.5 transition-all duration-200 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
@@ -127,7 +147,7 @@ function UserCard({ user, roles, onAssignRole, onRemoveRole }: {
                     }`}>
                         {user.is_active ? "Aktiv" : "Inaktiv"}
                     </Badge>
-                    <UserActions user={user} roles={roles} onAssignRole={onAssignRole} onRemoveRole={onRemoveRole} />
+                    <UserActions user={user} roles={roles} onAssignRole={onAssignRole} onRemoveRole={onRemoveRole} onDeleteUser={onDeleteUser} />
                 </div>
             </div>
             <div className="flex items-center justify-between">
@@ -154,7 +174,7 @@ function UserCard({ user, roles, onAssignRole, onRemoveRole }: {
     );
 }
 
-export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTableProps) {
+export function UserTable({ users, roles, onAssignRole, onRemoveRole, onDeleteUser }: UserTableProps) {
     if (users.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground gap-1">
@@ -175,6 +195,7 @@ export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTabl
                         roles={roles}
                         onAssignRole={onAssignRole}
                         onRemoveRole={onRemoveRole}
+                        onDeleteUser={onDeleteUser}
                     />
                 ))}
             </div>
@@ -232,7 +253,7 @@ export function UserTable({ users, roles, onAssignRole, onRemoveRole }: UserTabl
                                     }
                                 </TableCell>
                                 <TableCell className="py-3">
-                                    <UserActions user={user} roles={roles} onAssignRole={onAssignRole} onRemoveRole={onRemoveRole} />
+                                    <UserActions user={user} roles={roles} onAssignRole={onAssignRole} onRemoveRole={onRemoveRole} onDeleteUser={onDeleteUser} />
                                 </TableCell>
                             </TableRow>
                         ))}

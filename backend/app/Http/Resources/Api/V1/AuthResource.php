@@ -15,8 +15,8 @@ class AuthResource extends JsonResource
     private string $token;
 
     /**
-     * @param mixed $resource The authenticated User model.
-     * @param string $token The plain-text Sanctum API token.
+     * @param  mixed  $resource  The authenticated User model.
+     * @param  string  $token  The plain-text Sanctum API token.
      *
      * @author Philipp Borkovic
      */
@@ -29,7 +29,7 @@ class AuthResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user'  => new UserResource($this->resource),
+            'user' => new UserResource($this->resource),
             'token' => $this->token,
         ];
     }

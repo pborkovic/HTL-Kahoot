@@ -11,6 +11,8 @@ import {
     Users,
     LogOut,
     Palette,
+    Settings,
+    MessageSquare,
     type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -23,6 +25,14 @@ interface NavItem {
     icon: LucideIcon;
     match?: (pathname: string) => boolean;
 }
+
+const studentItems: NavItem[] = [
+    {
+        title: "Dashboard",
+        href: "/student/dashboard",
+        icon: LayoutDashboard,
+    },
+];
 
 const teacherItems: NavItem[] = [
     {
@@ -55,7 +65,19 @@ const adminItems: NavItem[] = [
         icon: Users,
         match: (p) => p.startsWith("/admin/users"),
     },
+    {
+        title: "Feedback",
+        href: "/admin/feedback",
+        icon: MessageSquare,
+        match: (p) => p.startsWith("/admin/feedback"),
+    },
 ];
+
+const selfFeedbackItem: NavItem = {
+    title: "Feedback",
+    href: "/feedback",
+    icon: MessageSquare,
+};
 
 export function MobileNav(): ReactNode {
     const pathname = usePathname();
@@ -69,8 +91,15 @@ export function MobileNav(): ReactNode {
 
     const userRoles = user.roles?.map((r) => r.name) ?? [];
     const isAdmin = userRoles.some((r) => r === "admin" || r === "superadmin");
+    const isTeacher = userRoles.some((r) => r === "teacher");
+    const isStudent = userRoles.some((r) => r === "student");
 
-    const items: NavItem[] = [...teacherItems, ...(isAdmin ? adminItems : [])];
+    const items: NavItem[] = [
+        ...(isStudent ? studentItems : []),
+        ...(isTeacher ? teacherItems : []),
+        ...(isAdmin ? adminItems : []),
+        ...(!isAdmin && (isStudent || isTeacher) ? [selfFeedbackItem] : []),
+    ];
 
     const showMoreButton = items.length > 4;
     const visibleItems = showMoreButton ? items.slice(0, 4) : items;
@@ -136,6 +165,23 @@ export function MobileNav(): ReactNode {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-border/30 my-1.5" />
+
+                        {/* Settings */}
+                        <Link
+                            href="/settings"
+                            onClick={() => setShowMore(false)}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
+                                pathname === "/settings"
+                                    ? "bg-primary/10 text-primary font-medium"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                            }`}
+                        >
+                            <Settings className="size-4.5" />
+                            <span>Einstellungen</span>
+                        </Link>
 
                         {/* Divider */}
                         <div className="border-t border-border/30 my-1.5" />

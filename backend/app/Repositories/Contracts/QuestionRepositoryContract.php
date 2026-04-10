@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Contracts;
 
 use App\Models\Question;
+use App\Models\QuestionVersion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -35,8 +36,7 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      *         sort_order?: int
      *     }>,
      * } $data     Normalised question data.
-     * @param string $userId The UUID of the user creating the question.
-     *
+     * @param  string  $userId  The UUID of the user creating the question.
      * @return Question The persisted question with currentVersion.answerOptions loaded.
      *
      * @throws QueryException If a database constraint is violated.
@@ -52,7 +52,7 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      * records if answer_options are provided. Updates current_version_id to the
      * newly created version.
      *
-     * @param Question $question The existing question to update.
+     * @param  Question  $question  The existing question to update.
      * @param array{
      *     type?: string,
      *     title?: string,
@@ -68,8 +68,7 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      *         sort_order?: int
      *     }>,
      * } $data   The update data (partial; missing fields inherit from current version).
-     * @param string $userId The UUID of the user creating the new version.
-     *
+     * @param  string  $userId  The UUID of the user creating the new version.
      * @return Question The updated question with currentVersion.answerOptions loaded.
      *
      * @throws QueryException If a database constraint is violated.
@@ -82,8 +81,7 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      * Includes trashed (soft-deleted) records in the query scope so that
      * a previously deleted question can be located for restoration.
      *
-     * @param string $id The UUID of the question.
-     *
+     * @param  string  $id  The UUID of the question.
      * @return Question The found question (may be soft-deleted).
      *
      * @throws ModelNotFoundException If no question with the given ID exists.
@@ -96,9 +94,8 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      * Returns versions ordered ascending by version number, each with
      * their answerOptions relation eagerly loaded.
      *
-     * @param Question $question The question whose versions to retrieve.
-     *
-     * @return Collection<int, \App\Models\QuestionVersion> Ordered collection of versions.
+     * @param  Question  $question  The question whose versions to retrieve.
+     * @return Collection<int, QuestionVersion> Ordered collection of versions.
      */
     public function getVersionsWithAnswerOptions(Question $question): Collection;
 
@@ -108,10 +105,9 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      * Applies the QuestionFilter, optionally includes trashed records,
      * eager-loads the currentVersion relation, and paginates the results.
      *
-     * @param array<string, mixed> $filters    Validated filter parameters.
-     * @param bool                 $withTrashed Whether to include soft-deleted questions.
-     * @param int                  $perPage     Number of results per page.
-     *
+     * @param  array<string, mixed>  $filters  Validated filter parameters.
+     * @param  bool  $withTrashed  Whether to include soft-deleted questions.
+     * @param  int  $perPage  Number of results per page.
      * @return LengthAwarePaginator Paginated, filtered question list.
      */
     public function listFiltered(array $filters, bool $withTrashed, int $perPage): LengthAwarePaginator;

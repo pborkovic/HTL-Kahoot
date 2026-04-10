@@ -19,8 +19,10 @@ class SubmitAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answer'   => ['required', 'array', 'min:1'],
-            'answer.*' => ['required', 'string', 'uuid'],
+            'answer' => ['present', 'array'],
+            'answer.*' => ['required', 'string'],
+            'answer_text' => ['nullable', 'string', 'max:2000'],
+            'is_gamble' => ['sometimes', 'boolean'],
         ];
     }
 }

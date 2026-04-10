@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
         Schema::create('session_participants', function (Blueprint $table) {
@@ -27,7 +26,7 @@ return new class extends Migration
 
         DB::statement(
             'CREATE UNIQUE INDEX session_participants_session_user_unique '
-            . 'ON session_participants (session_id, user_id) WHERE user_id IS NOT NULL'
+            .'ON session_participants (session_id, user_id) WHERE user_id IS NOT NULL'
         );
     }
 

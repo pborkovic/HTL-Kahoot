@@ -8,30 +8,33 @@ use App\DTOs\CreateSessionDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateSessionRequest;
 use App\Http\Requests\Api\V1\JoinSessionRequest;
+use App\Http\Requests\Api\V1\OverrideAnswerRequest;
 use App\Http\Requests\Api\V1\SubmitAnswerRequest;
 use App\Http\Resources\Api\V1\SessionParticipantResource;
 use App\Http\Resources\Api\V1\SessionResource;
 use App\Models\Session;
 use App\Services\Contracts\SessionServiceContract;
 use Exception;
-use InvalidArgumentException;
-use RuntimeException;
 use Illuminate\Http\JsonResponse;
+use InvalidArgumentException;
 use OpenApi\Attributes\Get;
-use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Items;
+use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\Parameter;
+use OpenApi\Attributes\Patch;
 use OpenApi\Attributes\Post;
 use OpenApi\Attributes\Property;
 use OpenApi\Attributes\RequestBody;
 use OpenApi\Attributes\Response;
 use OpenApi\Attributes\Schema;
+use RuntimeException;
 
 class SessionController extends Controller
 {
     public function __construct(
         private readonly SessionServiceContract $sessionService
-    ) {}
+    ) {
+    }
 
     #[Get(
         path: '/api/v1/sessions/{gamePin}',
@@ -297,8 +300,7 @@ class SessionController extends Controller
                     'game_pin' => $request->validated('game_pin'),
                     'nickname' => $participant->nickname,
                     'status' => $participant->session->status,
-                ],
-                status: 200
+                ]
             );
         } catch (InvalidArgumentException $e) {
             return response()->json(
@@ -478,7 +480,7 @@ class SessionController extends Controller
 
             return response()->json(data: [
                 'data' => [
-                    'is_correct'    => $response->is_correct,
+                    'is_correct' => $response->is_correct,
                     'score_awarded' => $response->score_awarded,
                     'time_taken_ms' => $response->time_taken_ms,
                     'answer_streak' => $response->participant->answer_streak ?? 0,
@@ -654,5 +656,47 @@ class SessionController extends Controller
         $data = $this->sessionService->getSessionReport(gamePin: $gamePin);
 
         return response()->json(data: ['data' => $data]);
+    }
+
+    #[Patch(
+        path: '/api/v1/sessions/{gamePin}/responses/{responseId}/override',
+        description: 'Allows the session host to override the AI evaluation of a free-text answer, marking it as correct or incorrect.',
+        summary: 'Override AI answer evaluation',
+        security: [['sanctum' => []]],
+        requestBody: new RequestBody(
+            required: true,
+            content: new JsonContent(properties: [
+                new Property(property: 'is_correct', type: 'boolean', example: true),
+            ])
+        ),
+        tags: ['Sessions'],
+        parameters: [
+            new Parameter(name: 'gamePin', in: 'path', required: true, schema: new Schema(type: 'string', example: '48291037')),
+            new Parameter(name: 'responseId', in: 'path', required: true, schema: new Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new Response(response: 200, description: 'Override applied'),
+            new Response(response: 401, description: 'Unauthenticated'),
+            new Response(response: 403, description: 'Not the session host'),
+            new Response(response: 404, description: 'Not found'),
+        ]
+    )]
+    public function overrideAnswer(OverrideAnswerRequest $request, string $gamePin, string $responseId): JsonResponse
+    {
+        try {
+            $data = $this->sessionService->overrideAnswerEvaluation(
+                gamePin: $gamePin,
+                responseId: $responseId,
+                isCorrect: $request->boolean(key: 'is_correct'),
+                teacher: $request->user(),
+            );
+
+            return response()->json(data: ['data' => $data]);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                data: ['message' => $e->getMessage()],
+                status: 403,
+            );
+        }
     }
 }

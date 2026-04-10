@@ -7,5 +7,5 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel(
     channel: 'session.{gamePin}',
-    callback:  SessionChannel::class
+    callback: SessionChannel::class
 );

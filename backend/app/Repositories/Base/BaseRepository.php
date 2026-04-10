@@ -34,9 +34,8 @@ abstract class BaseRepository implements BaseRepositoryContract
      * Supports both simple equality (`['field' => value]`) and
      * operator syntax (`['field' => ['>', 10]]`).
      *
-     * @param Builder              $query    The query builder instance.
-     * @param array<string, mixed> $criteria The criteria to apply.
-     *
+     * @param  Builder  $query  The query builder instance.
+     * @param  array<string, mixed>  $criteria  The criteria to apply.
      * @return Builder The query with criteria applied.
      *
      * @author Philipp Borkovic
@@ -58,8 +57,7 @@ abstract class BaseRepository implements BaseRepositoryContract
     /**
      * Build a logging context array with the model class included.
      *
-     * @param array<string, mixed> $extra Additional context entries.
-     *
+     * @param  array<string, mixed>  $extra  Additional context entries.
      * @return array<string, mixed> The merged context.
      *
      * @author Philipp Borkovic
@@ -98,7 +96,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->find($id);
         } catch (Exception $e) {
             Log::error("Error finding record by ID: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
+                'id' => $id,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -123,7 +121,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             throw $e;
         } catch (Exception $e) {
             Log::error("Error finding record by ID: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
+                'id' => $id,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -160,7 +158,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->create($data);
         } catch (Exception $e) {
             Log::error("Error creating record: {$e->getMessage()}", $this->logContext([
-                'data'  => $data,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -182,8 +180,8 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $model->fresh();
         } catch (Exception $e) {
             Log::error("Error updating record: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
-                'data'  => $data,
+                'id' => $id,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -210,7 +208,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             return false;
         } catch (Exception $e) {
             Log::error("Error deleting record: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
+                'id' => $id,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -234,7 +232,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error finding records by criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             return collect();
@@ -255,7 +253,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error finding first record by criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             return null;
@@ -276,7 +274,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error getting total records with criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             return 0;
@@ -297,7 +295,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error paginating records with criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -318,8 +316,8 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error updating records where: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'data'     => $data,
-                'trace'    => $e->getTraceAsString(),
+                'data' => $data,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -340,7 +338,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error deleting records where: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -408,7 +406,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->findMany($ids);
         } catch (Exception $e) {
             Log::error("Error finding many records: {$e->getMessage()}", $this->logContext([
-                'ids'   => $ids,
+                'ids' => $ids,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -427,7 +425,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->insert($data);
         } catch (Exception $e) {
             Log::error("Error creating many records: {$e->getMessage()}", $this->logContext([
-                'data'  => $data,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -446,7 +444,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->insert($data);
         } catch (Exception $e) {
             Log::error("Error inserting many records: {$e->getMessage()}", $this->logContext([
-                'data'  => $data,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -466,7 +464,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error selecting columns: {$e->getMessage()}", $this->logContext([
                 'columns' => $columns,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -485,7 +483,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error loading relations: {$e->getMessage()}", $this->logContext([
                 'relations' => $relations,
-                'trace'     => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -523,9 +521,9 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->orderBy($column, $direction);
         } catch (Exception $e) {
             Log::error("Error ordering records: {$e->getMessage()}", $this->logContext([
-                'column'    => $column,
+                'column' => $column,
                 'direction' => $direction,
-                'trace'     => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -543,10 +541,10 @@ abstract class BaseRepository implements BaseRepositoryContract
             return $this->model->whereBetween($column, [$startDate, $endDate]);
         } catch (Exception $e) {
             Log::error("Error filtering dates: {$e->getMessage()}", $this->logContext([
-                'column'    => $column,
+                'column' => $column,
                 'startDate' => $startDate,
-                'endDate'   => $endDate,
-                'trace'     => $e->getTraceAsString(),
+                'endDate' => $endDate,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -565,7 +563,7 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error chunking records: {$e->getMessage()}", $this->logContext([
                 'amount' => $amount,
-                'trace'  => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -584,8 +582,8 @@ abstract class BaseRepository implements BaseRepositoryContract
         } catch (Exception $e) {
             Log::error("Error in firstOrCreate: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'data'     => $data,
-                'trace'    => $e->getTraceAsString(),
+                'data' => $data,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;

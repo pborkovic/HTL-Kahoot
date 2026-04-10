@@ -12,16 +12,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Quiz extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids;
+    use SoftDeletes;
 
     protected $guarded = [];
 
     protected function casts(): array
     {
         return [
-            'speed_scoring'        => 'boolean',
-            'randomize_questions'  => 'boolean',
-            'is_published'         => 'boolean',
+            'speed_scoring' => 'boolean',
+            'randomize_questions' => 'boolean',
+            'is_published' => 'boolean',
         ];
     }
 

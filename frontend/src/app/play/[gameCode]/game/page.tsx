@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Send } from "lucide-react";
+import { Send, Dice5 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { useSessionChannel } from "@/hooks/use-session-channel";
 import { CountdownTimer } from "@/components/play/game/countdown-timer";
@@ -19,6 +19,7 @@ export default function StudentGame() {
     const [gameState, setGameState] = useState<GameState>("loading");
     const [question, setQuestion] = useState<CurrentQuestion | null>(null);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [freeTextAnswer, setFreeTextAnswer] = useState("");
     const [result, setResult] = useState<AnswerResult | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const lastQuestionIdx = useRef<number | null>(null);
@@ -32,6 +33,7 @@ export default function StudentGame() {
             );
             setQuestion(res.data);
             setSelectedIds([]);
+            setFreeTextAnswer("");
             setResult(null);
             setGameState("answering");
             lastQuestionIdx.current = res.data.question_index;
@@ -61,31 +63,42 @@ export default function StudentGame() {
     });
 
     const isMultiSelect = question?.question_type === "multiple_choice";
+    const isFreeText = question?.question_type === "free_text";
 
     const submitAnswer = useCallback(
-        async (answerIds: string[]) => {
-            if (submitting || gameState !== "answering" || answerIds.length === 0) return;
+        async (answerIds: string[], answerText?: string, isGamble = false) => {
+            if (submitting || gameState !== "answering") return;
+            if (!isFreeText && answerIds.length === 0) return;
+            if (isFreeText && !answerText?.trim()) return;
 
             setSubmitting(true);
 
             try {
+                const payload: Record<string, unknown> = { answer: answerIds };
+                if (isFreeText && answerText) {
+                    payload.answer_text = answerText;
+                }
+                if (isGamble) {
+                    payload.is_gamble = true;
+                }
+
                 const res = await apiFetch<{ data: AnswerResult }>(
                     `/v1/sessions/${gameCode}/answer`,
                     {
                         method: "POST",
-                        body: JSON.stringify({ answer: answerIds }),
+                        body: JSON.stringify(payload),
                     },
                 );
                 setResult(res.data);
                 setGameState("submitted");
             } catch {
                 setGameState("submitted");
-                setResult({ is_correct: false, score_awarded: 0, time_taken_ms: 0, answer_streak: 0 });
+                setResult({ is_correct: null, score_awarded: 0, time_taken_ms: 0, answer_streak: 0 });
             } finally {
                 setSubmitting(false);
             }
         },
-        [gameCode, submitting, gameState],
+        [gameCode, submitting, gameState, isFreeText],
     );
 
     const handleSelect = useCallback(
@@ -110,11 +123,34 @@ export default function StudentGame() {
         submitAnswer(selectedIds);
     }, [submitAnswer, selectedIds]);
 
+    const handleFreeTextSubmit = useCallback(() => {
+        submitAnswer([], freeTextAnswer);
+    }, [submitAnswer, freeTextAnswer]);
+
     const handleExpired = useCallback(() => {
         if (gameState === "answering") {
             setGameState("waiting");
         }
     }, [gameState]);
+
+    const handleGamble = useCallback(() => {
+        if (!question || submitting || gameState !== "answering") return;
+
+        const options = question.answer_options;
+        if (options.length === 0) return;
+
+        if (isMultiSelect) {
+            const count = Math.floor(Math.random() * options.length) + 1;
+            const shuffled = [...options].sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, count).map((o) => o.id);
+            setSelectedIds(picked);
+            submitAnswer(picked, undefined, true);
+        } else {
+            const picked = options[Math.floor(Math.random() * options.length)];
+            setSelectedIds([picked.id]);
+            submitAnswer([picked.id], undefined, true);
+        }
+    }, [question, submitting, gameState, isMultiSelect, submitAnswer]);
 
     useEffect(() => {
         const html = document.documentElement;
@@ -185,25 +221,74 @@ export default function StudentGame() {
                         </div>
 
                         {/* Answers */}
-                        <AnswerGrid
-                            options={question.answer_options}
-                            questionType={question.question_type}
-                            selectedIds={selectedIds}
-                            disabled={submitting}
-                            onSelect={handleSelect}
-                        />
+                        {isFreeText ? (
+                            <div className="flex flex-col gap-3">
+                                <p className="text-xs text-white/40 text-center uppercase tracking-wider">
+                                    Antwort eingeben
+                                </p>
+                                <textarea
+                                    value={freeTextAnswer}
+                                    onChange={(e) => setFreeTextAnswer(e.target.value)}
+                                    disabled={submitting}
+                                    placeholder="Deine Antwort..."
+                                    rows={3}
+                                    maxLength={2000}
+                                    className="w-full rounded-xl bg-white/10 border-2 border-white/20 px-5 py-4 text-white text-base placeholder:text-white/30 focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 resize-none transition-all disabled:opacity-60"
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleFreeTextSubmit();
+                                        }
+                                    }}
+                                />
+                                {freeTextAnswer.trim().length > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={handleFreeTextSubmit}
+                                        disabled={submitting}
+                                        className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                                    >
+                                        <Send className="size-4" />
+                                        Antwort absenden
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <AnswerGrid
+                                    options={question.answer_options}
+                                    questionType={question.question_type}
+                                    selectedIds={selectedIds}
+                                    disabled={submitting}
+                                    onSelect={handleSelect}
+                                />
 
-                        {/* Confirm button for multi-select */}
-                        {isMultiSelect && selectedIds.length > 0 && (
-                            <button
-                                type="button"
-                                onClick={handleConfirm}
-                                disabled={submitting}
-                                className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
-                            >
-                                <Send className="size-4" />
-                                Antwort absenden ({selectedIds.length} ausgewählt)
-                            </button>
+                                <div className="flex gap-3">
+                                    {/* Gamble button */}
+                                    <button
+                                        type="button"
+                                        onClick={handleGamble}
+                                        disabled={submitting}
+                                        className="flex-1 h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-amber-500/90 text-white hover:bg-amber-500 border-2 border-amber-400/30 transition-all disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+                                    >
+                                        <Dice5 className="size-4" />
+                                        Gamble!
+                                    </button>
+
+                                    {/* Confirm button for multi-select */}
+                                    {isMultiSelect && selectedIds.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleConfirm}
+                                            disabled={submitting}
+                                            className="flex-1 h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-white text-[#2D3436] hover:bg-white/90 transition-colors disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
+                                        >
+                                            <Send className="size-4" />
+                                            Absenden ({selectedIds.length})
+                                        </button>
+                                    )}
+                                </div>
+                            </>
                         )}
                     </>
                 )}

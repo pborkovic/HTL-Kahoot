@@ -51,7 +51,7 @@ class RoleAndPermissionSeeder extends Seeder
         foreach ($definitions as $def) {
             $map[$def['key']] = Permission::firstOrCreate(['key' => $def['key']], [
                 'description' => $def['description'],
-                'group'       => $def['group'],
+                'group' => $def['group'],
             ]);
         }
 
@@ -71,7 +71,7 @@ class RoleAndPermissionSeeder extends Seeder
         foreach ($definitions as $def) {
             $map[$def['name']] = Role::firstOrCreate(['name' => $def['name']], [
                 'description' => $def['description'],
-                'is_system'   => true,
+                'is_system' => true,
             ]);
         }
 
@@ -100,15 +100,15 @@ class RoleAndPermissionSeeder extends Seeder
 
         $superadminKeys = array_keys($permissions);
 
-        $this->syncRole($roles['student'],    $studentKeys,    $permissions);
-        $this->syncRole($roles['teacher'],    $teacherKeys,    $permissions);
-        $this->syncRole($roles['admin'],      $adminKeys,      $permissions);
+        $this->syncRole($roles['student'], $studentKeys, $permissions);
+        $this->syncRole($roles['teacher'], $teacherKeys, $permissions);
+        $this->syncRole($roles['admin'], $adminKeys, $permissions);
         $this->syncRole($roles['superadmin'], $superadminKeys, $permissions);
     }
 
     private function syncRole(Role $role, array $keys, array $permissions): void
     {
-        $ids = array_map(fn(string $key) => $permissions[$key]->id, $keys);
+        $ids = array_map(fn (string $key) => $permissions[$key]->id, $keys);
         $role->permissions()->sync($ids);
     }
 }

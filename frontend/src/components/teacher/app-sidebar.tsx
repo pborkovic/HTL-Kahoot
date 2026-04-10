@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -10,6 +11,7 @@ import {
     MonitorPlay,
     Users,
     LogOut,
+    Settings,
     ChevronsUpDown,
     ChevronsLeft,
     ChevronsRight,
@@ -18,6 +20,7 @@ import {
     Moon,
     Contrast,
     Eye,
+    MessageSquare,
 } from "lucide-react";
 import { useTheme, THEMES, type Theme } from "@/components/ThemeProvider";
 import { useAuth } from "@/context/AuthContext";
@@ -40,6 +43,40 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+function UserAvatar({
+    avatarUrl,
+    initials,
+    displayName,
+}: {
+    avatarUrl: string | null | undefined;
+    initials: string;
+    displayName: string;
+}): ReactNode {
+    const [hasError, setHasError] = useState<boolean>(false);
+
+    if (avatarUrl && !hasError) {
+        return (
+            <div className="size-8 rounded-xl overflow-hidden border border-primary/20 shrink-0 bg-primary/10">
+                <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    className="size-full object-cover"
+                    onError={() => setHasError(true)}
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className="size-8 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-xs font-semibold text-primary shrink-0"
+            aria-label={displayName}
+        >
+            {initials}
+        </div>
+    );
+}
 
 function ThemeIcon({ theme }: { theme: Theme }): ReactNode {
     if (theme === "dark")                    return <Moon className="size-4" />;
@@ -68,6 +105,14 @@ const navItems = [
     },
 ];
 
+const studentItems = [
+    {
+        title: "Mein Dashboard",
+        href: "/student/dashboard",
+        icon: LayoutDashboard,
+    },
+];
+
 const adminItems = [
     {
         title: "Admin Dashboard",
@@ -79,7 +124,18 @@ const adminItems = [
         href: "/admin/users",
         icon: Users,
     },
+    {
+        title: "Feedback",
+        href: "/admin/feedback",
+        icon: MessageSquare,
+    },
 ];
+
+const feedbackItem = {
+    title: "Feedback",
+    href: "/feedback",
+    icon: MessageSquare,
+};
 
 export function AppSidebar(): ReactNode {
     const pathname = usePathname();
@@ -89,6 +145,8 @@ export function AppSidebar(): ReactNode {
 
     const userRoles = user?.roles?.map(r => r.name) ?? [];
     const isAdmin = userRoles.some(r => r === "admin" || r === "superadmin");
+    const isTeacher = userRoles.some(r => r === "teacher");
+    const isStudent = userRoles.some(r => r === "student");
     const primaryRole = userRoles[0] ?? "Benutzer";
 
     const displayName = user?.username ?? user?.email ?? "Unbekannt";
@@ -104,13 +162,13 @@ export function AppSidebar(): ReactNode {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/teacher/dashboard">
+                            <Link href={isTeacher ? "/teacher/dashboard" : isStudent ? "/student/dashboard" : "/home"}>
                                 <div className="size-8 rounded-xl bg-primary/15 backdrop-blur-sm border border-primary/20 flex items-center justify-center shrink-0">
                                     <MonitorPlay className="size-4 text-primary" />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold text-sm">gamquiz</span>
-                                    <span className="text-[11px] text-muted-foreground">Lehrer</span>
+                                    <span className="text-[11px] text-muted-foreground capitalize">{primaryRole}</span>
                                 </div>
                             </Link>
                         </SidebarMenuButton>
@@ -119,6 +177,47 @@ export function AppSidebar(): ReactNode {
             </SidebarHeader>
 
             <SidebarContent>
+                {isStudent && (
+                    <SidebarGroup>
+                        <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">
+                            Schüler
+                        </SidebarGroupLabel>
+                        <SidebarMenu>
+                            {studentItems.map(item => (
+                                <SidebarMenuItem key={item.href}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname === item.href}
+                                        tooltip={item.title}
+                                        className="cursor-pointer"
+                                    >
+                                        <Link href={item.href}>
+                                            <item.icon className="size-4" />
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                            {!isAdmin && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname === feedbackItem.href}
+                                        tooltip={feedbackItem.title}
+                                        className="cursor-pointer"
+                                    >
+                                        <Link href={feedbackItem.href}>
+                                            <feedbackItem.icon className="size-4" />
+                                            <span>{feedbackItem.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
+                        </SidebarMenu>
+                    </SidebarGroup>
+                )}
+
+                {isTeacher && (
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">
                         Navigation
@@ -139,8 +238,24 @@ export function AppSidebar(): ReactNode {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         ))}
+                        {!isAdmin && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={pathname === feedbackItem.href}
+                                    tooltip={feedbackItem.title}
+                                    className="cursor-pointer"
+                                >
+                                    <Link href={feedbackItem.href}>
+                                        <feedbackItem.icon className="size-4" />
+                                        <span>{feedbackItem.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
                     </SidebarMenu>
                 </SidebarGroup>
+                )}
 
                 {isAdmin && (
                     <SidebarGroup>
@@ -221,9 +336,11 @@ export function AppSidebar(): ReactNode {
                                     size="lg"
                                     className="data-[state=open]:bg-primary/10 cursor-pointer"
                                 >
-                                    <div className="size-8 rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-xs font-semibold text-primary shrink-0">
-                                        {initials}
-                                    </div>
+                                    <UserAvatar
+                                        avatarUrl={user?.avatar_url}
+                                        initials={initials}
+                                        displayName={displayName}
+                                    />
                                     <div className="flex flex-col gap-0.5 leading-none min-w-0">
                                         <span className="text-sm font-medium truncate">{displayName}</span>
                                         <span className="text-[11px] text-muted-foreground capitalize">{primaryRole}</span>
@@ -236,6 +353,12 @@ export function AppSidebar(): ReactNode {
                                 align="start"
                                 className="w-[--radix-dropdown-menu-trigger-width] backdrop-blur-xl bg-popover/90 dark:bg-popover/80 border-border/30 rounded-xl shadow-xl shadow-primary/5"
                             >
+                                <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                                    <Link href="/settings">
+                                        <Settings className="size-4 mr-2" />
+                                        Einstellungen
+                                    </Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => logout()}
                                     className="cursor-pointer rounded-lg text-red-500 hover:text-red-600 focus:text-red-600"

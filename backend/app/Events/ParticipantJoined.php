@@ -27,9 +27,9 @@ class ParticipantJoined extends BaseSessionEvent
     {
         return [
             'participant_id' => $this->participantId,
-            'nickname'       => $this->nickname,
-            'is_connected'   => true,
-            'joined_at'      => $this->joinedAt,
+            'nickname' => $this->nickname,
+            'is_connected' => true,
+            'joined_at' => $this->joinedAt,
         ];
     }
 }

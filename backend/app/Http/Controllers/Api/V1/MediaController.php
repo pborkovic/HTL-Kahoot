@@ -7,8 +7,8 @@ use App\Http\Requests\Api\V1\UploadQuestionMediaRequest;
 use App\Http\Resources\Api\V1\QuestionMediaResource;
 use App\Models\Question;
 use App\Models\QuestionMedia;
+use App\Services\Contracts\MediaServiceContract;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use OpenApi\Attributes\Delete;
 use OpenApi\Attributes\JsonContent;
@@ -22,6 +22,11 @@ use OpenApi\Attributes\Schema;
 
 class MediaController extends Controller
 {
+    public function __construct(
+        private readonly MediaServiceContract $mediaService,
+    ) {
+    }
+
     #[Post(
         path: '/api/v1/questions/{questionId}/media',
         description: 'Uploads an image or video file and attaches it to the question.',
@@ -60,18 +65,18 @@ class MediaController extends Controller
 
         $file = $request->file(key: 'file');
         $extension = $file->getClientOriginalExtension();
-        $filename = Str::uuid() . '.' . $extension;
+        $filename = Str::uuid().'.'.$extension;
         $path = "questions/{$question->id}/{$filename}";
 
-        Storage::disk(name: 's3')->put(
+        $this->mediaService->storeFileContents(
             path: $path,
-            contents: $file->getContent()
+            contents: $file->getContent(),
         );
 
         $media = $question->media()->create(attributes: [
-            'type'       => $request->validated(key: 'type'),
-            'url'        => $path,
-            'alt_text'   => $request->validated(key: 'alt_text'),
+            'type' => $request->validated(key: 'type'),
+            'url' => $path,
+            'alt_text' => $request->validated(key: 'alt_text'),
             'sort_order' => $request->validated(key: 'sort_order', default: 0),
             'created_at' => now(),
         ]);
@@ -101,7 +106,7 @@ class MediaController extends Controller
         $this->authorize(ability: 'update', arguments: $question);
 
         $rawUrl = $questionMedia->getRawOriginal(key: 'url');
-        Storage::disk(name: 's3')->delete(paths: $rawUrl);
+        $this->mediaService->delete(path: $rawUrl);
 
         $questionMedia->delete();
 

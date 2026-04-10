@@ -29,7 +29,7 @@ class QuestionMedia extends Model
                 return $value;
             }
 
-            return '/media/' . $value;
+            return '/media/'.$value;
         });
     }
 

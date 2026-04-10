@@ -1,3 +1,6 @@
+include:
+  - docker-compose.sonarqube.yml
+
 services:
   traefik:
     image: traefik:v3.3
@@ -100,6 +103,8 @@ services:
       REVERB_HOST: reverb
       REVERB_PORT: "8080"
       REVERB_SCHEME: http
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
       FILESYSTEM_DISK: s3
       AWS_ACCESS_KEY_ID: ${SEAWEEDFS_ACCESS_KEY:?SEAWEEDFS_ACCESS_KEY is required}
       AWS_SECRET_ACCESS_KEY: ${SEAWEEDFS_SECRET_KEY:?SEAWEEDFS_SECRET_KEY is required}
@@ -119,6 +124,8 @@ services:
         condition: service_healthy
       seaweedfs-filer:
         condition: service_started
+      ollama:
+        condition: service_healthy
     networks:
       - gamquiz
 
@@ -222,6 +229,74 @@ services:
     networks:
       - gamquiz
 
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gamquiz-worker
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    command: php artisan queue:work redis --sleep=3 --tries=2 --timeout=120 --queue=default
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY:?APP_KEY is required}
+      APP_URL: https://${APP_DOMAIN:?APP_DOMAIN is required}
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_DATABASE:-gamquiz}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: "6379"
+      QUEUE_CONNECTION: redis
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      LOG_CHANNEL: stderr
+      LOG_LEVEL: error
+    volumes:
+      - backend_storage:/var/www/backend/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    networks:
+      - gamquiz
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gamquiz-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - gamquiz
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: gamquiz-ollama-pull
+    restart: "no"
+    entrypoint: ["sh", "-c", "sleep 5 && ollama pull ${OLLAMA_MODEL:-llama3.2:3b}"]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    depends_on:
+      ollama:
+        condition: service_healthy
+    networks:
+      - gamquiz
+
   nginx:
     image: nginx:1.27-alpine
     container_name: gamquiz-nginx
@@ -258,3 +333,4 @@ volumes:
   seaweedfs_master:
   seaweedfs_volume:
   seaweedfs_filer:
+  ollama_data:

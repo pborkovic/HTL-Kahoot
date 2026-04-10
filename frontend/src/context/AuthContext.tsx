@@ -18,6 +18,21 @@ import {
   removeAuthCookie,
 } from "@/lib/api";
 import type { AuthResponse, User } from "@/types/auth";
+import type { Theme, FontSize } from "@/components/ThemeProvider";
+
+function applyUserPreferences(user: User): void {
+  if (!user.preferences) return;
+
+  if (user.preferences.theme) {
+    localStorage.setItem("theme", user.preferences.theme);
+    window.dispatchEvent(new CustomEvent("preferences-changed", { detail: user.preferences }));
+  }
+
+  if (user.preferences.font_size) {
+    localStorage.setItem("font_size", user.preferences.font_size);
+    window.dispatchEvent(new CustomEvent("preferences-changed", { detail: user.preferences }));
+  }
+}
 
 interface UserResponse {
   user: User;
@@ -65,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
         if (!cancelled) {
           const roles: string[] = data.user.roles?.map((r) => r.name) ?? [];
           await setAuthCookie(token, roles);
+          applyUserPreferences(data.user);
           setUser(data.user);
         }
       })
@@ -97,6 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
     setStoredToken(data.token);
     const roles: string[] = data.user.roles?.map((r) => r.name) ?? [];
     await setAuthCookie(data.token, roles);
+    applyUserPreferences(data.user);
     setUser(data.user);
 
     return data.user;
@@ -111,6 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
     setStoredToken(data.token);
     const roles: string[] = data.user.roles?.map((r) => r.name) ?? [];
     await setAuthCookie(data.token, roles);
+    applyUserPreferences(data.user);
     setUser(data.user);
 
     return data.user;

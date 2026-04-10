@@ -25,13 +25,18 @@ class UserService extends BaseService implements UserServiceContract
         $this->repository = $repository;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
     public function getModelForPolicy(): string
     {
         return User::class;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -47,7 +52,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -57,7 +62,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -70,7 +75,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -78,39 +83,41 @@ class UserService extends BaseService implements UserServiceContract
     {
         $created = 0;
         $skipped = 0;
-        $errors  = [];
+        $errors = [];
 
         $this->repository->wrapInTransaction(callback: function () use ($users, $defaultProvider, $assignedBy, &$created, &$skipped, &$errors) {
             foreach ($users as $index => $row) {
                 $validator = Validator::make(data: $row, rules: [
-                    'email'        => 'required|email',
+                    'email' => 'required|email',
                     'display_name' => 'nullable|string|max:255',
-                    'class_name'   => 'nullable|string|max:20',
-                    'role'         => 'required|string|exists:roles,name',
+                    'class_name' => 'nullable|string|max:20',
+                    'role' => 'required|string|exists:roles,name',
                 ]);
 
                 if ($validator->fails()) {
                     $errors[] = [
-                        'row'    => $index + 1,
-                        'email'  => $row['email'] ?? null,
+                        'row' => $index + 1,
+                        'email' => $row['email'] ?? null,
                         'errors' => $validator->errors()->all(),
                     ];
+
                     continue;
                 }
 
                 if ($this->repository->emailExists(email: $row['email'])) {
                     $skipped++;
+
                     continue;
                 }
 
                 $role = $this->roleService->findWhereFirst(criteria: ['name' => $row['role']]);
 
                 $user = $this->repository->createUser(data: [
-                    'email'         => $row['email'],
-                    'display_name'  => $row['display_name'] ?? null,
-                    'class_name'    => $row['class_name'] ?? null,
+                    'email' => $row['email'],
+                    'display_name' => $row['display_name'] ?? null,
+                    'class_name' => $row['class_name'] ?? null,
                     'auth_provider' => $row['auth_provider'] ?? $defaultProvider,
-                    'is_active'     => true,
+                    'is_active' => true,
                 ]);
 
                 $this->repository->attachRole(
@@ -126,12 +133,12 @@ class UserService extends BaseService implements UserServiceContract
         return [
             'created' => $created,
             'skipped' => $skipped,
-            'errors' => $errors
+            'errors' => $errors,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -140,13 +147,13 @@ class UserService extends BaseService implements UserServiceContract
         $role = $this->roleService->findWhereFirst(criteria: ['name' => $data['role']]);
 
         $userData = [
-            'email'         => $data['email'],
-            'username'      => $data['username'] ?? null,
-            'display_name'  => $data['display_name'] ?? null,
+            'email' => $data['email'],
+            'username' => $data['username'] ?? null,
+            'display_name' => $data['display_name'] ?? null,
             'password_hash' => isset($data['password']) ? password_hash(password: $data['password'], algo: PASSWORD_ARGON2ID) : null,
             'auth_provider' => $data['auth_provider'],
-            'class_name'    => $data['class_name'] ?? null,
-            'is_active'     => $data['is_active'] ?? true,
+            'class_name' => $data['class_name'] ?? null,
+            'is_active' => $data['is_active'] ?? true,
         ];
 
         return $this->repository->createWithRole(
@@ -157,7 +164,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -167,7 +174,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -193,7 +200,7 @@ class UserService extends BaseService implements UserServiceContract
                 );
             }
 
-            if (isset($data['is_active']) && !$data['is_active']) {
+            if (isset($data['is_active']) && ! $data['is_active']) {
                 $this->repository->deleteTokens(user: $user);
             }
         } else {
@@ -211,7 +218,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -230,7 +237,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -240,7 +247,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -249,7 +256,7 @@ class UserService extends BaseService implements UserServiceContract
         if ($user->auth_provider !== 'local') {
             throw new RuntimeException(message: 'Password change not available for this auth provider.');
         }
-        if ($isSelf && !password_verify(password: $data['current_password'], hash: $user->password_hash)) {
+        if ($isSelf && ! password_verify(password: $data['current_password'], hash: $user->password_hash)) {
             throw new RuntimeException(message: 'Current password is incorrect.');
         }
 
@@ -262,7 +269,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -274,7 +281,7 @@ class UserService extends BaseService implements UserServiceContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
@@ -285,6 +292,7 @@ class UserService extends BaseService implements UserServiceContract
         $totalCorrect = 0;
         $totalWrong = 0;
         $totalUnanswered = 0;
+        $totalScore = 0;
 
         foreach ($participants as $participant) {
             $questionCount = $participant->session->sessionQuestions->count();
@@ -293,6 +301,7 @@ class UserService extends BaseService implements UserServiceContract
             $totalCorrect += $responses->where(key: 'is_correct', operator: '=', value: true)->count();
             $totalWrong += $responses->where(key: 'is_correct', operator: '=', value: false)->count();
             $totalUnanswered += $questionCount - $responses->count();
+            $totalScore += (int) $participant->total_score;
         }
 
         $totalAnswered = $totalCorrect + $totalWrong;
@@ -301,38 +310,76 @@ class UserService extends BaseService implements UserServiceContract
             : 0;
 
         return [
-            'total_correct'      => $totalCorrect,
-            'total_wrong'        => $totalWrong,
-            'total_unanswered'   => $totalUnanswered,
+            'total_correct' => $totalCorrect,
+            'total_wrong' => $totalWrong,
+            'total_unanswered' => $totalUnanswered,
             'correct_percentage' => $correctPercentage,
+            'total_score' => $totalScore,
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @author Philipp Borkovic
      */
-    public function getQuizHistory(string $userId): array
+    public function getQuizHistory(string $userId, int $page = 1, int $perPage = 10): array
     {
-        $participants = $this->repository->getFinishedParticipationsWithResponses(userId: $userId);
+        $paginator = $this->repository->paginateFinishedParticipationsWithResponses(
+            userId: $userId,
+            page: $page,
+            perPage: $perPage,
+        );
 
-        return $participants->map(callback: function (SessionParticipant $participant) {
+        $items = $paginator->getCollection()->map(callback: function (SessionParticipant $participant) {
             $session = $participant->session;
             $questionCount = $session->sessionQuestions->count();
             $responses = $participant->responses;
 
             return [
-                'session_id'      => $session->id,
-                'quiz_id'         => $session->quiz->id,
-                'quiz_title'      => $session->quiz->title,
-                'total_questions'  => $questionCount,
-                'correct_answers'  => $responses->where(key: 'is_correct', operator: '=', value: true)->count(),
-                'wrong_answers'    => $responses->where(key: 'is_correct', operator: '=', value: false)->count(),
-                'unanswered'       => $questionCount - $responses->count(),
-                'total_score'      => $participant->total_score,
-                'finished_at'      => $session->finished_at,
+                'session_id' => $session->id,
+                'quiz_id' => $session->quiz->id,
+                'quiz_title' => $session->quiz->title,
+                'total_questions' => $questionCount,
+                'correct_answers' => $responses->where(key: 'is_correct', operator: '=', value: true)->count(),
+                'wrong_answers' => $responses->where(key: 'is_correct', operator: '=', value: false)->count(),
+                'unanswered' => $questionCount - $responses->count(),
+                'total_score' => $participant->total_score,
+                'finished_at' => $session->finished_at,
             ];
         })->all();
+
+        return [
+            'data' => $items,
+            'meta' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function getPreferences(User $user): array
+    {
+        return $this->repository->getPreferences(user: $user);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function updatePreferences(User $user, array $data): array
+    {
+        return $this->repository->updatePreferences(
+            user: $user,
+            data: $data
+        );
     }
 }

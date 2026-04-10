@@ -24,8 +24,7 @@ abstract class BaseService implements BaseServiceContract
     /**
      * Build a logging context array with the service class included.
      *
-     * @param array<string, mixed> $extra Additional context entries.
-     *
+     * @param  array<string, mixed>  $extra  Additional context entries.
      * @return array<string, mixed> The merged context.
      *
      * @author Philipp Borkovic
@@ -64,7 +63,7 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->find($id);
         } catch (Exception $e) {
             Log::error("Service error finding record by ID: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
+                'id' => $id,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -89,7 +88,7 @@ abstract class BaseService implements BaseServiceContract
             throw $e;
         } catch (Exception $e) {
             Log::error("Service error finding record by ID: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
+                'id' => $id,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -126,7 +125,7 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->create($data);
         } catch (Exception $e) {
             Log::error("Service error creating record: {$e->getMessage()}", $this->logContext([
-                'data'  => $data,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -145,8 +144,8 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->update($id, $data);
         } catch (Exception $e) {
             Log::error("Service error updating record: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
-                'data'  => $data,
+                'id' => $id,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -171,7 +170,7 @@ abstract class BaseService implements BaseServiceContract
             return false;
         } catch (Exception $e) {
             Log::error("Service error deleting record: {$e->getMessage()}", $this->logContext([
-                'id'    => $id,
+                'id' => $id,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -191,7 +190,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error finding records by criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -210,7 +209,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error finding first record by criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -272,7 +271,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error getting total records with criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -290,7 +289,7 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->findMany($ids);
         } catch (Exception $e) {
             Log::error("Service error finding many records: {$e->getMessage()}", $this->logContext([
-                'ids'   => $ids,
+                'ids' => $ids,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -310,7 +309,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error paginating records with criteria: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -328,7 +327,7 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->createMany($data);
         } catch (Exception $e) {
             Log::error("Service error creating many records: {$e->getMessage()}", $this->logContext([
-                'data'  => $data,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -348,8 +347,8 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error updating records where: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'data'     => $data,
-                'trace'    => $e->getTraceAsString(),
+                'data' => $data,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -368,7 +367,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error deleting records where: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'trace'    => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -387,7 +386,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error selecting columns: {$e->getMessage()}", $this->logContext([
                 'columns' => $columns,
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -406,7 +405,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error loading relations: {$e->getMessage()}", $this->logContext([
                 'relations' => $relations,
-                'trace'     => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -444,9 +443,9 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->orderBy($column, $direction);
         } catch (Exception $e) {
             Log::error("Service error ordering records: {$e->getMessage()}", $this->logContext([
-                'column'    => $column,
+                'column' => $column,
                 'direction' => $direction,
-                'trace'     => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -464,10 +463,10 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->whereBetweenDates($column, $startDate, $endDate);
         } catch (Exception $e) {
             Log::error("Service error filtering dates: {$e->getMessage()}", $this->logContext([
-                'column'    => $column,
+                'column' => $column,
                 'startDate' => $startDate,
-                'endDate'   => $endDate,
-                'trace'     => $e->getTraceAsString(),
+                'endDate' => $endDate,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -486,7 +485,7 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error chunking records: {$e->getMessage()}", $this->logContext([
                 'amount' => $amount,
-                'trace'  => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -504,7 +503,7 @@ abstract class BaseService implements BaseServiceContract
             return $this->repository->insertMany($data);
         } catch (Exception $e) {
             Log::error("Service error inserting many records: {$e->getMessage()}", $this->logContext([
-                'data'  => $data,
+                'data' => $data,
                 'trace' => $e->getTraceAsString(),
             ]));
 
@@ -524,8 +523,8 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error in firstOrCreate: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'data'     => $data,
-                'trace'    => $e->getTraceAsString(),
+                'data' => $data,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -552,8 +551,8 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error in updateOrCreate: {$e->getMessage()}", $this->logContext([
                 'criteria' => $criteria,
-                'data'     => $data,
-                'trace'    => $e->getTraceAsString(),
+                'data' => $data,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             throw $e;
@@ -590,8 +589,8 @@ abstract class BaseService implements BaseServiceContract
         } catch (Exception $e) {
             Log::error("Service error in authorize: {$e->getMessage()}", $this->logContext([
                 'ability' => $ability,
-                'model'   => $model,
-                'trace'   => $e->getTraceAsString(),
+                'model' => $model,
+                'trace' => $e->getTraceAsString(),
             ]));
 
             return false;

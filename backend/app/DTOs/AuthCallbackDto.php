@@ -10,20 +10,19 @@ use App\Http\Requests\Api\V1\AuthCallbackRequest;
 readonly class AuthCallbackDto
 {
     /**
-     * @param string $code The authorization code received from Azure AD.
+     * @param  string  $code  The authorization code received from Azure AD.
      *
      * @author Philipp Borkovic
      */
     public function __construct(
         public string $code,
-    ) {}
+    ) {
+    }
 
     /**
      * Create a new instance from a validated auth callback request.
      *
-     * @param AuthCallbackRequest $request The validated request.
-     *
-     * @return self
+     * @param  AuthCallbackRequest  $request  The validated request.
      *
      * @author Philipp Borkovic
      */

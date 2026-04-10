@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Role;
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
 
 // ─── GET /api/v1/users ──────────────────────────────────────────────────────
 
@@ -32,7 +30,7 @@ it('allows teachers to list users', function () {
 });
 
 it('filters users by role', function () {
-    $admin   = createUserWithRole('admin');
+    $admin = createUserWithRole('admin');
     $student = createUserWithRole('student');
     createUserWithRole('teacher');
 
@@ -117,7 +115,7 @@ it('filters by created_after', function () {
     User::factory()->create(['created_at' => now()->subDays(10)]);
     User::factory()->create(['created_at' => now()->subDays(1)]);
 
-    $response = $this->actingAs($admin)->getJson('/api/v1/users?created_after=' . now()->subDays(5)->toDateString());
+    $response = $this->actingAs($admin)->getJson('/api/v1/users?created_after='.now()->subDays(5)->toDateString());
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(1);
@@ -148,7 +146,7 @@ it('paginates user list', function () {
 
 it('includes soft-deleted users with with_trashed for admin', function () {
     $admin = createUserWithRole('admin');
-    $user  = User::factory()->create();
+    $user = User::factory()->create();
     $user->delete();
 
     $response = $this->actingAs($admin)->getJson('/api/v1/users?with_trashed=true');
@@ -171,7 +169,7 @@ it('shows own profile', function () {
 
 it('allows admin to view any user', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $response = $this->actingAs($admin)->getJson("/api/v1/users/{$user->id}");
 
@@ -180,14 +178,14 @@ it('allows admin to view any user', function () {
 
 it('denies a student from viewing another user', function () {
     $student = createUserWithRole('student');
-    $other   = createUserWithRole('student');
+    $other = createUserWithRole('student');
 
     $this->actingAs($student)->getJson("/api/v1/users/{$other->id}")->assertForbidden();
 });
 
 it('does not expose password_hash in response', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $response = $this->actingAs($admin)->getJson("/api/v1/users/{$user->id}");
 
@@ -203,14 +201,14 @@ it('creates a user as admin', function () {
     createRole('student');
 
     $response = $this->actingAs($admin)->postJson('/api/v1/users', [
-        'email'         => 'new@schule.at',
-        'username'      => 'newuser',
-        'display_name'  => 'New User',
-        'password'      => 'SecureP@ss1',
+        'email' => 'new@schule.at',
+        'username' => 'newuser',
+        'display_name' => 'New User',
+        'password' => 'SecureP@ss1',
         'auth_provider' => 'local',
-        'class_name'    => '3b',
-        'role'          => 'student',
-        'is_active'     => true,
+        'class_name' => '3b',
+        'role' => 'student',
+        'is_active' => true,
     ]);
 
     $response->assertCreated()
@@ -226,10 +224,10 @@ it('validates email uniqueness on create', function () {
     createRole('student');
 
     $this->actingAs($admin)->postJson('/api/v1/users', [
-        'email'         => 'taken@schule.at',
+        'email' => 'taken@schule.at',
         'auth_provider' => 'local',
-        'password'      => 'SecureP@ss1',
-        'role'          => 'student',
+        'password' => 'SecureP@ss1',
+        'role' => 'student',
     ])->assertUnprocessable();
 });
 
@@ -238,9 +236,9 @@ it('requires password for local auth provider', function () {
     createRole('student');
 
     $this->actingAs($admin)->postJson('/api/v1/users', [
-        'email'         => 'nopw@schule.at',
+        'email' => 'nopw@schule.at',
         'auth_provider' => 'local',
-        'role'          => 'student',
+        'role' => 'student',
     ])->assertUnprocessable();
 });
 
@@ -254,11 +252,11 @@ it('denies creating users as student', function () {
 
 it('allows admin to update any user', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $response = $this->actingAs($admin)->putJson("/api/v1/users/{$user->id}", [
         'display_name' => 'Updated Name',
-        'class_name'   => '5AHIT',
+        'class_name' => '5AHIT',
     ]);
 
     $response->assertOk()
@@ -290,7 +288,7 @@ it('prevents a user from updating own class_name', function () {
 
 it('denies teacher from updating another user', function () {
     $teacher = createUserWithRole('teacher');
-    $user    = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $this->actingAs($teacher)->putJson("/api/v1/users/{$user->id}", [
         'display_name' => 'Hacked',
@@ -298,8 +296,8 @@ it('denies teacher from updating another user', function () {
 });
 
 it('admin can change user role', function () {
-    $admin   = createUserWithRole('admin');
-    $user    = createUserWithRole('student');
+    $admin = createUserWithRole('admin');
+    $user = createUserWithRole('student');
     createRole('teacher');
 
     $response = $this->actingAs($admin)->putJson("/api/v1/users/{$user->id}", [
@@ -313,7 +311,7 @@ it('admin can change user role', function () {
 
 it('invalidates tokens when deactivating user', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
     $user->createToken('test');
 
     expect($user->tokens()->count())->toBe(1);
@@ -327,7 +325,7 @@ it('invalidates tokens when deactivating user', function () {
 
 it('soft deletes a user as superadmin', function () {
     $superadmin = createUserWithRole('superadmin');
-    $user       = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $this->actingAs($superadmin)->deleteJson("/api/v1/users/{$user->id}")->assertNoContent();
 
@@ -336,7 +334,7 @@ it('soft deletes a user as superadmin', function () {
 
 it('prevents admin from deleting users', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $this->actingAs($admin)->deleteJson("/api/v1/users/{$user->id}")->assertForbidden();
 });
@@ -357,7 +355,7 @@ it('prevents deleting the last superadmin', function () {
 
 it('restores a soft-deleted user', function () {
     $superadmin = createUserWithRole('superadmin');
-    $user       = createUserWithRole('student');
+    $user = createUserWithRole('student');
     $user->delete();
 
     $response = $this->actingAs($superadmin)->postJson("/api/v1/users/{$user->id}/restore");
@@ -370,7 +368,7 @@ it('restores a soft-deleted user', function () {
 
 it('denies restore to non-superadmin', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
     $user->delete();
 
     $this->actingAs($admin)->postJson("/api/v1/users/{$user->id}/restore")->assertForbidden();
@@ -383,7 +381,7 @@ it('allows a user to change own password', function () {
 
     $response = $this->actingAs($user)->patchJson("/api/v1/users/{$user->id}/password", [
         'current_password' => 'password',
-        'new_password'     => 'NewSecure@99',
+        'new_password' => 'NewSecure@99',
     ]);
 
     $response->assertOk();
@@ -395,13 +393,13 @@ it('rejects wrong current password', function () {
 
     $this->actingAs($user)->patchJson("/api/v1/users/{$user->id}/password", [
         'current_password' => 'wrongpassword',
-        'new_password'     => 'NewSecure@99',
+        'new_password' => 'NewSecure@99',
     ])->assertUnprocessable();
 });
 
 it('allows admin to reset password without current_password', function () {
     $admin = createUserWithRole('admin');
-    $user  = createUserWithRole('student');
+    $user = createUserWithRole('student');
 
     $response = $this->actingAs($admin)->patchJson("/api/v1/users/{$user->id}/password", [
         'new_password' => 'AdminReset@1',
@@ -415,7 +413,7 @@ it('denies password change for non-local auth provider', function () {
 
     $this->actingAs($user)->patchJson("/api/v1/users/{$user->id}/password", [
         'current_password' => 'password',
-        'new_password'     => 'NewSecure@99',
+        'new_password' => 'NewSecure@99',
     ])->assertUnprocessable();
 });
 
@@ -427,7 +425,7 @@ it('invalidates tokens after password change', function () {
 
     $this->actingAs($user)->patchJson("/api/v1/users/{$user->id}/password", [
         'current_password' => 'password',
-        'new_password'     => 'NewSecure@99',
+        'new_password' => 'NewSecure@99',
     ]);
 
     expect($user->tokens()->count())->toBe(0);
@@ -512,7 +510,7 @@ it('bulk imports users', function () {
             ['email' => 'bob@schule.at', 'display_name' => 'Bob B', 'class_name' => '3b', 'role' => 'student'],
         ],
         'default_auth_provider' => 'entra_id',
-        'send_welcome_email'    => false,
+        'send_welcome_email' => false,
     ]);
 
     $response->assertOk()

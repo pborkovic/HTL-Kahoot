@@ -17,8 +17,8 @@ class Conveyance extends Model
     protected function casts(): array
     {
         return [
-            'result'       => 'array',
-            'created_at'   => 'datetime',
+            'result' => 'array',
+            'created_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
     }

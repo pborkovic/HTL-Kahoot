@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\MediaController;
+use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\Api\V1\PlatformFeedbackController;
 use App\Http\Controllers\Api\V1\QuestionController;
 use App\Http\Controllers\Api\V1\QuestionPoolController;
 use App\Http\Controllers\Api\V1\QuizController;
+use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Controllers\Api\V1\RoleController;
-use App\Http\Controllers\Api\V1\PermissionController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -50,9 +51,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('{gamePin}/close-question', [SessionController::class, 'closeQuestion']);
             Route::post('{gamePin}/next', [SessionController::class, 'next']);
             Route::post('{gamePin}/answer', [SessionController::class, 'answer']);
+            Route::patch('{gamePin}/responses/{responseId}/override', [SessionController::class, 'overrideAnswer']);
         });
 
         Route::prefix('users')->group(function () {
+            Route::get('me/preferences', [UserController::class, 'preferences']);
+            Route::put('me/preferences', [UserController::class, 'updatePreferences']);
             Route::get('classes', [UserController::class, 'classes']);
             Route::get('stats', [UserController::class, 'stats']);
             Route::post('bulk', [UserController::class, 'bulk']);
@@ -98,6 +102,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('{role}', [RoleController::class, 'destroy']);
             Route::post('{role}/permissions', [RoleController::class, 'addPermission']);
             Route::delete('{role}/permissions', [RoleController::class, 'removePermission']);
+        });
+
+        Route::prefix('feedback')->group(function () {
+            Route::get('/', [PlatformFeedbackController::class, 'index']);
+            Route::post('/', [PlatformFeedbackController::class, 'store']);
+            Route::get('me', [PlatformFeedbackController::class, 'mine']);
+            Route::patch('{feedback}/resolve', [PlatformFeedbackController::class, 'resolve']);
+            Route::patch('{feedback}/reopen', [PlatformFeedbackController::class, 'reopen']);
         });
 
         Route::prefix('permissions')->group(function () {

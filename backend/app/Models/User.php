@@ -12,17 +12,21 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasUuids, SoftDeletes;
+    use HasApiTokens;
+    use HasFactory;
+    use HasUuids;
+    use SoftDeletes;
 
     protected $guarded = [];
 
     protected function casts(): array
     {
         return [
-            'totp_enabled'  => 'boolean',
-            'is_active'     => 'boolean',
+            'totp_enabled' => 'boolean',
+            'is_active' => 'boolean',
             'last_login_at' => 'datetime',
-            'totp_secret'   => 'encrypted',
+            'totp_secret' => 'encrypted',
+            'preferences' => 'array',
         ];
     }
 

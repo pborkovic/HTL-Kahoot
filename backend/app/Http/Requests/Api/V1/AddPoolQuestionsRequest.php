@@ -14,7 +14,7 @@ class AddPoolQuestionsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'question_ids'   => ['required', 'array', 'min:1'],
+            'question_ids' => ['required', 'array', 'min:1'],
             'question_ids.*' => ['required', 'uuid', 'exists:questions,id'],
         ];
     }

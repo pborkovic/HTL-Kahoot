@@ -14,9 +14,8 @@ interface AuthServiceContract
      * Only users with auth_provider 'local' and an admin or superadmin
      * role are permitted to log in via this method.
      *
-     * @param string $email    The user's email address.
-     * @param string $password The plaintext password to verify.
-     *
+     * @param  string  $email  The user's email address.
+     * @param  string  $password  The plaintext password to verify.
      * @return User The authenticated user.
      *
      * @throws AuthenticationException If credentials are invalid or the user lacks admin privileges.
@@ -33,8 +32,7 @@ interface AuthServiceContract
     /**
      * Exchange an Azure AD authorization code for a Socialite user.
      *
-     * @param string $code The authorization code received from Azure AD.
-     *
+     * @param  string  $code  The authorization code received from Azure AD.
      * @return SocialiteUser The authenticated Socialite user.
      */
     public function handleCallback(string $code): SocialiteUser;
@@ -42,8 +40,11 @@ interface AuthServiceContract
     /**
      * Find an existing user by external ID or create one from Socialite data.
      *
-     * @param SocialiteUser $socialiteUser The Socialite user returned by the OAuth provider.
+     * Fetches group memberships (GroupMember.Read.All) and the profile photo
+     * (User.Read) from Microsoft Graph using the Socialite user's access token,
+     * then merges the enriched data into the local user record.
      *
+     * @param  SocialiteUser  $socialiteUser  The Socialite user returned by the OAuth provider.
      * @return User The found or newly created user.
      */
     public function findOrCreateUser(SocialiteUser $socialiteUser): User;
@@ -51,8 +52,7 @@ interface AuthServiceContract
     /**
      * Issue a new Sanctum API token for the given user.
      *
-     * @param User $user The user to create a token for.
-     *
+     * @param  User  $user  The user to create a token for.
      * @return string The plaintext token value.
      */
     public function createToken(User $user): string;
@@ -60,7 +60,7 @@ interface AuthServiceContract
     /**
      * Revoke the user's current access token.
      *
-     * @param User $user The authenticated user to log out.
+     * @param  User  $user  The authenticated user to log out.
      */
     public function logout(User $user): void;
 }

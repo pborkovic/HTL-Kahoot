@@ -2,10 +2,13 @@
 
 namespace App\Services\Base\Contracts;
 
+use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Base service interface.
@@ -37,10 +40,9 @@ interface BaseServiceContract
      * exceptions when the record is not found, making it suitable for cases where
      * the absence of a record is a valid state.
      *
-     * @param int|string $id The unique identifier (primary key) of the record to find.
-     *                       Accepts both integer and string IDs to support various
-     *                       primary key types (auto-increment, UUIDs, etc.)
-     *
+     * @param  int|string  $id  The unique identifier (primary key) of the record to find.
+     *                          Accepts both integer and string IDs to support various
+     *                          primary key types (auto-increment, UUIDs, etc.)
      * @return Model|null The found model instance with all attributes loaded,
      *                    or null if no record with the given ID exists
      *
@@ -57,10 +59,9 @@ interface BaseServiceContract
      * automatic 404 responses when a resource is not found. The exception
      * is automatically caught by Laravel and converted to a 404 HTTP response.
      *
-     * @param int|string $id The unique identifier (primary key) of the record to find.
-     *                       Accepts both integer and string IDs to support various
-     *                       primary key types
-     *
+     * @param  int|string  $id  The unique identifier (primary key) of the record to find.
+     *                          Accepts both integer and string IDs to support various
+     *                          primary key types
      * @return Model The found model instance with all attributes loaded
      *
      * @throws ModelNotFoundException If no record with the given ID exists in the database
@@ -94,19 +95,18 @@ interface BaseServiceContract
      * managed if enabled on the model. Model events (creating, created, etc.)
      * will be fired during the creation process.
      *
-     * @param array<string, mixed> $data Associative array of field names and values
-     *                                   to populate the new record. Keys must match
-     *                                   database column names and be allowed by the
-     *                                   model's fillable attributes.
-     *
+     * @param  array<string, mixed>  $data  Associative array of field names and values
+     *                                      to populate the new record. Keys must match
+     *                                      database column names and be allowed by the
+     *                                      model's fillable attributes.
      * @return Model The newly created and persisted model instance with all attributes
      *               including auto-generated fields (id, timestamps, default values, etc.)
      *
-     * @throws \Illuminate\Database\QueryException If database constraints are violated
-     *                                              (unique, foreign key, etc.)
-     * @throws \Illuminate\Validation\ValidationException If validation rules fail (if implemented)
-     * @throws \Illuminate\Database\Eloquent\MassAssignmentException If attempting to fill
-     *                                                                 non-fillable attributes
+     * @throws QueryException If database constraints are violated
+     *                        (unique, foreign key, etc.)
+     * @throws ValidationException If validation rules fail (if implemented)
+     * @throws MassAssignmentException If attempting to fill
+     *                                 non-fillable attributes
      *
      * @see createMany() For creating multiple records at once
      * @see firstOrCreate() For creating only if a record doesn't exist
@@ -124,19 +124,18 @@ interface BaseServiceContract
      * timestamps are enabled on the model. Model events (updating, updated, etc.)
      * will be fired during the update process. Mass assignment protection rules apply.
      *
-     * @param int|string $id The unique identifier of the record to update. Accepts
-     *                       both integer and string IDs to support various primary key types.
-     * @param array<string, mixed> $data Associative array of field names and their new values.
-     *                                   Keys must match database column names and be allowed
-     *                                   by the model's fillable attributes.
-     *
+     * @param  int|string  $id  The unique identifier of the record to update. Accepts
+     *                          both integer and string IDs to support various primary key types.
+     * @param  array<string, mixed>  $data  Associative array of field names and their new values.
+     *                                      Keys must match database column names and be allowed
+     *                                      by the model's fillable attributes.
      * @return Model The updated model instance with fresh data from the database,
      *               including the new updated_at timestamp
      *
      * @throws ModelNotFoundException If no record with the given ID exists
-     * @throws \Illuminate\Database\QueryException If database constraints are violated
-     * @throws \Illuminate\Database\Eloquent\MassAssignmentException If attempting to update
-     *                                                                 non-fillable attributes
+     * @throws QueryException If database constraints are violated
+     * @throws MassAssignmentException If attempting to update
+     *                                 non-fillable attributes
      *
      * @see updateWhere() For updating multiple records matching criteria
      * @see updateOrCreate() For updating or creating based on criteria
@@ -152,9 +151,8 @@ interface BaseServiceContract
      * false if it failed, and null if the record was not found. Model events (deleting,
      * deleted) will be fired if the record exists.
      *
-     * @param int|string $id The unique identifier of the record to delete. Accepts
-     *                       both integer and string IDs to support various primary key types.
-     *
+     * @param  int|string  $id  The unique identifier of the record to delete. Accepts
+     *                          both integer and string IDs to support various primary key types.
      * @return bool|null True if the record was successfully deleted,
      *                   false if the deletion operation failed,
      *                   null if the record doesn't exist
@@ -172,12 +170,11 @@ interface BaseServiceContract
      * if no matches are found. This method loads all matching records into memory,
      * so consider using paginateWhere() for large result sets.
      *
-     * @param array<string, mixed> $criteria Associative array where keys are field names
-     *                                       and values are the values to match. All conditions
-     *                                       are combined with AND logic. For exact matching only.
-     *
+     * @param  array<string, mixed>  $criteria  Associative array where keys are field names
+     *                                          and values are the values to match. All conditions
+     *                                          are combined with AND logic. For exact matching only.
      * @return Collection<int, Model> Collection of matching model instances with all attributes
-     *                                 loaded. Returns empty collection if no matches found.
+     *                                loaded. Returns empty collection if no matches found.
      *
      * @see findWhereFirst() For retrieving only the first matching record
      * @see paginateWhere() For paginated results with criteria
@@ -194,10 +191,9 @@ interface BaseServiceContract
      * a LIMIT 1 clause to the query. Criteria are combined with AND logic using
      * exact matching.
      *
-     * @param array<string, mixed> $criteria Associative array where keys are field names
-     *                                       and values are the values to match. All conditions
-     *                                       are combined with AND logic.
-     *
+     * @param  array<string, mixed>  $criteria  Associative array where keys are field names
+     *                                          and values are the values to match. All conditions
+     *                                          are combined with AND logic.
      * @return Model|null The first matching model instance with all attributes loaded,
      *                    or null if no match found
      *
@@ -223,27 +219,26 @@ interface BaseServiceContract
      * - Links for pagination navigation (first, last, next, previous)
      * - Methods for generating pagination URLs
      *
-     * @param int $perPage Number of records to display per page. Default is 15.
-     *                     Use smaller values (10-25) for detailed views, larger values
-     *                     (50-100) for compact lists.
-     * @param array<int, string> $columns Array of column names to select. Use ['*'] to select
-     *                                     all columns (default), or specify exact columns to
-     *                                     optimize query performance and reduce memory usage.
-     * @param array<int, string> $relations Array of relationship names to eager load using
-     *                                       Eloquent's with() method. Prevents N+1 query problems.
-     *                                       Supports nested relations with dot notation (e.g.,
-     *                                       'posts.comments.author').
-     * @param array<string, mixed> $where Associative array of field => value pairs for filtering.
-     *                                    All conditions are combined with AND logic using exact
-     *                                    matching. Leave empty for no filtering.
-     * @param string $orderBy Column name to order results by. Default is 'created_at'.
-     *                        Common values include 'id', 'name', 'created_at', 'updated_at'.
-     * @param string $orderDir Order direction: 'asc' for ascending (A-Z, 0-9, oldest-newest)
-     *                         or 'desc' for descending (Z-A, 9-0, newest-oldest). Default is 'desc'.
-     *
+     * @param  int  $perPage  Number of records to display per page. Default is 15.
+     *                        Use smaller values (10-25) for detailed views, larger values
+     *                        (50-100) for compact lists.
+     * @param  array<int, string>  $columns  Array of column names to select. Use ['*'] to select
+     *                                       all columns (default), or specify exact columns to
+     *                                       optimize query performance and reduce memory usage.
+     * @param  array<int, string>  $relations  Array of relationship names to eager load using
+     *                                         Eloquent's with() method. Prevents N+1 query problems.
+     *                                         Supports nested relations with dot notation (e.g.,
+     *                                         'posts.comments.author').
+     * @param  array<string, mixed>  $where  Associative array of field => value pairs for filtering.
+     *                                       All conditions are combined with AND logic using exact
+     *                                       matching. Leave empty for no filtering.
+     * @param  string  $orderBy  Column name to order results by. Default is 'created_at'.
+     *                           Common values include 'id', 'name', 'created_at', 'updated_at'.
+     * @param  string  $orderDir  Order direction: 'asc' for ascending (A-Z, 0-9, oldest-newest)
+     *                            or 'desc' for descending (Z-A, 9-0, newest-oldest). Default is 'desc'.
      * @return LengthAwarePaginator Paginator instance containing the current page's results
-     *                               and complete pagination metadata. Access items via iteration
-     *                               or the items() method.
+     *                              and complete pagination metadata. Access items via iteration
+     *                              or the items() method.
      *
      * @see paginateWhere() For simpler pagination with just criteria
      * @see all() For retrieving all records without pagination
@@ -284,10 +279,9 @@ interface BaseServiceContract
      * AND logic. Useful for displaying filtered counts, statistics, and
      * implementing "showing X of Y results" functionality.
      *
-     * @param array<string, mixed> $criteria Associative array of field => value pairs to match.
-     *                                       All conditions are combined with AND logic using
-     *                                       exact matching.
-     *
+     * @param  array<string, mixed>  $criteria  Associative array of field => value pairs to match.
+     *                                          All conditions are combined with AND logic using
+     *                                          exact matching.
      * @return int Count of records matching the criteria. Returns 0 if no matches found.
      *
      * @see getTotalRecords() For counting all records without criteria
@@ -306,14 +300,13 @@ interface BaseServiceContract
      * IDs. If some IDs don't exist, they are silently skipped and not included in the
      * result collection.
      *
-     * @param array<int, int|string> $ids Array of unique identifiers (primary keys) to find.
-     *                                    Can contain both integer and string IDs depending on
-     *                                    the model's primary key type. Duplicate IDs in the
-     *                                    input array will not result in duplicate records.
-     *
+     * @param  array<int, int|string>  $ids  Array of unique identifiers (primary keys) to find.
+     *                                       Can contain both integer and string IDs depending on
+     *                                       the model's primary key type. Duplicate IDs in the
+     *                                       input array will not result in duplicate records.
      * @return Collection<int, Model> Collection of found model instances with all attributes loaded.
-     *                                 May contain fewer items than IDs provided if some IDs don't
-     *                                 exist. Returns empty collection if no IDs match.
+     *                                May contain fewer items than IDs provided if some IDs don't
+     *                                exist. Returns empty collection if no IDs match.
      *
      * @see find() For finding a single record
      * @see findWhere() For finding records by field criteria
@@ -329,12 +322,11 @@ interface BaseServiceContract
      * results without the complexity of the full paginate() method. All criteria are
      * combined with AND logic.
      *
-     * @param array<string, mixed> $criteria Associative array of field => value pairs for filtering.
-     *                                       All conditions are combined with AND logic using exact
-     *                                       matching. Leave empty to paginate all records.
-     * @param int|null $perPage Number of records per page. If null, uses the repository's
-     *                          default setting (typically 15). Common values are 10, 15, 20, 25.
-     *
+     * @param  array<string, mixed>  $criteria  Associative array of field => value pairs for filtering.
+     *                                          All conditions are combined with AND logic using exact
+     *                                          matching. Leave empty to paginate all records.
+     * @param  int|null  $perPage  Number of records per page. If null, uses the repository's
+     *                             default setting (typically 15). Common values are 10, 15, 20, 25.
      * @return LengthAwarePaginator Paginator instance with matching records and pagination metadata
      *
      * @see paginate() For more advanced pagination options (relations, columns, custom ordering)
@@ -356,17 +348,16 @@ interface BaseServiceContract
      * model instances, so for very large datasets (1000+ records), consider using insertMany()
      * for significantly better performance at the cost of bypassing model events.
      *
-     * @param array<int, array<string, mixed>> $data Array of associative arrays, each representing
-     *                                               a record to create. Each sub-array must have
-     *                                               keys matching database column names that are
-     *                                               allowed by the model's fillable attributes.
-     *
+     * @param  array<int, array<string, mixed>>  $data  Array of associative arrays, each representing
+     *                                                  a record to create. Each sub-array must have
+     *                                                  keys matching database column names that are
+     *                                                  allowed by the model's fillable attributes.
      * @return Collection<int, Model> Collection of newly created model instances with all
-     *                                 attributes including auto-generated IDs and timestamps
+     *                                attributes including auto-generated IDs and timestamps
      *
-     * @throws \Illuminate\Database\QueryException If any database constraints are violated
-     * @throws \Illuminate\Database\Eloquent\MassAssignmentException If attempting to fill
-     *                                                                 non-fillable attributes
+     * @throws QueryException If any database constraints are violated
+     * @throws MassAssignmentException If attempting to fill
+     *                                 non-fillable attributes
      *
      * @see create() For creating a single record
      * @see insertMany() For bulk insert without model events (faster for large datasets)
@@ -388,13 +379,12 @@ interface BaseServiceContract
      * other fields remain unchanged. This method does not return the updated records, only
      * a boolean indicating success or failure.
      *
-     * @param array<string, mixed> $criteria Associative array of field => value pairs
-     *                                       to identify records to update. All conditions
-     *                                       are combined with AND logic. Empty array will
-     *                                       update all records (use with extreme caution).
-     * @param array<string, mixed> $data Associative array of field => value pairs
-     *                                   containing the new values to set
-     *
+     * @param  array<string, mixed>  $criteria  Associative array of field => value pairs
+     *                                          to identify records to update. All conditions
+     *                                          are combined with AND logic. Empty array will
+     *                                          update all records (use with extreme caution).
+     * @param  array<string, mixed>  $data  Associative array of field => value pairs
+     *                                      containing the new values to set
      * @return bool True if one or more records were updated successfully,
      *              false if no matching records were found or if the update failed
      *
@@ -414,11 +404,10 @@ interface BaseServiceContract
      * All criteria are combined with AND logic. Use with extreme caution, especially with
      * empty criteria arrays which would delete all records in the repository.
      *
-     * @param array<string, mixed> $criteria Associative array of field => value pairs
-     *                                       to identify records to delete. All conditions
-     *                                       are combined with AND logic. Empty array will
-     *                                       delete all records (use with extreme caution).
-     *
+     * @param  array<string, mixed>  $criteria  Associative array of field => value pairs
+     *                                          to identify records to delete. All conditions
+     *                                          are combined with AND logic. Empty array will
+     *                                          delete all records (use with extreme caution).
      * @return bool True if one or more records were deleted successfully,
      *              false if no matching records were found or if the deletion failed
      *
@@ -439,10 +428,9 @@ interface BaseServiceContract
      * Selecting specific columns may affect relationship loading and model functionality
      * that depends on certain fields being present.
      *
-     * @param array<int, string> $columns Array of column names to select. Use specific column
-     *                                    names like ['id', 'name', 'email'] to optimize queries.
-     *                                    Use ['*'] to select all columns (default behavior).
-     *
+     * @param  array<int, string>  $columns  Array of column names to select. Use specific column
+     *                                       names like ['id', 'name', 'email'] to optimize queries.
+     *                                       Use ['*'] to select all columns (default behavior).
      * @return Model The repository instance for method chaining, allowing subsequent
      *               method calls like where(), orderBy(), or get()
      *
@@ -464,12 +452,11 @@ interface BaseServiceContract
      * accessing relationships. Without it, each relationship access triggers a new database
      * query, which can quickly become a performance bottleneck.
      *
-     * @param array<int, string> $relations Array of relationship names to eager load.
-     *                                      Use simple names for direct relationships (e.g., 'posts').
-     *                                      Use dot notation for nested relations (e.g., 'posts.comments').
-     *                                      Can load multiple relationship trees (e.g., ['posts.comments',
-     *                                      'posts.author', 'roles']).
-     *
+     * @param  array<int, string>  $relations  Array of relationship names to eager load.
+     *                                         Use simple names for direct relationships (e.g., 'posts').
+     *                                         Use dot notation for nested relations (e.g., 'posts.comments').
+     *                                         Can load multiple relationship trees (e.g., ['posts.comments',
+     *                                         'posts.author', 'roles']).
      * @return Model The repository instance for method chaining, allowing subsequent
      *               method calls like where(), orderBy(), or get()
      *
@@ -491,11 +478,10 @@ interface BaseServiceContract
      * Useful for validation (checking if email/username is taken), conditional logic,
      * and preventing duplicate records. Only checks for exact matches.
      *
-     * @param string $field The field name to check (e.g., 'email', 'username', 'slug').
-     *                      Should be a column that exists in the database table.
-     * @param mixed $value The value to search for. Will be matched exactly using the = operator.
-     *                     Type should match the database column type for proper comparison.
-     *
+     * @param  string  $field  The field name to check (e.g., 'email', 'username', 'slug').
+     *                         Should be a column that exists in the database table.
+     * @param  mixed  $value  The value to search for. Will be matched exactly using the = operator.
+     *                        Type should match the database column type for proper comparison.
      * @return bool True if at least one matching record exists, false if no matches found
      *
      * @see find() For retrieving a record by ID if it exists
@@ -512,14 +498,13 @@ interface BaseServiceContract
      * column B, etc.). Must be called before a retrieval method (all(), first(), get())
      * to take effect. Subsequent queries will maintain this ordering until reset.
      *
-     * @param string $column The name of the column to order by. Must be a valid column
-     *                       name in the database table. Common examples: 'created_at',
-     *                       'name', 'price', 'updated_at', 'position'.
-     * @param string $direction The sort direction. Use 'asc' for ascending order
-     *                          (A-Z, 0-9, oldest-newest, lowest-highest) or 'desc'
-     *                          for descending order (Z-A, 9-0, newest-oldest, highest-lowest).
-     *                          Default is 'asc'.
-     *
+     * @param  string  $column  The name of the column to order by. Must be a valid column
+     *                          name in the database table. Common examples: 'created_at',
+     *                          'name', 'price', 'updated_at', 'position'.
+     * @param  string  $direction  The sort direction. Use 'asc' for ascending order
+     *                             (A-Z, 0-9, oldest-newest, lowest-highest) or 'desc'
+     *                             for descending order (Z-A, 9-0, newest-oldest, highest-lowest).
+     *                             Default is 'asc'.
      * @return Model The repository instance for method chaining, allowing subsequent
      *               method calls like where(), with(), or get()
      *
@@ -541,16 +526,15 @@ interface BaseServiceContract
      * or any temporal data. The comparison handles time components properly, so be mindful
      * of whether your dates include time or are just dates.
      *
-     * @param string $column The name of the date/datetime column to filter on. Must be
-     *                       a valid column in the database table. Common examples:
-     *                       'created_at', 'published_at', 'start_date', 'birth_date'.
-     * @param string $startDate The start date of the range (inclusive). Can be formatted
-     *                          as Y-m-d, Y-m-d H:i:s, or any format parseable by Carbon/PHP.
-     *                          For date-only columns, use Y-m-d format.
-     * @param string $endDate The end date of the range (inclusive). Can be formatted
-     *                        as Y-m-d, Y-m-d H:i:s, or any format parseable by Carbon/PHP.
-     *                        For date-only columns, use Y-m-d format.
-     *
+     * @param  string  $column  The name of the date/datetime column to filter on. Must be
+     *                          a valid column in the database table. Common examples:
+     *                          'created_at', 'published_at', 'start_date', 'birth_date'.
+     * @param  string  $startDate  The start date of the range (inclusive). Can be formatted
+     *                             as Y-m-d, Y-m-d H:i:s, or any format parseable by Carbon/PHP.
+     *                             For date-only columns, use Y-m-d format.
+     * @param  string  $endDate  The end date of the range (inclusive). Can be formatted
+     *                           as Y-m-d, Y-m-d H:i:s, or any format parseable by Carbon/PHP.
+     *                           For date-only columns, use Y-m-d format.
      * @return Model The repository instance for method chaining, allowing subsequent
      *               method calls like orderBy(), with(), or get()
      *
@@ -577,14 +561,13 @@ interface BaseServiceContract
      * that affects the ordering or the WHERE conditions, as this may cause records to be
      * skipped or processed multiple times due to the pagination mechanism used internally.
      *
-     * @param int $amount Number of records to process in each chunk. Choose based on
-     *                    available memory and processing needs. Common values: 100 for
-     *                    memory-intensive operations, 500-1000 for typical batch processing,
-     *                    up to 5000 for simple, low-memory operations.
-     * @param callable $callback Function to execute for each chunk. Receives a Collection
-     *                           of models as its parameter. Can optionally return false to
-     *                           stop processing early. Signature: function(Collection $models): bool|void
-     *
+     * @param  int  $amount  Number of records to process in each chunk. Choose based on
+     *                       available memory and processing needs. Common values: 100 for
+     *                       memory-intensive operations, 500-1000 for typical batch processing,
+     *                       up to 5000 for simple, low-memory operations.
+     * @param  callable  $callback  Function to execute for each chunk. Receives a Collection
+     *                              of models as its parameter. Can optionally return false to
+     *                              stop processing early. Signature: function(Collection $models): bool|void
      * @return bool True if all chunks were processed successfully (or callback never returned false),
      *              false if processing was stopped early by the callback returning false explicitly
      *
@@ -617,16 +600,15 @@ interface BaseServiceContract
      * Note: All arrays in the $data parameter must have the same keys (columns) to ensure
      * a valid bulk insert. Different keys will cause a database error.
      *
-     * @param array<int, array<string, mixed>> $data Array of associative arrays, each representing
-     *                                               a record to insert. All arrays must have identical
-     *                                               keys matching database column names. Values are
-     *                                               inserted as-is without processing.
-     *
+     * @param  array<int, array<string, mixed>>  $data  Array of associative arrays, each representing
+     *                                                  a record to insert. All arrays must have identical
+     *                                                  keys matching database column names. Values are
+     *                                                  inserted as-is without processing.
      * @return bool True if the insert was successful and records were added to the database,
      *              false if the insertion failed
      *
-     * @throws \Illuminate\Database\QueryException If database constraints are violated (unique keys,
-     *                                              foreign keys, not null constraints, etc.)
+     * @throws QueryException If database constraints are violated (unique keys,
+     *                        foreign keys, not null constraints, etc.)
      *
      * @see createMany() For smaller datasets where you need model events and returned instances
      * @see create() For inserting a single record with full model lifecycle
@@ -651,13 +633,12 @@ interface BaseServiceContract
      * - Implementing "get or create" patterns in business logic
      * - Preventing duplicate record creation in concurrent scenarios
      *
-     * @param array<string, mixed> $criteria Associative array of field => value pairs
-     *                                       to search for. These fields will also be included
-     *                                       when creating a new record if none is found.
-     * @param array<string, mixed> $data Additional data to include only when creating
-     *                                   a new record. Not used in the search query. Can include
-     *                                   default values, timestamps, or computed fields.
-     *
+     * @param  array<string, mixed>  $criteria  Associative array of field => value pairs
+     *                                          to search for. These fields will also be included
+     *                                          when creating a new record if none is found.
+     * @param  array<string, mixed>  $data  Additional data to include only when creating
+     *                                      a new record. Not used in the search query. Can include
+     *                                      default values, timestamps, or computed fields.
      * @return Model Either the found existing model instance or the newly created model instance.
      *               Both cases return a fully hydrated model with all attributes.
      *
@@ -685,13 +666,12 @@ interface BaseServiceContract
      * - Batch updates where records may or may not exist yet
      * - Maintaining reference data that should be kept up-to-date
      *
-     * @param array<string, mixed> $criteria Associative array of field => value pairs
-     *                                       to search for. Used only for finding the record,
-     *                                       not for updating it.
-     * @param array<string, mixed> $data Data to update (if record exists) or to include
-     *                                   when creating (if record doesn't exist). When creating,
-     *                                   this is merged with criteria.
-     *
+     * @param  array<string, mixed>  $criteria  Associative array of field => value pairs
+     *                                          to search for. Used only for finding the record,
+     *                                          not for updating it.
+     * @param  array<string, mixed>  $data  Data to update (if record exists) or to include
+     *                                      when creating (if record doesn't exist). When creating,
+     *                                      this is merged with criteria.
      * @return Model Either the updated existing model or the newly created model.
      *               Both cases return a fully hydrated model with all current attributes.
      *
@@ -720,11 +700,10 @@ interface BaseServiceContract
      * Important: Be cautious with long-running operations inside transactions as they
      * hold database locks. Keep transactions focused and efficient.
      *
-     * @param callable $callback The function containing database operations to execute
-     *                           within the transaction. Receives no parameters. Any
-     *                           return value is passed through after successful commit.
-     *                           Signature: function(): mixed
-     *
+     * @param  callable  $callback  The function containing database operations to execute
+     *                              within the transaction. Receives no parameters. Any
+     *                              return value is passed through after successful commit.
+     *                              Signature: function(): mixed
      * @return mixed The value returned by the callback after successful transaction commit
      *
      * @throws \Throwable Any exception thrown within the callback. The transaction will be
@@ -752,13 +731,12 @@ interface BaseServiceContract
      * 2. Gate definitions in AuthServiceProvider
      * 3. Any before/after hooks in policies
      *
-     * @param string $ability The ability/action to check authorization for. Common abilities
-     *                        include 'view', 'create', 'update', 'delete', 'restore', 'forceDelete'.
-     *                        Custom abilities can be defined in policies (e.g., 'publish', 'approve').
-     * @param mixed $model The model instance to check authorization against. Can be a specific
-     *                     model instance for instance-level checks, a model class string for
-     *                     class-level checks, or null for general ability checks.
-     *
+     * @param  string  $ability  The ability/action to check authorization for. Common abilities
+     *                           include 'view', 'create', 'update', 'delete', 'restore', 'forceDelete'.
+     *                           Custom abilities can be defined in policies (e.g., 'publish', 'approve').
+     * @param  mixed  $model  The model instance to check authorization against. Can be a specific
+     *                        model instance for instance-level checks, a model class string for
+     *                        class-level checks, or null for general ability checks.
      * @return bool True if the current user is authorized to perform the ability on the model,
      *              false if not authorized or if no user is authenticated
      *
