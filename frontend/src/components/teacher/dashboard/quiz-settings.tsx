@@ -3,14 +3,37 @@ import type { ReactNode } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
+/**
+ * Props for the QuizSettings component.
+ */
 interface QuizSettingsProps {
+    /** The importance or weight assigned to questions in this quiz. */
     questionWeight: number;
+    /** The maximum time allowed to answer each question (in seconds). */
     maxTimePerQuestion: number;
+    /**
+     * Callback function when the question weight is changed.
+     * @param value - The new weight value.
+     */
     onWeightChange: (value: number) => void;
+    /**
+     * Callback function when the time per question is changed.
+     * @param value - The new time limit in seconds.
+     */
     onTimeChange: (value: number) => void;
+    /** Optional child components. */
     children?: ReactNode;
 }
 
+/**
+ * A panel for configuring quiz-level settings.
+ * 
+ * Allows the teacher to adjust global question weighting and time limits using
+ * sliders and numeric inputs.
+ *
+ * @param props - The component props.
+ * @returns The rendered quiz settings panel.
+ */
 export function QuizSettings({
     questionWeight,
     maxTimePerQuestion,

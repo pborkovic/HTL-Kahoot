@@ -32,12 +32,24 @@ interface SessionData {
     qr_code_url: string;
 }
 
+/**
+ * Props for the QuizDetailDialog component.
+ */
 interface QuizDetailDialogProps {
+    /** The quiz to display details for. If null, the dialog is closed. */
     readonly quiz: Quiz | null;
+    /** Callback function to close the dialog. */
     readonly onClose: () => void;
+    /** Callback function called after the quiz is successfully deleted. */
     readonly onDeleted: () => void;
 }
 
+/**
+ * Formats an ISO date string into a localized German date/time string.
+ *
+ * @param dateStr - The date string to format.
+ * @returns A formatted string (e.g., "01.01.2023, 14:30").
+ */
 function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString("de-DE", {
         day: "2-digit",
@@ -48,6 +60,12 @@ function formatDate(dateStr: string): string {
     });
 }
 
+/**
+ * Returns a human-readable label for a session status.
+ *
+ * @param status - The session status identifier.
+ * @returns A German label for the status.
+ */
 function statusLabel(status: string): string {
     switch (status) {
         case "lobby": return "Lobby";
@@ -57,6 +75,12 @@ function statusLabel(status: string): string {
     }
 }
 
+/**
+ * Returns CSS class names for status-specific styling.
+ *
+ * @param status - The session status identifier.
+ * @returns A string of Tailwind CSS classes.
+ */
 function statusColor(status: string): string {
     switch (status) {
         case "finished": return "border-emerald-300/60 text-emerald-600 bg-emerald-500/5";
@@ -66,12 +90,24 @@ function statusColor(status: string): string {
     }
 }
 
+/**
+ * Returns a human-readable label for question difficulty.
+ *
+ * @param d - The difficulty level (1-5), or null.
+ * @returns A descriptive label (e.g., "Mittel") or a placeholder.
+ */
 function difficultyLabel(d: number | null): string {
     if (d === null) { return "—"; }
     const labels = ["", "Sehr leicht", "Leicht", "Mittel", "Schwer", "Sehr schwer"];
     return labels[d] ?? String(d);
 }
 
+/**
+ * Returns CSS class names for difficulty-specific styling.
+ *
+ * @param d - The difficulty level (1-5), or null.
+ * @returns A string of Tailwind CSS classes.
+ */
 function difficultyColor(d: number | null): string {
     if (d === null) { return "text-muted-foreground border-border/40"; }
     if (d <= 2) { return "border-emerald-300/60 text-emerald-600 bg-emerald-500/5"; }
@@ -79,6 +115,16 @@ function difficultyColor(d: number | null): string {
     return "border-red-300/60 text-red-600 bg-red-500/5";
 }
 
+/**
+ * A dialog component that displays comprehensive details for a specific quiz.
+ * 
+ * Shows summary statistics, quiz settings, the list of questions included in
+ * the quiz, and a history of previous game sessions. Provides actions for
+ * starting a new session, editing, or deleting the quiz.
+ *
+ * @param props - The component props.
+ * @returns The rendered quiz detail dialog.
+ */
 export function QuizDetailDialog({ quiz, onClose, onDeleted }: QuizDetailDialogProps) {
     const router = useRouter();
     const [sessions, setSessions] = useState<QuizSession[]>([]);

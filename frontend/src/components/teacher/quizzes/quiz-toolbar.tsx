@@ -10,13 +10,36 @@ import {
 type SortDirection = "asc" | "desc";
 type QuizSortField = "created_at" | "title" | "is_published";
 
+/**
+ * Props for the QuizToolbar component.
+ */
 interface QuizToolbarProps {
+    /** The current search term for filtering quizzes. */
     readonly searchTerm: string;
+    /**
+     * Callback function when the search term changes.
+     * @param value - The new search term.
+     */
     readonly onSearchChange: (value: string) => void;
+    /**
+     * Callback function to sort the quiz list.
+     * @param field - The field to sort by.
+     * @param direction - The sort direction (asc or desc).
+     */
     readonly onSort: (field: QuizSortField, direction: SortDirection) => void;
+    /** The total count of quizzes currently displayed. */
     readonly totalCount: number;
 }
 
+/**
+ * A toolbar component for searching and sorting quizzes.
+ * 
+ * Provides a search input with a clear visual style and a dropdown for
+ * various sorting options (date, title, etc.).
+ *
+ * @param props - The component props.
+ * @returns The rendered quiz toolbar.
+ */
 export function QuizToolbar({ searchTerm, onSearchChange, onSort, totalCount }: QuizToolbarProps) {
     return (
         <div className="flex items-center gap-2">
