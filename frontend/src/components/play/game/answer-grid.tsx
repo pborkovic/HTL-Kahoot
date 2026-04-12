@@ -13,14 +13,34 @@ const OPTION_COLORS = [
 
 const OPTION_SHAPES = ["◆", "●", "▲", "■", "★", "⬟"];
 
+/**
+ * Props for the AnswerGrid component.
+ */
 interface AnswerGridProps {
+    /** The list of answer options to display. */
     options: AnswerOption[];
+    /** The type of question (e.g., "multiple_choice", "single_choice"). */
     questionType: QuestionType;
+    /** The IDs of the currently selected options. */
     selectedIds: string[];
+    /** Whether the grid is disabled (e.g., after submission). */
     disabled: boolean;
+    /**
+     * Callback function when an option is selected.
+     * @param optionId - The ID of the selected option.
+     */
     onSelect: (optionId: string) => void;
 }
 
+/**
+ * Displays a grid of interactive answer options for a game session.
+ * 
+ * Supports both single and multiple choice question types with visual feedback
+ * for selection and distinct colors/shapes for each option.
+ *
+ * @param props - The component props.
+ * @returns The rendered answer grid.
+ */
 export function AnswerGrid({ options, questionType, selectedIds, disabled, onSelect }: AnswerGridProps) {
     const isMultiSelect = questionType === "multiple_choice";
 
