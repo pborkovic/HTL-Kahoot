@@ -4,6 +4,9 @@ import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Variants for the Button component, defining styles for different purposes and sizes.
+ */
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
@@ -38,16 +41,36 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Props for the Button component.
+ */
+export interface ButtonProps
+  extends React.ComponentProps<"button">,
+    VariantProps<typeof buttonVariants> {
+  /**
+   * Whether to render the button as a child component (using Radix UI Slot).
+   * @default false
+   */
+  asChild?: boolean
+}
+
+/**
+ * Button component for user interactions.
+ *
+ * @param props - The properties for the Button component.
+ * @param props.className - Additional CSS classes for the button.
+ * @param props.variant - The visual style variant of the button.
+ * @param props.size - The size variant of the button.
+ * @param props.asChild - If true, the button will render its children using the Slot component.
+ * @returns The rendered Button component.
+ */
 function Button({
   className,
   variant = "default",
   size = "default",
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
+}: ButtonProps) {
   const Comp = asChild ? Slot.Root : "button"
 
   return (
