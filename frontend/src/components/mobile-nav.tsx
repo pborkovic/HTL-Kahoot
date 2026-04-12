@@ -19,13 +19,23 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, THEMES } from "@/components/ThemeProvider";
 
+/**
+ * Interface for navigation items used in the mobile navigation bar.
+ */
 interface NavItem {
+    /** The display title of the navigation item. */
     title: string;
+    /** The URL path the item links to. */
     href: string;
+    /** The icon component to display for this item. */
     icon: LucideIcon;
+    /** Optional function to determine if the item is active based on the current pathname. */
     match?: (pathname: string) => boolean;
 }
 
+/**
+ * Navigation items specifically for students.
+ */
 const studentItems: NavItem[] = [
     {
         title: "Dashboard",
@@ -34,6 +44,9 @@ const studentItems: NavItem[] = [
     },
 ];
 
+/**
+ * Navigation items specifically for teachers.
+ */
 const teacherItems: NavItem[] = [
     {
         title: "Dashboard",
@@ -52,6 +65,9 @@ const teacherItems: NavItem[] = [
     },
 ];
 
+/**
+ * Navigation items specifically for administrators.
+ */
 const adminItems: NavItem[] = [
     {
         title: "Admin",
@@ -73,12 +89,22 @@ const adminItems: NavItem[] = [
     },
 ];
 
+/**
+ * General feedback navigation item.
+ */
 const selfFeedbackItem: NavItem = {
     title: "Feedback",
     href: "/feedback",
     icon: MessageSquare,
 };
 
+/**
+ * A responsive mobile navigation component that renders as a bottom tab bar.
+ * It dynamically displays items based on the user's roles and provides an
+ * overflow menu for additional options like theme selection and settings.
+ *
+ * @returns {ReactNode} The rendered mobile navigation component or null if no user is logged in.
+ */
 export function MobileNav(): ReactNode {
     const pathname = usePathname();
     const { user, logout } = useAuth();

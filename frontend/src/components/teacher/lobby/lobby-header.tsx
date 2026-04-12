@@ -1,5 +1,12 @@
 import { MonitorPlay } from "lucide-react";
 
+/**
+ * Header component for the teacher's game lobby.
+ * 
+ * Displays the "Lobby" title and a brief instruction for the teacher.
+ *
+ * @returns The rendered lobby header.
+ */
 export function LobbyHeader() {
     return (
         <div className="flex items-center gap-3">
