@@ -37,8 +37,16 @@ function createEcho(): Echo<"reverb"> {
     });
 }
 
+/**
+ * Global instance of Echo.
+ */
 let echoInstance: Echo<"reverb"> | null = null;
 
+/**
+ * Returns the singleton Echo instance, creating it if it doesn't exist.
+ * 
+ * @returns The Echo instance.
+ */
 export function getEcho(): Echo<"reverb"> {
     if (!echoInstance) {
         echoInstance = createEcho();
@@ -46,6 +54,9 @@ export function getEcho(): Echo<"reverb"> {
     return echoInstance;
 }
 
+/**
+ * Disconnects and resets the singleton Echo instance.
+ */
 export function resetEcho(): void {
     if (echoInstance) {
         echoInstance.disconnect();

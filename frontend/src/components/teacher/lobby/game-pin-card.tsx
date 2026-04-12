@@ -3,11 +3,25 @@
 import { useState, useCallback } from "react";
 import { QrCode, Copy, Check } from "lucide-react";
 
+/**
+ * Props for the GamePinCard component.
+ */
 interface GamePinCardProps {
+    /** The alphanumeric game PIN code. */
     gameCode: string;
+    /** Optional URL for a QR code image that leads to the join page. */
     qrCodeUrl?: string;
 }
 
+/**
+ * A card component that displays the game PIN and a QR code for students to join.
+ * 
+ * Provides a copy-to-clipboard feature for the game PIN and displays a QR code
+ * if available.
+ *
+ * @param props - The component props.
+ * @returns The rendered game PIN card.
+ */
 export function GamePinCard({ gameCode, qrCodeUrl }: GamePinCardProps) {
     const [copied, setCopied] = useState(false);
 
