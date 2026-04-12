@@ -6,24 +6,63 @@ import { Select as SelectPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Select
+ *
+ * Displays the Select component or handles Select logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Select({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
+/**
+ * SelectGroup
+ *
+ * Displays the SelectGroup component or handles SelectGroup logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectGroup({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
 
+/**
+ * SelectValue
+ *
+ * Displays the SelectValue component or handles SelectValue logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectValue({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Value>) {
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
+/**
+ * SelectTrigger
+ *
+ * Displays the SelectTrigger component or handles SelectTrigger logic.
+ * @param {
+ *   className,
+ *   size = "default",
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectTrigger({
   className,
   size = "default",
@@ -50,6 +89,19 @@ function SelectTrigger({
   )
 }
 
+/**
+ * SelectContent
+ *
+ * Displays the SelectContent component or handles SelectContent logic.
+ * @param {
+ *   className,
+ *   children,
+ *   position = "item-aligned",
+ *   align = "center",
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectContent({
   className,
   children,
@@ -87,6 +139,16 @@ function SelectContent({
   )
 }
 
+/**
+ * SelectLabel
+ *
+ * Displays the SelectLabel component or handles SelectLabel logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectLabel({
   className,
   ...props
@@ -100,6 +162,17 @@ function SelectLabel({
   )
 }
 
+/**
+ * SelectItem
+ *
+ * Displays the SelectItem component or handles SelectItem logic.
+ * @param {
+ *   className,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectItem({
   className,
   children,
@@ -127,6 +200,16 @@ function SelectItem({
   )
 }
 
+/**
+ * SelectSeparator
+ *
+ * Displays the SelectSeparator component or handles SelectSeparator logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectSeparator({
   className,
   ...props
@@ -140,6 +223,16 @@ function SelectSeparator({
   )
 }
 
+/**
+ * SelectScrollUpButton
+ *
+ * Displays the SelectScrollUpButton component or handles SelectScrollUpButton logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectScrollUpButton({
   className,
   ...props
@@ -158,6 +251,16 @@ function SelectScrollUpButton({
   )
 }
 
+/**
+ * SelectScrollDownButton
+ *
+ * Displays the SelectScrollDownButton component or handles SelectScrollDownButton logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SelectScrollDownButton({
   className,
   ...props

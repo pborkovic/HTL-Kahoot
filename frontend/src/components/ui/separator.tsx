@@ -5,6 +5,18 @@ import { Separator as SeparatorPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Separator
+ *
+ * Displays the Separator component or handles Separator logic.
+ * @param {
+ *   className,
+ *   orientation = "horizontal",
+ *   decorative = true,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Separator({
   className,
   orientation = "horizontal",
