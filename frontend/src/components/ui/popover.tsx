@@ -5,18 +5,48 @@ import { Popover as PopoverPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Popover
+ *
+ * Displays the Popover component or handles Popover logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Popover({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
+/**
+ * PopoverTrigger
+ *
+ * Displays the PopoverTrigger component or handles PopoverTrigger logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function PopoverTrigger({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
+/**
+ * PopoverContent
+ *
+ * Displays the PopoverContent component or handles PopoverContent logic.
+ * @param {
+ *   className,
+ *   align = "center",
+ *   sideOffset = 4,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function PopoverContent({
   className,
   align = "center",
@@ -39,12 +69,28 @@ function PopoverContent({
   )
 }
 
+/**
+ * PopoverAnchor
+ *
+ * Displays the PopoverAnchor component or handles PopoverAnchor logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function PopoverAnchor({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 }
 
+/**
+ * PopoverHeader
+ *
+ * Displays the PopoverHeader component or handles PopoverHeader logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -55,6 +101,13 @@ function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * PopoverTitle
+ *
+ * Displays the PopoverTitle component or handles PopoverTitle logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function PopoverTitle({ className, ...props }: React.ComponentProps<"h2">) {
   return (
     <div
@@ -65,6 +118,16 @@ function PopoverTitle({ className, ...props }: React.ComponentProps<"h2">) {
   )
 }
 
+/**
+ * PopoverDescription
+ *
+ * Displays the PopoverDescription component or handles PopoverDescription logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function PopoverDescription({
   className,
   ...props
