@@ -10,16 +10,44 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { StudentUser } from "@/types/student";
 
+/**
+ * Props for the StudentFilters component.
+ */
 interface StudentFiltersProps {
+    /** The current search term for filtering students. */
     searchTerm: string;
+    /**
+     * Callback function when the search term changes.
+     * @param value - The new search term.
+     */
     onSearchChange: (value: string) => void;
+    /** List of unique class names available for filtering. */
     uniqueClasses: string[];
+    /** Set of currently selected student IDs. */
     selectedStudentIds: Set<string>;
+    /** The full list of student users. */
     students: StudentUser[];
+    /**
+     * Callback function to sort the student list.
+     * @param type - The sort criteria and direction.
+     */
     onSort: (type: `${"display_name" | "class_name" | "email"}-${"asc" | "desc"}`) => void;
+    /**
+     * Callback function to select or deselect an entire class.
+     * @param className - The name of the class to toggle.
+     */
     onSelectWholeClass: (className: string) => void;
 }
 
+/**
+ * A filtering and search component for the student management panel.
+ * 
+ * Includes a search input, a class-based filtering popover with bulk selection,
+ * and a sorting dropdown.
+ *
+ * @param props - The component props.
+ * @returns The rendered student filters.
+ */
 export function StudentFilters({
     searchTerm,
     onSearchChange,

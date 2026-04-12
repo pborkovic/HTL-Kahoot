@@ -4,36 +4,89 @@ import { useState, useEffect, useCallback, type Dispatch, type SetStateAction } 
 import { apiFetch } from "@/lib/api";
 import type { Question, QuestionsResponse, PaginationMeta } from "@/types/question";
 
+/**
+ * Possible directions for sorting.
+ */
 type SortDirection = "asc" | "desc";
 
+/**
+ * Available fields for sorting questions.
+ */
 type QuestionSortField = "created_at" | "updated_at" | "type";
 
+/**
+ * Return type for the useQuestions hook.
+ */
 export interface UseQuestionsReturn {
+    /** The list of questions fetched from the API. */
     questions: Question[];
+    /** The list of questions currently being displayed (after local filtering/sorting if any). */
     displayQuestions: Question[];
+    /** A set of IDs of the currently selected questions. */
     selectedIds: Set<string>;
+    /** Function to update the set of selected IDs. */
     setSelectedIds: Dispatch<SetStateAction<Set<string>>>;
+    /** The question currently being viewed in detail. */
     detailQuestion: Question | null;
+    /** Function to set the question currently being viewed in detail. */
     setDetailQuestion: Dispatch<SetStateAction<Question | null>>;
+    /** The current search term for filtering questions. */
     searchTerm: string;
+    /**
+     * Sets the search term and resets the page to 1.
+     * @param value - The new search term.
+     */
     setSearchTerm: (value: string) => void;
+    /** A set of active filter types. */
     activeFilters: Set<string>;
+    /**
+     * Toggles a filter type on or off and resets the page to 1.
+     * @param type - The question type to toggle.
+     */
     toggleFilter: (type: string) => void;
+    /** The field currently used for sorting. */
     sortField: QuestionSortField;
+    /** The direction of the sort. */
     sortDirection: SortDirection;
+    /**
+     * Sets the sort field and direction, and resets the page to 1.
+     * @param field - The field to sort by.
+     * @param direction - The direction to sort in.
+     */
     sort: (field: QuestionSortField, direction: SortDirection) => void;
+    /** Indicates if the questions are currently being loaded. */
     loading: boolean;
+    /** The error message if an error occurred during fetching. */
     error: string | null;
+    /** Pagination metadata for the questions list. */
     meta: PaginationMeta | null;
+    /** The current page number for pagination. */
     page: number;
+    /**
+     * Sets the current page number and clears selection.
+     * @param page - The new page number.
+     */
     setPage: (page: number) => void;
+    /** A list of unique question types present in the current questions list. */
     uniqueTypes: string[];
+    /**
+     * Toggles the selection of a single question by its ID.
+     * @param id - The ID of the question to toggle.
+     */
     toggleSelect: (id: string) => void;
+    /** Toggles the selection of all currently displayed questions. */
     toggleSelectAll: () => void;
+    /** Indicates if all currently displayed questions are selected. */
     allSelected: boolean;
+    /** Manually refetches the questions from the API. */
     refetch: () => void;
 }
 
+/**
+ * Hook for managing a list of questions with filtering, sorting, and pagination.
+ * 
+ * @returns An object containing question data, filter/sort state, and management functions.
+ */
 export function useQuestions(): UseQuestionsReturn {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [displayQuestions, setDisplayQuestions] = useState<Question[]>([]);

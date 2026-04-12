@@ -24,11 +24,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { User, Role } from "@/types/auth";
 
+/**
+ * Props for the UserTable component.
+ */
 interface UserTableProps {
+    /** The list of users to display. */
     users: User[];
+    /** The list of available roles that can be assigned. */
     roles: Role[];
+    /** Callback to assign a role to a user. */
     onAssignRole: (userId: string, roleId: string) => Promise<void>;
+    /** Callback to remove a role from a user. */
     onRemoveRole: (userId: string, roleId: string) => Promise<void>;
+    /** Callback to delete a user. */
     onDeleteUser: (userId: string) => Promise<void>;
 }
 
@@ -39,10 +47,27 @@ const ROLE_COLORS: Record<string, string> = {
     student: "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10 border border-emerald-500/20",
 };
 
+/**
+ * Returns the CSS class for a given role name.
+ *
+ * @param name - The name of the role.
+ * @returns The CSS class string for the role badge.
+ */
 function getRoleColor(name: string): string {
     return ROLE_COLORS[name] ?? "bg-muted text-muted-foreground hover:bg-muted border border-border/40";
 }
 
+/**
+ * Component for user-specific actions in a dropdown menu.
+ *
+ * @param props - The component props.
+ * @param props.user - The user object.
+ * @param props.roles - The list of available roles.
+ * @param props.onAssignRole - Callback to assign a role.
+ * @param props.onRemoveRole - Callback to remove a role.
+ * @param props.onDeleteUser - Callback to delete the user.
+ * @returns The UserActions component.
+ */
 function UserActions({ user, roles, onAssignRole, onRemoveRole, onDeleteUser }: {
     user: User;
     roles: Role[];
@@ -122,7 +147,17 @@ function UserActions({ user, roles, onAssignRole, onRemoveRole, onDeleteUser }: 
     );
 }
 
-/* ── Mobile card view ── */
+/**
+ * Mobile card view for a single user.
+ *
+ * @param props - The component props.
+ * @param props.user - The user object.
+ * @param props.roles - The list of available roles.
+ * @param props.onAssignRole - Callback to assign a role.
+ * @param props.onRemoveRole - Callback to remove a role.
+ * @param props.onDeleteUser - Callback to delete the user.
+ * @returns The UserCard component.
+ */
 function UserCard({ user, roles, onAssignRole, onRemoveRole, onDeleteUser }: {
     user: User;
     roles: Role[];
@@ -174,6 +209,12 @@ function UserCard({ user, roles, onAssignRole, onRemoveRole, onDeleteUser }: {
     );
 }
 
+/**
+ * UserTable component for displaying and managing a list of users.
+ *
+ * @param props - The component props.
+ * @returns The UserTable component.
+ */
 export function UserTable({ users, roles, onAssignRole, onRemoveRole, onDeleteUser }: UserTableProps) {
     if (users.length === 0) {
         return (

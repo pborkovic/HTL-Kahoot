@@ -4,32 +4,77 @@ import { useState, useEffect, useCallback, type Dispatch, type SetStateAction } 
 import { apiFetch } from "@/lib/api";
 import type { StudentUser, StudentsResponse, ClassesResponse } from "@/types/student";
 
+/**
+ * Available fields for sorting students.
+ */
 type StudentSortField = "display_name" | "class_name" | "email";
 
+/**
+ * Possible directions for sorting.
+ */
 type SortDirection = "asc" | "desc";
 
+/**
+ * Combined type for student sorting, format: "field-direction".
+ */
 type StudentSortType =
     | `${StudentSortField}-${SortDirection}`;
 
+/**
+ * Return type for the useStudents hook.
+ */
 export interface UseStudentsReturn {
+    /** The list of all students fetched from the API. */
     students: StudentUser[];
+    /** The list of students currently being displayed. */
     displayStudents: StudentUser[];
+    /** A set of IDs of the currently selected students. */
     selectedIds: Set<string>;
+    /** Function to update the set of selected IDs. */
     setSelectedIds: Dispatch<SetStateAction<Set<string>>>;
+    /** The current search term for filtering students. */
     searchTerm: string;
+    /** Function to set the current search term. */
     setSearchTerm: Dispatch<SetStateAction<string>>;
+    /** A set of active class filters. */
     activeClassFilters: Set<string>;
+    /**
+     * Toggles a class filter on or off.
+     * @param className - The name of the class to toggle.
+     */
     toggleClassFilter: (className: string) => void;
+    /**
+     * Sorts the displayed students list.
+     * @param type - The sort field and direction.
+     */
     sort: (type: StudentSortType) => void;
+    /**
+     * Toggles the selection of a single student by its ID.
+     * @param id - The ID of the student to toggle.
+     */
     toggleSelect: (id: string) => void;
+    /** Toggles the selection of all currently displayed students. */
     toggleSelectAll: () => void;
+    /**
+     * Toggles the selection of all students in a specific class.
+     * @param className - The name of the class to select/deselect.
+     */
     selectWholeClass: (className: string) => void;
+    /** A list of all unique class names. */
     uniqueClasses: string[];
+    /** Indicates if all currently displayed students are selected. */
     allSelected: boolean;
+    /** Indicates if the data is currently being loaded. */
     loading: boolean;
+    /** The error message if an error occurred during fetching. */
     error: string | null;
 }
 
+/**
+ * Hook for managing a list of students with filtering, sorting, and class-based selection.
+ * 
+ * @returns An object containing student data, filter/sort state, and management functions.
+ */
 export function useStudents(): UseStudentsReturn {
     const [students, setStudents] = useState<StudentUser[]>([]);
     const [displayStudents, setDisplayStudents] = useState<StudentUser[]>([]);

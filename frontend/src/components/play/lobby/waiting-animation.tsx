@@ -11,6 +11,11 @@ const TIPS = [
     "Manchmal ist die offensichtliche Antwort die richtige.",
 ];
 
+/**
+ * WaitingAnimation component for displaying a waiting screen with tips.
+ *
+ * @returns The WaitingAnimation component.
+ */
 export function WaitingAnimation() {
     const [tipIndex, setTipIndex] = useState(0);
 

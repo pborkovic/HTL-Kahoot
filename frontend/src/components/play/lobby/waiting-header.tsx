@@ -1,3 +1,8 @@
+/**
+ * WaitingHeader component for displaying the lobby header.
+ *
+ * @returns The WaitingHeader component.
+ */
 export function WaitingHeader() {
     return (
         <div className="flex flex-col items-center gap-2 text-center">

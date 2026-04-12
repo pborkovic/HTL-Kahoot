@@ -4,6 +4,13 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Table
+ *
+ * Displays the Table component or handles Table logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
@@ -19,6 +26,13 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
   )
 }
 
+/**
+ * TableHeader
+ *
+ * Displays the TableHeader component or handles TableHeader logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
@@ -29,6 +43,13 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   )
 }
 
+/**
+ * TableBody
+ *
+ * Displays the TableBody component or handles TableBody logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
     <tbody
@@ -39,6 +60,13 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   )
 }
 
+/**
+ * TableFooter
+ *
+ * Displays the TableFooter component or handles TableFooter logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   return (
     <tfoot
@@ -52,6 +80,13 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   )
 }
 
+/**
+ * TableRow
+ *
+ * Displays the TableRow component or handles TableRow logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
@@ -65,6 +100,13 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   )
 }
 
+/**
+ * TableHead
+ *
+ * Displays the TableHead component or handles TableHead logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
@@ -78,6 +120,13 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   )
 }
 
+/**
+ * TableCell
+ *
+ * Displays the TableCell component or handles TableCell logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   return (
     <td
@@ -91,6 +140,16 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   )
 }
 
+/**
+ * TableCaption
+ *
+ * Displays the TableCaption component or handles TableCaption logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TableCaption({
   className,
   ...props
