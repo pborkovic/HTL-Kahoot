@@ -3,11 +3,29 @@
 import { useState, useEffect, useRef } from "react";
 import { LayoutDashboard, Pencil, Check } from "lucide-react";
 
+/**
+ * Props for the DashboardHeader component.
+ */
 interface DashboardHeaderProps {
+    /** The current title of the quiz. */
     readonly quizTitle?: string | null;
+    /**
+     * Optional callback function when the quiz title is changed.
+     * @param title - The new title.
+     */
     readonly onTitleChange?: (title: string) => void;
 }
 
+/**
+ * Header component for the teacher dashboard.
+ * 
+ * Displays the quiz title with an inline editing capability if `onTitleChange`
+ * is provided. Shows context-sensitive instructions based on whether the
+ * quiz is new or existing.
+ *
+ * @param props - The component props.
+ * @returns The rendered dashboard header.
+ */
 export function DashboardHeader({ quizTitle, onTitleChange }: DashboardHeaderProps) {
     const isNew = !quizTitle;
     const [editing, setEditing] = useState(false);

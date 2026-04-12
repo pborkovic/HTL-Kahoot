@@ -6,12 +6,30 @@ import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * DropdownMenu
+ *
+ * Displays the DropdownMenu component or handles DropdownMenu logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenu({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
 }
 
+/**
+ * DropdownMenuPortal
+ *
+ * Displays the DropdownMenuPortal component or handles DropdownMenuPortal logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuPortal({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
@@ -20,6 +38,15 @@ function DropdownMenuPortal({
   )
 }
 
+/**
+ * DropdownMenuTrigger
+ *
+ * Displays the DropdownMenuTrigger component or handles DropdownMenuTrigger logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuTrigger({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
@@ -31,6 +58,17 @@ function DropdownMenuTrigger({
   )
 }
 
+/**
+ * DropdownMenuContent
+ *
+ * Displays the DropdownMenuContent component or handles DropdownMenuContent logic.
+ * @param {
+ *   className,
+ *   sideOffset = 4,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuContent({
   className,
   sideOffset = 4,
@@ -51,6 +89,15 @@ function DropdownMenuContent({
   )
 }
 
+/**
+ * DropdownMenuGroup
+ *
+ * Displays the DropdownMenuGroup component or handles DropdownMenuGroup logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
@@ -59,6 +106,18 @@ function DropdownMenuGroup({
   )
 }
 
+/**
+ * DropdownMenuItem
+ *
+ * Displays the DropdownMenuItem component or handles DropdownMenuItem logic.
+ * @param {
+ *   className,
+ *   inset,
+ *   variant = "default",
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuItem({
   className,
   inset,
@@ -82,6 +141,18 @@ function DropdownMenuItem({
   )
 }
 
+/**
+ * DropdownMenuCheckboxItem
+ *
+ * Displays the DropdownMenuCheckboxItem component or handles DropdownMenuCheckboxItem logic.
+ * @param {
+ *   className,
+ *   children,
+ *   checked,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -108,6 +179,15 @@ function DropdownMenuCheckboxItem({
   )
 }
 
+/**
+ * DropdownMenuRadioGroup
+ *
+ * Displays the DropdownMenuRadioGroup component or handles DropdownMenuRadioGroup logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
@@ -119,6 +199,17 @@ function DropdownMenuRadioGroup({
   )
 }
 
+/**
+ * DropdownMenuRadioItem
+ *
+ * Displays the DropdownMenuRadioItem component or handles DropdownMenuRadioItem logic.
+ * @param {
+ *   className,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuRadioItem({
   className,
   children,
@@ -143,6 +234,17 @@ function DropdownMenuRadioItem({
   )
 }
 
+/**
+ * DropdownMenuLabel
+ *
+ * Displays the DropdownMenuLabel component or handles DropdownMenuLabel logic.
+ * @param {
+ *   className,
+ *   inset,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuLabel({
   className,
   inset,
@@ -163,6 +265,16 @@ function DropdownMenuLabel({
   )
 }
 
+/**
+ * DropdownMenuSeparator
+ *
+ * Displays the DropdownMenuSeparator component or handles DropdownMenuSeparator logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuSeparator({
   className,
   ...props
@@ -176,6 +288,16 @@ function DropdownMenuSeparator({
   )
 }
 
+/**
+ * DropdownMenuShortcut
+ *
+ * Displays the DropdownMenuShortcut component or handles DropdownMenuShortcut logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuShortcut({
   className,
   ...props
@@ -192,12 +314,33 @@ function DropdownMenuShortcut({
   )
 }
 
+/**
+ * DropdownMenuSub
+ *
+ * Displays the DropdownMenuSub component or handles DropdownMenuSub logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuSub({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
   return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
 }
 
+/**
+ * DropdownMenuSubTrigger
+ *
+ * Displays the DropdownMenuSubTrigger component or handles DropdownMenuSubTrigger logic.
+ * @param {
+ *   className,
+ *   inset,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -222,6 +365,16 @@ function DropdownMenuSubTrigger({
   )
 }
 
+/**
+ * DropdownMenuSubContent
+ *
+ * Displays the DropdownMenuSubContent component or handles DropdownMenuSubContent logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DropdownMenuSubContent({
   className,
   ...props
