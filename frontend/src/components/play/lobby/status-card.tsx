@@ -1,12 +1,25 @@
 import { UsersRound, Hash, Clock } from "lucide-react";
 
+/**
+ * Interface for the StatusCard component props.
+ */
 interface StatusInfo {
+    /** The code of the current game session. */
     gameCode: string;
+    /** The nickname of the current player. */
     nickname: string;
+    /** The total number of players in the lobby. */
     playerCount: number;
+    /** How long the player has been waiting. */
     waitingSince: string;
 }
 
+/**
+ * StatusCard component for displaying game session status information.
+ *
+ * @param props - The component props.
+ * @returns The StatusCard component.
+ */
 export function StatusCard({ gameCode, nickname, playerCount, waitingSince }: StatusInfo) {
     return (
         <div className="w-full rounded-xl bg-white/5 border border-white/10 p-4 sm:p-5 space-y-3">

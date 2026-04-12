@@ -6,16 +6,41 @@ import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Sheet
+ *
+ * Displays the Sheet component or handles Sheet logic.
+ * @param { ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
+/**
+ * SheetTrigger
+ *
+ * Displays the SheetTrigger component or handles SheetTrigger logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetTrigger({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 }
 
+/**
+ * SheetClose
+ *
+ * Displays the SheetClose component or handles SheetClose logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetClose({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Close>) {
@@ -44,6 +69,19 @@ function SheetOverlay({
   )
 }
 
+/**
+ * SheetContent
+ *
+ * Displays the SheetContent component or handles SheetContent logic.
+ * @param {
+ *   className,
+ *   children,
+ *   side = "right",
+ *   showCloseButton = true,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetContent({
   className,
   children,
@@ -85,6 +123,13 @@ function SheetContent({
   )
 }
 
+/**
+ * SheetHeader
+ *
+ * Displays the SheetHeader component or handles SheetHeader logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -95,6 +140,13 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * SheetFooter
+ *
+ * Displays the SheetFooter component or handles SheetFooter logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -105,6 +157,16 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * SheetTitle
+ *
+ * Displays the SheetTitle component or handles SheetTitle logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetTitle({
   className,
   ...props
@@ -118,6 +180,16 @@ function SheetTitle({
   )
 }
 
+/**
+ * SheetDescription
+ *
+ * Displays the SheetDescription component or handles SheetDescription logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SheetDescription({
   className,
   ...props

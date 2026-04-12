@@ -44,6 +44,12 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
+/**
+ * useSidebar
+ *
+ * Displays the useSidebar component or handles useSidebar logic.
+ * @returns The rendered component or hook result.
+ */
 function useSidebar() {
   const context = React.useContext(SidebarContext)
   if (!context) {
@@ -53,6 +59,21 @@ function useSidebar() {
   return context
 }
 
+/**
+ * SidebarProvider
+ *
+ * Displays the SidebarProvider component or handles SidebarProvider logic.
+ * @param {
+ *   defaultOpen = true,
+ *   open: openProp,
+ *   onOpenChange: setOpenProp,
+ *   className,
+ *   style,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -151,6 +172,20 @@ function SidebarProvider({
   )
 }
 
+/**
+ * Sidebar
+ *
+ * Displays the Sidebar component or handles Sidebar logic.
+ * @param {
+ *   side = "left",
+ *   variant = "sidebar",
+ *   collapsible = "offcanvas",
+ *   className,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Sidebar({
   side = "left",
   variant = "sidebar",
@@ -253,6 +288,17 @@ function Sidebar({
   )
 }
 
+/**
+ * SidebarTrigger
+ *
+ * Displays the SidebarTrigger component or handles SidebarTrigger logic.
+ * @param {
+ *   className,
+ *   onClick,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarTrigger({
   className,
   onClick,
@@ -279,6 +325,13 @@ function SidebarTrigger({
   )
 }
 
+/**
+ * SidebarRail
+ *
+ * Displays the SidebarRail component or handles SidebarRail logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar()
 
@@ -304,6 +357,13 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   )
 }
 
+/**
+ * SidebarInset
+ *
+ * Displays the SidebarInset component or handles SidebarInset logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
   return (
     <main
@@ -318,6 +378,16 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
   )
 }
 
+/**
+ * SidebarInput
+ *
+ * Displays the SidebarInput component or handles SidebarInput logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarInput({
   className,
   ...props
@@ -332,6 +402,13 @@ function SidebarInput({
   )
 }
 
+/**
+ * SidebarHeader
+ *
+ * Displays the SidebarHeader component or handles SidebarHeader logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -343,6 +420,13 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * SidebarFooter
+ *
+ * Displays the SidebarFooter component or handles SidebarFooter logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -354,6 +438,16 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * SidebarSeparator
+ *
+ * Displays the SidebarSeparator component or handles SidebarSeparator logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarSeparator({
   className,
   ...props
@@ -368,6 +462,13 @@ function SidebarSeparator({
   )
 }
 
+/**
+ * SidebarContent
+ *
+ * Displays the SidebarContent component or handles SidebarContent logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -382,6 +483,13 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * SidebarGroup
+ *
+ * Displays the SidebarGroup component or handles SidebarGroup logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -393,6 +501,17 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * SidebarGroupLabel
+ *
+ * Displays the SidebarGroupLabel component or handles SidebarGroupLabel logic.
+ * @param {
+ *   className,
+ *   asChild = false,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarGroupLabel({
   className,
   asChild = false,
@@ -414,6 +533,17 @@ function SidebarGroupLabel({
   )
 }
 
+/**
+ * SidebarGroupAction
+ *
+ * Displays the SidebarGroupAction component or handles SidebarGroupAction logic.
+ * @param {
+ *   className,
+ *   asChild = false,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarGroupAction({
   className,
   asChild = false,
@@ -437,6 +567,16 @@ function SidebarGroupAction({
   )
 }
 
+/**
+ * SidebarGroupContent
+ *
+ * Displays the SidebarGroupContent component or handles SidebarGroupContent logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarGroupContent({
   className,
   ...props
@@ -451,6 +591,13 @@ function SidebarGroupContent({
   )
 }
 
+/**
+ * SidebarMenu
+ *
+ * Displays the SidebarMenu component or handles SidebarMenu logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
   return (
     <ul
@@ -462,6 +609,13 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
   )
 }
 
+/**
+ * SidebarMenuItem
+ *
+ * Displays the SidebarMenuItem component or handles SidebarMenuItem logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
@@ -495,6 +649,21 @@ const sidebarMenuButtonVariants = cva(
   }
 )
 
+/**
+ * SidebarMenuButton
+ *
+ * Displays the SidebarMenuButton component or handles SidebarMenuButton logic.
+ * @param {
+ *   asChild = false,
+ *   isActive = false,
+ *   variant = "default",
+ *   size = "default",
+ *   tooltip,
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuButton({
   asChild = false,
   isActive = false,
@@ -545,6 +714,18 @@ function SidebarMenuButton({
   )
 }
 
+/**
+ * SidebarMenuAction
+ *
+ * Displays the SidebarMenuAction component or handles SidebarMenuAction logic.
+ * @param {
+ *   className,
+ *   asChild = false,
+ *   showOnHover = false,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuAction({
   className,
   asChild = false,
@@ -577,6 +758,16 @@ function SidebarMenuAction({
   )
 }
 
+/**
+ * SidebarMenuBadge
+ *
+ * Displays the SidebarMenuBadge component or handles SidebarMenuBadge logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuBadge({
   className,
   ...props
@@ -599,6 +790,17 @@ function SidebarMenuBadge({
   )
 }
 
+/**
+ * SidebarMenuSkeleton
+ *
+ * Displays the SidebarMenuSkeleton component or handles SidebarMenuSkeleton logic.
+ * @param {
+ *   className,
+ *   showIcon = false,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
@@ -637,6 +839,13 @@ function SidebarMenuSkeleton({
   )
 }
 
+/**
+ * SidebarMenuSub
+ *
+ * Displays the SidebarMenuSub component or handles SidebarMenuSub logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
   return (
     <ul
@@ -652,6 +861,16 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
   )
 }
 
+/**
+ * SidebarMenuSubItem
+ *
+ * Displays the SidebarMenuSubItem component or handles SidebarMenuSubItem logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuSubItem({
   className,
   ...props
@@ -666,6 +885,19 @@ function SidebarMenuSubItem({
   )
 }
 
+/**
+ * SidebarMenuSubButton
+ *
+ * Displays the SidebarMenuSubButton component or handles SidebarMenuSubButton logic.
+ * @param {
+ *   asChild = false,
+ *   size = "md",
+ *   isActive = false,
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function SidebarMenuSubButton({
   asChild = false,
   size = "md",
