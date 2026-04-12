@@ -14,17 +14,43 @@ import {
 } from "@/components/ui/table";
 import type { Question } from "@/types/question";
 
+/**
+ * Props for the QuestionsGrid component.
+ */
 interface QuestionsGridProps {
+  /** The list of questions to display. */
   questions: Question[];
+  /** A set of IDs of currently selected questions. */
   selectedIds: Set<string>;
+  /** Whether all questions in the current view are selected. */
   allSelected: boolean;
+  /** Whether question data is currently loading. */
   loading: boolean;
+  /** An error message to display, if any. */
   error: string | null;
+  /**
+   * Callback function to toggle the selection of a single question.
+   * @param id - The ID of the question to toggle.
+   */
   onToggleSelect: (id: string) => void;
+  /** Callback function to toggle selection of all questions in the current view. */
   onToggleSelectAll: () => void;
+  /**
+   * Callback function to view the details of a specific question.
+   * @param question - The question object to view.
+   */
   onViewDetail: (question: Question) => void;
 }
 
+/**
+ * A visual indicator for question difficulty using dots.
+ * 
+ * Renders a row of 5 dots, colored based on the difficulty level (1-5).
+ *
+ * @param props - The component props.
+ * @param props.difficulty - The difficulty level from 1 to 5.
+ * @returns The rendered difficulty dots.
+ */
 function DifficultyDots({ difficulty }: { difficulty: number }): ReactNode {
   return (
     <div
@@ -51,6 +77,15 @@ function DifficultyDots({ difficulty }: { difficulty: number }): ReactNode {
   );
 }
 
+/**
+ * A component that displays a list of questions in a tabular grid format.
+ * 
+ * Shows question type, title, difficulty, points, status, and creation date.
+ * Supports individual and bulk selection, and viewing question details.
+ *
+ * @param props - The component props.
+ * @returns The rendered questions grid.
+ */
 export function QuestionsGrid({
   questions,
   selectedIds,

@@ -5,13 +5,30 @@ import { QuestionDetailDialog } from "./question-detail-dialog";
 import type { UseQuestionsReturn } from "@/hooks/use-questions";
 import type { Question } from "@/types/question";
 
+/**
+ * Props for the QuestionsPanel component.
+ */
 interface QuestionsPanelProps {
+    /** The state and methods returned from the useQuestions hook. */
     questions: UseQuestionsReturn;
+    /** Optional callback function to create a new question. */
     onCreateQuestion?: () => void;
+    /** Optional callback function to edit an existing question. */
     onEditQuestion?: (question: Question) => void;
+    /** Optional callback function called when a question is deleted. */
     onQuestionDeleted?: () => void;
 }
 
+/**
+ * A comprehensive panel for managing questions in a quiz session.
+ * 
+ * Orchestrates question filtering, selection, and table display. Also
+ * handles the display of question details and provides an entry point for
+ * creating new questions.
+ *
+ * @param props - The component props.
+ * @returns The rendered questions panel.
+ */
 export function QuestionsPanel({ questions: q, onCreateQuestion, onEditQuestion, onQuestionDeleted }: QuestionsPanelProps) {
     return (
         <>
