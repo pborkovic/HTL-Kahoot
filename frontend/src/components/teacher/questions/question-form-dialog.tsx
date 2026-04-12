@@ -28,22 +28,49 @@ interface AnswerOptionForm {
     is_correct: boolean;
 }
 
+/**
+ * Props for the QuestionFormDialog component.
+ */
 interface QuestionFormDialogProps {
+    /** Whether the dialog is currently open. */
     readonly open: boolean;
+    /** The question object to edit, or null to create a new question. */
     readonly question: Question | null;
+    /** Callback function to close the dialog. */
     readonly onClose: () => void;
+    /** Callback function called after the question is successfully saved. */
     readonly onSaved: () => void;
 }
 
+/**
+ * Creates a new empty answer option with a unique ID.
+ *
+ * @returns A new AnswerOptionForm object.
+ */
 function createEmptyOption(): AnswerOptionForm {
     return { id: crypto.randomUUID(), text: "", is_correct: false };
 }
 
+/**
+ * Infers the media type (image, video, etc.) based on a file's MIME type.
+ *
+ * @param file - The file to check.
+ * @returns The inferred media type.
+ */
 function inferMediaType(file: File): "image" | "video" | "code_snippet" {
     if (file.type.startsWith("video/")) return "video";
     return "image";
 }
 
+/**
+ * A dialog component providing a comprehensive form to create or edit a question.
+ * 
+ * Supports configuring question text, type, difficulty, time limits, points,
+ * answer options, and media attachments (images/videos).
+ *
+ * @param props - The component props.
+ * @returns The rendered question form dialog.
+ */
 export function QuestionFormDialog({ open, question, onClose, onSaved }: QuestionFormDialogProps) {
     const isEdit = !!question;
     const fileInputRef = useRef<HTMLInputElement>(null);

@@ -11,13 +11,29 @@ import {
 } from "@/components/ui/dialog";
 import type { Question } from "@/types/question";
 
+/**
+ * Props for the QuestionDetailDialog component.
+ */
 interface QuestionDetailDialogProps {
+    /** The question to display details for. If null, the dialog is closed. */
     question: Question | null;
+    /** Callback function to close the dialog. */
     onClose: () => void;
+    /** Optional callback function to initiate editing the question. */
     onEdit?: (question: Question) => void;
+    /** Optional callback function called after the question is successfully deleted. */
     onDeleted?: () => void;
 }
 
+/**
+ * A dialog component that displays comprehensive details for a specific question.
+ * 
+ * Shows version information, difficulty, media, explanation, and answer options.
+ * Provides actions for editing or deleting the question.
+ *
+ * @param props - The component props.
+ * @returns The rendered question detail dialog.
+ */
 export function QuestionDetailDialog({ question, onClose, onEdit, onDeleted }: QuestionDetailDialogProps) {
     const [deleting, setDeleting] = useState(false);
 
