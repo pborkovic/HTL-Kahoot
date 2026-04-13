@@ -1,10 +1,24 @@
 import { Users } from "lucide-react";
 
+/**
+ * Props for the ResponseCounter component.
+ */
 interface ResponseCounterProps {
+    /** The number of responses received so far. */
     totalResponses: number;
+    /** The total number of participants in the session. */
     totalParticipants: number;
 }
 
+/**
+ * A component that displays the progress of responses in a live game session.
+ * 
+ * Shows a numerical count and a progress bar indicating how many participants
+ * have submitted their answers.
+ *
+ * @param props - The component props.
+ * @returns The rendered response counter.
+ */
 export function ResponseCounter({ totalResponses, totalParticipants }: ResponseCounterProps) {
     const fraction = totalParticipants > 0 ? totalResponses / totalParticipants : 0;
 

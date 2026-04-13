@@ -3,10 +3,23 @@ import { StudentFilters } from "./student-filters";
 import { StudentTable } from "./student-table";
 import type { UseStudentsReturn } from "@/hooks/use-students";
 
+/**
+ * Props for the StudentsPanel component.
+ */
 interface StudentsPanelProps {
+    /** The state and methods returned from the useStudents hook. */
     students: UseStudentsReturn;
 }
 
+/**
+ * A comprehensive panel for managing students in a quiz session.
+ * 
+ * Orchestrates student filtering, selection, and table display using the
+ * provided students hook state.
+ *
+ * @param props - The component props.
+ * @returns The rendered students panel.
+ */
 export function StudentsPanel({ students: s }: StudentsPanelProps) {
     return (
         <div className="backdrop-blur-xl bg-card/60 dark:bg-card/40 border border-primary/15 rounded-2xl shadow-xl shadow-primary/5 overflow-hidden">

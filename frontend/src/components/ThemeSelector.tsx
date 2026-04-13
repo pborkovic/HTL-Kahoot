@@ -3,6 +3,13 @@ import { Sun, Moon, Contrast, Eye } from "lucide-react";
 import { useTheme, THEMES, type Theme } from "./ThemeProvider";
 import { useState, useRef, useEffect } from "react";
 
+/**
+ * A helper component that renders the appropriate Lucide icon for a given theme.
+ *
+ * @param {Object} props - The component props.
+ * @param {Theme} props.theme - The theme for which to display an icon.
+ * @returns {JSX.Element} The rendered icon.
+ */
 function ThemeIcon({ theme }: { theme: Theme }) {
     if (theme === "dark")                    return <Moon className="w-4 h-4" />;
     if (theme === "high-contrast")           return <Contrast className="w-4 h-4" />;
@@ -12,12 +19,23 @@ function ThemeIcon({ theme }: { theme: Theme }) {
     return <Sun className="w-4 h-4" />;
 }
 
+/**
+ * A dropdown component that allows the user to select their preferred application theme.
+ * It detects clicks outside the dropdown to automatically close it.
+ *
+ * @returns {JSX.Element} The rendered theme selector.
+ */
 export function ThemeSelector() {
     const { theme, setTheme } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        /**
+         * Closes the dropdown if a click is detected outside the component.
+         *
+         * @param {MouseEvent} event - The mouse event.
+         */
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsOpen(false);

@@ -1,11 +1,25 @@
 import { UsersRound, Wifi, WifiOff, UserPlus } from "lucide-react";
 import type { Participant } from "@/types/participant";
 
+/**
+ * Props for the ParticipantsPanel component.
+ */
 interface ParticipantsPanelProps {
+    /** The list of participants who have joined the lobby. */
     participants: Participant[];
+    /** The number of participants currently connected. */
     connectedCount: number;
 }
 
+/**
+ * A panel that displays a list of participants who have joined the game lobby.
+ * 
+ * Shows each participant's nickname and their current connection status (online/offline).
+ * Displays a placeholder message if no participants have joined yet.
+ *
+ * @param props - The component props.
+ * @returns The rendered participants panel.
+ */
 export function ParticipantsPanel({ participants, connectedCount }: ParticipantsPanelProps) {
     return (
         <div className="bg-card border border-border/60 rounded-xl overflow-hidden flex flex-col">

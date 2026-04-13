@@ -1,11 +1,25 @@
 import { Trophy } from "lucide-react";
 import type { LeaderboardEntry } from "@/types/session";
 
+/**
+ * Props for the LeaderboardPanel component.
+ */
 interface LeaderboardPanelProps {
+    /** The list of leaderboard entries to display. */
     entries: LeaderboardEntry[];
+    /** Maximum number of entries to show (defaults to 5). */
     maxEntries?: number;
 }
 
+/**
+ * A panel that displays the current top participants in a game session.
+ * 
+ * Shows participant nicknames, ranks, and total scores. Ranks 1, 2, and 3
+ * are highlighted with distinct colors.
+ *
+ * @param props - The component props.
+ * @returns The rendered leaderboard panel.
+ */
 export function LeaderboardPanel({ entries, maxEntries = 5 }: LeaderboardPanelProps) {
     const visible = entries.slice(0, maxEntries);
 

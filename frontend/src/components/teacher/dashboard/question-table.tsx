@@ -11,17 +11,43 @@ import {
 } from "@/components/ui/table";
 import type { Question } from "@/types/question";
 
+/**
+ * Props for the QuestionTable component.
+ */
 interface QuestionTableProps {
+    /** The list of questions to display. */
     questions: Question[];
+    /** A set of IDs of currently selected questions. */
     selectedIds: Set<string>;
+    /** Whether all questions in the current view are selected. */
     allSelected: boolean;
+    /** Whether question data is currently loading. */
     loading: boolean;
+    /** An error message to display, if any. */
     error: string | null;
+    /**
+     * Callback function to toggle the selection of a single question.
+     * @param id - The ID of the question to toggle.
+     */
     onToggleSelect: (id: string) => void;
+    /** Callback function to toggle selection of all questions in the current view. */
     onToggleSelectAll: () => void;
+    /**
+     * Callback function to view the details of a specific question.
+     * @param question - The question object to view.
+     */
     onViewDetail: (question: Question) => void;
 }
 
+/**
+ * A visual indicator for question difficulty.
+ * 
+ * Renders a row of 5 dots, colored based on the difficulty level (1-5).
+ *
+ * @param props - The component props.
+ * @param props.difficulty - The difficulty level from 1 to 5.
+ * @returns The rendered difficulty indicator.
+ */
 function DifficultyIndicator({ difficulty }: { difficulty: number }) {
     return (
         <div className="flex items-center gap-0.5 justify-center" title={`${difficulty}/5`}>
@@ -43,6 +69,15 @@ function DifficultyIndicator({ difficulty }: { difficulty: number }) {
     );
 }
 
+/**
+ * A table component that displays a list of questions with management capabilities.
+ * 
+ * Shows question type, title, difficulty, and publication status. Supports
+ * selection and viewing question details.
+ *
+ * @param props - The component props.
+ * @returns The rendered question table.
+ */
 export function QuestionTable({
     questions,
     selectedIds,

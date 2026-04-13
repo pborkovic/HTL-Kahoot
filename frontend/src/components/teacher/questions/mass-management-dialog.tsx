@@ -65,6 +65,12 @@ type ImportFormat = "json" | "gift";
 
 const ACCEPT_STRING: string = ".json,.gift,.txt";
 
+/**
+ * Detects the import format based on the file extension.
+ *
+ * @param file - The file to check.
+ * @returns The detected import format ('json' or 'gift').
+ */
 function detectFormat(file: File): ImportFormat {
   const name: string = file.name.toLowerCase();
   if (name.endsWith(".gift")) return "gift";
@@ -72,6 +78,32 @@ function detectFormat(file: File): ImportFormat {
   return "json";
 }
 
+/**
+ * Props for the MassManagementDialog component.
+ */
+interface MassManagementDialogProps {
+  /** Whether the dialog is currently open. */
+  open: boolean;
+  /** Callback function to close the dialog. */
+  onClose: () => void;
+  /** The full list of questions available for export. */
+  questions: Question[];
+  /** A set of IDs of currently selected questions for targeted export. */
+  selectedIds: Set<string>;
+  /** Callback function called after a successful import. */
+  onImportComplete: () => void;
+}
+
+/**
+ * A dialog component for bulk importing and exporting questions.
+ * 
+ * Supports importing questions from JSON and Moodle GIFT formats via
+ * drag-and-drop or file selection. Allows exporting selected or all
+ * questions to a JSON file.
+ *
+ * @param props - The component props.
+ * @returns The rendered mass management dialog.
+ */
 export function MassManagementDialog({
   open,
   onClose,

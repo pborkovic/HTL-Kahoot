@@ -3,6 +3,16 @@ import { Check, X, Loader2, ThumbsUp, ThumbsDown } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { StudentQuestionReviewProps, FullReviewResponse } from "@/types/review";
 
+/**
+ * A component that allows teachers to review a student's performance in a game session.
+ * 
+ * Displays each question, the student's answer, and whether it was correct.
+ * For free-text questions, it provides a mechanism for teachers to manually
+ * override the evaluation result.
+ *
+ * @param props - The component props (studentId and gamePin).
+ * @returns The rendered student question review panel.
+ */
 export default function StudentQuestionReview({ studentId, gamePin }: StudentQuestionReviewProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [fullReview, setFullReview] = useState<FullReviewResponse | null>(null);

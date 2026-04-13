@@ -21,20 +21,38 @@ import {
 } from "@/components/ui/select";
 import type { Role, Permission } from "@/types/auth";
 
+/**
+ * Props for the RolesPanel component.
+ */
 interface RolesPanelProps {
+    /** The list of all available roles. */
     roles: Role[];
+    /** The list of all available permissions. */
     permissions: Permission[];
+    /** Whether the current user has superadmin privileges. */
     isSuperadmin: boolean;
+    /** Callback to create a new role. */
     onCreateRole: (name: string) => Promise<void>;
+    /** Callback to delete an existing role. */
     onDeleteRole: (roleId: string) => Promise<void>;
+    /** Callback to add a permission to a role. */
     onAddPermission: (roleId: string, permissionId: string) => Promise<void>;
+    /** Callback to remove a permission from a role. */
     onRemovePermission: (roleId: string, permissionId: string) => Promise<void>;
+    /** Callback to create a new permission. */
     onCreatePermission: (name: string) => Promise<void>;
+    /** Callback to delete an existing permission. */
     onDeletePermission: (permissionId: string) => Promise<void>;
 }
 
 type Tab = "roles" | "permissions";
 
+/**
+ * RolesPanel component for managing user roles and permissions.
+ *
+ * @param props - The component props.
+ * @returns The RolesPanel component or null if the user is not a superadmin.
+ */
 export function RolesPanel({
     roles,
     permissions,
@@ -56,6 +74,9 @@ export function RolesPanel({
         ? permissions.filter(p => !selectedRole.permissions?.some(rp => rp.id === p.id))
         : [];
 
+    /**
+     * Handles the creation of a new role.
+     */
     function handleCreateRole() {
         const trimmed = newRoleName.trim();
         if (!trimmed) {
@@ -65,6 +86,9 @@ export function RolesPanel({
         setNewRoleName("");
     }
 
+    /**
+     * Handles the creation of a new permission.
+     */
     function handleCreatePermission() {
         const trimmed = newPermName.trim();
         if (!trimmed) {

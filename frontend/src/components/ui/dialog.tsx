@@ -7,30 +7,76 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
+/**
+ * Dialog
+ *
+ * Displays the Dialog component or handles Dialog logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
+/**
+ * DialogTrigger
+ *
+ * Displays the DialogTrigger component or handles DialogTrigger logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogTrigger({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
+/**
+ * DialogPortal
+ *
+ * Displays the DialogPortal component or handles DialogPortal logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogPortal({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
+/**
+ * DialogClose
+ *
+ * Displays the DialogClose component or handles DialogClose logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogClose({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
 
+/**
+ * DialogOverlay
+ *
+ * Displays the DialogOverlay component or handles DialogOverlay logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogOverlay({
   className,
   ...props
@@ -47,6 +93,18 @@ function DialogOverlay({
   )
 }
 
+/**
+ * DialogContent
+ *
+ * Displays the DialogContent component or handles DialogContent logic.
+ * @param {
+ *   className,
+ *   children,
+ *   showCloseButton = true,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogContent({
   className,
   children,
@@ -81,6 +139,13 @@ function DialogContent({
   )
 }
 
+/**
+ * DialogHeader
+ *
+ * Displays the DialogHeader component or handles DialogHeader logic.
+ * @param { className, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -91,6 +156,18 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * DialogFooter
+ *
+ * Displays the DialogFooter component or handles DialogFooter logic.
+ * @param {
+ *   className,
+ *   showCloseButton = false,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogFooter({
   className,
   showCloseButton = false,
@@ -118,6 +195,16 @@ function DialogFooter({
   )
 }
 
+/**
+ * DialogTitle
+ *
+ * Displays the DialogTitle component or handles DialogTitle logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogTitle({
   className,
   ...props
@@ -131,6 +218,16 @@ function DialogTitle({
   )
 }
 
+/**
+ * DialogDescription
+ *
+ * Displays the DialogDescription component or handles DialogDescription logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function DialogDescription({
   className,
   ...props

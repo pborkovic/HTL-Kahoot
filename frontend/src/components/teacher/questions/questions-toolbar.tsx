@@ -17,18 +17,50 @@ import {
 type SortField = "created_at" | "updated_at" | "type";
 type SortDirection = "asc" | "desc";
 
+/**
+ * Props for the QuestionsToolbar component.
+ */
 interface QuestionsToolbarProps {
+  /** The current search term for filtering questions. */
   searchTerm: string;
+  /**
+   * Callback function when the search term changes.
+   * @param value - The new search term.
+   */
   onSearchChange: (value: string) => void;
+  /** List of unique question types available for filtering. */
   uniqueTypes: string[];
+  /** Set of currently active question type filters. */
   activeFilters: Set<string>;
+  /**
+   * Callback function to toggle a specific question type filter.
+   * @param type - The question type to toggle.
+   */
   onToggleFilter: (type: string) => void;
+  /**
+   * Callback function to sort the question list.
+   * @param field - The field to sort by.
+   * @param direction - The sort direction (asc or desc).
+   */
   onSort: (field: SortField, direction: SortDirection) => void;
+  /** The total count of questions available. */
   totalCount: number;
+  /** The number of questions currently selected. */
   selectedCount: number;
+  /** Callback function to open the mass management (import/export) dialog. */
   onOpenMassManagement: () => void;
 }
 
+/**
+ * A toolbar component for managing questions.
+ * 
+ * Provides inputs for searching, type filtering, sorting, and access to mass
+ * management features (import/export). Displays summary information about
+ * selections and total counts.
+ *
+ * @param props - The component props.
+ * @returns The rendered questions toolbar.
+ */
 export function QuestionsToolbar({
   searchTerm,
   onSearchChange,

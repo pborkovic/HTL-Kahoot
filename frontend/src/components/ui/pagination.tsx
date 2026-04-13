@@ -8,6 +8,13 @@ interface PaginationProps {
     onPageChange: (page: number) => void;
 }
 
+/**
+ * Pagination
+ *
+ * Displays the Pagination component or handles Pagination logic.
+ * @param { meta, onPageChange } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 export function Pagination({ meta, onPageChange }: PaginationProps) {
     const { current_page, last_page, total, per_page } = meta;
 

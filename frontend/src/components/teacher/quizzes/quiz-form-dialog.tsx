@@ -24,13 +24,29 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Quiz } from "@/types/quiz";
 
+/**
+ * Props for the QuizFormDialog component.
+ */
 interface QuizFormDialogProps {
+    /** Whether the dialog is currently open. */
     readonly open: boolean;
+    /** The quiz object to edit, or null to create a new quiz. */
     readonly quiz: Quiz | null;
+    /** Callback function to close the dialog. */
     readonly onClose: () => void;
+    /** Callback function called after the quiz is successfully saved. */
     readonly onSaved: () => void;
 }
 
+/**
+ * A dialog component providing a form to create or edit a quiz.
+ * 
+ * Handles quiz metadata such as title, description, timing modes,
+ * scoring preferences, and question randomization.
+ *
+ * @param props - The component props.
+ * @returns The rendered quiz form dialog.
+ */
 export function QuizFormDialog({ open, quiz, onClose, onSaved }: QuizFormDialogProps) {
     const router = useRouter();
     const isEdit = !!quiz;

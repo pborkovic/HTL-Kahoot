@@ -11,15 +11,43 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * Props for the QuestionFilters component.
+ */
 interface QuestionFiltersProps {
+    /** The current search term for filtering questions. */
     searchTerm: string;
+    /**
+     * Callback function when the search term changes.
+     * @param value - The new search term.
+     */
     onSearchChange: (value: string) => void;
+    /** List of unique question types available for filtering. */
     uniqueTypes: string[];
+    /** Set of currently active question type filters. */
     activeFilters: Set<string>;
+    /**
+     * Callback function to toggle a specific question type filter.
+     * @param type - The question type to toggle.
+     */
     onToggleFilter: (type: string) => void;
+    /**
+     * Callback function to sort the question list.
+     * @param field - The field to sort by.
+     * @param direction - The sort direction (asc or desc).
+     */
     onSort: (field: "created_at" | "updated_at" | "type", direction: "asc" | "desc") => void;
 }
 
+/**
+ * A filtering and search component for the question management panel.
+ * 
+ * Includes a search input, a type-based filtering popover with checkboxes,
+ * and a sorting dropdown for creation date and type.
+ *
+ * @param props - The component props.
+ * @returns The rendered question filters.
+ */
 export function QuestionFilters({
     searchTerm,
     onSearchChange,

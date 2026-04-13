@@ -10,12 +10,24 @@ import {
 } from "@/components/ui/dialog";
 import type { ReportParticipant } from "@/types/report";
 
+/**
+ * Props for the StudentDetailDialog component.
+ */
 interface StudentDetailDialogProps {
+    /** The participant whose details are being displayed. If null, the dialog is closed. */
     readonly participant: ReportParticipant | null;
+    /** The total number of questions in the quiz session. */
     readonly totalQuestions: number;
+    /** Callback function to close the dialog. */
     readonly onClose: () => void;
 }
 
+/**
+ * Formats a duration in milliseconds into a human-readable string.
+ *
+ * @param ms - The duration in milliseconds, or null if not available.
+ * @returns A formatted string (e.g., "1.5s" or "500ms") or a placeholder if null.
+ */
 function formatTime(ms: number | null): string {
     if (ms === null) {
         return "—";
@@ -26,6 +38,15 @@ function formatTime(ms: number | null): string {
     return `${(ms / 1000).toFixed(1)}s`;
 }
 
+/**
+ * A dialog component that displays detailed results for a specific student in a report.
+ * 
+ * Shows overall statistics (score, correct answers, average time) and a
+ * breakdown of the student's response for every question in the session.
+ *
+ * @param props - The component props.
+ * @returns The rendered student detail dialog.
+ */
 export function StudentDetailDialog({ participant, totalQuestions, onClose }: StudentDetailDialogProps) {
     if (!participant) {
         return null;

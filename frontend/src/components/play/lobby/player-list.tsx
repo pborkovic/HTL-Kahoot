@@ -1,10 +1,21 @@
 import type { Participant } from "@/types/participant";
 
+/**
+ * Props for the PlayerList component.
+ */
 interface PlayerListProps {
+    /** The list of participants in the game. */
     participants: Participant[];
+    /** The ID of the current player. */
     currentPlayerId: string;
 }
 
+/**
+ * PlayerList component for displaying the list of players in the lobby.
+ *
+ * @param props - The component props.
+ * @returns The PlayerList component.
+ */
 export function PlayerList({ participants, currentPlayerId }: PlayerListProps) {
     return (
         <div className="w-full rounded-xl bg-white/5 border border-white/10 p-4 sm:p-5 space-y-3">

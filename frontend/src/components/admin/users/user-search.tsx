@@ -1,13 +1,26 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
+/**
+ * Props for the UserSearch component.
+ */
 interface UserSearchProps {
+    /** The current search term. */
     searchTerm: string;
+    /** Callback when the search term changes. */
     onSearchChange: (value: string) => void;
+    /** The number of results found for the current search term. */
     resultCount: number;
+    /** The total number of users. */
     totalCount: number;
 }
 
+/**
+ * UserSearch component for filtering the user list.
+ *
+ * @param props - The component props.
+ * @returns The UserSearch component.
+ */
 export function UserSearch({ searchTerm, onSearchChange, resultCount, totalCount }: UserSearchProps) {
     return (
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">

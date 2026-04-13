@@ -10,13 +10,29 @@ import {
 } from "@/components/ui/table";
 import type { Quiz } from "@/types/quiz";
 
+/**
+ * Props for the QuizTable component.
+ */
 interface QuizTableProps {
+    /** The list of quizzes to display. */
     readonly quizzes: Quiz[];
+    /** Whether the quiz data is currently loading. */
     readonly loading: boolean;
+    /** An error message to display, if any. */
     readonly error: string | null;
+    /**
+     * Callback function to view the details of a specific quiz.
+     * @param quiz - The quiz object to view.
+     */
     readonly onViewDetail: (quiz: Quiz) => void;
 }
 
+/**
+ * Formats an ISO date string into a localized German date string.
+ *
+ * @param dateStr - The date string to format.
+ * @returns A formatted date string (e.g., "01.01.2023").
+ */
 function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString("de-DE", {
         day: "2-digit",
@@ -25,6 +41,12 @@ function formatDate(dateStr: string): string {
     });
 }
 
+/**
+ * Returns a human-readable label for a session status.
+ *
+ * @param status - The session status identifier.
+ * @returns A German label for the status.
+ */
 function statusLabel(status: string): string {
     switch (status) {
         case "lobby": return "Lobby";
@@ -34,6 +56,12 @@ function statusLabel(status: string): string {
     }
 }
 
+/**
+ * Returns CSS class names for status-specific styling.
+ *
+ * @param status - The session status identifier.
+ * @returns A string of Tailwind CSS classes.
+ */
 function statusColor(status: string): string {
     switch (status) {
         case "finished": return "border-emerald-300/60 text-emerald-600 bg-emerald-500/5";
@@ -43,6 +71,15 @@ function statusColor(status: string): string {
     }
 }
 
+/**
+ * A table component that displays a list of quizzes with summary statistics.
+ * 
+ * Shows quiz title, question count, participant count, session count,
+ * latest session status, and creation date.
+ *
+ * @param props - The component props.
+ * @returns The rendered quiz table.
+ */
 export function QuizTable({ quizzes, loading, error, onViewDetail }: QuizTableProps) {
     if (loading) {
         return (

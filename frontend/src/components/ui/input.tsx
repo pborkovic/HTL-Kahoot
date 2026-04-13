@@ -2,6 +2,13 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Input
+ *
+ * Displays the Input component or handles Input logic.
+ * @param { className, type, ...props } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <input

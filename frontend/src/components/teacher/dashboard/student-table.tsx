@@ -10,16 +10,38 @@ import {
 } from "@/components/ui/table";
 import type { StudentUser } from "@/types/student";
 
+/**
+ * Props for the StudentTable component.
+ */
 interface StudentTableProps {
+    /** The list of students to display in the table. */
     students: StudentUser[];
+    /** A set of IDs of currently selected students. */
     selectedIds: Set<string>;
+    /** Whether all students in the current view are selected. */
     allSelected: boolean;
+    /** Whether student data is currently loading. */
     loading: boolean;
+    /** An error message to display, if any. */
     error: string | null;
+    /**
+     * Callback function to toggle the selection of a single student.
+     * @param id - The ID of the student to toggle.
+     */
     onToggleSelect: (id: string) => void;
+    /** Callback function to toggle selection of all students in the current view. */
     onToggleSelectAll: () => void;
 }
 
+/**
+ * A table component that displays a list of students with selection capabilities.
+ * 
+ * Supports displaying names, classes, and email addresses. Handles loading
+ * and error states, and provides checkboxes for individual and bulk selection.
+ *
+ * @param props - The component props.
+ * @returns The rendered student table.
+ */
 export function StudentTable({
     students,
     selectedIds,

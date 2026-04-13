@@ -1,11 +1,23 @@
 import { CheckCircle2, XCircle, Flame, Send } from "lucide-react";
 
+/**
+ * Props for the AnswerFeedback component.
+ */
 interface AnswerFeedbackProps {
+    /** Whether the answer was correct, incorrect, or not yet evaluated (null). */
     isCorrect: boolean | null;
+    /** The number of points awarded for the answer. */
     scoreAwarded: number;
+    /** The current streak of correct answers. */
     answerStreak?: number;
 }
 
+/**
+ * AnswerFeedback component for displaying feedback after an answer is submitted.
+ *
+ * @param props - The component props.
+ * @returns The AnswerFeedback component.
+ */
 export function AnswerFeedback({ isCorrect, scoreAwarded, answerStreak = 0 }: AnswerFeedbackProps) {
     return (
         <div className="flex flex-col items-center gap-4 py-8">

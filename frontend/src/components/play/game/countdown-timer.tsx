@@ -2,12 +2,26 @@
 
 import { useState, useEffect, useRef } from "react";
 
+/**
+ * Props for the CountdownTimer component.
+ */
 interface CountdownTimerProps {
+    /** ISO date string indicating when the timer started. */
     openedAt: string;
+    /** The total time limit in seconds. */
     timeLimit: number;
+    /** Callback function called when the timer reaches zero. */
     onExpired: () => void;
 }
 
+/**
+ * A circular countdown timer that synchronizes with a server-provided start time.
+ * 
+ * Displays remaining seconds and a progress ring that changes color when time is running out.
+ *
+ * @param props - The component props.
+ * @returns The rendered countdown timer.
+ */
 export function CountdownTimer({ openedAt, timeLimit, onExpired }: CountdownTimerProps) {
     const [remaining, setRemaining] = useState(timeLimit);
     const expiredRef = useRef(false);

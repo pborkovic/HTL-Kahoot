@@ -1,18 +1,39 @@
 import { Play, HelpCircle, Users, Loader2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Props for the LobbyButton component.
+ */
 interface LobbyButtonProps {
+    /** Whether the teacher is allowed to create a lobby (e.g., has selections). */
     canCreate: boolean;
+    /** Whether the teacher is allowed to save the quiz. */
     canSave: boolean;
+    /** Whether a lobby creation request is in progress. */
     isCreating: boolean;
+    /** Whether a quiz save request is in progress. */
     isSaving: boolean;
+    /** Number of questions currently selected. */
     selectedQuestionsCount: number;
+    /** Number of students currently selected. */
     selectedStudentsCount: number;
+    /** Callback function to create a new game lobby. */
     onCreateLobby: () => void;
+    /** Callback function to save the current quiz configuration. */
     onSaveQuiz: () => void;
+    /** Error message from a failed lobby creation. */
     createError: string | null;
 }
 
+/**
+ * A control panel with actions to start a game lobby or save the current quiz.
+ * 
+ * Displays visual summaries of selected questions and students, and handles
+ * loading states and errors for its primary actions.
+ *
+ * @param props - The component props.
+ * @returns The rendered lobby button panel.
+ */
 export function LobbyButton({
     canCreate,
     canSave,

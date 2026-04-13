@@ -11,12 +11,27 @@ const OPTION_COLORS = [
 
 const OPTION_SHAPES = ["◆", "●", "▲", "■", "★", "⬟"];
 
+/**
+ * Props for the QuestionCard component.
+ */
 interface QuestionCardProps {
+    /** The text of the question to display. */
     questionText: string;
+    /** The list of answer options associated with the question. */
     answerOptions: AnswerOption[];
+    /** Optional media items (images or videos) to display with the question. */
     media?: QuestionMediaItem[];
 }
 
+/**
+ * A card component that displays the current question, its media, and answer options.
+ * 
+ * Used during the active phase of a game session to show participants and the
+ * teacher what is being asked.
+ *
+ * @param props - The component props.
+ * @returns The rendered question card.
+ */
 export function QuestionCard({ questionText, answerOptions, media }: QuestionCardProps) {
     return (
         <div className="bg-card border border-border/60 rounded-xl overflow-hidden">

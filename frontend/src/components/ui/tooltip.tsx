@@ -5,6 +5,16 @@ import { Tooltip as TooltipPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * TooltipProvider
+ *
+ * Displays the TooltipProvider component or handles TooltipProvider logic.
+ * @param {
+ *   delayDuration = 0,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TooltipProvider({
   delayDuration = 0,
   ...props
@@ -18,18 +28,48 @@ function TooltipProvider({
   )
 }
 
+/**
+ * Tooltip
+ *
+ * Displays the Tooltip component or handles Tooltip logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Tooltip({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
 }
 
+/**
+ * TooltipTrigger
+ *
+ * Displays the TooltipTrigger component or handles TooltipTrigger logic.
+ * @param {
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TooltipTrigger({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
+/**
+ * TooltipContent
+ *
+ * Displays the TooltipContent component or handles TooltipContent logic.
+ * @param {
+ *   className,
+ *   sideOffset = 0,
+ *   children,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function TooltipContent({
   className,
   sideOffset = 0,

@@ -5,26 +5,65 @@ import { apiFetch } from "@/lib/api";
 import type { Quiz, QuizzesResponse } from "@/types/quiz";
 import type { PaginationMeta } from "@/types/question";
 
+/**
+ * Possible directions for sorting.
+ */
 type SortDirection = "asc" | "desc";
+
+/**
+ * Available fields for sorting quizzes.
+ */
 type QuizSortField = "created_at" | "title" | "is_published";
 
+/**
+ * Return type for the useQuizzes hook.
+ */
 export interface UseQuizzesReturn {
+    /** The list of quizzes fetched from the API. */
     quizzes: Quiz[];
+    /** The current search term for filtering quizzes. */
     searchTerm: string;
+    /**
+     * Sets the search term and resets the page to 1.
+     * @param value - The new search term.
+     */
     setSearchTerm: (value: string) => void;
+    /** The field currently used for sorting. */
     sortField: QuizSortField;
+    /** The direction of the sort. */
     sortDirection: SortDirection;
+    /**
+     * Sets the sort field and direction, and resets the page to 1.
+     * @param field - The field to sort by.
+     * @param direction - The direction to sort in.
+     */
     sort: (field: QuizSortField, direction: SortDirection) => void;
+    /** Indicates if the quizzes are currently being loaded. */
     loading: boolean;
+    /** The error message if an error occurred during fetching. */
     error: string | null;
+    /** Pagination metadata for the quizzes list. */
     meta: PaginationMeta | null;
+    /** The current page number for pagination. */
     page: number;
+    /**
+     * Sets the current page number.
+     * @param page - The new page number.
+     */
     setPage: (page: number) => void;
+    /** The quiz currently being viewed in detail. */
     detailQuiz: Quiz | null;
+    /** Function to set the quiz currently being viewed in detail. */
     setDetailQuiz: Dispatch<SetStateAction<Quiz | null>>;
+    /** Manually refetches the quizzes from the API. */
     refetch: () => void;
 }
 
+/**
+ * Hook for managing a list of quizzes with filtering, sorting, and pagination.
+ * 
+ * @returns An object containing quiz data, filter/sort state, and management functions.
+ */
 export function useQuizzes(): UseQuizzesReturn {
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [searchTerm, setSearchTermState] = useState<string>("");

@@ -10,11 +10,25 @@ const BAR_COLORS = [
     "bg-pink-500",
 ];
 
+/**
+ * Props for the AnswerDistribution component.
+ */
 interface AnswerDistributionProps {
+    /** The distribution of responses across different answer options. */
     distribution: QuestionResultOption[];
+    /** The total number of responses received. */
     totalResponses: number;
 }
 
+/**
+ * A component that visualizes the distribution of answers for a question.
+ * 
+ * Displays horizontal bars representing the number of participants who chose
+ * each option, with correct answers highlighted.
+ *
+ * @param props - The component props.
+ * @returns The rendered answer distribution panel.
+ */
 export function AnswerDistribution({ distribution, totalResponses }: AnswerDistributionProps) {
     const maxCount = Math.max(1, ...distribution.map((d) => d.count));
 

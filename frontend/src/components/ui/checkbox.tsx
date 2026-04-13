@@ -6,6 +6,16 @@ import { Checkbox as CheckboxPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Checkbox
+ *
+ * Displays the Checkbox component or handles Checkbox logic.
+ * @param {
+ *   className,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Checkbox({
   className,
   ...props

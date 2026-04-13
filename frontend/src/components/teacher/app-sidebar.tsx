@@ -44,6 +44,15 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * Displays a user avatar with an optional image or fallback initials.
+ *
+ * @param props - The component props.
+ * @param props.avatarUrl - The URL of the avatar image.
+ * @param props.initials - Fallback initials to display if no image is available.
+ * @param props.displayName - The name to use for the image's alt text.
+ * @returns The rendered user avatar.
+ */
 function UserAvatar({
     avatarUrl,
     initials,
@@ -137,6 +146,12 @@ const feedbackItem = {
     icon: MessageSquare,
 };
 
+/**
+ * AppSidebar
+ *
+ * Displays the AppSidebar component or handles AppSidebar logic.
+ * @returns The rendered component or hook result.
+ */
 export function AppSidebar(): ReactNode {
     const pathname = usePathname();
     const { user, logout } = useAuth();
@@ -162,7 +177,7 @@ export function AppSidebar(): ReactNode {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={isTeacher ? "/teacher/dashboard" : isStudent ? "/student/dashboard" : "/home"}>
+                            <Link href={isTeacher ? "/frontend/src/app/(session)/teacher/dashboard" : isStudent ? "/student/dashboard" : "/home"}>
                                 <div className="size-8 rounded-xl bg-primary/15 backdrop-blur-sm border border-primary/20 flex items-center justify-center shrink-0">
                                     <MonitorPlay className="size-4 text-primary" />
                                 </div>

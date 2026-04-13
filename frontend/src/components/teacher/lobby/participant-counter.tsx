@@ -1,8 +1,22 @@
+/**
+ * Props for the ParticipantCounter component.
+ */
 interface ParticipantCounterProps {
+    /** The total number of participants who have joined. */
     total: number;
+    /** The number of participants currently connected. */
     connectedCount: number;
 }
 
+/**
+ * A component that displays a summary of participant connection status.
+ * 
+ * Includes the total count, a progress bar representing the proportion of
+ * connected participants, and a breakdown of connected vs. disconnected users.
+ *
+ * @param props - The component props.
+ * @returns The rendered participant counter.
+ */
 export function ParticipantCounter({ total, connectedCount }: ParticipantCounterProps) {
     return (
         <div className="bg-card border border-border/60 rounded-xl p-4 sm:p-5">

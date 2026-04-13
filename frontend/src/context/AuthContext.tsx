@@ -42,23 +42,46 @@ interface RedirectResponse {
   url: string;
 }
 
+/**
+ * Represents the authentication state.
+ */
 interface AuthState {
+  /** The currently authenticated user, or null if not logged in. */
   user: User | null;
+  /** Whether the authentication status is being checked. */
   isLoading: boolean;
+  /** Whether the user is currently authenticated. */
   isAuthenticated: boolean;
 }
 
+/**
+ * Represents the available authentication actions.
+ */
 interface AuthActions {
+  /** Initiates the login process by redirecting to the auth provider. */
   login: () => Promise<void>;
+  /** Logs in using email and password. */
   loginWithEmail: (email: string, password: string) => Promise<User>;
+  /** Handles the callback from the auth provider after successful authentication. */
   handleCallback: (code: string) => Promise<User>;
+  /** Logs out the current user. */
   logout: () => Promise<void>;
 }
 
+/**
+ * The combined type for the authentication context value.
+ */
 type AuthContextValue = AuthState & AuthActions;
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/**
+ * Provider component that manages authentication state and provides it to the rest of the application.
+ * 
+ * @param props - The component props.
+ * @param props.children - The children to be wrapped by the provider.
+ * @returns The rendered AuthProvider.
+ */
 export function AuthProvider({ children }: { children: ReactNode }): ReactNode {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);

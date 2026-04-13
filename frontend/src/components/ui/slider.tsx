@@ -5,6 +5,20 @@ import { Slider as SliderPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Slider
+ *
+ * Displays the Slider component or handles Slider logic.
+ * @param {
+ *   className,
+ *   defaultValue,
+ *   value,
+ *   min = 0,
+ *   max = 100,
+ *   ...props
+ * } - The component or hook props/parameters.
+ * @returns The rendered component or hook result.
+ */
 function Slider({
   className,
   defaultValue,
