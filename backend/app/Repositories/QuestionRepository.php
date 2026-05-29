@@ -55,7 +55,11 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
             $question->update(attributes: ['current_version_id' => $version->id]);
 
-            return $question->load(relations: ['currentVersion.answerOptions', 'media']);
+            if (array_key_exists(key: 'department_ids', array: $data)) {
+                $question->departments()->sync($data['department_ids'] ?? []);
+            }
+
+            return $question->load(relations: ['currentVersion.answerOptions', 'media', 'departments']);
         });
     }
 
@@ -96,7 +100,11 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
             $question->update(attributes: ['current_version_id' => $version->id]);
 
-            return $question->load(relations: ['currentVersion.answerOptions', 'media']);
+            if (array_key_exists(key: 'department_ids', array: $data)) {
+                $question->departments()->sync($data['department_ids'] ?? []);
+            }
+
+            return $question->load(relations: ['currentVersion.answerOptions', 'media', 'departments']);
         });
     }
 
@@ -138,7 +146,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
             $query->withTrashed();
         }
 
-        $query->with(relations: ['currentVersion', 'media']);
+        $query->with(relations: ['currentVersion', 'media', 'departments']);
 
         $filter = new QuestionFilter();
         $filter->apply(query: $query, filters: $filters);
