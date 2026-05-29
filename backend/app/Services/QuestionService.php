@@ -59,6 +59,7 @@ class QuestionService extends BaseService implements QuestionServiceContract
             'currentVersion.answerOptions',
             'currentVersion.quizQuestions',
             'media',
+            'departments',
         ]);
     }
 
