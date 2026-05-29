@@ -188,8 +188,23 @@ export function QuestionsGrid({
                       {q.type}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs font-medium truncate max-w-[250px] xl:max-w-none py-3">
-                    {version?.title ?? "\u2014"}
+                  <TableCell className="text-xs font-medium max-w-[250px] xl:max-w-none py-3">
+                    <div className="flex flex-col gap-1">
+                      <span className="truncate">{version?.title ?? "\u2014"}</span>
+                      {q.departments && q.departments.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {q.departments.map((d) => (
+                            <Badge
+                              key={d.id}
+                              variant="outline"
+                              className="text-[9px] font-medium border-primary/30 text-primary px-1.5 py-0 rounded-md"
+                            >
+                              {d.name}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="text-center hidden md:table-cell py-3">
                     {version?.difficulty != null ? (

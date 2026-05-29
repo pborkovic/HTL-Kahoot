@@ -21,6 +21,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import type { Question, QuestionMedia } from "@/types/question";
+import { useDepartments } from "@/hooks/use-departments";
 
 interface AnswerOptionForm {
     readonly id: string;
@@ -92,6 +93,8 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
     const [existingMedia, setExistingMedia] = useState<QuestionMedia[]>([]);
     const [pendingFiles, setPendingFiles] = useState<File[]>([]);
     const [mediaToDelete, setMediaToDelete] = useState<string[]>([]);
+    const [selectedDepartmentIds, setSelectedDepartmentIds] = useState<Set<string>>(new Set());
+    const { departments } = useDepartments();
 
     useEffect(() => {
         if (!open) {
@@ -114,6 +117,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                     : [{ ...createEmptyOption(), is_correct: true }, createEmptyOption()]
             );
             setExistingMedia(question.media ?? []);
+            setSelectedDepartmentIds(new Set((question.departments ?? []).map((d) => d.id)));
         } else {
             setTitle("");
             setType("multiple_choice");
@@ -128,11 +132,21 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                 createEmptyOption(),
             ]);
             setExistingMedia([]);
+            setSelectedDepartmentIds(new Set());
         }
         setPendingFiles([]);
         setMediaToDelete([]);
         setError(null);
     }, [open, question]);
+
+    const toggleDepartment = useCallback((id: string) => {
+        setSelectedDepartmentIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    }, []);
 
     const addOption = useCallback(() => {
         setOptions((prev) => [...prev, createEmptyOption()]);
@@ -216,6 +230,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                 is_correct: o.is_correct,
                 sort_order: i,
             })),
+            department_ids: Array.from(selectedDepartmentIds),
         };
 
         try {
@@ -270,6 +285,7 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
         mediaToDelete,
         pendingFiles,
         existingMedia.length,
+        selectedDepartmentIds,
         onSaved,
         onClose
     ]);
@@ -339,6 +355,37 @@ export function QuestionFormDialog({ open, question, onClose, onSaved }: Questio
                                     <SelectItem value="5" className="cursor-pointer">5 — Sehr schwer</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+                    </div>
+
+                    {/* Departments */}
+                    <div className="space-y-1.5">
+                        <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
+                            Abteilungen (optional)
+                        </label>
+                        <div className="flex flex-wrap gap-1.5">
+                            {departments.map((d) => {
+                                const active = selectedDepartmentIds.has(d.id);
+                                return (
+                                    <button
+                                        key={d.id}
+                                        type="button"
+                                        onClick={() => toggleDepartment(d.id)}
+                                        className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all duration-150 cursor-pointer backdrop-blur-sm ${
+                                            active
+                                                ? "bg-primary/15 border-primary/40 text-primary"
+                                                : "bg-background/30 border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                                        }`}
+                                    >
+                                        {d.name}
+                                    </button>
+                                );
+                            })}
+                            {departments.length === 0 && (
+                                <span className="text-[11px] text-muted-foreground">
+                                    Keine Abteilungen verfügbar
+                                </span>
+                            )}
                         </div>
                     </div>
 
