@@ -580,6 +580,59 @@
                 ]
             }
         },
+        "/api/v1/departments": {
+            "get": {
+                "tags": [
+                    "Departments"
+                ],
+                "summary": "List departments",
+                "description": "Returns the full list of departments ordered by display_order.",
+                "operationId": "149f8ee66a43550287b8c706fccbb9fd",
+                "responses": {
+                    "200": {
+                        "description": "List of departments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "format": "uuid"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "display_order": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/questions/{questionId}/media": {
             "post": {
                 "tags": [
@@ -1199,7 +1252,8 @@
                             "enum": [
                                 "created_at",
                                 "type",
-                                "is_published"
+                                "is_published",
+                                "department"
                             ]
                         }
                     },
@@ -6342,6 +6396,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Departments",
+            "description": "Departments"
         },
         {
             "name": "Question Media",

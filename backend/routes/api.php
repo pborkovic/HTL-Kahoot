@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\MediaController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\PlatformFeedbackController;
@@ -70,6 +72,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('{user}/completed-quizzes', [UserController::class, 'completedQuizzes']);
             Route::get('{user}/answer-distribution', [UserController::class, 'answerDistribution']);
             Route::get('{user}/quiz-history', [UserController::class, 'quizHistory']);
+        });
+
+        Route::get('departments', [DepartmentController::class, 'index']);
+
+        Route::prefix('admin')->group(function () {
+            Route::get('system', [AdminController::class, 'system']);
+            Route::get('metrics', [AdminController::class, 'metrics']);
         });
 
         Route::prefix('questions')->group(function () {

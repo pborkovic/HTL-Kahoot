@@ -76,6 +76,9 @@ export default function QuestionsPage(): ReactNode {
           uniqueTypes={q.uniqueTypes}
           activeFilters={q.activeFilters}
           onToggleFilter={q.toggleFilter}
+          activeDepartments={q.activeDepartments}
+          onToggleDepartment={q.toggleDepartment}
+          onClearDepartments={q.clearDepartments}
           onSort={q.sort}
           totalCount={q.meta?.total ?? q.displayQuestions.length}
           selectedCount={q.selectedIds.size}

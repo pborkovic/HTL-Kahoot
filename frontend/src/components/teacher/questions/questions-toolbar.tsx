@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent, ReactNode } from "react";
-import { Search, Filter, ArrowUpDown, ChevronDown, Upload } from "lucide-react";
+import { Search, Filter, ArrowUpDown, ChevronDown, Upload, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDepartments } from "@/hooks/use-departments";
 
-type SortField = "created_at" | "updated_at" | "type";
+type SortField = "created_at" | "updated_at" | "type" | "department";
 type SortDirection = "asc" | "desc";
 
 /**
@@ -37,6 +38,15 @@ interface QuestionsToolbarProps {
    * @param type - The question type to toggle.
    */
   onToggleFilter: (type: string) => void;
+  /** Set of currently active department-slug filters. */
+  activeDepartments: Set<string>;
+  /**
+   * Callback function to toggle a department filter.
+   * @param slug - The department slug to toggle.
+   */
+  onToggleDepartment: (slug: string) => void;
+  /** Clears all active department filters. */
+  onClearDepartments: () => void;
   /**
    * Callback function to sort the question list.
    * @param field - The field to sort by.
@@ -67,11 +77,16 @@ export function QuestionsToolbar({
   uniqueTypes,
   activeFilters,
   onToggleFilter,
+  activeDepartments,
+  onToggleDepartment,
+  onClearDepartments,
   onSort,
   totalCount,
   selectedCount,
   onOpenMassManagement,
 }: QuestionsToolbarProps): ReactNode {
+  const { departments } = useDepartments();
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-2">
@@ -122,6 +137,64 @@ export function QuestionsToolbar({
           </PopoverContent>
         </Popover>
 
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className={`gap-1.5 h-8 text-xs rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer ${activeDepartments.size > 0 ? "border-primary/40 bg-primary/5 text-primary" : ""}`}
+            >
+              <Building2 className="size-3" />
+              Abteilung
+              {activeDepartments.size > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="ml-0.5 size-4 p-0 justify-center text-[10px] bg-primary/15 text-primary hover:bg-primary/15"
+                >
+                  {activeDepartments.size}
+                </Badge>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 p-2.5 backdrop-blur-xl bg-popover/90 border-border/40 rounded-xl" align="start">
+            <div className="flex items-center justify-between mb-2 px-1">
+              <p className="text-xs font-medium text-muted-foreground">
+                Abteilung filtern
+              </p>
+              {activeDepartments.size > 0 && (
+                <button
+                  type="button"
+                  onClick={onClearDepartments}
+                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                >
+                  Zurücksetzen
+                </button>
+              )}
+            </div>
+            <div className="space-y-0.5 max-h-60 overflow-y-auto">
+              {departments.map(
+                (d): ReactNode => (
+                  <label
+                    key={d.id}
+                    className="flex items-center gap-2.5 cursor-pointer hover:bg-muted/40 p-2 rounded-lg transition-colors text-sm"
+                  >
+                    <Checkbox
+                      checked={activeDepartments.has(d.slug)}
+                      onCheckedChange={(): void => onToggleDepartment(d.slug)}
+                    />
+                    <span className="text-xs font-medium">{d.name}</span>
+                  </label>
+                )
+              )}
+              {departments.length === 0 && (
+                <p className="text-xs text-muted-foreground p-2">
+                  Keine Abteilungen verfügbar
+                </p>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs rounded-lg backdrop-blur-sm bg-background/40 border-border/40 hover:border-primary/30 hover:bg-background/60 transition-all duration-200 cursor-pointer">
@@ -145,6 +218,12 @@ export function QuestionsToolbar({
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer" onClick={(): void => onSort("type", "desc")}>
               Typ Z–A
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onClick={(): void => onSort("department", "asc")}>
+              Abteilung A–Z
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onClick={(): void => onSort("department", "desc")}>
+              Abteilung Z–A
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -60,4 +60,28 @@ class PlatformFeedbackRepository extends BaseRepository implements PlatformFeedb
             ->orderBy(column: 'created_at', direction: 'desc')
             ->get();
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countOpen(): int
+    {
+        return $this->model->newQuery()
+            ->whereNull(columns: 'resolved_at')
+            ->count();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countResolved(): int
+    {
+        return $this->model->newQuery()
+            ->whereNotNull(columns: 'resolved_at')
+            ->count();
+    }
 }

@@ -48,7 +48,7 @@ class QuestionController extends Controller
             new Parameter(name: 'search', in: 'query', required: false, schema: new Schema(type: 'string')),
             new Parameter(name: 'created_by', in: 'query', required: false, schema: new Schema(type: 'string', format: 'uuid')),
             new Parameter(name: 'pool_id', in: 'query', required: false, schema: new Schema(type: 'string', format: 'uuid')),
-            new Parameter(name: 'sort', in: 'query', required: false, schema: new Schema(type: 'string', enum: ['created_at', 'type', 'is_published'])),
+            new Parameter(name: 'sort', in: 'query', required: false, schema: new Schema(type: 'string', enum: ['created_at', 'type', 'is_published', 'department'])),
             new Parameter(name: 'direction', in: 'query', required: false, schema: new Schema(type: 'string', enum: ['asc', 'desc'])),
             new Parameter(name: 'per_page', in: 'query', required: false, schema: new Schema(type: 'integer', minimum: 1, maximum: 100)),
             new Parameter(name: 'page', in: 'query', required: false, schema: new Schema(type: 'integer', minimum: 1)),

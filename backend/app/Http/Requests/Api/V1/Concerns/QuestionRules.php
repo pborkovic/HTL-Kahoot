@@ -29,6 +29,8 @@ trait QuestionRules
             'answer_options.*.text' => ['required_with:answer_options', 'string'],
             'answer_options.*.is_correct' => ['nullable', 'boolean'],
             'answer_options.*.sort_order' => ['nullable', 'integer', 'min:0'],
+            'department_ids' => [$presence === 'required' ? 'nullable' : 'sometimes', 'nullable', 'array'],
+            'department_ids.*' => ['uuid', 'exists:departments,id'],
         ];
     }
 }

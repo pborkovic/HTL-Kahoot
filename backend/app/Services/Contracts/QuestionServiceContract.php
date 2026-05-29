@@ -114,4 +114,14 @@ interface QuestionServiceContract extends BaseServiceContract
      * @return Question The updated question with currentVersion loaded.
      */
     public function togglePublish(Question $question): Question;
+
+    /**
+     * Count all non-deleted questions.
+     */
+    public function countAll(): int;
+
+    /**
+     * Count published questions.
+     */
+    public function countPublished(): int;
 }

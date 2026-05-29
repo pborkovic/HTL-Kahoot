@@ -285,6 +285,45 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
      *
      * @author Philipp Borkovic
      */
+    public function countAll(): int
+    {
+        return $this->model->newQuery()->count();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countActive(): int
+    {
+        return $this->model->newQuery()
+            ->where(column: 'is_active', operator: '=', value: true)
+            ->count();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countByRole(): array
+    {
+        return DB::table(table: 'users')
+            ->join(table: 'user_roles', first: 'users.id', operator: '=', second: 'user_roles.user_id')
+            ->join(table: 'roles', first: 'roles.id', operator: '=', second: 'user_roles.role_id')
+            ->whereNull(columns: 'users.deleted_at')
+            ->selectRaw(expression: 'roles.name as role, COUNT(DISTINCT users.id) as count')
+            ->groupBy(groups: 'roles.name')
+            ->pluck(column: 'count', key: 'role')
+            ->toArray();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
     public function updatePasswordHash(User $user, string $passwordHash): void
     {
         $user->update(attributes: ['password_hash' => $passwordHash]);

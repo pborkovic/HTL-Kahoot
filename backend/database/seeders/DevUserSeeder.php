@@ -47,7 +47,7 @@ class DevUserSeeder extends Seeder
                 ['description' => $data['role'], 'is_system' => true]
             );
 
-            $user = User::updateOrCreate(
+            $user = User::withTrashed()->updateOrCreate(
                 ['email' => $data['email']],
                 [
                     'username' => $data['username'],
@@ -56,6 +56,7 @@ class DevUserSeeder extends Seeder
                     'password_hash' => password_hash('password', PASSWORD_ARGON2ID),
                     'auth_provider' => 'local',
                     'is_active' => true,
+                    'deleted_at' => null,
                 ]
             );
 

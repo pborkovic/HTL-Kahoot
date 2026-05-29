@@ -20,6 +20,7 @@ class QuestionResource extends JsonResource
             'current_version' => new QuestionVersionResource(resource: $this->whenLoaded(relationship: 'currentVersion')),
             'versions' => QuestionVersionResource::collection(resource: $this->whenLoaded(relationship: 'versions')),
             'media' => QuestionMediaResource::collection(resource: $this->whenLoaded(relationship: 'media')),
+            'departments' => DepartmentResource::collection(resource: $this->whenLoaded(relationship: 'departments')),
         ];
     }
 }

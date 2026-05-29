@@ -59,6 +59,26 @@ class SessionService extends BaseService implements SessionServiceContract
      *
      * @author Philipp Borkovic
      */
+    public function countAll(): int
+    {
+        return $this->repository->countAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countActive(): int
+    {
+        return $this->repository->countActive();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
     public function createGame(CreateSessionDto $dto, User $host): Session
     {
         $gamePin = $this->repository->generateUniqueGamePin();

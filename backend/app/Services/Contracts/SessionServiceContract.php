@@ -48,6 +48,16 @@ interface SessionServiceContract extends BaseServiceContract
     public function joinSession(string $gamePin, User $user): SessionParticipant;
 
     /**
+     * Count all sessions.
+     */
+    public function countAll(): int;
+
+    /**
+     * Count sessions that have not yet finished (finished_at IS NULL).
+     */
+    public function countActive(): int;
+
+    /**
      * Generate a base64-encoded SVG QR code data URI for the given game pin.
      *
      * @param  string  $gamePin  The 8-digit game pin to encode in the QR code.

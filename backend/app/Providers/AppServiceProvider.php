@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Services\AdminService;
 use App\Services\AnswerEvaluationService;
 use App\Services\AuthService;
+use App\Services\Contracts\AdminServiceContract;
 use App\Services\Contracts\AnswerEvaluationServiceContract;
 use App\Services\Contracts\AuthServiceContract;
+use App\Services\Contracts\DepartmentServiceContract;
+use App\Services\Contracts\QuizServiceContract;
+use App\Services\DepartmentService;
+use App\Services\QuizService;
 use App\Services\Contracts\FeedbackModerationServiceContract;
 use App\Services\Contracts\MediaServiceContract;
 use App\Services\Contracts\MicrosoftGraphServiceContract;
@@ -109,6 +115,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: PlatformFeedbackServiceContract::class,
             concrete: PlatformFeedbackService::class
+        );
+        $this->app->bind(
+            abstract: AdminServiceContract::class,
+            concrete: AdminService::class
+        );
+        $this->app->bind(
+            abstract: QuizServiceContract::class,
+            concrete: QuizService::class
+        );
+        $this->app->bind(
+            abstract: DepartmentServiceContract::class,
+            concrete: DepartmentService::class
         );
     }
 

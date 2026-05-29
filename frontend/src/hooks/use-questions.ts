@@ -12,7 +12,7 @@ type SortDirection = "asc" | "desc";
 /**
  * Available fields for sorting questions.
  */
-type QuestionSortField = "created_at" | "updated_at" | "type";
+type QuestionSortField = "created_at" | "updated_at" | "type" | "department";
 
 /**
  * Return type for the useQuestions hook.
@@ -44,6 +44,14 @@ export interface UseQuestionsReturn {
      * @param type - The question type to toggle.
      */
     toggleFilter: (type: string) => void;
+    /** A set of active department slug filters. */
+    activeDepartments: Set<string>;
+    /**
+     * Toggles a department slug filter on or off and resets the page to 1.
+     */
+    toggleDepartment: (slug: string) => void;
+    /** Clear all active department filters. */
+    clearDepartments: () => void;
     /** The field currently used for sorting. */
     sortField: QuestionSortField;
     /** The direction of the sort. */
@@ -84,7 +92,7 @@ export interface UseQuestionsReturn {
 
 /**
  * Hook for managing a list of questions with filtering, sorting, and pagination.
- * 
+ *
  * @returns An object containing question data, filter/sort state, and management functions.
  */
 export function useQuestions(): UseQuestionsReturn {
@@ -94,6 +102,7 @@ export function useQuestions(): UseQuestionsReturn {
     const [detailQuestion, setDetailQuestion] = useState<Question | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
+    const [activeDepartments, setActiveDepartments] = useState<Set<string>>(new Set());
     const [sortField, setSortField] = useState<QuestionSortField>("created_at");
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
     const [loading, setLoading] = useState<boolean>(true);
@@ -121,6 +130,9 @@ export function useQuestions(): UseQuestionsReturn {
                     params.set("type", filterType);
                 }
             }
+            if (activeDepartments.size > 0) {
+                params.set("departments", Array.from(activeDepartments).join(","));
+            }
 
             const response = await apiFetch<QuestionsResponse>(`/v1/questions?${params.toString()}`);
             setQuestions(response.data);
@@ -131,7 +143,7 @@ export function useQuestions(): UseQuestionsReturn {
         } finally {
             setLoading(false);
         }
-    }, [searchTerm, sortField, sortDirection, activeFilters, page]);
+    }, [searchTerm, sortField, sortDirection, activeFilters, activeDepartments, page]);
 
     useEffect(() => {
         void fetchQuestions();
@@ -159,6 +171,25 @@ export function useQuestions(): UseQuestionsReturn {
         }
         setPageState(1);
         setActiveFilters(next);
+    }
+
+    function toggleDepartment(slug: string): void {
+        const next = new Set(activeDepartments);
+
+        if (next.has(slug)){
+            next.delete(slug);
+        }
+        else{
+            next.add(slug);
+        }
+
+        setPageState(1);
+        setActiveDepartments(next);
+    }
+
+    function clearDepartments(): void {
+        setPageState(1);
+        setActiveDepartments(new Set());
     }
 
     function sort(field: QuestionSortField, direction: SortDirection): void {
@@ -203,6 +234,9 @@ export function useQuestions(): UseQuestionsReturn {
         setSearchTerm: handleSearchChange,
         activeFilters,
         toggleFilter,
+        activeDepartments,
+        toggleDepartment,
+        clearDepartments,
         sortField,
         sortDirection,
         sort,

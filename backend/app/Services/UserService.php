@@ -40,6 +40,36 @@ class UserService extends BaseService implements UserServiceContract
      *
      * @author Philipp Borkovic
      */
+    public function countAll(): int
+    {
+        return $this->repository->countAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countActive(): int
+    {
+        return $this->repository->countActive();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countByRole(): array
+    {
+        return $this->repository->countByRole();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
     public function listUsers(array $filters, int $perPage, bool $withTrashed = false): ResourceCollection
     {
         $paginator = $this->repository->getFilteredUsers(

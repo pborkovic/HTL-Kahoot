@@ -9,6 +9,13 @@ const PUBLIC_PATHS: string[] = [
 ];
 
 const ADMIN_PREFIX = "/admin";
+const SUPERADMIN_PATHS: string[] = ["/admin/dashboard"];
+
+function requiresSuperadmin(pathname: string): boolean {
+  return SUPERADMIN_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+}
 
 function isPublic(pathname: string): boolean {
   return PUBLIC_PATHS.some(
@@ -46,8 +53,13 @@ export function proxy(request: NextRequest): NextResponse {
         request.cookies.get("user_roles")?.value;
       const roles: string[] = rolesRaw ? JSON.parse(rolesRaw) : [];
       const isAdmin: boolean = roles.includes("admin") || roles.includes("superadmin");
+      const isSuperadmin: boolean = roles.includes("superadmin");
 
       if (!isAdmin) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+
+      if (requiresSuperadmin(pathname) && !isSuperadmin) {
         return NextResponse.redirect(new URL("/home", request.url));
       }
     } catch {
