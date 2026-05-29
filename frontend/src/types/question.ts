@@ -60,6 +60,8 @@ export interface QuestionMedia {
     created_at: string;
 }
 
+import type { Department } from "./department";
+
 /**
  * Interface for a question.
  */
@@ -84,6 +86,8 @@ export interface Question {
     versions: QuestionVersion[];
     /** The list of media items attached to the question. */
     media?: QuestionMedia[];
+    /** Departments this question is assigned to. */
+    departments?: Department[];
 }
 
 /**
