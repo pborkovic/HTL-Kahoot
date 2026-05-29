@@ -154,6 +154,23 @@ interface UserRepositoryContract extends BaseRepositoryContract
     public function countSuperadmins(): int;
 
     /**
+     * Count all non-deleted users.
+     */
+    public function countAll(): int;
+
+    /**
+     * Count users where is_active = true.
+     */
+    public function countActive(): int;
+
+    /**
+     * Count non-deleted users grouped by their role name.
+     *
+     * @return array<string, int> Keyed by role name.
+     */
+    public function countByRole(): array;
+
+    /**
      * Update password hash for a user.
      *
      * @param  User  $user  The user.

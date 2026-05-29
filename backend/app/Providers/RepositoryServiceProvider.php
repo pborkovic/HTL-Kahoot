@@ -4,18 +4,24 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\AdminRepositoryContract;
+use App\Repositories\Contracts\DepartmentRepositoryContract;
 use App\Repositories\Contracts\PermissionRepositoryContract;
 use App\Repositories\Contracts\PlatformFeedbackRepositoryContract;
 use App\Repositories\Contracts\QuestionRepositoryContract;
+use App\Repositories\Contracts\QuizRepositoryContract;
 use App\Repositories\Contracts\ResponseRepositoryContract;
 use App\Repositories\Contracts\RoleRepositoryContract;
 use App\Repositories\Contracts\SessionParticipantRepositoryContract;
 use App\Repositories\Contracts\SessionQuestionRepositoryContract;
 use App\Repositories\Contracts\SessionRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
+use App\Repositories\AdminRepository;
+use App\Repositories\DepartmentRepository;
 use App\Repositories\PermissionRepository;
 use App\Repositories\PlatformFeedbackRepository;
 use App\Repositories\QuestionRepository;
+use App\Repositories\QuizRepository;
 use App\Repositories\ResponseRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\SessionParticipantRepository;
@@ -66,6 +72,18 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             abstract: PlatformFeedbackRepositoryContract::class,
             concrete: PlatformFeedbackRepository::class
+        );
+        $this->app->bind(
+            abstract: AdminRepositoryContract::class,
+            concrete: AdminRepository::class
+        );
+        $this->app->bind(
+            abstract: QuizRepositoryContract::class,
+            concrete: QuizRepository::class
+        );
+        $this->app->bind(
+            abstract: DepartmentRepositoryContract::class,
+            concrete: DepartmentRepository::class
         );
     }
 }

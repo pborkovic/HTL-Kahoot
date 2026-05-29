@@ -132,4 +132,24 @@ class QuestionService extends BaseService implements QuestionServiceContract
     {
         return Question::class;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countAll(): int
+    {
+        return $this->repository->countAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countPublished(): int
+    {
+        return $this->repository->countPublished();
+    }
 }

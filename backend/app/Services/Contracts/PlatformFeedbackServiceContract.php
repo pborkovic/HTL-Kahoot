@@ -80,4 +80,14 @@ interface PlatformFeedbackServiceContract
      * @return PlatformFeedback The refreshed record.
      */
     public function reopen(PlatformFeedback $feedback): PlatformFeedback;
+
+    /**
+     * Count feedback entries that have not been resolved yet.
+     */
+    public function countOpen(): int;
+
+    /**
+     * Count feedback entries that have been resolved.
+     */
+    public function countResolved(): int;
 }

@@ -86,4 +86,14 @@ interface SessionRepositoryContract extends BaseRepositoryContract
      * @return mixed The callback return value.
      */
     public function wrapInTransaction(callable $callback): mixed;
+
+    /**
+     * Count all sessions.
+     */
+    public function countAll(): int;
+
+    /**
+     * Count sessions that have not finished yet (finished_at IS NULL).
+     */
+    public function countActive(): int;
 }

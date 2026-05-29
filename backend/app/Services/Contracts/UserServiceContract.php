@@ -29,6 +29,23 @@ interface UserServiceContract extends BaseServiceContract
     public function getStats(): array;
 
     /**
+     * Count all non-deleted users.
+     */
+    public function countAll(): int;
+
+    /**
+     * Count active (is_active = true) users.
+     */
+    public function countActive(): int;
+
+    /**
+     * Count users grouped by their role name.
+     *
+     * @return array<string, int>
+     */
+    public function countByRole(): array;
+
+    /**
      * Bulk import users.
      *
      * @param  array  $users  The user rows.

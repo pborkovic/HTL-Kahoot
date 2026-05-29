@@ -111,4 +111,14 @@ interface QuestionRepositoryContract extends BaseRepositoryContract
      * @return LengthAwarePaginator Paginated, filtered question list.
      */
     public function listFiltered(array $filters, bool $withTrashed, int $perPage): LengthAwarePaginator;
+
+    /**
+     * Count all non-deleted questions.
+     */
+    public function countAll(): int;
+
+    /**
+     * Count published (is_published = true) questions.
+     */
+    public function countPublished(): int;
 }

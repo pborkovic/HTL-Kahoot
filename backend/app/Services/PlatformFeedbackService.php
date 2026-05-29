@@ -188,4 +188,24 @@ class PlatformFeedbackService implements PlatformFeedbackServiceContract
             throw $e;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countOpen(): int
+    {
+        return $this->repository->countOpen();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countResolved(): int
+    {
+        return $this->repository->countResolved();
+    }
 }

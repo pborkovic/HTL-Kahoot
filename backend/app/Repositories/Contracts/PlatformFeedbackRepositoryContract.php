@@ -32,4 +32,14 @@ interface PlatformFeedbackRepositoryContract extends BaseRepositoryContract
      * @return Collection<int, PlatformFeedback>
      */
     public function listForUser(string $userId): Collection;
+
+    /**
+     * Count feedback entries that have not been resolved yet.
+     */
+    public function countOpen(): int;
+
+    /**
+     * Count feedback entries that have been resolved.
+     */
+    public function countResolved(): int;
 }

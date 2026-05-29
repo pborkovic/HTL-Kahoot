@@ -139,4 +139,26 @@ class SessionRepository extends BaseRepository implements SessionRepositoryContr
     {
         return DB::transaction(callback: $callback);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countAll(): int
+    {
+        return $this->model->newQuery()->count();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countActive(): int
+    {
+        return $this->model->newQuery()
+            ->whereNull(columns: 'finished_at')
+            ->count();
+    }
 }

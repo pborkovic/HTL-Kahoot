@@ -153,4 +153,26 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
         return $query->paginate(perPage: $perPage);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countAll(): int
+    {
+        return $this->model->newQuery()->count();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @author Philipp Borkovic
+     */
+    public function countPublished(): int
+    {
+        return $this->model->newQuery()
+            ->where(column: 'is_published', operator: '=', value: true)
+            ->count();
+    }
 }
