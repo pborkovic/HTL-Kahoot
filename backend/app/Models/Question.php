@@ -64,6 +64,11 @@ class Question extends Model
         return $this->belongsToMany(Tag::class, 'question_tags');
     }
 
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'question_department');
+    }
+
     public function pools(): BelongsToMany
     {
         return $this->belongsToMany(QuestionPool::class, 'question_pool_items', 'question_id', 'pool_id')
