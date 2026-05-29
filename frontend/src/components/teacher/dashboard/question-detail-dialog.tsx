@@ -99,6 +99,15 @@ export function QuestionDetailDialog({ question, onClose, onEdit, onDeleted }: Q
                         >
                             {question.is_published ? "Veröffentlicht" : "Entwurf"}
                         </Badge>
+                        {question.departments?.map((d) => (
+                            <Badge
+                                key={d.id}
+                                variant="outline"
+                                className="text-[10px] font-medium border-primary/30 text-primary"
+                            >
+                                {d.name}
+                            </Badge>
+                        ))}
                     </div>
 
                     {question.media && question.media.length > 0 && (
